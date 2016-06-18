@@ -31,5 +31,5 @@ cp ../public/* ./
 
 git add -A
 git commit -m "$msg"
-git push origin gh-pages
-git checkout master
+git push origin master
+git checkout hugo
