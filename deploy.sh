@@ -27,7 +27,7 @@ git checkout master
 
 rm -rf ./*
 echo "lanlingzi.cn" > CNAME
-cp ../public/* ./
+cp -R ../public/* ./
 
 git add -A
 git commit -m "$msg"
