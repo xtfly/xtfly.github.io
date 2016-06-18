@@ -1,0 +1,38 @@
+<footer id="footer">
+  <nav class="nav-container group" id="nav-footer">
+    <div class="nav-toggle"><i class="fa fa-bars"></i></div>
+    <div class="nav-text"><!-- put your mobile menu text here --></div>
+    <div class="nav-wrap">
+      <ul id="menu-default-menu-1" class="nav container group">
+        <li class="menu-item menu-item-type-post_type menu-item-object-page">
+          <a rel="nofollow" href="/">首页</a>
+        </li>
+        {{ range .Site.Params.Categories }}
+        <li class="menu-item menu-item-type-post_type menu-item-object-page">
+          <a rel="nofollow" href="/categories/{{ . | urlize }}/">{{ . }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </nav>
+  <section class="container" id="footer-bottom">
+    <div class="container-inner">
+      <a id="back-to-top" href="#"><i class="fa fa-angle-up"></i></a>
+      <div class="pad group">
+        <div class="grid one-half">
+          <div id="copyright">
+            <p>{{ .Site.Copyright }} <br>Powered by
+              <a rel="nofollow" href="http://gohugo.io/" target="_blank">Hugo</a>.
+              - Theme forks from
+              <a rel="nofollow" href="http://cyrillschumacher.com/ "  target="_blank">cyrillschumacher.com</a>.
+            </p>
+          </div>
+        </div>
+        <div class="grid one-half last">
+          {{ partial "social-links.html" . }}
+        </div>
+      </div>
+    </div>
+
+  </section>
+</footer>

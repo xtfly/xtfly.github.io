@@ -1,0 +1,12 @@
+<div class="post-list group">
+  {{ range .Data.Pages.GroupByDate "2006" }}
+  <div class="post-row">
+    <h1><i class="fa fa-sort-amount-desc"></i><span> {{ .Key }} </span></h1>
+  </div>
+  {{ range .Pages }}
+  <div class="post-row">
+    {{ partial "postItem.html" . }}
+  </div>
+  {{end}}
+  {{end}}
+</div>

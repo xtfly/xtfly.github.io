@@ -1,0 +1,22 @@
+{{ $pag := .Paginator }}
+<nav class="pagination group">
+  <div class="wp-pagenavi">
+    <span class="pages">
+        Page {{ $pag.PageNumber }} of {{ $pag.TotalPages }}
+        ({{ $pag.TotalNumberOfElements }} Posts)
+    </span>
+    {{ if $pag.HasPrev }}
+      <a class="previouspostslink" rel="prev" href="{{ $pag.Prev.URL  }}">&laquo;</a>
+    {{ end }}
+    {{ range $p := $pag.Pagers }}
+        {{ if eq $p $pag }}
+          <span class="current">{{ $p.PageNumber }}</span>
+        {{ else }}
+          <a class="page" href="{{ $p.URL  }}">{{ $p.PageNumber }}</a>
+        {{ end }}
+    {{ end }}
+    {{ if $pag.HasNext }}
+      <a class="nextpostslink" rel="next" href="{{ $pag.Next.URL }}">&raquo;</a>
+    {{ end }}
+  </div>
+</nav>
