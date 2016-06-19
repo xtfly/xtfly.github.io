@@ -1,6 +1,6 @@
 title =  "蘭陵N散記"
 languageCode = "zh-CN"
-baseurl = "http://lanlingzi.cn"
+baseurl = "http://lanlingzi.cn/"
 theme =  "pacman"
 MetaDataFormat =  "yaml"
 canonifyurls =  true
@@ -16,7 +16,7 @@ pygmentsStyle = "default"
 pygmentsUseClasses = true
 
 [Params]
-  AuthorHomepage = "http://lanlingzi.cn"
+  AuthorHomepage = "http://lanlingzi.cn/"
   BottomIntroduce = "一指流沙，程序年华"
   Description = "韶华易逝，往昔不再"
   Subtitle = "一指流沙，程序年华"
