@@ -7,12 +7,13 @@ tags:
  - "Torrent"
  - "Go"
  - "P2P"
+toc: true
 
 ---
 
 提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。
 
-#### BitTorrent协议简介
+## BitTorrent协议简介
 
 一个BitTorrent的文件在网络传输过程，由以下几个部分组成：
 
@@ -62,22 +63,28 @@ Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去�
 
 在Kademlia中，距离度量采用异或计算，结果解释成一个无符号整数。 distance (A,B)=(A ~| B)，值越小，距离越近。每个节点维护一个路由表，由它所知道的好节点组成。路由表中的节点被用作在DHT中发送请求的起点。当其他节点查询时，就返回路由表中的节点。
 
-#### 开源实现
+## 开源实现
+
+### C++语言
 
 实现BitTorrent协议最有名要算两个C++的实现：
 
   * [rakshase](https://github.com/rakshasa/libtorrent) 版本：他来源于Mozilla NSS的项目，LICENSE是GPL，使用它的客户端亦rtorrent等，基于Posix接口开发，可以在兼容Posix系统中编译使用，也支持HDT。这个项目已有12年了，目前还在发展，可以是非常的稳定与成熟，据说是速度之王。
   * [rasterbar(arvidn/libtorrent)](https://github.com/arvidn/libtorrent)版本，GitHub上有两个地址，另一个是[libtorrent/libtorrent](https://github.com/libtorrent/libtorrent)。前者是还是发展，后者已停止开发了。rasterbar版本是基于boost asio编写的，跨平台不存问题。默认有Python与Ruby的绑定接口。并且具有良好扩展性，例如有uTP，DHT安全扩展
 
-这个两个实现都是非常不错的，但由于个人爱好的原因，一真想找是否有Go语言实现版本，于是在GitHub上寻寻觅觅，也找到两个不错的实现：
+### Go语言
+
+由于个人爱好的原因，一真想找是否有Go语言实现版本，于是在GitHub上寻寻觅觅，也找到两个不错的实现：
 
   * [Taipei Torrent](https://github.com/jackpal/Taipei-Torrent)：它一个较轻量的，基于命令行接口的Torrent客户端，主要功能有支持多Torrent文件，Magnet链接，DHT，UPnP/NAT-PMP打洞，也提供简单的tracker服务。
   * [anacrolix/torrent](https://github.com/anacrolix/torrent): 它实现了BitTorrent协议相关功能包，以及提供较丰富的命令行工具集。支持加密协议，DHT，PEX，uTP以及多种扩展。从代码结构来说，anacrolix/torrent比Taipei Torrent更容易做二次开发。
 
 
-#### Taipei Torrent
+## Taipei Torrent
 
-首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为`Taipei Torrent`。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。如下是它的代码结构：
+首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为`Taipei Torrent`。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。
+
+### 代码结构
 
 ````
 Taipei-Torrent git:(master) tree
@@ -107,7 +114,7 @@ Taipei-Torrent git:(master) tree
     └── tracker_test.go
 ````
 
-##### 源码分析
+### 源码分析
 
 花了一个下午走读它的代码，代码简洁易懂，主要功能都在`torrent`目录下。每个Peer对一个torrent文件会产生一个会话，在我的笔记本记，使用Docker搭建了6个节点，发布下载77M的go的安装包，是秒级速度。如下所示：
 
@@ -208,10 +215,7 @@ length prefix（长度前缀）占4个字节，指明message ID和payload的长�
  *
 	port消息的长度固定，为7字节，其中listen-port占两个字节。该消息只在支持DHT的客户端中才会使用，用于指明DHT监听的端口号，一般不必理会，收到该消息时，直接丢弃即可。
 	> 注：Taipei Torrent未实现此消息
-	
+
  * extension消息：\[len=0009+X\]\[id=20\]\[payload\]
- 
-	extension消息消息的长度不固定，消息Id为20， Taipei Torrent来来与其它的Peer交换torrent文件的元数据信息（每块Pieces的信息），同样采用B编码格式。 
 
-
-
+	extension消息消息的长度不固定，消息Id为20， Taipei Torrent来来与其它的Peer交换torrent文件的元数据信息（每块Pieces的信息），同样采用B编码格式。

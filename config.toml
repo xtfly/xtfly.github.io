@@ -1,48 +1,63 @@
 title =  "蘭陵N散記"
 languageCode = "zh-CN"
 baseurl = "http://lanlingzi.cn"
-copyright =  "蘭陵N散記-www.lanlingzi.cn Copyright © 2015. All rights reserved."
-theme =  "hueman"
+theme =  "pacman"
 MetaDataFormat =  "yaml"
 canonifyurls =  true
 builddrafts =  false
 PaginatePath =  "p"
-Paginate = 11
+Paginate = 15
 RSSUri =  "feed.xml"
 disablePathToLower =  false
 hasCJKLanguage =  true
 preserveTaxonomyNames = false
 uglyurls = false
+pygmentsStyle = "default"
+pygmentsUseClasses = true
 
-[Taxonomies]
-  category = "categories"
-  tag = "tags"
+[Params]
+  AuthorHomepage = "http://lanlingzi.cn"
+  BottomIntroduce = "一指流沙，程序年华"
+  Description = "韶华易逝，往昔不再"
+  Subtitle = "一指流沙，程序年华"
+  GitHub = "xtfly"
+  Imglogo = "img/logo.png"
+  AuthorImg = "img/author.jpg"
+  DateFormat = "2006年01月02日"
+  MonthFormat = "2006年01月"
+  FancyBox = true
 
-[params]
-  Tagline =  "一指流沙，程序年华"
-  Description =  "韶华易逝，往昔不再"
-  Keywords =  "独立博客,程序员,架构师,思考,读书笔记,技术分享"
-  AuthorName =  "兰陵子"
-  Bio = "Programmer - Architect"
-  Location = "Shenzhen,China"
-  GitHubUser =  "xtfly"
-  GitHubRepository =  "xtfly.github.io"
-  SidebarRecentLimit =  8
-  DateForm =  "2006年01月02日"
-  SyntaxHighlightTheme =  "github.min.css"
-  Categories = ["技术" ,"笔记", "感想", "杂记"]
+[Author]
+  Name = "兰陵子"
 
-[[menu.main]]
+[Params.DuoShuo]
+  ShortName = "lanlingzi"
+
+[Params.Strings]
+  Search = "搜索"
+  PageNotFound = "你访问的页面不存在"
+  ShowSideBar = "显示侧边栏"
+  HideSideBar = "隐藏侧边栏"
+  Categories = "分类"
+  Archive = "归档"
+  Tags = "标签"
+  TagCloud = "标签云"
+  Rss = "RSS 订阅"
+  TableOfContents = "文章目录"
+
+[[Menu.Main]]
+  Name = "首页"
+  URL = "/"
+  Weight = 1
+[[Menu.Main]]
   Name = "归档"
-  Pre = "<i class='fa fa-heart'></i>"
-  Weight = -110
-  Identifier = "post"
+  Weight = 2
   URL = "/post/"
-[[menu.main]]
+[[Menu.Main]]
   Name = "关于"
-  Pre = "<i class='fa fa-road'></i>"
-  Identifier = "about"
-  Weight = -100
+  Weight = 3
   URL = "/about/"
-
-images = ["480x", "768x", "960x", "1024x", "1920x", "720x340", "520x245"]
+[[Menu.Main]]
+  Name = "订阅"
+  Weight = 4
+  URL = "/feed.xml"

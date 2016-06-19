@@ -1,6 +1,6 @@
 ---
 title: "关于我"
-date: "2005-08-22"
+date: "2009-06-01"
 description: "不能再简单的简历"
 url: "/about/"
 
