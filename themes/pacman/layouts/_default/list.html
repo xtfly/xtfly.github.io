@@ -5,12 +5,14 @@
   </header>
   <div id="container">
     <div id="main">
-      {{ range .Data.Pages.GroupByDate "2006-01" }}
-      <h2 id="{{ .Key }}">{{ .Key }}</h2>
-      {{ range .Pages }}
+{{ $paginator := .Paginate (.Data.Pages.GroupByDate "2006-01") }}
+{{ range $paginator.PageGroups }}
+  <h2 id="{{ .Key }}">{{ .Key }}</h2>
+  {{ range .Pages}}
       {{ partial "article.html" . }}
-      {{ end }}
-      {{ end }}
+  {{ end }}
+{{ end }}
+      {{ partial "pagination.html" . }}
     </div>
     {{ partial "sidebar.html" . }}
   </div>

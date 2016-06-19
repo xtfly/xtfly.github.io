@@ -6,7 +6,7 @@ MetaDataFormat =  "yaml"
 canonifyurls =  true
 builddrafts =  false
 PaginatePath =  "p"
-Paginate = 15
+Paginate = 10
 RSSUri =  "feed.xml"
 disablePathToLower =  false
 hasCJKLanguage =  true
@@ -17,8 +17,9 @@ pygmentsUseClasses = true
 
 [Params]
   AuthorHomepage = "http://lanlingzi.cn/"
-  BottomIntroduce = "一指流沙，程序年华"
+  BottomIntroduce = "Hello ,I'm a Programmer&Architect in Shenzhen. <br/>I'll share something interesting and awesome with you at this blog."
   Description = "韶华易逝，往昔不再"
+  Keywords =  "独立博客,程序员,架构师,思考,读书笔记,技术分享"
   Subtitle = "一指流沙，程序年华"
   GitHub = "xtfly"
   Imglogo = "img/logo.png"
@@ -28,7 +29,7 @@ pygmentsUseClasses = true
   FancyBox = true
 
 [Author]
-  Name = "兰陵子"
+  Name = "lanlingzi"
 
 [Params.DuoShuo]
   ShortName = "lanlingzi"
@@ -44,6 +45,7 @@ pygmentsUseClasses = true
   TagCloud = "标签云"
   Rss = "RSS 订阅"
   TableOfContents = "文章目录"
+  Links = "友情链接"
 
 [[Menu.Main]]
   Name = "首页"
@@ -61,3 +63,7 @@ pygmentsUseClasses = true
   Name = "订阅"
   Weight = 4
   URL = "/feed.xml"
+
+[[Params.Links]]
+  Name = "Archlinux"
+  URL = "https://www.archlinux.org/"

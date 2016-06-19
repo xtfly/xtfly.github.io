@@ -1,0 +1,18 @@
+{{ $pag := .Paginator }}
+<nav id="page-nav" class="clearfix">
+    {{ if $pag.HasPrev }}
+      <a class="extend prev" rel="prev" href="{{ $pag.Prev.URL  }}">Prev</a>
+    {{ end }}
+    Page {{ $pag.PageNumber }} of {{ $pag.TotalPages }}
+    ({{ $pag.TotalNumberOfElements }} Posts)
+    {{ range $p := $pag.Pagers }}
+        {{ if eq $p $pag }}
+          <span class="page-number current">{{ $p.PageNumber }}</span>
+        {{ else }}
+          <a class="page-number" href="{{ $p.URL  }}">{{ $p.PageNumber }}</a>
+        {{ end }}
+    {{ end }}
+    {{ if $pag.HasNext }}
+      <a class="extend next" rel="next" href="{{ $pag.Next.URL }}">Next</a>
+    {{ end }}
+</nav>

@@ -1,7 +1,8 @@
+
 <section class="post" itemscope itemprop="blogPost">
     <a href="{{ .Permalink }}" title="{{ .Title }}" itemprop="url">
-    <h1 itemprop="name">{{ .Title }}</h1>
+    <h1 itemprop="name">{{ .Title }} </h1>
     <p itemprop="description">{{ .Summary }}</p>
-    <time datetime="{{ .Date }}" itemprop="datePublished">{{ .Date.Format .Site.Params.DateFormat }}</time>
+    <time datetime="{{ .Date }}" itemprop="datePublished">{{ .Date.Format .Site.Params.DateFormat }} | {{ .WordCount }} Words | ~{{ .ReadingTime }}min reading time</time>
   </a>
 </section>
