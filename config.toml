@@ -52,16 +52,12 @@ pygmentsUseClasses = true
   URL = "/"
   Weight = 1
 [[Menu.Main]]
-  Name = "归档"
-  Weight = 2
-  URL = "/post/"
-[[Menu.Main]]
   Name = "关于"
-  Weight = 3
+  Weight = 2
   URL = "/about/"
 [[Menu.Main]]
   Name = "订阅"
-  Weight = 4
+  Weight = 3
   URL = "/feed.xml"
 
 [[Params.Links]]
