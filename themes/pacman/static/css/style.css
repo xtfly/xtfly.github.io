@@ -93,13 +93,19 @@ header nav{float:left;width:100%;font-size:112.5%;padding-top:.5em;max-height:.0
 }@media only screen and (min-width: 1560px){#container{width:82%}
 }#main{margin:1em 0 0;line-height:1.8;}
 @media only screen and (min-width: 1024px){#main{margin:2em 0 0;width:75%;float:left;-webkit-transition:margin 0.5s ease-out;-moz-transition:margin 0.5s ease-out;-o-transition:margin 0.5s ease-out;-ms-transition:margin 0.5s ease-out;transition:margin 0.5s ease-out}
-}#main section.post{background:#fafafa;margin-bottom:2em;}
+}#main section.post{background:#fafafa;margin-bottom:1em;}
 #main section.post a{display:block;border-left:.5em solid #ccc;-webkit-transition:border-left 0.45s;-moz-transition:border-left 0.45s;-o-transition:border-left 0.45s;-ms-transition:border-left 0.45s;transition:border-left 0.45s;padding:.5em;}
 @media only screen and (min-width: 768px){#main section.post a{padding:1em}
 }#main section.post a:hover{border-left:.5em solid #ea6753}
 #main section.post a h1{color:#2ca6cb;line-height:2}
 #main section.post a p{color:#817c7c}
-#main section.post a time{color:#817c7c;display:block;margin:.5em 0;font-size:.5em}
+#main section.post a time{color:#817c7c;display:block;margin:.5em 0;font-size:1em}
+#main section.post2{background:#fafafa;margin-bottom:.5em;}
+#main section.post2 a{display:block;border-left:.5em solid #ccc;-webkit-transition:border-left 0.45s;-moz-transition:border-left 0.45s;-o-transition:border-left 0.45s;-ms-transition:border-left 0.45s;transition:border-left 0.45s;padding:.5em;}
+@media only screen and (min-width: 768px){#main section.post2 a{padding:.1em}
+}#main section.post2 a:hover{border-left:.5em solid #ea6753}
+#main section.post2 a p{color:#817c7c}
+#main section.post2 a time{color:#817c7c;float:right;}
 .moveMain{margin-left:10% !important}
 #page-nav{background:#fafafa;text-align:center;overflow:hidden;}
 #page-nav a,#page-nav span{display:inline-block;padding:.5em 1em}
@@ -285,11 +291,11 @@ footer.article-footer{background:#fafafa;padding:0 4%;margin:0;border-top:1px so
 .rsspart a::before{font-family:"FontAwesome";-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding-right:.5em;content:"\f09e"}
 @media only screen and (min-width: 768px){.archiveslist{width:45%;float:left;margin:0 5% 0 0}
 }@media only screen and (min-width: 1024px){.archiveslist{width:100%;float:none;margin:1em 0 0}
-}.archiveslist li{font-size:.8em;line-height:2em;}
+}.archiveslist li{font-size:1em;line-height:2em;}
 .archiveslist li a{padding:.5em;}
 .archiveslist li a:hover{color:#ea6753;-webkit-transition:color 0.25s;-moz-transition:color 0.25s;-o-transition:color 0.25s;-ms-transition:color 0.25s;transition:color 0.25s}
-.archiveslist .archive-list-count:before{content:"("}
-.archiveslist .archive-list-count:after{content:")"}
+.archiveslist .archive-list-count:before{content:"["}
+.archiveslist .archive-list-count:after{content:"]"}
 .archive-list{padding:.5em 0}
 .archive-float ul{padding:0}
 .archive-float li{float:left;margin:.3em;}

@@ -5,14 +5,17 @@
   </header>
   <div id="container">
     <div id="main">
-{{ $paginator := .Paginate (.Data.Pages.GroupByDate "2006") }}
-{{ range $paginator.PageGroups }}
+{{ range .Data.Pages.GroupByDate "2006" }}
   <h1 id="{{ .Key }}">{{ .Key }}</h1>
   {{ range .Pages}}
-      {{ partial "article.html" . }}
+  <section class="post2" itemscope itemprop="blogPost">
+      <a href="{{ .Permalink }}" title="{{ .Title }}" itemprop="url">
+      <span itemprop="name">{{ .Title }}</span>
+      <time datetime="{{ .Date }}" itemprop="datePublished">{{ .Date.Format .Site.Params.DateFormat }} </time>
+    </a>
+  </section>
   {{ end }}
 {{ end }}
-      {{ partial "pagination.html" . }}
     </div>
     {{ partial "sidebar.html" . }}
   </div>
