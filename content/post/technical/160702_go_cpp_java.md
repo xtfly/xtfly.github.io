@@ -1,10 +1,10 @@
 ---
-title: "Go/C++/Java杂谈"
+title: "Go/Java/C++杂谈"
 date: "2016-07-02"
 categories:
  - "技术"
 tags:
- - "golang"
+ - "go"
  - "cpp"
  - "java"
 toc: true
