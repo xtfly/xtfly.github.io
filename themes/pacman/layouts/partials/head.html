@@ -25,13 +25,12 @@
   <link rel="stylesheet" href="{{ .Site.BaseURL }}font/hack/css/hack.min.css">
   <link rel="stylesheet" href="{{ .Site.BaseURL }}css/style.css">
   <script>
-    document._writeOriginal = document.write;
-    document.write = function(str) {
-        if (str.indexOf({{ .Site.BaseURL }}) > -1) {
-            document._writeOriginal(str);
-        } else {
-            document._writeOriginal('<!-- Be Hijack!! -->');
-        }
-    }
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 </head>
