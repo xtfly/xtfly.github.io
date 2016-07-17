@@ -29,7 +29,7 @@ pygmentsUseClasses = true
   FancyBox = true
 
 [Author]
-  Name = "lanlingzi"
+  Name = "蘭陵子"
 
 [Params.DuoShuo]
   ShortName = "lanlingzi"
@@ -59,6 +59,10 @@ pygmentsUseClasses = true
   Name = "订阅"
   Weight = 3
   URL = "/feed.xml"
+
+[[Params.Links]]
+  Name = "My Github"
+  URL = "https://github.com/xtfly"
 
 [[Params.Links]]
   Name = "Archlinux"
