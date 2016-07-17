@@ -31,7 +31,7 @@ Oracle的云应用具有如下特点：
   * 集成：提供iPaas与集成能力来连接与协作已有资产
   * 安全：大使级的安全性和兼容，支持传统的多租户的安全数据隔离，以及SaaS的便利
 
-今天的cloud day也是从上述几个方面的展开的，我感兴趣的是他们的PaaS平台。确切地说，Oracle的PaaS是一个较泛的统计，今天主要介始的包括如下：
+今天的cloud day也是从上述几个方面的展开的，我感兴趣的是他们的PaaS平台。确切地说，Oracle的PaaS是一个较泛的统称，今天主要介始的包括如下：
 
   * 应用开发云：提供代码配置库（git/svn）集成，支持直接从github同步代码，基于Maven等代码构建能力，有限地支持DevOps。
   * 应用部署云：提供企业级的Java云服务，它是基于Weblogic的Java应用，每个WebLogic部署在一个虚拟机内。也提供支持其它JEE的应用环境，如scala, groovy, jypthon, jruby, 它们基于Docker容器部署。也支持对Node应用的部署。
