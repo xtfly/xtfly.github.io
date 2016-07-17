@@ -19,7 +19,7 @@ pygmentsUseClasses = true
   AuthorHomepage = "http://lanlingzi.cn/"
   BottomIntroduce = "Hello ,I'm a Programmer&Architect in Shenzhen. <br/>I'll share something interesting and awesome with you at this blog."
   Description = "韶华易逝，往昔不再"
-  Keywords =  "独立博客,程序员,架构师,思考,读书笔记,技术分享"
+  Keywords =  "蘭陵N散記,兰陵,独立博客,程序员,架构师,个人思考,读书笔记,技术分享,Golang"
   Subtitle = "一指流沙，程序年华"
   GitHub = "xtfly"
   Imglogo = "img/logo.png"
@@ -29,7 +29,7 @@ pygmentsUseClasses = true
   FancyBox = true
 
 [Author]
-  Name = "蘭陵子"
+  Name = "兰陵子"
 
 [Params.DuoShuo]
   ShortName = "lanlingzi"
