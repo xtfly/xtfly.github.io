@@ -2,7 +2,6 @@
 title: "第八届中国云计算大会简纪"
 date: "2016-05-18"
 categories:
- - "杂记"
  - "技术"
 tags:
  - "Cloud"

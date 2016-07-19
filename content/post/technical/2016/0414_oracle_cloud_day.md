@@ -2,7 +2,6 @@
 title: "Oracle Cloud Day见闻简纪"
 date: "2016-04-14"
 categories:
- - "杂记"
  - "技术"
 tags:
  - "Oracle"

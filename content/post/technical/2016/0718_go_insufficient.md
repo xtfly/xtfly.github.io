@@ -1,6 +1,6 @@
 ---
 title: "Go语言不足"
-date: "2016-07-17"
+date: "2016-07-18"
 categories:
  - "技术"
 tags:
