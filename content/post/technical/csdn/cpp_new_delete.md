@@ -20,19 +20,19 @@ new []与delete []是针对数组操作符，要注意是通过new []分配的�
 下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
 
 ```
-void* operator new(std::size_t) throw (std::bad_alloc);  
-void* operator new[](std::size_t) throw (std::bad_alloc);  
-void operator delete(void*) throw();  
-void operator delete[](void*) throw();  
+void* operator new(std::size_t) throw (std::bad_alloc);
+void* operator new[](std::size_t) throw (std::bad_alloc);
+void operator delete(void*) throw();
+void operator delete[](void*) throw();
 ```
 
 使用举例:
 ```
-int* p1 = new int();  
-delete p2;  
+int* p1 = new int();
+delete p2;
 
-int* p2 = new int[5];  
-delete [] p2;  
+int* p2 = new int[5];
+delete [] p2;
 ```
 
 终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。
@@ -41,25 +41,25 @@ delete [] p2;
 /**
  * A simulation of c++ new T() & new T(param) operation
  */  
-struct NewObj  
-{  
-    template <typename T>  
-    inline void operator()(T*& pObj)  
-    {  
-        // allocate memory form heap  
-        void * pBuff = malloc(sizeof(T));  
-        // call constructor  
-        pObj = new (pBuff) T();  
-    }  
+struct NewObj
+{
+    template <typename T>
+    inline void operator()(T*& pObj)
+    {
+        // allocate memory form heap
+        void * pBuff = malloc(sizeof(T));
+        // call constructor
+        pObj = new (pBuff) T();
+    }
 
-    template <typename T, typename P>  
-    inline void operator()(T*& pObj, const P& param)  
-    {  
-        // allocate memory form heap  
-        void * pBuff = malloc(sizeof(T));  
-        // call constructor, pass one param  
-        pObj = new(pBuff) T(param);  
-    }  
+    template <typename T, typename P>
+    inline void operator()(T*& pObj, const P& param)
+    {
+        // allocate memory form heap
+        void * pBuff = malloc(sizeof(T));
+        // call constructor, pass one param
+        pObj = new(pBuff) T(param);
+    }
 };  
 
 /**
@@ -128,10 +128,10 @@ struct DeleteObjArray
         pObj = NULL;  
     }  
 };  
+```
 
- 测试代码
-
-[cpp] view plaincopy
+测试代码:
+```
 struct TestClass  
 {  
     TestClass() : mem1(0), mem2(0)  {}  
@@ -164,4 +164,4 @@ void test_new_delete()
 ```
 
  ---------------------------------------
- >测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要#include <new>，使用#include <stdlib.h>会导致编译不过，因为in-place construtor是C++中的新玩意。
+ >测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要#include\<new\>，使用#include\<stdlib.h\>会导致编译不过，因为in-place construtor是C++中的新玩意。

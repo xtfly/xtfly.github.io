@@ -33,7 +33,7 @@ Go当前很多的第三方开源框架，库都是最近一到两年内才诞生
 
  > 动态库的存在是一个系统的设计Bug
 
-但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台。同时支持也是有限制：
+但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台（[cgo·golang/go Wiki](https://github.com/golang/go/wiki/cgo),[WindowsDLLs·golang/go Wiki](https://github.com/golang/go/wiki/WindowsDLLs)）。同时支持也是有限制：
 
  * Go语言代码，可以生成动态库给C代码调用，也可能给Go代码调用，但他们使用也有区别，参考：[Go1.5生成动态库](http://www.golangtc.com/t/55976045b09ecc0f51000001)
  * 不支持运行时在代码中动态加载库
@@ -97,4 +97,4 @@ Goroutine实现机制请参考：
 
 > [goroutine背后的系统知识](http://studygolang.com/articles/84)  
 > [golang的goroutine是如何实现的](http://www.zhihu.com/question/20862617)  
-> [goroutine与调度器](http://studygolang.com/articles/1855)
+> [goroutine与调度器](http://studygolang.com/articles/1855)  
