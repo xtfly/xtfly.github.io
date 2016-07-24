@@ -9,7 +9,7 @@ tags:
 
 ---
 
-![docker ecosystem](http://www.lanlingzi.cn/static/images/docker/docker_ecosystem.jpg)
+![docker ecosystem](/static/images/docker/docker_ecosystem.jpg)
 
 从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：
 
