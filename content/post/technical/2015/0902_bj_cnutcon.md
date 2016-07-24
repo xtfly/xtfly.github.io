@@ -11,7 +11,7 @@ tags:
 toc: true
 ---
 
-![cnutcon](/static/images/docker/cnut.png)
+![cnutcon](/images/docker/cnut.png)
 
 由于最近一直在从事Docker相关的工作，所以有机会参与这次的[CNUTCon全球容器大会](http://cnutcon.com/)。名字比较“高格”，虽有少量的外国人分享，大部分还是中国的互联网企业在宣传，忽悠。除去这些，整体来说这次大会还是非常不错的，门票也不算太贵，目前看来应该还是值的。我司还是这次大会的钻石赞助商，也说明我们在容器这一块的发力程度。
 
