@@ -11,9 +11,9 @@ toc: true
 
 ## 什么是Context
 
-最近在公司分析gRPC源码，proto文件生成的接口，接口第一个参数统一是`ctx context.Context`接口，公司不少同事都不了解这样设计的出发点是什么，其实我也不了解其背后的原理。今天趁着`妮妲`台风妹子在正面登陆深圳，全市停工、停课、停业，在家找一些资料研究把玩一把。
+最近在公司分析gRPC源码，proto文件生成的代码，接口函数第一个参数统一是`ctx context.Context`接口，公司不少同事都不了解这样设计的出发点是什么，其实我也不了解其背后的原理。今天趁着`妮妲`台风妹子正面登陆深圳，全市停工、停课、停业，在家休息找了一些资料研究把玩一把。
 
-`Context`通常被译作`上下文`，它是一个比较抽象的概念。在公司技术讨论时也经常会提到`上下文`。一般理解为程序单元的一个运行状态，现场，快照，而翻译中`上下`又很好地诠释了其本质，上下上下则是存在上下层的传递，`上`会把内容传递给`下`。在Go语言中，程序单元也就指的是Goroutine。
+`Context`通常被译作`上下文`，它是一个比较抽象的概念。在公司技术讨论时也经常会提到`上下文`。一般理解为程序单元的一个运行状态、现场、快照，而翻译中`上下`又很好地诠释了其本质，上下上下则是存在上下层的传递，`上`会把内容传递给`下`。在Go语言中，程序单元也就指的是Goroutine。
 
 每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个`Context`变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
 
@@ -21,9 +21,9 @@ toc: true
 
 Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。`Context`介绍请参考[Go Concurrency Patterns: Context](http://blog.golang.org/context)，[golang.org/x/net/context](http://godoc.org/golang.org/x/net/context)包就是这种机制的实现。
 
-`context`包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用间传递`Context`，以及判断其状态，会就能解决此问题，这是为什么gRPC的接口中带上`ctx context.Context`参数的原因。
+`context`包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用间传递`Context`，以及判断其状态，会就能解决此问题，这是为什么gRPC的接口中带上`ctx context.Context`参数的原因之一。
 
-Go1.7(当前是RC2版本)已将原来的`golang.org/x/net/context`包挪入了标准库中，放在$GOROOT/src/context下面。标准库中`net`、`net/http`、`os/exec`都用到了`context`。同时为了考虑兼容，在原`golang.org/x/net/context`存在两个文件，`go17.go`是调用标准库的`context`包，而`pre_go17.go`则之前的默认实现，其介绍请参考[go程序包源码解读](http://studygolang.com/articles/5131)。
+Go1.7(当前是RC2版本)已将原来的`golang.org/x/net/context`包挪入了标准库中，放在$GOROOT/src/context下面。标准库中`net`、`net/http`、`os/exec`都用到了`context`。同时为了考虑兼容，在原`golang.org/x/net/context`包下存在两个文件，`go17.go`是调用标准库的`context`包，而`pre_go17.go`则之前的默认实现，其介绍请参考[go程序包源码解读](http://studygolang.com/articles/5131)。
 
 `context`包的核心就是`Context`接口，其定义如下：
 
@@ -40,11 +40,11 @@ type Context interface {
 
  * `Done`方法返回一个信道（channel），当`Context`被撤销或过期时，该信道是关闭的，即它是一个表示Context是否已关闭的信号。
 
-* 当`Done`信道关闭后，`Err`方法表明`Contex`t被撤的原因。
+ * 当`Done`信道关闭后，`Err`方法表明`Contex`t被撤的原因。
 
  * `Value`可以让Goroutine共享一些数据，当然获得数据是协程安全的。但使用这些数据的时候要注意同步，比如返回了一个map，而这个map的读写则要加锁。
 
-似乎`Context`接口没有提供方法来设置其值和过期时间，也没有提供方法直接将其自身撤销。也就是说，`Context`不能改变和撤销其自身。那么该怎么通过`Context`传递改变后的状态呢？
+`Context`接口没有提供方法来设置其值和过期时间，也没有提供方法直接将其自身撤销。也就是说，`Context`不能改变和撤销其自身。那么该怎么通过`Context`传递改变后的状态呢？
 
 
 ## context使用
@@ -69,7 +69,7 @@ func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
 func WithValue(parent Context, key interface{}, val interface{}) Context
 ```
 
-函数都接收一个`Context`类型的参数parent，并返回一个Context类型的值，这样就层层创建出不同的节点。子节点是从复制父节点得到的，并且根据接收参数设定子节点的一些状态值，接着就可以将子节点传递给下层的Goroutine了。
+函数都接收一个`Context`类型的参数`parent`，并返回一个`Context`类型的值，这样就层层创建出不同的节点。子节点是从复制父节点得到的，并且根据接收参数设定子节点的一些状态值，接着就可以将子节点传递给下层的Goroutine了。
 
 再回到之前的问题：该怎么通过`Context`传递改变后的状态呢？使用`Context`的Goroutine无法取消某个操作，其实这也是符合常理的，因为这些Goroutine是被某个父Goroutine创建的，而理应只有父Goroutine可以取消操作。在父Goroutine中可以通过WithCancel方法获得一个cancel方法，从而获得cancel的权利。
 
@@ -79,7 +79,7 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 type CancelFunc func()
 ```
 
-调用CancelFunc对象将撤销对应的Context对象，这就是主动撤销Context的方法。在父节点的Context所对应的环境中，通过WithCancel函数不仅可创建子节点的Context，同时也获得了该节点Context的控制权，一旦执行该函数，则节点Context就结束了，则子节点需要类似如下代码来判断是否已结束，并退出该Goroutine：
+调用`CancelFunc`对象将撤销对应的`Context`对象，这就是主动撤销`Context`的方法。在父节点的`Context`所对应的环境中，通过`WithCancel`函数不仅可创建子节点的`Context`，同时也获得了该节点`Context`的控制权，一旦执行该函数，则该节点`Context`就结束了，则子节点需要类似如下代码来判断是否已结束，并退出该Goroutine：
 
 ```
 select {
@@ -90,7 +90,7 @@ select {
 
 `WithDeadline`函数的作用也差不多，它返回的Context类型值同样是`parent`的副本，但其过期时间由`deadline`和`parent`的过期时间共同决定。当`parent`的过期时间早于传入的`deadline`时间时，返回的过期时间应与`parent`相同。父节点过期时，其所有的子孙节点必须同时关闭；反之，返回的父节点的过期时间则为`deadline`。
 
-`WithTimeout`函数与`WithDeadline`类似，只不过它传入的是从现在开始Context剩余的生命时长。他们都同样也都返回了所创建的子Context的命门：一个CancelFunc类型的函数变量。
+`WithTimeout`函数与`WithDeadline`类似，只不过它传入的是从现在开始Context剩余的生命时长。他们都同样也都返回了所创建的子Context的控制权，一个`CancelFunc`类型的函数变量。
 
 当顶层的Request请求函数结束后，我们就可以cancel掉某个context，从而层层Goroutine根据判断`cxt.Done()`来结束。
 
@@ -131,4 +131,4 @@ Programs that use Contexts should follow these rules to keep interfaces consiste
 [3] http://studygolang.com/articles/5131  
 [4] http://blog.csdn.net/sryan/article/details/51969129  
 [5] https://peter.bourgon.org/blog/2016/07/11/context.html  
-[7] http://www.tuicool.com/articles/vaieAbQ  
+[6] http://www.tuicool.com/articles/vaieAbQ  
