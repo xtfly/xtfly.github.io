@@ -61,9 +61,5 @@ pygmentsUseClasses = true
   URL = "/feed.xml"
 
 [[Params.Links]]
-  Name = "My Github"
-  URL = "https://github.com/xtfly"
-
-[[Params.Links]]
   Name = "Archlinux"
   URL = "https://www.archlinux.org/"
