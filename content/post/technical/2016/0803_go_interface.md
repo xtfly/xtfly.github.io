@@ -114,7 +114,7 @@ User does not implement Notifier (Notify method has pointer receiver)
 
 Go语言中的nil在概念上和其它语言的null、None、nil、NULL一样，都指代零值或空值。nil是预先说明的标识符，也即通常意义上的关键字。nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果未遵循这个[规则](http://pkg.golang.org/pkg/builtin/#Type)，则会引发panic。
 
-在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译[Go中error类型的nil值和nil]http://my.oschina.net/chai2010/blog/117923()。
+在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译[Go中error类型的nil值和nil](http://my.oschina.net/chai2010/blog/117923)。
 
 ```
 import (
