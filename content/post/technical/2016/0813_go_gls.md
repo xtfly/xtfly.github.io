@@ -11,7 +11,7 @@ toc: true
 
 ## 背景
 
-最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协徎）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。
+最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称`GoId`）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。
 
 在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。
 
@@ -20,10 +20,10 @@ toc: true
 ThreadLocal的API提供了如下的4个方法：
 
 ```
-T get()
+public T get()
 protected  T initialValue()
-void remove()
-void set(T value)
+public void remove()
+public void set(T value)
 ```
 
  - `T get()`:返回此线程局部变量的当前线程副本中的值，如果这是线程第一次调用该方法，则创建并初始化此副本。
@@ -31,7 +31,7 @@ void set(T value)
  - `void remove()`: 移除此线程局部变量的值。这可能有助于减少线程局部变量的存储需求。如果再次访问此线程局部变量，那么在默认情况下它将拥有其 `initialValue`。
  - `void set(T value)`将此线程局部变量的当前线程副本中的值设置为指定值。许多应用程序不需要这项功能，它们只依赖于`initialValue()`方法来设置线程局部变量的值。
 
-在Go语言中，Google而提供的解决方法是采用[`golang.org/x/net/context`](https://blog.golang.org/context)包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：[理解Go Context机制](/post/technical/2016/0802_go_context/)。`Context`也是能存储Goroutine共享一些数据，但它提供的接口是`WithValue`函数来创建一个新的`Context`对象。
+在Go语言中，而Google提供的解决方法是采用[`golang.org/x/net/context`](https://blog.golang.org/context)包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：[理解Go Context机制](/post/technical/2016/0802_go_context/)。`Context`也是能存储Goroutine一些数据达到共享，但它提供的接口是`WithValue`函数来创建一个新的`Context`对象。
 
 ```
 func WithValue(parent Context, key interface{}, val interface{}) Context {
@@ -51,7 +51,7 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 }
 ```
 
-从上面代码中可以看出，`Context`设置一次Value，就会产生一个`Context`对象，获取Value是先找当前`Context`存储的值，若没有再向父一级查找。获取`Value`可以说是多Goroutine安全的，因为它的接口设计上，是只一个Goroutine**一次**设置`Key/Value`，其它多Goroutine读取`Key`的`Value`。
+从上面代码中可以看出，`Context`设置一次Value，就会产生一个`Context`对象，获取Value是先找当前`Context`存储的值，若没有再向父一级查找。获取`Value`可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine**一次**设置`Key/Value`，其它多Goroutine只能读取`Key`的`Value`。
 
 
 ## 为什么无获取GoId接口
@@ -66,7 +66,7 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 
 > when goroutine goes away, its goroutine local storage won’t be GCed. (you can get goid for the current goroutine, but you can’t get a list of all running goroutines)
 
-不建议使用的`goroutine local storage`的原因是由于不容易GC，虽能获当前的GoId，但不能获取其它的正在的运行的Goroutine。
+不建议使用`goroutine local storage`的原因是由于不容易GC，虽然能获当前的GoId，但不能获取其它正在运行的Goroutine。
 
 > what if handler spawns goroutine itself? the new goroutine suddenly loses access to your goroutine local storage. You can guarantee that your own code won’t spawn other goroutines, but in general you can’t make sure the standard library or any 3rd party code won’t do that.
 
@@ -74,7 +74,7 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 
 > thread local storage is invented to help reuse bad/legacy code that assumes global state, Go doesn’t have legacy code like that, and you really should design your code so that state is passed explicitly and not as global (e.g. resort to goroutine local storage)
 
-TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态的代码。而Go语言建议是重新设计代码，采用显示地传递状态而是采用全局状态（例如采用`goroutine local storage`）。
+TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态的代码。而Go语言建议是重新设计代码，采用显示地传递状态而不是采用全局状态（例如采用`goroutine local storage`）。
 
 
 ## 其它手段获取GoId
@@ -83,7 +83,7 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
 
  - 修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容
 
-    在标准库的`runtime/proc.go`（Go 1.6.3）中`newextram`函数，会产生个GoId：
+    在标准库的`runtime/proc.go`（Go 1.6.3）中的`newextram`函数，会产生个GoId：
     ```
     mp.lockedg = gp
     gp.lockedm = mp
@@ -125,7 +125,7 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
         return n
     }
     ```
-    从文件名就可以看，`runtime/mprof.go`是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack也会导致无法正常获取。
+    从文件名就可以看出，`runtime/mprof.go`是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack信息也会导致无法正常获取GoId。
 
  - 通用`runtime.Callers`来给调用Stack来打标签
 
@@ -137,7 +137,7 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
 
     ```
     // func GoID() int64
-    TEXT s3lib路GoID(SB),NOSPLIT,$0-8
+    TEXT s3lib GoID(SB),NOSPLIT,$0-8
     MOVQ TLS, CX
     MOVQ 0(CX)(TLS*1), AX
     MOVQ AX, ret+0(FP)
@@ -147,7 +147,7 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
 
 ## 开源goroutine local storage实现
 
-只要有机制获取GoId，就可以像Java一样来采用全局的map实现`goroutine local storage`，在Github我搜索一下，发现有两个：
+只要有机制获取GoId，就可以像Java一样来采用全局的map实现`goroutine local storage`，在Github上搜索一下，发现有两个：
 
   - [tylerb/gls](https://github.com/tylerb/gls/)
 
@@ -157,14 +157,14 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
     
     GoId是通用`runtime.Callers`来给调用Stack来打标签
 
-第一个网上在2013年有人测试过性能，数据如下：
+第二个有人在2013年测试过性能，数据如下：
 
 > BenchmarkGetValue 500000 2953 ns/op  
 > BenchmarkSetValues 500000 4050 ns/op
 
 上面的测试结果看似还不错，但`goroutine local storage`实现无外乎是`map+RWMutex`，存在性能瓶颈：
  
- - Goroutine不像Thread，它的个数可以上十万并发，当这个多的Goroutine同时竞争同一把锁时，性能会急剧恶化。
+ - Goroutine不像Thread，它的个数可以上十万并发，当这么多的Goroutine同时竞争同一把锁时，性能会急剧恶化。
  - GoId是通过分析调用Stack的信息来获取，也是一个高成本的调用，一个字：慢。
 
 不管怎么样，没有官方的GLS，的确不是很方便，第三方实现又存在性能与不兼容风险。连`jtolds/gls`作者也贴出其它人的评价：
@@ -181,14 +181,14 @@ TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态�
 Go语言官方认为TLS来存储全局状态是不好的设计，而是要显示地传递状态。Google给的解决方法是[`golang.org/x/net/context`](https://blog.golang.org/context)。
 
 
----
+----
 
 参考：  
 [1] [golang-nuts](https://groups.google.com/forum/#!topic/golang-nuts/Nt0hVV_nqHE)  
 [2] [go-nuts-re-goroutine-local-storage-implementation](http://grokbase.com/p/gg/golang-nuts/13bdh27k5b/go-nuts-re-goroutine-local-storage-implementation)  
 [3] [jtolds/gls](https://github.com/jtolds/gls)  
 [4] [tylerb/gls](https://github.com/tylerb/gls/)  
-[5] [在golang中如何优雅地获取goroutineID？](http://www.zhihu.com/question/39863941/answer/83575802)
+[5] [在golang中如何优雅地获取goroutineID？](http://www.zhihu.com/question/39863941/answer/83575802)  
 
 
 

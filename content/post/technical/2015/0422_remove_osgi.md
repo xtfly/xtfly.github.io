@@ -13,6 +13,7 @@ tags:
 ![osgi](https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg)
 
 #### 什么是OSGi
+
 维基百科：
 
 > OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。

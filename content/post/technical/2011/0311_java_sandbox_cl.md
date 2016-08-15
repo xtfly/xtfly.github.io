@@ -5,10 +5,11 @@ categories:
  - "技术"
 tags:
  - "Java"
+toc: true
 
 ---
 
-#### ClassLoader
+## ClassLoader
 
 JVM类加载器层次结构：
 
@@ -46,7 +47,7 @@ ClassLoader有两种载入类方式：
 
 这个过程就是双亲委托模式，一是可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次；二是出于考虑到安全因素，避免覆盖基础类。例如无法随时使用自定义的String动态替代java核心api中定义String类型。其中第5、6步我们可以通过覆盏ClassLoader的findClass方法来实现自己的载入策略。
 
-#### Thread Context ClassLoader
+## Thread Context ClassLoader
 
 Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每一个线程有一个ContextClassLoader。这个Context ClassLoader是通过方法Thread.setContextClassLoader()设置的，如果当前线程在创建后没有调用这个方法设置Context ClassLoader，则当前线程从他的父线程继承Context ClassLoader。此Context ClassLoader默认的是System ClassLoader。
 
@@ -54,7 +55,7 @@ Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每�
 
 这个机制可以满足当我们的classpath是在运行时才确定，并由定制的ClassLoader加载的时候，由System Loader(即在JVM classpath中)加载的Class可以通过Context ClassLoader获得定制的ClassLoader并加载入特定的ClassLoader（通常是抽象类和接口，定制的ClassLoader中实现），例如web应用中的Servlet就是用这种机制加载的。
 
-#### Class Instance
+## Class Instance
 
 一个java类只有要实例化时，才会被ClassLoader动态载入，未使用并不会载入。而动态载类又分为两种方式：
 
@@ -63,7 +64,7 @@ Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每�
 
 当java类加载时，有一个`Class`类（JRE中基础类）与每个其它的Java类相关，每个被ClassLoader加载的class文件，最终都会以Class类的实例被程序引用，我们可以把`Class`类当作是普通类的一个模板。JVM根据这个模板生成对应的实例，最终被程序所使用。某个类的所有实例内部都有一个栏位记录着该类对应的`Class`的实例位置。java类对应的`Class`实例可以当作是类在内存中的代理者，所以当要获得类的信息（如有哪些类变量，有哪些方法）时，都可以让类对应的`Class`实例代劳。java的Reflection机制就大量的使用这种方法来实现。每个java类都是由某个ClassLoader(ClassLoader的实例)来载入的，因此`Class`类别的实例中都会有栏位记录他的ClassLoader的实例。
 
-#### WebApp Class WhiteList
+## WebApp Class WhiteList
 
 对于WebApp，不管是Web容器采用Jetty还是Tomcat。他们都针对每个WebApp Context自定义ClassLoader。为了能达到白名单检查的功能，我们可能在这个自定义ClassLoader的实现对类进行检查(如不在白名单内的类load时报ClassNotFoundException)。
 
@@ -76,9 +77,10 @@ Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每�
   * 一种方案重载Web容器的WebApp Context自定义ClassLoader.defineClass方法，这要求Web容器支持插件方式替换已有WebApp Context ClassLoader。
 
   * 另一种方案是采用JVM的Instrumentation功能。在JVM级别，以插件的方法动态AOP切入JVM或JRE类中已有的实现。正好Instrumentation提供一种机制切入到每个ClassLoader.defineClass方法之前。应用只需要实现接口java.lang.instrument.ClassFileTransformer。在transform方法实现对类字符码的转换。此方法的原型为
+
     ```
       byte[] transform(ClassLoader loader,  String className,  Class<?> classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException
-      ```
+    ```
 
       转换器ClassFileTransformer利用Instrumentation.addTransformer注册之后，在定义每个新类和重定义每个类时都将调用该转换器。对新的类定义的请求通过ClassLoader.defineClass进行。对类重定义的请求通过Instrumentation.redefineClasses方法进行。转换器是在验证或应用class文件字节之前的处理请求过程中进行调用的。
 
@@ -86,7 +88,7 @@ Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每�
 
 采用第二种方案是不个不错的选择，即使用Instrurnentation功能。在transform方法扫描类的字节码，检查类的方法中是否有非白名单中的类。如果有，则插入抛出NoClassDefFounclError代码。
 
-#### 实现简介
+## 实现简介
 
 1. 定义-个类实现premain接口，做为Instrumentationa机制的入口。并在MANIFEST.MF文件中指定Premain-Class为此类．premain接口如下，顾名思义，它是在main方法之前调用：
 

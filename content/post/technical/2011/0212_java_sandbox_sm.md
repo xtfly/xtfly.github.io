@@ -5,13 +5,13 @@ categories:
  - "技术"
 tags:
  - "Java"
-
+toc: true
 ---
 
 
 在JRE类白名单能控制类的使用权限（[请点击](/post/technical/110311_java_sandbox_cl)），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。
 
-#### Security Manager
+## Security Manager
 
 Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（`SecurityManager`）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
 
@@ -19,7 +19,7 @@ Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种
 
 但`SecurityManager`也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。
 
-#### 检查Permission时机
+## 检查Permission时机
 
 所以在设计方案时必须考虑对WebApp进行的资源授权只针对WebApp，不能影响Web容器其它代码运行。由于检查权限是通过`SecurityManager.checkPermission(Permission perm)`来完成的，如果在`checkPermission`实现很复杂的逻辑会对性能造成影响。所以需要分二个层次来设计Security Manager的设置：
 
@@ -43,7 +43,7 @@ Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种
 
 同样，在Filter的init方法也就可以对`CustomSecurityManager`注册到系统全局的`SecurityManager`中。
 
-#### 自定义Permission
+## 自定义Permission
 
 配置WebApp安全策略的`Permission`，可以基于Policy文件配置，以不同的CodeBase来区分不同的权限。由于配置Policy文件时，并不知道WebApp war包解压的具体目录。以Jetty为例，默认会把War解压在java.io.tmpdir目录下，那对WebApp的CodeBase可设置为java.io.tmpdir，否则根据部署实际目录来调整。
 

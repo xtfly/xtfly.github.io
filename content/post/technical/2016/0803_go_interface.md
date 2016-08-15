@@ -13,7 +13,7 @@ toc: true
 
 ## 概述
 
-Go语言中的[接口](http://golang.org/doc/effective_go.html#interfaces)很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组[方法的集合](http://golang.org/ref/spec#Method_sets)，所有方法为[接口类型](http://golang.org/ref/spec#Interface_types)就被认为是该接口。从定义上来看，接口有两个特点:
+Go语言中的[接口](http://golang.org/doc/effective_go.html#interfaces)很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组[方法的集合](http://golang.org/ref/spec#Method_sets)，要有方法为[接口类型](http://golang.org/ref/spec#Interface_types)就被认为是该接口。从定义上来看，接口有两个特点:
 
  * 接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C++/Java中的接口，后者仅用于声明方法签名。
  * 接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。

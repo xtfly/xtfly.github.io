@@ -52,7 +52,7 @@ type Context interface {
 无论是Goroutine，他们的创建和调用关系总是像层层调用进行的，就像人的辈分一样，而更靠顶部的Goroutine应有办法主动关闭其下属的Goroutine的执行（不然程序可能就失控了）。为了实现这种关系，Context结构也应该像一棵树，叶子节点须总是由根节点衍生出来的。
 
 
-要创建Context树，第一步就是要得到根节点，context.Background函数的返回值就是根节点：
+要创建Context树，第一步就是要得到根节点，`context.Background`函数的返回值就是根节点：
 
 ```
 func Background() Context
@@ -98,7 +98,7 @@ select {
 
 ### 小结
 
-`context`包通过构建树型关系的Context，来达到上一层Goroutine能对传递给下一层Goroutine的控制。对于处理一个Request请求操作，须要采用`context`来层层控制Goroutine，以及传递一些变量来共享。
+`context`包通过构建树型关系的Context，来达到上一层Goroutine能对传递给下一层Goroutine的控制。对于处理一个Request请求操作，需要采用`context`来层层控制Goroutine，以及传递一些变量来共享。
 
 * Context对象的生存周期一般仅为一个请求的处理周期。即针对一个请求创建一个Context变量（它为Context树结构的根）；在请求处理结束后，撤销此ctx变量，释放资源。
 
