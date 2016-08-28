@@ -104,6 +104,3 @@ Go语言可能不是每一条都是No.1，但却是目前同时具备上述全�
 [4] [说说Golang的使用心得](http://studygolang.com/articles/2405)  
 [5] [go语言设计哲学](http://studygolang.com/articles/2944)  
 [6] [少即是极多 - Go 语言设计理念](http://www.oschina.net/news/30754/less-is-more-go-language)  
-
-
-

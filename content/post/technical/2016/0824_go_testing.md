@@ -207,21 +207,13 @@ Go语言内置了测试框架，编写单元测试非常方便。
 ## 测试执行
 
 - 在某一包下执行测试: `go test`
-
 - 执行指定的包测试: `go test $pkg_in_gopath` 
-
 - 执行某一目录下以及子目录下所有测试: `go test $pkg_in_gopath/...`
-
 - 执行包下某一些用例: `go test -run=xxx`，`-run`参数支持使用正则表达式来匹配要执行的功能测试函数名
-
 - 执行包下性能测试: `go test -bench=.`
-
 - 查看性能测试时的内存情况: `go test -bench=. -benchmem`
-
 - 查看每个函数的执行结果: `go test -v`
-
 - 查看覆盖率: `go test -cover`
-
 - 输出覆盖率到文件: 增加参数`-coverprofile`，并使用`go tool cover`来查看，用法请参考`go tool cover -help`
 
 ## 测试工具
@@ -231,17 +223,11 @@ Go语言内置了测试框架，编写单元测试非常方便。
 `testing/iotest`包中实现了常用的出错的Reader和Writer:
 
 * 触发数据错误dataErrReader，通过DataErrReader()函数创建
-
 * 读取一半内容的halfReader，通过HalfReader()函数创建
-
 * 读取一个byte的oneByteReader，通过OneByteReader()函数创建
-
 * 触发超时错误的timeoutReader，通过TimeoutReader()函数创建
-
 * 写入指定位数内容后停止的truncateWriter，通过TruncateWriter()函数创建
-
 * 读取时记录日志的readLogger，通过NewReadLogger()函数创建
-
 * 写入时记录日志的writeLogger，通过NewWriteLogger()函数创建
 
 ### HTTP测试
@@ -249,7 +235,6 @@ Go语言内置了测试框架，编写单元测试非常方便。
 `net/http/httptest`包提供了HTTP相关代码的测试工具
 
 * `httptest.Server`用来构建临时的Server，测试发送与接收HTTP请求
-
 * `httptest.ResponseRecorder`用来记录应答
 
 ### 黑盒测试
@@ -281,11 +266,8 @@ Go语言内置了测试框架，编写单元测试非常方便。
 [stretchr/testify](github.com/stretchr/testify)是个人觉得目前最好的测试框架，相比标准库中`testing`包支持如下特性：
 
 * [Easy assertions](https://github.com/stretchr/testify/blob/master/README.md#assert-package)
-
 * [Mocking](https://github.com/stretchr/testify/blob/master/README.md#mock-package)
-
 * [HTTP response trapping](https://github.com/stretchr/testify/blob/master/README.md#http-package)
-
 * [Testing suite interfaces and functions](https://github.com/stretchr/testify/blob/master/README.md#suite-package)
 
 
