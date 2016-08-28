@@ -1,7 +1,7 @@
 title =  "蘭陵N散記"
-languageCode = "zh-CN"
+languageCode = "zh_CN"
 baseurl = "http://lanlingzi.cn/"
-theme =  "pacman"
+theme =  "next"
 MetaDataFormat =  "yaml"
 canonifyurls =  true
 builddrafts =  false
@@ -9,7 +9,7 @@ PaginatePath =  "p"
 Paginate = 10
 RSSUri =  "feed.xml"
 disablePathToLower =  false
-hasCJKLanguage =  true
+hasCJKLanguage = true
 preserveTaxonomyNames = false
 uglyurls = false
 pygmentsStyle = "default"
@@ -17,16 +17,16 @@ pygmentsUseClasses = true
 
 [Params]
   AuthorHomepage = "http://lanlingzi.cn/"
-  BottomIntroduce = "Hello ,I'm a Programmer&Architect in Shenzhen. <br/>I'll share something interesting and awesome with you at this blog."
+  Introduce = "Programmer & Architect"
   Description = "韶华易逝，往昔不再"
   Keywords =  "蘭陵N散記,兰陵,独立博客,程序员,架构师,个人思考,读书笔记,技术分享,Golang"
   Subtitle = "一指流沙，程序年华"
-  GitHub = "xtfly"
-  Imglogo = "img/logo.png"
-  AuthorImg = "img/author.jpg"
-  DateFormat = "2006年01月02日"
+  Imglogo = "/img/logo.png"
+  AuthorImg = "/img/author.jpg"
+  DateFormat = "2006-01-02"
   YearFormat = "2006年"
-  FancyBox = true
+  MonthFormat = "01-02"
+  BaiduStatsId = "0b07433b4ab8d587dae7d34e71973839"
 
 [Author]
   Name = "兰陵子"
@@ -36,30 +36,57 @@ pygmentsUseClasses = true
 
 [Params.Strings]
   Search = "搜索"
-  PageNotFound = "你访问的页面不存在"
-  ShowSideBar = "显示侧边栏"
-  HideSideBar = "隐藏侧边栏"
   Categories = "分类"
   Archive = "归档"
   Tags = "标签"
-  TagCloud = "标签云"
   Rss = "RSS 订阅"
-  TableOfContents = "文章目录"
+  Toc = "文章目录"
+  SiteInfo = "站点概览"
   Links = "友情链接"
+  Blog = "日志"
 
 [[Menu.Main]]
   Name = "首页"
   URL = "/"
+  Weight = 0
+  Pre = "home"
+[[Menu.Main]]
+  Name = "技术"
+  Pre = "code"
+  URL = "/categories/技术/"
   Weight = 1
 [[Menu.Main]]
-  Name = "关于"
+  Name = "感想"
+  Pre = "tint"
+  URL = "/categories/感想/"
   Weight = 2
-  URL = "/about/"
 [[Menu.Main]]
-  Name = "订阅"
-  Weight = 3
-  URL = "/feed.xml"
+  Name = "笔记"
+  Pre = "book"
+  URL = "/categories/笔记/"
+  Weight = 4
+[[Menu.Main]]
+  Name = "杂记"
+  Pre = "leaf"
+  URL = "/categories/杂记/"
+  Weight = 5
+[[Menu.Main]]
+  Name = "归档"
+  Pre = "archive"
+  URL = "/post/"
+  Weight = 6
+[[Menu.Main]]
+  Name = "关于"
+  Pre = "user"
+  URL = "/about/"
+  Weight = 7
 
-[[Params.Links]]
-  Name = "Archlinux"
-  URL = "https://www.archlinux.org/"
+[[Params.Socials]]
+  Name = "GitHub"
+  Icon = "github"
+  URL = "https://github.com/xtfly/"
+
+[[Params.Socials]]
+  Name = "知乎"
+  Icon = "globe"
+  URL = "https://www.zhihu.com/people/lan-ling-xin-yun"  
