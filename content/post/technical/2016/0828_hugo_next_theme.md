@@ -37,7 +37,7 @@ toc: true
 
 这个NexT主题是使用Hugo的模板语法，从零开始，经过差不多一天的时间折腾才完工。目前也应用到了我现在的这个Blog上，看起来还行:)。若有需要的朋友尽管拿去使用，有问题欢迎反馈。
 
-GitHub地址：https://github.com/xtfly/hugo-theme-next
+GitHub地址：https://github.com/xtfly/hugo-theme-next
 
 由于Hugo的模版引擎和Hexo有区别，部分Hexo的样式或功能暂时无法实现，它还没有像Hexo NexT那样能高度地配置定制。并且它也仅仅在自己的Blog简单测试过，可能并不一定完全适合您的定制，您可以根据需求调整。
 
