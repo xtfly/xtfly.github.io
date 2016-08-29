@@ -31,8 +31,9 @@ pygmentsUseClasses = true
 [Author]
   Name = "兰陵子"
 
-[Params.DuoShuo]
-  ShortName = "lanlingzi"
+[Params.Share]
+  #DuoShuo = "lanlingzi"
+  Baidu = ""
 
 [Params.Strings]
   Search = "搜索"

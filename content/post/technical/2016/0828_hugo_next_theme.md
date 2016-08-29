@@ -12,11 +12,13 @@ toc: true
 
 ## 概述
 
-我应该是一个喜欢折腾的技术党。从采用Hugo建静态blog以来，我的主题算上今天移植的这个，一共有三个：
+我应该是一个喜欢折腾的技术党。从采用Hugo建静态blog以来，算上今天移植的这个，一共使用了三个主题：
 
-第一个是修改自[Hueman](http://blog.coderzh.com/)，它是一个Wordpress主题。第二个是修改自[pacman](http://coderzh.github.io/hugo-pacman-theme/)，它是一个Hexo的主题。这二个主题都是[coderzh](http://blog.coderzh.com/)最早移植的，我只是在其上修改些布局，f增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。第三个则是从零开始，完全移植Github上人气最高的Hexo主题：[NexT](https://github.com/iissnan/hexo-theme-next/)。
+第一个是修改自[Hueman](http://blog.coderzh.com/)，它是一个Wordpress主题。第二个是修改自[pacman](http://coderzh.github.io/hugo-pacman-theme/)，它是一个Hexo的主题。
 
-正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
+这二个主题都是[coderzh](http://blog.coderzh.com/)最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。
+
+第三个则是从零开始，移植Github上人气最高的Hexo主题：[NexT](https://github.com/iissnan/hexo-theme-next/)。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
 
 ## 功能
 
@@ -45,4 +47,4 @@ GitHub地址：https://github.com/xtfly/hugo-theme-next
 
 由于Hugo的`.Summary`只有70个字符，对于中文文章来说，实在是太短了。原本是想采用`<!--more-->`来自定义，但花了一个下午没有成功。最后还是直接修改Summary的字符长度重新编译Hugo。若你同样觉得太短，也不妨也采用此方式。
 
-
+---
