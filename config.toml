@@ -7,7 +7,6 @@ canonifyurls =  true
 builddrafts =  false
 PaginatePath =  "p"
 Paginate = 8
-RSSUri =  "feed.xml"
 disablePathToLower =  false
 hasCJKLanguage = true
 preserveTaxonomyNames = false
@@ -16,7 +15,6 @@ pygmentsStyle = "default"
 pygmentsUseClasses = true
 
 [Params]
-  AuthorHomepage = "http://lanlingzi.cn/"
   Introduce = "Programmer & Architect"
   Description = "韶华易逝，往昔不再"
   Keywords =  "蘭陵N散記,兰陵,独立博客,程序员,架构师,个人思考,读书笔记,技术分享,Golang"
