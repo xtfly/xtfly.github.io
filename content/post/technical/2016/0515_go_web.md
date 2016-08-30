@@ -18,7 +18,7 @@ toc: true
 ### Request结构体
 
 封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
-
+<!--more-->
   ```
   type Request struct {
       Method string

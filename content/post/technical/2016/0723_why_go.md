@@ -20,7 +20,7 @@ Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的
  * 包管理吸取自Java（package, import）
  * 多态吸取自Python与Ruby(duck type)
  * 并发吸取自[Limbo](http://doc.cat-v.org/inferno/4th_edition/limbo_language/)([CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes)模型)。
-
+<!--more-->
 同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：
 
  * 面向过程（if，switch，for...)
