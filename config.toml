@@ -11,7 +11,7 @@ disablePathToLower =  false
 hasCJKLanguage = true
 preserveTaxonomyNames = false
 uglyurls = false
-pygmentsStyle = "default"
+pygmentsStyle = "monokai"
 pygmentsUseClasses = true
 
 [Params]
