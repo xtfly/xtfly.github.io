@@ -15,7 +15,7 @@ toc: true
 
 在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。
 
-在Java中，JDK库提供`Thread.getThread()`来获取当前线程对象，提供`ThreadLocal`来存储与获取线程局部变量。由于Java能通过`Thread.getThread()`获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
+在Java中，JDK库提供`Thread.CurrentThread()`来获取当前线程对象，提供`ThreadLocal`来存储与获取线程局部变量。由于Java能通过`Thread.CurrentThread()`获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
 <!--more-->
 ThreadLocal的API提供了如下的4个方法：
 

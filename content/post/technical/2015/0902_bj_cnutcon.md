@@ -19,11 +19,11 @@ toc: true
 
 Docker是这这两年成长最快的技术，受到资本市场的热捧。Docker技术以势不可挡地席卷全球。参考这次大会，整体感受是：
 
-  - Docker已不再是概念，已进入互联网企业的实际生产环境中
-  - Docker的创业公司多，有远见的想在这次的浪潮中分享红利
-  - 大公司借Docker东风，亦想在云计算领域中拿下更多话语权
-  - 容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
-
+ - Docker已不再是概念，已进入互联网企业的实际生产环境中
+ - Docker的创业公司多，有远见的想在这次的浪潮中分享红利
+ - 大公司借Docker东风，亦想在云计算领域中拿下更多话语权
+ - 容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
+<!--more-->
 ## 看国外
 
 这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。
@@ -36,15 +36,15 @@ Docker是这这两年成长最快的技术，受到资本市场的热捧。Docke
 
 第二天的来自国外的分享，有Google的华人美女工程师分享了“Kubernetes和Borg的设计哲学”。这一场还是不错的，虽也是比较High Level的介绍，不过让我这种屌丝有机会了解一下Google十多年前就开始的容器管理理论，感觉是真是简单实用：
 
-  - declarative > imperative
-  - Control loops
-  - Simple > Complex
-  - Modularity
-  - Legacy compatible
-  - Network-centric
-  - No grouping
-  - Cattle > Pets
-  - Open > Closed
+ - declarative > imperative
+ - Control loops
+ - Simple > Complex
+ - Modularity
+ - Legacy compatible
+ - Network-centric
+ - No grouping
+ - Cattle > Pets
+ - Open > Closed
 
 再次是来自Rancher Labs的秦总分享的“Rancher Labs 企业级私有容器服务平台解决方案分析”，并且他还跟我一起在现场的另外一个同事是之前的同事。干货比较多，演讲者虽说不懂技术，但Rancher给我带来是思维，尤其是后面介绍的“RancherOS”，在会场没有听太明白什么是“Dockerized OS”，后面查询一些资料，发现它除了内核之后，PID1就是Docker，其它的系统服务都Dockerized，并且在发行包的大小做到了极致，只有20M。能把Linux的系统服务通过Docker容器来管理，不得不说这这一项不错的创意，如果能实现应用在生产中，这不知又会对Linux产生什么样的深远影响。
 
