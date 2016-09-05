@@ -109,7 +109,7 @@ func main() {
 上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：
 
 - Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。
-- Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当被同个指针同一个make创建的或同为nil时才相等
+- Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等
 - Interface values are comparable. Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil.从上面的例子我们可以看出，当接口有相同的动态类型并且有相同的动态值，或者值为都为nil时相等。要注意的是：参考[理解Go Interface](/post/technical/2016/0803_go_interface/)
 - A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. They are equal if t's dynamic type is identical to X and t's dynamic value is equal to x.如果一个是非接口类型X的变量x，也实现了接口T，与另一个接口T的变量t，只t的动态类型也是类型X，并且他们的动态值相同，则他们相等。
 - Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal.结构体当所有字段的值相同，并且没有 相应的非空白字段时，则他们相等，
@@ -209,7 +209,7 @@ mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序�
 
 1. 调用`key`类型的`hash`方法，计算出`key`的`hash`值
 2. 根据`hash`值找到对应的桶`bucket`
-3. 在桶找到`key`值相等的map的`value`。判断相等需调用`key`类型的`equal`方法
+3. 在桶中找到`key`值相等的map的`value`。判断相等需调用`key`类型的`equal`方法
 
 到现在我们也就有了初步了解，map中的`key`访问时同时需要使用该类型的`hash func`与 `equal func`，只要`key`值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：
 
