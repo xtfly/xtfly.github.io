@@ -164,4 +164,4 @@ void test_new_delete()
 ```
 
  ---------------------------------------
- >测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要#include\<new\>，使用#include\<stdlib.h\>会导致编译不过，因为in-place construtor是C++中的新玩意。
+ >测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要`#include<new>`，使用`#include<stdlib.h>`会导致编译不过，因为`in-place construtor`是C++中的新玩意。

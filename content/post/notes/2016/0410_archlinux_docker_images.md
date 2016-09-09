@@ -13,6 +13,7 @@ tags:
 
 正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本[mkimage-arch.sh](https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh)，于是把它做了些改造，制作过程记录一下：
 <!--more-->
+
   * 源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。
   * 默认安装`openssh`软件，可以通过ssh来连接Container。
   * 增加一个入口脚本`run.sh`，在此脚本主配置`sshd`，并启动`sshd`。

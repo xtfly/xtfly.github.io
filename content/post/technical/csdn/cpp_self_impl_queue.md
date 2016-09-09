@@ -10,7 +10,8 @@ tags:
 
 周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
 
-##### 顺序存储实现：
+## 顺序存储实现：
+
 ```
 template<typename T, size_t SIZE>  
 class Queue  
@@ -83,7 +84,8 @@ private:
 };  
 ```
 
-##### 链表存储实现：
+## 链表存储实现：
+
 ```
 template<typename T>  
 struct QNode  
@@ -185,7 +187,8 @@ private:
 };  
 ```
 
-##### 测试代码：
+## 测试代码：
+
 ```
 void print_queue(int& a)  
 {  

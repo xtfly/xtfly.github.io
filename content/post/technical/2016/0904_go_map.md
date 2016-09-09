@@ -84,7 +84,8 @@ func main() {
 	fmt.Println("point{} == point{}: ", point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
 	fmt.Println("&point{} == &point{}: ", &point{x: 1, y: 2} == &point{x: 1, y: 2}) // output: false
 
-	fmt.Println("[2]point{} == [2]point{}: ", [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
+	fmt.Println("[2]point{} == [2]point{}: ", 
+	  [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
 
 	var a Sumer = &pair{x: 1, y: 2}
 	var a1 Sumer = &pair{x: 1, y: 2}

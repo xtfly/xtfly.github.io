@@ -13,6 +13,7 @@ tags:
 
 万万没想到，在即将迎来2016年时，微信，科技新闻中都在传[“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”](http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009)。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
 <!--more-->
+
 30日Debian社区正式发表了悼念声明如下：
 
 > 我们怀着沉重地心情哀悼刚刚离我们而去的 Ian Murdock，开源软件的坚定支持者，父亲，儿子，和 Debian 中的 "ian"。

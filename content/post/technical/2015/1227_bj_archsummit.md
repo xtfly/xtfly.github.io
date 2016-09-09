@@ -8,7 +8,7 @@ tags:
  - "软件架构"
  - "软件开发"
  - "北京"
-
+toc: true
 ---
 
 ![ArchSummit](http://q.infoqstatic.com/ASSZ2015/LOGO/AS-LOGO358x146.png)

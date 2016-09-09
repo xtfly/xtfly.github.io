@@ -14,6 +14,7 @@ tags:
 
 安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
 <!--more-->
+
 我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。
 
 	# grub-install --target=i386-pc --recheck /dev/sda

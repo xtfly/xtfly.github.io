@@ -6,7 +6,7 @@ categories:
 tags:
  - "Markdown"
  - "Slide"
- 
+toc: true
 ---
 
 ## 背景
@@ -15,6 +15,7 @@ tags:
 
 Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。
 <!--more-->
+
 ## Pandoc
 
 [Pandoc](http://pandoc.org/) 则是一款非常优秀的开源文本格式转化神器。Markdown转换为HTML Slide也自然不在话下。Pandoc是由Haskell开发，Pandoc作者John MacFarlane一位来自美国加州大学伯克利分校的哲学教授。Haskell是一种函数式编程语言。而文本格式转换，看似简单，其实非常麻烦。Haskell干这脏活、累活的最恰当选择，Pandoc也的确成功了，并已成功在短期内构建一个完整的生态链。

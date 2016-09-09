@@ -7,7 +7,7 @@ tags:
  - "Java"
  - "OSGi"
  - "软件开发"
-
+toc: true
 ---
 
 ![osgi](https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg)
