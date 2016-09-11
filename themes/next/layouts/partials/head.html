@@ -8,8 +8,9 @@
     {{ if .Keywords }}<meta name="keywords" content="{{ range .Keywords }}{{ . }},{{ end }}">
     {{ else }}<meta name="keywords" content="{{ .Site.Params.Keywords }}">{{ end }}
     {{ with .Site.Author.Name }}<meta name="author" content="{{ . }}">{{ end }}
-    <meta itemprop="name" content="{{ if ne .URL " / " }}{{ .Title }} - {{ end }}{{ .Site.Title }}">
-    <meta itemprop="image" content="/img/author.jpg"> 
+    <meta property="og:title" content="{{ if ne .URL " / " }}{{ .Title }}{{else}}{{ .Site.Title }}{{end}}">
+    <meta property="og:site_name" content="{{ .Site.Title }}">
+    <meta property="og:image" content="/img/author.jpg"> 
     <meta name="title" content="{{ if ne .URL " / " }}{{ .Title }} - {{ end }}{{ .Site.Title }}" />
     {{ with .Description }}<meta name="description" content="{{ . }}" />
     {{ else }}<meta name="description" content="{{ .Site.Params.Description }}">{{ end }} 

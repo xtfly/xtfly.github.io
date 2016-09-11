@@ -16,7 +16,7 @@ pygmentsUseClasses = true
 
 [Params]
   Introduce = "Programmer & Architect"
-  Description = "韶华易逝，往昔不再"
+  Description = "蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"
   Keywords =  "蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang"
   Subtitle = "一指流沙，程序年华"
   Imglogo = "/img/logo.png"
