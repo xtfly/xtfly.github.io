@@ -11,6 +11,7 @@ toc: true
 ---
 
 最近国庆某东活动，搞了一台HP的笔记本，系统是Win10，经过不断地折腾。在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
+<!--more-->
 
 ## WSL
 
