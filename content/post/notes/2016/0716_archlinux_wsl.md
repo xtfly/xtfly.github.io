@@ -10,20 +10,20 @@ toc: true
 
 ---
 
-最近国庆某东活动，搞了一台HP的笔记本，系统是Win10，经过不断地折腾。在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
+最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
 <!--more-->
 
 ## WSL
 
-Windows Subsystem for Linux是一个为在Windows 10上能够原生运行 Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的 Linux 兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：
+Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：
 
- - 用户模式会话管理器服务，处理Linux实例的生命周期
- - Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核
- - 承载未经修改的用户模式Linux的Pico进程，例如/bin/bash
+ - 用户模式会话管理器服务，处理Linux实例的生命周期；
+ - Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核；
+ - 承载未经修改的用户模式Linux的Pico进程，例如/bin/bash。
 
-生在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。
+在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。
 
-Bash on Ubuntu on Windows就是WSL 的具体应用。它是由微软与 Canonical 公司合作开发，目标是使纯正的 Ubuntu 14.04映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。
+Bash on Ubuntu on Windows就是WSL的具体应用。它是由微软与Canonical公司合作开发，目标是使纯正的 Ubuntu 14.04镜像能下载和解压到用户的本地计算机，并且镜像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。
 
 ## Bash on Ubuntu on Windows
 
@@ -35,7 +35,7 @@ Bash on Ubuntu on Windows就是WSL 的具体应用。它是由微软与 Canonica
 
 由于需要下载Ubuntu需要从应用商店下载，在天朝的网络，可能会比较慢，甚至会连接不上，我就折腾好久。并且它居然没有断点续传，好几次下载到70%多，就断开了，真让人受不了。
 
-由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools 工具，所以先把Ubuntu的更新源替换成国内的，比如[mirrors.163.com/ubuntu](http://mirrors.163.com/.help/ubuntu.html)或[mirrors.aliyun.com/ubuntu](http://mirrors.aliyun.com/help/ubuntu)。
+由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools工具是用于解压sfs文件的，所以先把Ubuntu的更新源替换成国内的，比如[mirrors.163.com/ubuntu](http://mirrors.163.com/.help/ubuntu.html)或[mirrors.aliyun.com/ubuntu](http://mirrors.aliyun.com/help/ubuntu)。
 
 	$ sudo apt-get update
 	$ sudo apt-get install squashfs-tools
@@ -43,9 +43,9 @@ Bash on Ubuntu on Windows就是WSL 的具体应用。它是由微软与 Canonica
 ## Archlinux on WSL
 
 
-首先从<<http://mirrors.aliyun.com/archlinux/iso/latest/>>下载最新的ArchISO。
+首先从<http://mirrors.aliyun.com/archlinux/iso/latest/>下载最新的ArchISO。
 
-从 ArchISO 中提取出 /arch/x86_64/airoot.sfs 文件放在 Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。
+从ArchISO中提取出/arch/x86_64/airoot.sfs文件放在Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。
 
 在Ubuntu中把airoot.sfs解压，建议在当前Ubuntu的用户Home目录下执行：
 
