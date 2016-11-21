@@ -27,7 +27,7 @@ npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 
 
 ## go get
 
-Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Golang这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。
+Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。并且它支持根据import package分析来递归拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Go这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。
 
 当然，go get命令，仍然过于简单。对于现实过程中的开发者来说，仍然有其痛苦的地方：
 
@@ -44,7 +44,7 @@ Go对包管理一定有自己的理解。对于包的获取，就是用go get命
 
 好在开源的力量就是大，Go官方没有想清楚的版本管理问题，社区就会有人来解决，我们已经可以找到许多不错的解决方案，不妨先参考下[官方建议](https://github.com/golang/go/wiki/PackageManagementTools)。
 
-## vendor机制
+## vendor
 
 vendor是1.5引入为体验，1.6中正式发布的依赖管理特性。Go团队在推出vendor前已经在Golang-dev group上做了长时间的调研。最终Russ Cox在[Keith Rarick](https://github.com/kr)的proposal的基础上做了改良，形成了Go 1.5中的vendor:
 
@@ -73,7 +73,7 @@ vendor是1.5引入为体验，1.6中正式发布的依赖管理特性。Go团队
 
 vendor机制看似像node.js的node_modules，支持嵌套vendor，若一个工程中在着两个版本的相的包，可以放在不同的层次的vendor下：
 
- - 优点：可能解决不同的版本依赖冲突问题，不同的层次的vendor存放在不同的vendor。
+ - 优点：可能解决不同的版本依赖冲突问题，不同的层次的vendor存放在不同的依赖包。
  - 缺点：由于go的package是以路径组织的，在编译时，不同层次的vendor中相同的包会编译两次，链接两份，程序文件变大，运行期是执行不同的代码逻辑。会导致一些问题，如果在package init中全局初始化，可能重复初化出问题，也可能初化为不同的变量（内存中不同），无法共享获取。像之前我们遇到gprc类似的问题就是不同层次的相同package重复init导致的，见[社区反馈](https://github.com/grpc/grpc-go/issues/566)。
 
 所以Russ Cox期望大家良好设计工程布局，作为lib的包**不携带vendor更佳 ，一个project内的所有vendor都集中在顶层vendor里面。**
