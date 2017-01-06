@@ -10,7 +10,7 @@ tags:
 toc: true
 ---
 
-随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative Application概念，Netflix的应用也认为目前最为成功的CloudNative Application（参考[Cloud Native at Netflix](http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst)）。那什么是CloudNative Application？
+随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考[Cloud Native at Netflix](http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst)）。那什么是CloudNative？
 
 ## 概念
 
@@ -26,7 +26,7 @@ toc: true
  - Self service，自服务
  - Incrementally deployed and tested， 增量的部署与测试
 
-CloudNativ系统的效果： Better utilization of resources, faster provisioning, better governace。
+CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。
 
 在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对[CloudNative新的定义](https://www.infoq.com/presentations/migration-cloud-microservices)：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：
 
@@ -57,7 +57,7 @@ CloudNative背后的软件架构需求：
  - 全面解耦合
  - 系统自服务
  - 支持多租户
- - 异构公有去
+ - 异构公有云
  - 应用快速上线
  - 按特性持续演进
 
