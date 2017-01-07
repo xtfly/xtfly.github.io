@@ -34,7 +34,7 @@ CloudNative系统的效果： Better utilization of resources, faster provisioni
  - 原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织
  - 特点：Public Cloud，基于公有云； Mirco-services，微服务；De-normalized data，反范式化数据；Chaos Engines，混沌引擎；Continues Deployment，持续部署；DevOps等等
 
-在2015年，Pivotal的产品经理Matt Stine又对[CloudNative关键架构特征]((http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine)进行补充：
+在2015年，Pivotal的产品经理Matt Stine又对[CloudNative关键架构特征](http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine)进行补充：
 
  - [Twelve Factor App](https://12factor.net/)，十二因子应用
  - Mirco-services，微服务
@@ -53,13 +53,13 @@ CloudNative系统的效果： Better utilization of resources, faster provisioni
 CloudNative背后的软件架构需求：
   
  - 按需特性的伸缩
+ - 按特性持续演进
+ - 应用快速上线
  - 系统的高用性
  - 全面解耦合
  - 系统自服务
  - 支持多租户
  - 异构公有云
- - 应用快速上线
- - 按特性持续演进
 
 ---------
 参考：   
