@@ -1,6 +1,6 @@
 title =  "蘭陵N散記"
 languageCode = "zh_CN"
-baseurl = "https://lanlingzi.cn/"
+baseurl = "http://lanlingzi.cn/"
 theme =  "next"
 MetaDataFormat =  "yaml"
 canonifyurls =  true
