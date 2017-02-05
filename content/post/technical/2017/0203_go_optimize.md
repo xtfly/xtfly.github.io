@@ -4,7 +4,7 @@ date: "2017-02-03"
 categories:
  - "技术"
 tags:
- - "golang"
+ - "go"
  - "软件开发"
 toc: true
 ---

@@ -1,18 +1,19 @@
-title =  "蘭陵N散記"
-languageCode = "zh_CN"
-baseurl = "http://lanlingzi.cn/"
-theme =  "next"
+Title =  "蘭陵N散記"
+LanguageCode = "zh-CN"
+BaseUrl = "http://lanlingzi.cn/"
+Theme =  "next"
 MetaDataFormat =  "yaml"
-canonifyurls =  true
-builddrafts =  false
+CanonifyUrls =  true
+BuildDrafts =  false
 PaginatePath =  "p"
 Paginate = 8
-disablePathToLower =  false
-hasCJKLanguage = true
-preserveTaxonomyNames = false
-uglyurls = false
-pygmentsStyle = "monokai"
-pygmentsUseClasses = true
+DisablePathToLower =  false
+HasCJKLanguage = true
+PreserveTaxonomyNames = false
+UglyUrls = false
+PygmentsStyle = "monokai"
+PygmentsUseClasses = true
+DefaultContentLanguage = "zh"
 
 [Params]
   Introduce = "Programmer & Architect"
@@ -35,22 +36,11 @@ pygmentsUseClasses = true
   #DuoShuo = "lanlingzi"
   Baidu = true
 
-[Params.Strings]
-  Search = "搜索"
-  Categories = "分类"
-  Archive = "归档"
-  Tags = "标签"
-  Rss = "RSS 订阅"
-  Toc = "文章目录"
-  SiteInfo = "站点概览"
-  Links = "友情链接"
-  Blog = "日志"
-
 [[Menu.Main]]
   Name = "首页"
+  Pre = "home"
   URL = "/"
   Weight = 0
-  Pre = "home"
 [[Menu.Main]]
   Name = "技术"
   Pre = "code"
