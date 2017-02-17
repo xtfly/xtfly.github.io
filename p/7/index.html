@@ -1,0 +1,859 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta name="generator" content="Hugo 0.18.1" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>蘭陵N散記 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="蘭陵N散記">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="蘭陵N散記 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="alternate" href="http://lanlingzi.cn/index.xml" title="蘭陵N散記" type="application/rss+xml" />
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item menu-item-active">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />技术
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />感想
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />笔记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-leaf"></i> <br />杂记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+    </ul>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+    
+ <section id="posts" class="posts-expand">
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" itemprop="url">
+        架构重构
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-05-12">
+    2015-05-12
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1840 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。</p>
+
+<h2 id="什么是重构">什么是重构</h2>
+
+<blockquote>
+<p>重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。</p>
+</blockquote>
+
+<p>这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：</p>
+
+<ul>
+<li>局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。</li>
+<li>模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。</li>
+
+<li><p>架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/" itemprop="url">
+        OSGi的缘起缘灭
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-04-22">
+    2015-04-22
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1953 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi" /></p>
+
+<h2 id="什么是osgi">什么是OSGi</h2>
+
+<p>维基百科：</p>
+
+<blockquote>
+<p>OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。</p>
+</blockquote>
+
+<p>我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。</p>
+
+<p>2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2014/0901_soft_dev_dt_trace/" itemprop="url">
+        软件开发中缺陷管理
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2014-09-01">
+    2014-09-01
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1639 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>在我司，我发现大家很擅长把一个东西到极致，但极致可能是过犹不及了，例如测试并不是发现越来越多的Bug就越好，如果把很多的时间消耗到一些不重要的点，反而不可取，软件只要你去测试，怎能发现一些Bug，如要面对这些就非常纠结。作一名开发，说这话肯定会被一批的测试人员拍砖死了。在此表达一下不同的观点，不一定正确，请轻拍。</p>
+
+<p>在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2014/0901_soft_dev_dt_trace/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2014/0804_soft_dev_tcm_theory/" itemprop="url">
+        软件开发与中医理论
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2014-08-04">
+    2014-08-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1143 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2014/0804_soft_dev_tcm_theory/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2014/0729_better_developer/" itemprop="url">
+        做一名好的开发人员
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2014-07-29">
+    2014-07-29
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2167 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1+1&lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2014/0729_better_developer/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2013/1113_good_programmer/" itemprop="url">
+        优秀程序员
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2013-11-13">
+    2013-11-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">772 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>关于什么是一名合格的程序员，优秀的程序员，这些讨论从来没有停止过，标准各不相同。有人说优秀程序员追求简洁的代码，优秀的框架结构，新的技术技能。我们不是在讨论什么是业界大牛，我心中的一名优秀程序具备如下几个素质：</p>
+
+<ul>
+<li><p>简洁高效</p>
+
+<p>优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2013/1113_good_programmer/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2013/0909_hw_8years/" itemprop="url">
+        HW八年总结
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2013-09-09">
+    2013-09-09
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2886 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>白驹过隙，进入公司已是八年，一路学习一路收获。往后回首，一些经历回想起来还历历在目：经历过一线比拼的激情，经历过产品上线的喜悦，经历过多个项目的变换，经历过持续熬夜的艰辛；写过不少的代码，带过一些徒弟，负责过团队开发，一直在公司从事基层的研发工作。一路走下来，也得到部门领导，公司同事的帮助、指导与鼓励，能让我一直坚持下去，过程中我也得到一些很高的认可，感触多，收获多。在此我先感谢大家！</p>
+
+<h2 id="团队成功才能成就个人">团队成功才能成就个人</h2>
+
+<p>还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 <strong>只有团队的成功，才能有个人的成就</strong> 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，<strong>把分给我的工作尽自己最大的努力做好做实，做到问心无愧</strong> 。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2013/0909_hw_8years/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/" itemprop="url">
+        Java线程使用建议
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2013-04-24">
+    2013-04-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1343 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近Review团队内一些的代码，发现不少使用线程池，但使用的比较乱，针对问题建议如下：</p>
+
+<ol>
+<li><p>线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。</p></li>
+
+<li><p>所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="pagination">
+    <a class="extend prev" rel="prev" href="http://lanlingzi.cn/p/6/"><i class="fa fa-angle-left"></i></a>
+    
+        
+    
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/3/">3</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/4/">4</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/5/">5</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/6/">6</a>
+        
+        
+    
+        
+        
+          <span class="page-number current">7</span>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/8/">8</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/9/">9</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/10/">10</a>
+        
+        
+    
+    <a class="extend next" rel="next" href="http://lanlingzi.cn/p/8/"><i class="fa fa-angle-right"></i></a>
+</nav>
+
+
+
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+<div class="feed-link motion-element">
+<a href="http://lanlingzi.cn/index.xml" rel="alternate" type="application/rss+xml" target="_blank">
+    <i class="fa fa-rss"></i>
+    RSS 订阅
+</a>
+</div>
+
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  
+  2016
+   - 2017</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" id="motion.page.archive">
+  $('.archive-year').velocity('transition.slideLeftIn');
+</script>
+
+</body>
+</html>

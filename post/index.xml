@@ -1,0 +1,1619 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/post/index.xml</link>
+    <description>Recent content in Posts on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 16 Feb 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Design for Failure</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0216_dff/</link>
+      <pubDate>Thu, 16 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0216_dff/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/dff/dff.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;故有的思维会影响创新，在传统的软件设计考虑高可靠性，主要方法论是”防“，处处保护，让系统的每一处能长时间运行，不中断地提供服务。事实上电信级高可用性（HA）也只能宣称达到5个9，这意味着一年也就只有5分半钟的中断时间。但每增加一个9却实施成本非常地高，有些是建立在硬件可靠基础之上，并且不少是实验数据或理论上支持。传统的思维认识，在泥沙上建房子不可靠的。但软件架构设计，即完全不一样，在不可靠的基础设施上构建上可靠的系统，那才是真正NB的。&lt;/p&gt;
+
+&lt;p&gt;依稀记得云计算刚出来时，大家都是持怀疑态度：性能下降的虚拟化技术、安全不可控的网络、变化复杂的资源管理，在其上如何构建可靠稳定的软件系统？事实上，Netflix完全基于AWS云基础设施，认为都有可能发生任何的故障（Failure），更何况资源也不掌握在自己手上。Netflix基于&lt;code&gt;Design for Failure&lt;/code&gt;理念却构建出用户无感知的高可用系统，支撑他的业务飞速发展。事实上，故障无所不在，尤其是在云计算环境中：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等&lt;/li&gt;
+&lt;li&gt;应用层次：资源泄露；软件Bug；系统处理能力不足等&lt;/li&gt;
+&lt;li&gt;数据层次：数据丢失；数据不一致等&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;概念解读&#34;&gt;概念解读&lt;/h2&gt;
+
+&lt;p&gt;既然故障不可避免，何不让故障尽早的暴露，尽快的恢复。设计时针对故障场景而设计，一切假定在故障失效下如何处理，局部的失效不影响整体的可用性。这就是&lt;code&gt;Design for Failure&lt;/code&gt;的核心理念。这个设计理念其实也跟人类社会很像：一个人的细胞代谢，只要有新的细胞补上就行；一个组织中，高度细分工作，几个人的离开，不影响整体的运转。&lt;code&gt;Design for Failure&lt;/code&gt;不仅仅是高可用性设计，而是一种新的设计理念，有别于传统，通过单点的可靠性达到整体的高可用性。以Netflix公布的数据来看，每个EC2实例平均生命周期只有36个小时，每个单点不断地重生，才能达到整体的高可用性。其关键实施要点总结如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;容错：当系统中出现了各种故障时，系统能够自动隔离故障而不影响系统对外的服务质量。&lt;/li&gt;
+&lt;li&gt;冗余：提供系统冗余配置，当系统发生故障时，冗余的快速介入并承担已发生故障的工作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以一个运行在云环境中的应用为例，&lt;code&gt;Design for Failure&lt;/code&gt;理念需要按如下步骤来考虑：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每个应用程序组件必须部署在冗余的云组件/服务上，有很少或没有失败的共同点，即不存在单点故障；&lt;/li&gt;
+&lt;li&gt;每个应用组件必须对基础设施不作任何假设，它必须能够在不停机的情况下适应基础设施的变化；&lt;/li&gt;
+&lt;li&gt;每个应用程序组件应该是分区容忍，换句话说，它应该能够生存的网络延迟（或通信损失）的节点上；&lt;/li&gt;
+&lt;li&gt;借助于自动化工具，必须能编排应用程序，以便响应失败或其他基础设施的变化等等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;案例分析&#34;&gt;案例分析&lt;/h2&gt;
+
+&lt;p&gt;一个单点的故障，我们可能针对性地很容易解决，这可能是头痛医头的做法。但一个系统软件往往没有那么简单，举例来说，一个汽车生产线，生产不同的汽车，需要使用不同的零件，如果某个零件因为种种原因无法使用，那么就会造成整台车无法装配，陷入等待零件的状态，直到零件到位，才能继续组装。 此时如果有很多个车型都需要这个零件，那么整个工厂都将陷入等待的状态，导致所有生产都陷入瘫痪。一个零件的波及范围不断扩大。这就是我们常说的&lt;code&gt;雪崩效应&lt;/code&gt;。所以我们非常有必要分析系统中的各种依赖关系。不同的层次来&lt;code&gt;Design for Failure&lt;/code&gt;，不同的技术组合来解决问题。&lt;/p&gt;
+
+&lt;p&gt;以Netflix的系统架构来简单分析一下，看它是如何分层解决问题的：&lt;/p&gt;
+
+&lt;h3 id=&#34;接入层&#34;&gt;接入层：&lt;/h3&gt;
+
+&lt;h4 id=&#34;aws-elb&#34;&gt;AWS ELB&lt;/h4&gt;
+
+&lt;p&gt;典型的部署架构都是多地区（Region）、多可用区（Zone）的部署。负责四层负载分发，支持跨Region调用，它解决是当一个Region不可用的分发。&lt;/p&gt;
+
+&lt;h4 id=&#34;zuul&#34;&gt;Zuul&lt;/h4&gt;
+
+&lt;p&gt;Zuul负责七层分发，提供动态路由，监控，弹性，安全等。Zuul可以通过加载动态过滤机制，从而实现以下各项功能：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;验证与安全保障: 识别面向各类资源的验证要求并拒绝那些与要求不符的请求；&lt;/li&gt;
+&lt;li&gt;审查与监控: 在边缘位置追踪有意义数据及统计结果，从而为我们带来准确的生产状态结论；&lt;/li&gt;
+&lt;li&gt;动态路由: 以动态方式根据需要将请求路由至不同后端集群处；&lt;/li&gt;
+&lt;li&gt;压力测试: 逐渐增加指向集群的负载流量，从而计算性能水平；&lt;/li&gt;
+&lt;li&gt;负载分配: 为每一种负载类型分配对应容量，并弃用超出限定值的请求；&lt;/li&gt;
+&lt;li&gt;静态响应处理: 在边缘位置直接建立部分响应，从而避免其流入内部集群；&lt;/li&gt;
+&lt;li&gt;多区域弹性: 跨越AWS区域进行请求路由，旨在实现ELB使用多样化并保证边缘位置与使用者尽可能接近；&lt;/li&gt;
+&lt;li&gt;金丝雀测试：金丝雀版本实现精确路由；&lt;/li&gt;
+&lt;li&gt;故障注入：结合故障注入工具，从前端自动注入故障；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;服务层&#34;&gt;服务层&lt;/h3&gt;
+
+&lt;h4 id=&#34;eureka&#34;&gt;Eureka&lt;/h4&gt;
+
+&lt;p&gt;Eureka为所有Netflix服务提供服务注册集中管理，当然它也是可以分Zone分Region集群部署的。它与Zookeeper不同是：Zookeeper侧重于CP，而Eureka侧重于AP；服务注册信息支持跨Region的复制。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Eureka服务端用作服务注册，提供服务实例信息注册与同步；&lt;/li&gt;
+&lt;li&gt;Eureka客户端用用服务发现，用来简化与服务器的交互、作为轮询负载均衡器，并提供服务的故障切换支持。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;ribbon&#34;&gt;Ribbon&lt;/h4&gt;
+
+&lt;p&gt;由于Eureka是非强一致性，服务实例状态并非是实时性，服务调用可能失败或超时。所以Ribbon作为客户端组，配合Eureka一起使用，作为服务路由均衡的补充。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ribbon客户端提供一系列完善的配置选项，比如连接超时、重试、重试算法等，&lt;/li&gt;
+&lt;li&gt;Ribbon内置可插拔、可定制的负载均衡组件，支持多种均衡策略：简单轮询负载均衡；加权响应时间负载均衡；区域感知轮询负载均衡；机负载均衡。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在选择服务器时，该负载均衡器会采取如下步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;负载均衡器会检查、计算所有可用区域的状态。如果某个区域中平均每个服务器的活跃请求已经达到配置的阈值，该区域将从活跃服务器列表中排除。如果多于一个区域已经到达阈值，平均每服务器拥有最多活跃请求的区域将被排除。&lt;/li&gt;
+&lt;li&gt;最差的区域被排除后，从剩下的区域中，将按照服务器实例数的概率抽样法选择一个区域。&lt;/li&gt;
+&lt;li&gt;从选定区域中，将会根据给定负载均衡策略规则返回一个服务器。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;hystrix&#34;&gt;Hystrix&lt;/h4&gt;
+
+&lt;p&gt;Hystrix提供分布式系统使用，提供延迟和容错功能，隔离远程系统、访问和第三方程序库的访问点，防止级联失败，保证复杂的分布系统在面临不可避免的失败时，仍能有其弹性。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;隔离模式：简单说就是为每个依赖调用分配一个小的线程池，如果线程池已满调用将被立即拒绝，默认不采用排队，加速失败判定时间。&lt;/li&gt;
+&lt;li&gt;熔断模式：目标服务调用慢或者有大量超时，此时，熔断该服务的调用，对于后续调用请求，不在继续调用目标服务，直接返回，快速释放资源。如果目标服务情况好转则恢复调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述两种模式的实施，是服务速错，服务降级的基础。&lt;/p&gt;
+
+&lt;h3 id=&#34;数据层&#34;&gt;数据层&lt;/h3&gt;
+
+&lt;h4 id=&#34;evcache&#34;&gt;EVCache&lt;/h4&gt;
+
+&lt;p&gt;VCache是一个数据缓存服务，专门为Netflix的微服务提供低延迟，高可靠性的缓存解决方案。它是基于memcached的内存存储，专门为云计算优化，适合对强一致性没有必须要求的场合。它不需要处理全局锁，群体读写，事务更新，部分提交和回滚，和其他一些分布式一致性的复杂设计。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;跨区可用：一个地区的的会员切换到另外一个地区，会在新的地区缓存中没有老地区的数据，称为cold cache，缓存会保存着重新计算需要的临时数据，这些数据如果从持久层存储获得将会非常昂贵，所以这种数据写入到本地缓存，并必须复制到所有地区的缓存中，以便服务于各个地区会员使用。&lt;/li&gt;
+&lt;li&gt;复制延迟：在跨区域复制变慢的情况下，不会影响性能和本地缓存的可靠性，所有复制都是异步的，复制系统能够在不影响本地缓存操作情况下悄悄地短时间中断。不需要一个完美的复制系统，可以接受EVcache一定限度的延迟和不一致，只要能满足应用和会员的需要就行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;其它&#34;&gt;其它&lt;/h4&gt;
+
+&lt;p&gt;Cassandra是一个NoSQL数据库，是购买一家商业公司的服务，主要是用于各种Session的存储，并且支持跨区的同步复制。S3主要用于数据的备份。&lt;/p&gt;
+
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;Netflix在每层上都考虑了失效，如何处理，但它每一层都没有做到尽善尽美，但不同层次的组合，却做到几乎完美的高可用性。当然Netflix构建高用性的系统还不只是我上面所列出的组件或工具。列出关键的部分是为了表达出&lt;code&gt;Design for Failure&lt;/code&gt;的理念是：故障不可避免，可以分层次的设计，通过多个技术方案组合应用，从而达到故障隔离，冗余恢复，实现整体的高可用性。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>35还能做技术吗</title>
+      <link>http://lanlingzi.cn/post/thoughts/2017/0208_35_change/</link>
+      <pubDate>Wed, 08 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2017/0208_35_change/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/change/change.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最近我司心声社区到处充斥着在40岁左右惯例的帖子，之前觉得这些觉得离自己很远。不经意发现自己今年也35岁了，惯例这一天迟早会来临，只是早晚而已，按目前现状，再为公司奋斗也不会有太多年了，你想奋斗关键公司不让你啊。最近也陆续听到之前曾经共事的同事，或由于身体原因，被沟通退休或离职；或由于绩效平平，合同到期不再续签；或由于种种原因，被进入战备预备队前途不明。公司主营业务已遇到瓶颈，整个行业暮色深沉，新的领域就开拓不足，公司高层也不断地发文要打粮食，熵减等等。总之：“山雨欲来风满楼”。&lt;/p&gt;
+
+&lt;p&gt;35岁应该是一个年富力强的年龄，不应该发出“今年35，还能做技术吗？”这样的话题，其中透露出一丝不自信。话说三十而立，但目前这个年龄段，我是上有老，下有小，身上还背着几百万的房贷，说没有压力不是可能的。作一名软件工程师，在国内来说其职业生涯是相当短的。而我一直从事软件相关的工作，目前虽是做软件架构设计，但还是喜欢写写代码，一直没有找到自己明确的发展方向，一方面有我自身的性格原因，一方面能力的确有些偏科。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;我非常能理解公司最近一些HR政策，企业为了保持长期的活力，换血难免。不管这事是否有多么无情，站在企业的角度来说无疑是正确的，毕竟企业不是慈善机构。公司也不可能让一个上了年龄、有家室的人一直从事一线编码工作。公司注重的是流程管理，觉得编码也可以像产业工人一样批量地生产。而年轻人更能干得多，给予得少。即使最近提倡的工程师文化，也是很难真正地做到，越提倡说明越缺失。&lt;/p&gt;
+
+&lt;p&gt;先简单说一说我为什么走上软件开发这一条路的经历吧：&lt;/p&gt;
+
+&lt;p&gt;90年代还是读初中时，老爸单位就开始使用电脑记账，那时觉得电脑太神奇了。个人虽买不起电脑，而要求老爸买了学习机，当时按着说明书，用basic语言输出满屏幕的各种形状的图型，心中也被巨大的喜悦填满。目前我清楚地记得，我爷爷看到我能在学习机上打出全家的名字，觉得这个是怎么做到的而不可思议。&lt;/p&gt;
+
+&lt;p&gt;高考那一年，我一表哥从大学里寄来一本小说《第一次亲密地接触》，讲得就是网络交友，原来交朋友也可能通过互联网，当时觉得这个太好玩了。于是高考填写志愿，我报了某211计算机专业，可惜语文成绩刚及格，总分数不够（在本省就招3个，我排名第6，我爸通过关系才知道的）。还好有个第三志愿保底，并且填写可以调剂，于是我调转到另一所大学，学的是信息管理。妈蛋，到学校才知道，这个信息管理其实与计算机不太相关，虽然也会学些计算机原理，C语言编程等。但这不是主业，主业是信息检索，运筹学，是一个从图书馆管理发展起来杂学科，什么都学，什么都浅。&lt;/p&gt;
+
+&lt;p&gt;大学一年级第二学期就买了电脑，一买电脑，就没有心思学习了，第一年还拿奖学金，后面连课不上了。每天大部分时间都在折腾电脑，重装系统，Win系统不知安装了多少次；Linux当时还远没有现在好用，也折腾过蓝点，RedHat。除了折腾就是打游戏，或者泡在网上看各种论坛。计算机理论没有怎么学，但其间还是有些编程的基础，曾获得校编程比赛三等奖。后面也和同学搞搞网站，系网站还是我们整理的，界面虽然丑点，但蛮有满足感。&lt;/p&gt;
+
+&lt;p&gt;04年大学毕业后就来了深圳，开始家里就给我安排了一份工作，是做物业管理。但我不是这种菜，没有干一天，就辞职不做了，现在想想年轻就是任性啊。出来就自己开始找工作，找来找去，发现只有做网站的公司要我，于是第一年我就在一家当时在体育界还算小有名气的小公司做一名程序员，负责后台的程序开发，从此就踏上了软件开发这一条道路。后来05年华为大规模地招新四军，经过电话面试，当面做题，也没有怎么答好就稀里糊涂地来了华为，真还得谢谢当时的技面官。后面更没有想到的事，有些同学纷纷转行，中间也有过多次的机会离开，而我却一干就是12年了。&lt;/p&gt;
+
+&lt;p&gt;在华为一直干得比较辛苦，结婚生小孩之后，发现再不能跟小伙伴一直挑灯夜战了。之前也不是没有奋斗过：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;去国外出差，可以整夜不睡觉，为了就是调通一个功能，等着明天客户可以验收。而这样的状况是持续的，每天吃不好，睡不着，最后回来发现落下胃病。&lt;/li&gt;
+&lt;li&gt;可以持续一个多月每天晚上11:30下班，回到公司附近的出租屋倒头就睡，明天又接着干。&lt;/li&gt;
+&lt;li&gt;可以凌晨不知几点，一个电话把你叫醒，说日志发到你邮箱，尽快定位解决问题。&lt;/li&gt;
+&lt;li&gt;可以明知道不可能完成的任务，还是坚持答应下来，即使周末过来，也要加班加点把它做完。&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当过了三十多岁，的确现发现状态不如以前了，说一下感受吧：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;明显感觉体力不行了。以前定位解决问题，搞到凌晨三四点也没有什么睡意，第二天精神也不错。现在如果要搞到凌晨或通宵的话，后面两三天觉得身心疲惫。&lt;/li&gt;
+&lt;li&gt;亚健康状态，平时锻炼比较少。每年的体检都有不少的问题，坐久了时间就觉得腰，颈椎痛。&lt;/li&gt;
+&lt;li&gt;记忆力没有以前好了。以前看过的代码，长时间能记住，定位问题总是比其它人快速。看过的资料，吸收没有哪么快了，记得的东西有时突然就想不起来。&lt;/li&gt;
+&lt;li&gt;明显感觉脑力跟不上了。以前码代码非常地快，一周就写10K；现在写代码总是思前想后，生产率没有那么高，但现在质量可能更好一些。想问题时注意力容易被打断，打断之后再难回神。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;当然这些年也积累了非常多的经验：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;尤其是攻关方面，我总是能解决问题，因为之前踩过不少的坑，看过不少的坑，也解决过不少的坑，问题总是本质一样的。写代码会本能地避免，定位总是会举一反三。&lt;/li&gt;
+&lt;li&gt;知道怎么去做方案设计，分解并指导新人完成一个系统。有些问题能轻车熟路，以前解决类似问题的方案可以拿来复用。&lt;/li&gt;
+&lt;li&gt;知道系统架构一些设计原则，理论基础，抽象建模，知道如何去权衡一些方案的利弊等。&lt;/li&gt;
+&lt;li&gt;知识不再局限于编程语言，知道从多角度，多层次来看待一些问题，也在尝试去提炼一些编程之外的东西。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;热爱与钻研技术这个没有错，也不会随着年龄大了就不行了。虽然软件界的技术日新月益，编程语言层出不穷，各种框架各领风骚，但解决实现问题的经验与能力是非常重要的。现在你跟一群年轻人去拼体力拼时间，肯定是拼不过了，唯有作出转变。以前可能是“我能力强，效率高，部门的关键人物”，其实那是错的，不可替代性才是最有价值的。“人无远虑，必有近忧”，平时不妨努力提升自己，专注于某一领域，你能想到别人所想不到的，您能解决别人所处理不了的。编程只是一种解决问题的手段，技术也不仅仅只是编程。简单地说对于通用软件领域，当前主要的价值是如何构建分布式的架构体系统，以应对不断变化的商业模式与体量。&lt;/p&gt;
+
+&lt;p&gt;当然上面说的还是一条技术路线，更重要的是你想明白技术只是为了产品，为了商业模式服务的。要让自己增值，不再吃码农的青春饭，那就要改变自己的想法，以快速适应未知的变化。积累系统架构经验，积累技术把控能力，积累对商业的理解，积累发现机会的敏感，果敢地作出改变。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>再说说微服务</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0207_msa_think/</link>
+      <pubDate>Tue, 07 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0207_msa_think/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/msa/timg.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;why&#34;&gt;Why&lt;/h2&gt;
+
+&lt;p&gt;我司从15年开始学习互联网的微服务构架，到今16年的全云化战略，微服务已作为架构体系的重要工作。但微服务看似美好，在IT界应用非常的成熟与成功，但这个本质没有革命性的技术架构，在我司却非常地难以落地。主要原因：传统的CT应用太过厚重，面临着软件交付模式完全不一样，历史包袱改造面临短期看不到收益的成本投入：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。&lt;/li&gt;
+&lt;li&gt;我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;what&#34;&gt;What&lt;/h2&gt;
+
+&lt;p&gt;微服务架构转变当前遇到的各种问题，不是我们不实施微服务架构的理由。软件全云化，微服务这是趋势。再说说微服务对我们目前软件开发的核心价值吧：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;设计：微服务架构下，设计上可以重用已有微服务，反哺微服务仓库，达到软件功能更好的复用；同时由于微服务具有9大特性，使架构师能更好的守护软件架构。&lt;/li&gt;
+&lt;li&gt;开发：相比原来组件化架构，每个开发人员负责的代码量减少，更能把事件做精；微服务架构下，一般会有像JDF或HSF的服务框架，使开发难度降低；业务功能的细分，基于服务化接口契约，使并行开发变成可能，工期缩短；细粒度快速验证，单个微服务的更容易稳定。&lt;/li&gt;
+&lt;li&gt;部署：基于微服务的功能组合，可以按不同的特性交付，特性独立上线，而不原有的通过License开关控制；容量上可以按小颗粒度，自动化地伸缩，系统拥有更好的弹性。&lt;/li&gt;
+&lt;li&gt;运行：可以小颗粒度，自动化地故障隔离，故障影响范围可控；按服务的滚动升级。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;有上面的这些理由，难道我们还不选择微服务架构吗？架构上是OK的，但我司的矩阵性管理，有项目经理，有产品管理，有服务人员，有部门经理，有成本管理等，他们会看到，会认可吗？会有产品上收益来支撑吗？遗憾是目前没有，所以仅仅是研发体系上的隐性收益很难快速地推进。&lt;/p&gt;
+
+&lt;h2 id=&#34;how&#34;&gt;How&lt;/h2&gt;
+
+&lt;p&gt;在我司，那如何地渐进式地推进微服务架构，从四个维度架构视图展开：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;逻辑视图：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;存量代码按特性功能进行分析梳理，优先有商业价值的特性功能重构&lt;/li&gt;
+&lt;li&gt;将老版本进程进行拆分与整合，对于相对稳定的原有组件尽量只服务化，而不微服务化&lt;/li&gt;
+&lt;li&gt;新增特性直接按照微服务架构设计，并优先考虑重用已有拆分的微服务&lt;/li&gt;
+&lt;li&gt;服务独立自治，多实例集群负荷均衡，可靠性服务内完成，服务内性能并发，服务使用者性能透明&lt;/li&gt;
+&lt;li&gt;去中心化治理，无全局控制节点，避免全局故障&lt;/li&gt;
+&lt;li&gt;服务划分原则：数据私有化，功能实例化，接口标准化，依赖最小化&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;部署视图：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;独立进程承载服务功能，在部署形态上做到可分可合&lt;/li&gt;
+&lt;li&gt;服务尽量部署独立数据库，在设计上考虑Schema的隔离&lt;/li&gt;
+&lt;li&gt;服务内的多进程统一服务控制节点管理&lt;/li&gt;
+&lt;li&gt;服务可靠性，并发性统一由服务控制节点管理&lt;/li&gt;
+&lt;li&gt;改造老进程新增服务接口，新老并存，调通后再去除老接口&lt;/li&gt;
+&lt;li&gt;新服务新进程承载，调通后替换老进程&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;开发视图：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;按照服务构建开发视图&lt;/li&gt;
+&lt;li&gt;按照服务构建测试工程&lt;/li&gt;
+&lt;li&gt;按照服务适配个人构建&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;能力视图：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置能力完善，包括基础架构，研发工具，人员能力&lt;/li&gt;
+&lt;li&gt;探索适合我司交付模式的微服务的开发模式&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;总之，微服务架构落地不可能一蹴而蹴，更不可能一场运行就能解决的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go性能优化小结</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</link>
+      <pubDate>Fri, 03 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</guid>
+      <description>&lt;h2 id=&#34;内存优化&#34;&gt;内存优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;小对象合并成结构体一次分配-减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
+
+&lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
+
+&lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for k, v := range m {
+    k, v := k, v // copy for capturing by the goroutine
+    go func() {
+        // using k &amp;amp; v
+    }()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;替换为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for k, v := range m {
+    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
+    go func() {
+        // using x.k &amp;amp; x.v
+    }()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;缓存区内容一次分配足够大小空间-并适当复用&#34;&gt;缓存区内容一次分配足够大小空间，并适当复用&lt;/h3&gt;
+
+&lt;p&gt;在协议编解码时，需要频繁地操作[]byte，可以使用bytes.Buffer或其它byte缓存区对象。&lt;/p&gt;
+
+&lt;p&gt;建议：bytes.Buffert等通过预先分配足够大的内存，避免当Grow时动态申请内存，这样可以减少内存分配次数。同时对于byte缓存区对象考虑适当地复用。&lt;/p&gt;
+
+&lt;h3 id=&#34;slice和map采make创建时-预估大小指定容量&#34;&gt;slice和map采make创建时，预估大小指定容量&lt;/h3&gt;
+
+&lt;p&gt;slice和map与数组不一样，不存在固定空间大小，可以根据增加元素来动态扩容。&lt;/p&gt;
+
+&lt;p&gt;slice初始会指定一个数组，当对slice进行append等操作时，当容量不够时，会自动扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果新的大小是当前大小2倍以上，则容量增涨为新的大小；&lt;/li&gt;
+&lt;li&gt;否而循环以下操作：如果当前容量小于1024，按2倍增加；否则每次按当前容量1/4增涨，直到增涨的容量超过或等新大小。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;map的扩容比较复杂，每次扩容会增加到上次容量的2倍。它的结构体中有一个buckets和oldbuckets，用于实现增量扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;正常情况下，直接使用buckets，oldbuckets为空；&lt;/li&gt;
+&lt;li&gt;如果正在扩容，则oldbuckets不为空，buckets是oldbuckets的2倍，&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;建议：初始化时预估大小指定容量&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;m := make(map[string]string, 100)
+s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是初始大小，第三个参数才是容量
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;长调用栈避免申请较多的临时对象&#34;&gt;长调用栈避免申请较多的临时对象&lt;/h3&gt;
+
+&lt;p&gt;goroutine的调用栈默认大小是4K（1.7修改为2K），它采用连续栈机制，当栈空间不够时，Go runtime会不动扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;当栈空间不够时，按2倍增加，原有栈的变量崆直接copy到新的栈空间，变量指针指向新的空间地址；&lt;/li&gt;
+&lt;li&gt;退栈会释放栈空间的占用，GC时发现栈空间占用不到1/4时，则栈空间减少一半。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;比如栈的最终大小2M，则极端情况下，就会有10次的扩栈操作，这会带来性能下降。&lt;/p&gt;
+
+&lt;p&gt;建议：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;控制调用栈和函数的复杂度，不要在一个goroutine做完所有逻辑；&lt;/li&gt;
+&lt;li&gt;如查的确需要长调用栈，而考虑goroutine池化，避免频繁创建goroutine带来栈空间的变化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;避免频繁创建临时对象&#34;&gt;避免频繁创建临时对象&lt;/h3&gt;
+
+&lt;p&gt;Go在GC时会引发stop the world，即整个情况暂停。虽1.7版本已大幅优化GC性能，1.8甚至量坏情况下GC为100us。但暂停时间还是取决于临时对象的个数，临时对象数量越多，暂停时间可能越长，并消耗CPU。&lt;/p&gt;
+
+&lt;p&gt;建议：GC优化方式是尽可能地减少临时对象的个数：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;尽量使用局部变量&lt;/li&gt;
+&lt;li&gt;所多个局部变量合并一个大的结构体或数组，减少扫描对象的次数，一次回尽可能多的内存。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;并发优化&#34;&gt;并发优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;高并发的任务处理使用goroutine池&#34;&gt;高并发的任务处理使用goroutine池&lt;/h3&gt;
+
+&lt;p&gt;goroutine虽轻量，但对于高并发的轻量任务处理，频繁来创建goroutine来执行，执行效率并不会太高效：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；&lt;/li&gt;
+&lt;li&gt;高并时若出现调用异常阻塞积压，大量的goroutine短时间积压可能导致程序崩溃。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;避免高并发调用同步系统接口&#34;&gt;避免高并发调用同步系统接口&lt;/h3&gt;
+
+&lt;p&gt;goroutine的实现，是通过同步来模拟异步操作。在如下操作操作不会阻塞go runtime的线程调度：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;网络IO&lt;/li&gt;
+&lt;li&gt;锁&lt;/li&gt;
+&lt;li&gt;channel&lt;/li&gt;
+&lt;li&gt;time.sleep&lt;/li&gt;
+&lt;li&gt;基于底层系统异步调用的Syscall&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面阻塞会创建新的调度线程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;本地IO调用&lt;/li&gt;
+&lt;li&gt;基于底层系统同步调用的Syscall&lt;/li&gt;
+&lt;li&gt;CGo方式调用C语言动态库中的调用IO或其它阻塞&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;网络IO可以基于epoll的异步机制（或kqueue等异步机制），但对于一些系统函数并没有提供异步机制。例如常见的posix api中，对文件的操作就是同步操作。虽有开源的fileepoll来模拟异步文件操作。但Go的Syscall还是依赖底层的操作系统的API。系统API没有异步，Go也做不了异步化处理。&lt;/p&gt;
+
+&lt;p&gt;建议：把涉及到同步调用的goroutine，隔离到可控的goroutine中，而不是直接高并的goroutine调用。&lt;/p&gt;
+
+&lt;h3 id=&#34;高并发时避免共享对象互斥&#34;&gt;高并发时避免共享对象互斥&lt;/h3&gt;
+
+&lt;p&gt;传统多线程编程时，当并发冲突在4~8线程时，性能可能会出现拐点。Go中的推荐是不要通过共享内存来通讯，Go创建goroutine非常容易，当大量goroutine共享同一互斥对象时，也会在某一数量的goroutine出在拐点。&lt;/p&gt;
+
+&lt;p&gt;建议：goroutine尽量独立，无冲突地执行；若goroutine间存在冲突，则可以采分区来控制goroutine的并发个数，减少同一互斥对象冲突并发数。&lt;/p&gt;
+
+&lt;h2 id=&#34;其它优化&#34;&gt;其它优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;避免使用cgo或者减少cgo调用次数&#34;&gt;避免使用CGO或者减少CGO调用次数&lt;/h3&gt;
+
+&lt;p&gt;GO可以调用C库函数，但Go带有垃圾收集器且Go的栈动态增涨，但这些无法与C无缝地对接。Go的环境转入C代码执行前，必须为C创建一个新的调用栈，把栈变量赋值给C调用栈，调用结束现拷贝回来。而这个调用开销也非常大，需要维护Go与C的调用上下文，两者调用栈的映射。相比直接的GO调用栈，单纯的调用栈可能有2个甚至3个数量级以上。&lt;/p&gt;
+
+&lt;p&gt;建议：尽量避免使用CGO，无法避免时，要减少跨CGO的调用次数。&lt;/p&gt;
+
+&lt;h3 id=&#34;减少-byte与string之间转换-尽量采用-byte来字符串处理&#34;&gt;减少[]byte与string之间转换，尽量采用[]byte来字符串处理&lt;/h3&gt;
+
+&lt;p&gt;GO里面的string类型是一个不可变类型，不像c++中std:string，可以直接char*取值转化，指向同一地址内容；而GO中[]byte与string底层两个不同的结构，他们之间的转换存在实实在在的值对象拷贝，所以尽量减少这种不必要的转化&lt;/p&gt;
+
+&lt;p&gt;建议：存在字符串拼接等处理，尽量采用[]byte，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Prefix(b []byte) []byte {
+    return append([]byte(&amp;quot;hello&amp;quot;, b...))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;字符串的拼接优先考虑bytes-buffer&#34;&gt;字符串的拼接优先考虑bytes.Buffer&lt;/h3&gt;
+
+&lt;p&gt;由于string类型是一个不可变类型，但拼接会创建新的string。GO中字符串拼接常见有如下几种方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;string + 操作 ：导致多次对象的分配与值拷贝&lt;/li&gt;
+&lt;li&gt;fmt.Sprintf ：会动态解析参数，效率好不哪去&lt;/li&gt;
+&lt;li&gt;strings.Join ：内部是[]byte的append&lt;/li&gt;
+&lt;li&gt;bytes.Buffer ：可以预先分配大小，减少对象分配与拷贝&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;建议：对于高性能要求，优先考虑bytes.Buffer，预先分配大小。非关键路径，视简洁使用。fmt.Sprintf可以简化不同类型转换与拼接。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+1. &lt;a href=&#34;http://skoo.me/go/2013/10/09/go-memory-manage-system-fixalloc&#34;&gt;Go语言内存分配器-FixAlloc&lt;/a&gt;&lt;br /&gt;
+2. &lt;a href=&#34;https://blog.golang.org/strings&#34;&gt;https://blog.golang.org/strings&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>CloudNative初探</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0106_cloudnative/</link>
+      <pubDate>Fri, 06 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0106_cloudnative/</guid>
+      <description>&lt;p&gt;随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考&lt;a href=&#34;http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst&#34;&gt;Cloud Native at Netflix&lt;/a&gt;）。那什么是CloudNative？&lt;/p&gt;
+
+&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+
+&lt;p&gt;目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。&lt;/p&gt;
+
+&lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Distributed/Dynamically wired，分布式/动态连接&lt;/li&gt;
+&lt;li&gt;Elastic，弹性；Scale down as well as up, based on load，基于系统负载的动态伸缩&lt;/li&gt;
+&lt;li&gt;Granularly metered and billed，粒度合适的计量计费；Pay per user，按使用量计费&lt;/li&gt;
+&lt;li&gt;Multi-tenant，多租户&lt;/li&gt;
+&lt;li&gt;Self service，自服务&lt;/li&gt;
+&lt;li&gt;Incrementally deployed and tested， 增量的部署与测试&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。&lt;/p&gt;
+
+&lt;p&gt;在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对&lt;a href=&#34;https://www.infoq.com/presentations/migration-cloud-microservices&#34;&gt;CloudNative新的定义&lt;/a&gt;：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率&lt;/li&gt;
+&lt;li&gt;原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织&lt;/li&gt;
+&lt;li&gt;特点：Public Cloud，基于公有云； Mirco-services，微服务；De-normalized data，反范式化数据；Chaos Engines，混沌引擎；Continues Deployment，持续部署；DevOps等等&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在2015年，Pivotal的产品经理Matt Stine又对&lt;a href=&#34;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&#34;&gt;CloudNative关键架构特征&lt;/a&gt;进行补充：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://12factor.net/&#34;&gt;Twelve Factor App&lt;/a&gt;，十二因子应用&lt;/li&gt;
+&lt;li&gt;Mirco-services，微服务&lt;/li&gt;
+&lt;li&gt;Self Service Agile Infrastructure，自服务敏捷的基础设施&lt;/li&gt;
+&lt;li&gt;API Based Clolaboration， 基于API的协作&lt;/li&gt;
+&lt;li&gt;Anti-Fragility，反脆弱性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;总结起来，要实施CloudNative，包括三个维度：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;软件架构：基于敏捷基础设施，是整个Cloud Native的根基；基于微服务架构，微服务架构是Cloud Native的一个核心要素；基于Design for failure理论，构建高可用的系统；基于容器部署，确保环境一致性，应用快速启动终止，水平扩展。&lt;/li&gt;
+&lt;li&gt;组织变革：根据康威定律，如果要达到比较理想的云化效果，必须进行组织变革。一个合理的组织架构，将会极大提高云化的推行；推行DevOps文化，倡导开放、合作的组织文化。&lt;/li&gt;
+&lt;li&gt;软件工程：推行持续集成与持续交付，联合开发、质量、运维各个环节，打通代码，编译，检查，打包，上线，发布各个环节。全自动化，包括自动化部署，升级，灰度，以及运维。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;CloudNative背后的软件架构需求：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;按需特性的伸缩&lt;/li&gt;
+&lt;li&gt;按特性持续演进&lt;/li&gt;
+&lt;li&gt;应用快速上线&lt;/li&gt;
+&lt;li&gt;系统的高用性&lt;/li&gt;
+&lt;li&gt;全面解耦合&lt;/li&gt;
+&lt;li&gt;系统自服务&lt;/li&gt;
+&lt;li&gt;支持多租户&lt;/li&gt;
+&lt;li&gt;异构公有云&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+1. &lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native&#34;&gt;http://wso2.com/library/articles/2010/05/blog-post-cloud-native&lt;/a&gt;&lt;br /&gt;
+2. &lt;a href=&#34;https://www.infoq.com/presentations/migration-cloud-microservices&#34;&gt;https://www.infoq.com/presentations/migration-cloud-microservices&lt;/a&gt;&lt;br /&gt;
+3. &lt;a href=&#34;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&#34;&gt;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&lt;/a&gt;&lt;br /&gt;
+4. &lt;a href=&#34;http://www.open-open.com/lib/view/open1447420363069.html&#34;&gt;一篇文章带你了解Cloud Native&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go依赖管理机制</title>
+      <link>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</link>
+      <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</guid>
+      <description>&lt;p&gt;无论何种语言，依赖管理都是一个比较复杂的问题。而Go语言中的依赖管理机制目前还是让人比较失望的。在1.6版本之前，官方只有把依赖放在GOPATH中，并没有多版本管理机制；1.6版本（1.5版本是experimental feature）引入vendor机制，是包依赖管理对一次重要尝试。他在Go生态系统中依然是一个热门的争论话题，还没有想到完美的解决方案。&lt;/p&gt;
+
+&lt;h2 id=&#34;看其它&#34;&gt;看其它&lt;/h2&gt;
+
+&lt;p&gt;我们先来看看其它语言怎么解决，例举两种典型的管理方式：&lt;/p&gt;
+
+&lt;h3 id=&#34;java&#34;&gt;Java&lt;/h3&gt;
+
+&lt;p&gt;开发态，可以通过maven和gradle工具编辑依赖清单列表/脚本，指定依赖库的位置/版本等信息，这些可以帮助你在合适的时间将项目固化到一个可随时随地重复编译发布的状态。这些工具对我来说已经足够优雅有效。但maven中也有不同依赖库的内部依赖版本冲突等令人心烦的问题。尤其是在大型项目中的依赖传递问题，若团队成员对maven机制没有足够了解下，依赖scope的滥用，会让整个项目工程的依赖树变得特别的巨大而每次编译效率低下。运行态，目前Java也没有很好的依赖管理机制，虽有classloader可以做一定的隔离，但像OSGi那种严格的版本管理，会让使用者陷入多版本相互冲突的泥潭。&lt;/p&gt;
+
+&lt;h3 id=&#34;node-js&#34;&gt;Node.js&lt;/h3&gt;
+
+&lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;go-get&#34;&gt;go get&lt;/h2&gt;
+
+&lt;p&gt;Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。并且它支持根据import package分析来递归拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Go这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。&lt;/p&gt;
+
+&lt;p&gt;当然，go get命令，仍然过于简单。对于现实过程中的开发者来说，仍然有其痛苦的地方：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;缺乏明确显示的版本。团队开发不同的项目容易导入不一样的版本，每次都是get最新的代码。尤其像我司对开源软件管理非常严格，开源申请几乎是无法实施。&lt;/li&gt;
+&lt;li&gt;第三方包没有内容安全审计，获取最新的代码很容易引入代码新的Bug，后续运行时出了Bug需要解决，也无法版本跟踪管理。&lt;/li&gt;
+&lt;li&gt;依赖的完整性无法校验，基于域名的package名称，域名变化或子路径变化，都会导致无法正常下载依赖。我们在使用过程，发现还是有不少间接依赖包的名称已失效了（不存在，或又fork成新的项目，旧的已不存维护更新）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;而Go官方对于此类问题的建议是把外部依赖的代码复制到你的&lt;a href=&#34;https://golang.org/doc/faq#get_version&#34;&gt;源码库中管理&lt;/a&gt;。把第三方代码引入自己的代码库仍然是一种折中的办法，对于像我司的软件开发流程来说，是不现实的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;开源扫描会扫描出是相似的代码时，若License不是宽松的，则涉及到法律风险，若是宽松的，开源扫描认证确认工作也很繁琐。&lt;/li&gt;
+&lt;li&gt;如何升级版本，代码复制过来之后，源始的项目的代码可以变化很大了，无明显的版本校验，借助工具或脚本来升级也会带来工作量很大。&lt;/li&gt;
+&lt;li&gt;复制的那一份代码已经开始变成私有，第三方代码的Bug只能自己解决，难以贡献代码来修复Bug，或通过推动社区来解决。&lt;/li&gt;
+&lt;li&gt;普通的程序问题可能不是很大问题，最多就是编译时的依赖。但如果你写的是一个给其他人使用的lib库，引入这个库就会带来麻烦了。你这个库被多人引用，如何管理你这个库的代码依赖呢？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;好在开源的力量就是大，Go官方没有想清楚的版本管理问题，社区就会有人来解决，我们已经可以找到许多不错的解决方案，不妨先参考下&lt;a href=&#34;https://github.com/golang/go/wiki/PackageManagementTools&#34;&gt;官方建议&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;vendor&#34;&gt;vendor&lt;/h2&gt;
+
+&lt;p&gt;vendor是1.5引入为体验，1.6中正式发布的依赖管理特性。Go团队在推出vendor前已经在Golang-dev group上做了长时间的调研。最终Russ Cox在&lt;a href=&#34;https://github.com/kr&#34;&gt;Keith Rarick&lt;/a&gt;的proposal的基础上做了改良，形成了Go 1.5中的vendor:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;不rewrite gopath&lt;/li&gt;
+&lt;li&gt;go tool来解决&lt;/li&gt;
+&lt;li&gt;go get兼容&lt;/li&gt;
+&lt;li&gt;可reproduce building process&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;并给出了vendor机制的&amp;rdquo;4行&amp;rdquo;诠释：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If there is a source directory d/vendor, then, when compiling a source file within the subtree rooted at d, import &amp;ldquo;p&amp;rdquo; is interpreted as import &amp;ldquo;d/vendor/p&amp;rdquo; if that exists.&lt;/p&gt;
+
+&lt;p&gt;When there are multiple possible resolutions,the most specific (longest) path wins.&lt;/p&gt;
+
+&lt;p&gt;The short form must always be used: no import path can  contain “/vendor/” explicitly.&lt;/p&gt;
+
+&lt;p&gt;Import comments are ignored in vendored packages.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;总结解释起来：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;vendor是一个特殊的目录，在应用的源码目录下，go doc工具会忽略它。&lt;/li&gt;
+&lt;li&gt;vendor机制支持嵌套vendor，vendor中的第三方包中也可以包含vendor目录。&lt;/li&gt;
+&lt;li&gt;若不同层次的vendor下存在相同的package，编译查找路径优先搜索当前pakcage下的vendor是否存在，若没有再向parent pacakge下的vendor搜索（x/y/z作为parentpath输入，搜索路径：x/y/z/vendor/path-&amp;gt;x/y/vendor/path-&amp;gt;x/vendor/path-&amp;gt;vendor/path)&lt;/li&gt;
+&lt;li&gt;在使用时不用理会vendor这个路径的存在，该怎么import包就怎么import，不要出现import &amp;ldquo;d/vendor/p&amp;rdquo;的情况。vendor是由go tool隐式处理的。&lt;/li&gt;
+&lt;li&gt;不会校验vendor中package的import path是否与canonical import路径是否一致了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;vendor机制看似像node.js的node_modules，支持嵌套vendor，若一个工程中在着两个版本的相的包，可以放在不同的层次的vendor下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;优点：可能解决不同的版本依赖冲突问题，不同的层次的vendor存放在不同的依赖包。&lt;/li&gt;
+&lt;li&gt;缺点：由于go的package是以路径组织的，在编译时，不同层次的vendor中相同的包会编译两次，链接两份，程序文件变大，运行期是执行不同的代码逻辑。会导致一些问题，如果在package init中全局初始化，可能重复初化出问题，也可能初化为不同的变量（内存中不同），无法共享获取。像之前我们遇到gprc类似的问题就是不同层次的相同package重复init导致的，见&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/566&#34;&gt;社区反馈&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以Russ Cox期望大家良好设计工程布局，作为lib的包&lt;strong&gt;不携带vendor更佳 ，一个project内的所有vendor都集中在顶层vendor里面。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;后续&#34;&gt;后续&lt;/h2&gt;
+
+&lt;p&gt;Go的包依赖问题依旧困扰着开发人员，嵌套vendor可以一定程度解决多版本的依赖冲突问题，但也引入多份编译导致的问题。目前社区也在一直讨论如何更好的解决，将进入下一个改进周期。这次将在Peter Bourgon的主持下正式启动：&lt;a href=&#34;https://docs.google.com/document/d/18tNd8r5DV0
+yluCR7tPvkMTsWD_lYcRO7NhpNSDymRr8/edit#heading=h.6fvzjp2juxex&#34;&gt;go packaging proposal process&lt;/a&gt;，当前1.8版本特性已冻结，不知这个改进是否会引入到1.9版本中。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;http://tonybai.com/2015/07/31/understand-go15-vendor/&#34;&gt;理解Go 1.5 vendor&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://www.infoq.com/cn/articles/golang-package-management&#34;&gt;Golang的包管理之道&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>要学会思维图形化</title>
+      <link>http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/</link>
+      <pubDate>Fri, 18 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/</guid>
+      <description>&lt;p&gt;曾经，我幼稚地认为：只有写好代码才能对产品最“大”的贡献。什么需求分析文档，架构设计文档，没有最终的代码落地，那就是一张张的空纸。那些职位高高在上的架构师们，就也是写写胶片，画画图，他们又不懂技术细节，天天开会讨论来，讨论去都是在空谈一切。没有我们这些屌丝写的代码，你让他们去实现，估计几年也搞不出来。我写代码的能力比他们顶上N个人；再看看人家老外，60/70岁了还在码代码。为什么我国到了30岁了，都不去写代码了，都去搞所谓的架构设计了。是他们写代码写不好才去干架构师活吗？&lt;/p&gt;
+
+&lt;p&gt;经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;数据不可靠，系统常出错&lt;/li&gt;
+&lt;li&gt;增加新需求困难，场景总是覆盖不全&lt;/li&gt;
+&lt;li&gt;系统之间集成各种问题难以轻易解决&lt;/li&gt;
+&lt;li&gt;交付不同局点，代码总是改来改去&lt;/li&gt;
+&lt;li&gt;每年代码量成倍增加，前辈的代码看不懂、改不动&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这其实是光写好代码是不能解决上述问题的。只有你经历过，感受到，才能认识到系统的架构是何其重要。作为曾经一名码农，这几年一直在设计部与架构部工作，总是羡慕那些高级别的架构师：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;他们思考问题角度完全不同，总能高屋建瓴概括总结&lt;/li&gt;
+&lt;li&gt;他们思考问题比较全面，又能抽象提炼，让人快速抓住要要点&lt;/li&gt;
+&lt;li&gt;他们们输出的胶片、图画非常简洁，优美，明了，无二义&lt;/li&gt;
+&lt;li&gt;他们画出来图来指导解决集成问题，往往能一针见血地说明关键之处&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;为什么他们的图能画得那么好，胶片写得那么牛，而我们似乎绞尽脑汁也难画出一张满意的图，难写出几张像样的胶片，是什么原因？是画得太少，写得太少，经验不足，方法不对，无灵感，还是天赋？&lt;/p&gt;
+
+&lt;p&gt;看到&lt;a href=&#34;https://zhuanlan.zhihu.com/intelligence&#34;&gt;采铜&lt;/a&gt;老师的文章才悄然大悟：原来，&lt;strong&gt;不仅是因为架构师需要丰富的实践经验、敏锐的分析能力，以及系统性的建模能力&lt;/strong&gt;，更主要的是因为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;日常我们通过文字/讲故事是线性叙述，是人和时间的结合；而画图，是人与空间结合，理有助于思维拓展&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;推荐阅读：&lt;br /&gt;
+[1] &lt;a href=&#34;https://zhuanlan.zhihu.com/p/19874517&#34;&gt;思维运筹学导论（原理篇）&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;https://zhuanlan.zhihu.com/p/19888228&#34;&gt;思维运筹学导论（实践篇 · 图形化 · 上）&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://zhuanlan.zhihu.com/p/19891814&#34;&gt;思维运筹学导论（实践篇 · 图形化 · 下）&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Archlinux on WSL</title>
+      <link>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</link>
+      <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</guid>
+      <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;wsl&#34;&gt;WSL&lt;/h2&gt;
+
+&lt;p&gt;Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;用户模式会话管理器服务，处理Linux实例的生命周期；&lt;/li&gt;
+&lt;li&gt;Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核；&lt;/li&gt;
+&lt;li&gt;承载未经修改的用户模式Linux的Pico进程，例如/bin/bash。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。&lt;/p&gt;
+
+&lt;p&gt;Bash on Ubuntu on Windows就是WSL的具体应用。它是由微软与Canonical公司合作开发，目标是使纯正的 Ubuntu 14.04镜像能下载和解压到用户的本地计算机，并且镜像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。&lt;/p&gt;
+
+&lt;h2 id=&#34;bash-on-ubuntu-on-windows&#34;&gt;Bash on Ubuntu on Windows&lt;/h2&gt;
+
+&lt;p&gt;作为一名ArchLinux忠实爱好者，自然想在WSL上运行ArchLinux。参考了一些网上的资料，我已把Win10升级到14955，首先还是先得安装Bash on Ubuntu on Windows：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;开启开发人员模式：设置-更新与恢复-针对开发人员-开发人员模式&lt;/li&gt;
+&lt;li&gt;开启WSL子系统：控制面板-程序和功能-启用或关闭 Windows 功能-适用于 Linux 的 Windows 子系统（beta）&lt;/li&gt;
+&lt;li&gt;安装Bash on Ubuntu on Windows: 命令提示符（cmd）-输入bash-按提示完成安装&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;由于需要下载Ubuntu需要从应用商店下载，在天朝的网络，可能会比较慢，甚至会连接不上，我就折腾好久。并且它居然没有断点续传，好几次下载到70%多，就断开了，真让人受不了。&lt;/p&gt;
+
+&lt;p&gt;由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools工具是用于解压sfs文件的，所以先把Ubuntu的更新源替换成国内的，比如&lt;a href=&#34;http://mirrors.163.com/.help/ubuntu.html&#34;&gt;mirrors.163.com/ubuntu&lt;/a&gt;或&lt;a href=&#34;http://mirrors.aliyun.com/help/ubuntu&#34;&gt;mirrors.aliyun.com/ubuntu&lt;/a&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get update
+$ sudo apt-get install squashfs-tools
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;archlinux-on-wsl&#34;&gt;Archlinux on WSL&lt;/h2&gt;
+
+&lt;p&gt;首先从&lt;a href=&#34;http://mirrors.aliyun.com/archlinux/iso/latest/&#34;&gt;http://mirrors.aliyun.com/archlinux/iso/latest/&lt;/a&gt;下载最新的ArchISO。&lt;/p&gt;
+
+&lt;p&gt;从ArchISO中提取出/arch/x86_64/airoot.sfs文件放在Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。&lt;/p&gt;
+
+&lt;p&gt;在Ubuntu中把airoot.sfs解压，建议在当前Ubuntu的用户Home目录下执行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo unsquashfs airoot.sfs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后把Bash窗口关掉，通过Windows的文件资源管理器进行到&lt;code&gt;C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Lxss&lt;/code&gt;文件夹。由于AppData与Lxss都是隐藏目录，可以在地址栏上直接输入路径就可以直接进入，否则需要在文件夹选项 中把“隐藏受保护的操作系统文件”选项取消才能看到。&lt;/p&gt;
+
+&lt;p&gt;其中的&lt;code&gt;rootfs&lt;/code&gt;文件夹就是Linux中的&lt;code&gt;/&lt;/code&gt;，先把原有的&lt;code&gt;rootfs&lt;/code&gt;修改其它名称备份，还把之前&lt;code&gt;airoot.sfs&lt;/code&gt;解压的&lt;code&gt;squashfs-root&lt;/code&gt;直接剪切到Lxss，重命名为&lt;code&gt;rootfs&lt;/code&gt;。&lt;strong&gt;注意&lt;/strong&gt;，&lt;code&gt;squashfs-root&lt;/code&gt;不能在Windows下拷贝到&lt;code&gt;Lxss\rootfs&lt;/code&gt;，由于在WSL与Windows对文件读写操作还是有区别，Windows下拷贝可能存在丢失文件。&lt;/p&gt;
+
+&lt;p&gt;先在命令提示符（cmd）用&lt;code&gt;lxrun /setdefaultuser root&lt;/code&gt; 把默认的用户换成root。再输入bash进入Linux。&lt;/p&gt;
+
+&lt;p&gt;这个我们就把Ubuntu替换成Archlinux。我们就可以像使用Archlinux一样来在WSL中使用Archlinux。比如创建新的用户，设置locale，替换Archlinux的更新源。不过由于我最早是在14396版本中使用WSL，还是在使用过程遇到了几个问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;无法chroot，解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;升级到14936或以后的Insider Preview版本。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;# pacman-key --init
+# pacman-key --populate
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;# cd /usr/share/i18n/charmaps
+# tar zxvf UTF-8.gz
+# locale-gen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;升级到14959或以后的Insider Preview版本。&lt;/p&gt;
+
+&lt;h2 id=&#34;wsl终端&#34;&gt;WSL终端&lt;/h2&gt;
+
+&lt;p&gt;windows下命令提示符（cmd），输入bash可以直接进入WSL，但它的使用体验无法跟Linux中的终端相比。好在网上已有同学先贡献了终端模拟器，都是基于mintty，总算能找回一些在纯Linux中使用终端的感觉。若使用下msys2的同学应该对它比较熟悉。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mintty/wsltty&#34;&gt;https://github.com/mintty/wsltty&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/goreliu/wsl-terminal&#34;&gt;https://github.com/goreliu/wsl-terminal&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&#34;&gt;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://tieba.baidu.com/p/4834742871&#34;&gt;http://tieba.baidu.com/p/4834742871&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://linux.cn/article-7857-1.html&#34;&gt;https://linux.cn/article-7857-1.html&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;https://linux.cn/article-7209-1.html&#34;&gt;https://linux.cn/article-7209-1.html&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>团队管理</title>
+      <link>http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/</link>
+      <pubDate>Thu, 27 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/</guid>
+      <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
+
+&lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;业务&#34;&gt;业务&lt;/h2&gt;
+
+&lt;p&gt;虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;价值贡献&lt;/li&gt;
+&lt;li&gt;满意度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;面向业务：核心竞争力，价值识别与规划&lt;/li&gt;
+&lt;li&gt;面向业务&amp;amp;解决方案：领域级，变革项目级规划、运作&lt;/li&gt;
+&lt;li&gt;满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴&lt;/li&gt;
+&lt;li&gt;Top产品，问题的攻关&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;人&#34;&gt;人&lt;/h2&gt;
+
+&lt;p&gt;人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;选&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;亲自招聘，选择合适的人&lt;/li&gt;
+&lt;li&gt;已有员工中骨干识别&lt;/li&gt;
+&lt;li&gt;非关键外包合作&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;用&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;角色与岗位排兵布阵&lt;/li&gt;
+&lt;li&gt;合作外包&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;育&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流&lt;/li&gt;
+&lt;li&gt;能力培养：提升人员技能；组织能力建设&lt;/li&gt;
+&lt;li&gt;全程关注：事前辅导，事中监控，事后总结&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;留&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;绩效辅导&lt;/li&gt;
+&lt;li&gt;即时激励&lt;/li&gt;
+&lt;li&gt;组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理）&lt;/li&gt;
+&lt;li&gt;岗位流动&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;事&#34;&gt;事&lt;/h2&gt;
+
+&lt;p&gt;以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;TopN问题与任务跟踪管理&lt;/li&gt;
+&lt;li&gt;KPI管理：现状问题分析；改进计划（包括措施）；改进监控；达成评估&lt;/li&gt;
+&lt;li&gt;风险管理&lt;/li&gt;
+&lt;li&gt;技术持续改进：新技术引入；优秀实践；&lt;/li&gt;
+&lt;li&gt;质量持续改进：质量文化；质量监控，问题日清日结；质量回溯；质量改进&lt;/li&gt;
+&lt;li&gt;流程运作持续改进&lt;/li&gt;
+&lt;li&gt;知识管理&lt;/li&gt;
+&lt;li&gt;跨部门协同&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>软件变革下设计原则</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0910_soft_design/</link>
+      <pubDate>Sat, 10 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0910_soft_design/</guid>
+      <description>&lt;p&gt;传统大型软件系统 ，多以功能需求驱动设计与开发。在体系结构上是一个单体应用，变更修改往往是牵一而发动全身；在系统生态上是一个封闭系统，系统集成是大量定制开发。单体封闭的系统在交付中面临着越来越多的挑战，提升系统的竞争力首先是在软件架构上先行。软件系统发展也需像硬件一样不断地更新换代，软件架构设计需要输入新的思维。只有在思想上彻底地变革，才能摆脱原有的束缚与局限性。&lt;/p&gt;
+
+&lt;h2 id=&#34;体验为王&#34;&gt;体验为王&lt;/h2&gt;
+
+&lt;p&gt;软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。
+&lt;/p&gt;
+
+&lt;p&gt;正如我们所见到的，iPhone的成功原因之一，就是注重用户的体验获得巨大的成功。今天，人们于弹指间操控丰富业务。无数应用，以碎片化的形式填满用户时间，连接起永远在线的数字生活。一个显见的事实是，“体验”正被尊奉为至高无上的法则，用户已重掌驱动行业发展的威权。&lt;/p&gt;
+
+&lt;p&gt;曾经一位领导说我们的软件系统发展应该先是“能用”，再是“好用”，最后是“易用”。这其实也是软件系统从功能为主朝用户至上，体验为王方向发展。套用阿里一句词：“让天下没有难用的软件”。&lt;/p&gt;
+
+&lt;p&gt;那如何能做到“体验为王”的软件设计呢？&lt;/p&gt;
+
+&lt;p&gt;作名一名架构师，首先要始终以用户和角色为中心，要从原有的我能为你提供什么功能，转变成用户最需要什么为出发点。首先要把自己当成用户，如果连自己都不去使用自己设计的系统，又如何把系统设计好呢。&lt;/p&gt;
+
+&lt;p&gt;有人说，软件架构设计不是UI/UE设计，架构设计是功能逻辑设计，是技术实现设计，是物理部署设计；而用户体验只是UI/UE都需要考虑的。UI设计，确切地说，用户使用界面上设计首先要考虑用户体验。但体验不仅仅是界面上的交互操作的易用性，心理感受等。试想，如果你浏览一个网页或使用一个App，虽UI设计非常符合用户的使用习惯，但响应速度却非常地慢。这也不会是好的体验。速度上需要零等待，存储上需要大容量，并发上需要高吞量。这些都需要在软件系统架构上着重设计。&lt;/p&gt;
+
+&lt;p&gt;软件架构设计要以需求的场景化、实例化驱动设计。无法场景化的需求往往是伪需求。真正的需求是满足目标用户在特定场景下的目标。作为架构设计师，要弄清其中两个关键因素：1）目标用户；2）特定场景下的目标。&lt;/p&gt;
+
+&lt;h2 id=&#34;平台为本&#34;&gt;平台为本&lt;/h2&gt;
+
+&lt;p&gt;平台化分为技术支撑型平台和应用实现型平台。技术支撑型平台的用户为软件开发人员，提供者负责平台的维护和升级，用户负责基于平台的上层实现。这类平台包括软件中间件、开发工具、应用服务器等。应用实现型平台的用户为终端用户，提供者不但负责平台的维护和升级，还要负责实现基于平台的上层应用。&lt;/p&gt;
+
+&lt;p&gt;平台化首先需要在架构设计上考虑系统的开放性，通常的做法是系统功能服务化，API化。采用标准的通信协议，让系统易于被集成。系统具备更好的应用开发和维护的工具和接口，实施时可以迅速根据用户的特点进行部署和二次开发，用户可以最大限度地使用贴近自身特点来重新定义软件功能。&lt;/p&gt;
+
+&lt;p&gt;像Saleforce等SaaS平台一样，平台化使运行于上层的应用软件在某种程度上做到与技术无关，而是面向具体业务，提供更为领域化的DSL。平台化提供各种易于组装的套件，可定制修改的业务模板。这样才能面向合作伙伴，构建平台之上的工具链，生态社区等。&lt;/p&gt;
+
+&lt;p&gt;软件系统在研发和使用过程中需求变更不可避免。平台化的软件也在架构设计上，需地支持系统的平滑演进与对外接口兼容。这也需要在设计上考虑平台与上层业务之间的边界划分。上层的业务是最为变更频繁的，一是业务领域特性一般的变更不要侵入到平台。其二、平台的发展也不能影响上层业务的运行。当系统面对市场需要时，要评估这些需求是否需要在平台增加或改动哪些功能，平台软件是要随着客户需求而发展演进的。只有不断切合上层业务发展诉求的平台才具有更久的生命力。&lt;/p&gt;
+
+&lt;h2 id=&#34;内生敏捷&#34;&gt;内生敏捷&lt;/h2&gt;
+
+&lt;p&gt;业务逻辑复杂多变，如何保证程序逻辑的代码稳定是架构师需要解决的问题，良好的模块划分和扩展性强的接口设计都是解决这个问题的利器。微服务化，大系统小做。系统分解的目标并不仅仅是搞出一堆很小的服务，这不是目标；真正的目标是解决系统在业务急剧增长时遇到的问题。&lt;/p&gt;
+
+&lt;p&gt;模块化，微服务化的让某一个功能足够内聚，足够小，代码容易理解、开发效率提高。服务之间可以独立部署，微服务架构让持续集成（CI），持续部署（CD）成为可能，基于数据化地构建软件生产流水线成为可能。各个服务之间可以在流水线上按功特性灵活组装。&lt;/p&gt;
+
+&lt;p&gt;软件的本质是要面对各种业务需求的变化，这需要系统高度地抽象化，以不变来应对万变。使用一切可以减少编码的技术，例如元数据驱动。软件系统设计已经发展到使用运行时引擎从元数据（即关于应用程序本身的数据）生成应用程序组件的阶段。在一个定义良好的元数据驱动的体系结构中，已编译的运行时引擎（内核）、应用数据、描述一个应用程序的基础功能的元数据，以及与每个租户的数据和定制相关的元数据之间有一个明确的分离。这些明显的边界使人们有可能独立更新系统内核，修改的核心应用程序，或定制租户的具体组成部分，虚拟意义上来说，几乎不会影响其他人。&lt;/p&gt;
+
+&lt;h2 id=&#34;数据驱动&#34;&gt;数据驱动&lt;/h2&gt;
+
+&lt;p&gt;数据驱动是系统内生的数据感知，基于系统运行数据进行系统的预测与资源优化。数据驱动的终极目标是希望利用数据能够直接在生产环境带来改变，提供价值。&lt;/p&gt;
+
+&lt;p&gt;数据驱动自动化干预，需要不断优化的分析算法，利用数据基础在特定领域完成基于算法的自动调整。算法线上部署除了对平台和算法本身的支持之外，还需要考虑：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;数据的及时性：实时数据和历史数据的组合，在特定周期下替换历史数据。&lt;/li&gt;
+&lt;li&gt;异常数据的容忍：线上算法的输入无法做到离线的清洗水平，需要更健壮的数据预处理模块。&lt;/li&gt;
+&lt;li&gt;算法的迭代：需要可靠的离线迭代平台来纠正线上算法运行过程中的误差和偏离。采集线上的数据到离线平台，通过离线平台调整参数和适应性。支持从离线平台推送新的算法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一个系统的开放性，也体现在数据的开放性。系统架构上需考虑可被高层的系统，更深度的分析。不同维度与不同层次的分析，才能让数据变得更有价值。&lt;/p&gt;
+
+&lt;h2 id=&#34;原生云化&#34;&gt;原生云化&lt;/h2&gt;
+
+&lt;p&gt;原生云化指“Cloud Native”，它是多种不同思想的一个集合，这些思想帮助软件系统转移到云平台。这些思想包括DevOps、持续交付、微服务、敏捷基础设施、康威定律等。“Cloud Native”没有标准的官方定义，但包括如下几个特征：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可移植：应用层与物理层隔离。应用从开发环境迁移到物理环境无需改变环境配置。&lt;/li&gt;
+&lt;li&gt;自动化：通过持续集成和自我修复系统将IT基础设施的开发和部署进行自动化。&lt;/li&gt;
+&lt;li&gt;效率提升：通过引入全新方式来降低运维成本，让系统管理员可以有更多时间去改进系统，而不是把时间都用在维护系统上。&lt;/li&gt;
+&lt;li&gt;意识改变：DevOps的兴起以及运维和开发人员越来越多的共同协作发布服务，包括微服务和传统服务，让用户意识到服务发布的速度和敏捷性，已经和稳定性一样重要。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;原生云化的系统也是具有&lt;a href=&#34;https://12factor.net/&#34;&gt;12因子&lt;/a&gt;。原生云化首先考虑是的分布式一切。分布式架构可以以水平扩展，通过横向扩充节点，如一个节点扩充到多个节点，每个节点运行独立实例，节点与节点之间通过网络互连，随着节点扩充系统处理能力能够随之提升，单节点失效时，整个集群仍然可以对外提供服务。遵循12因子原则的应用程序，具有一致的架构接口。为了使创建的分布式应用马上就可以部署在云中，这些接口的构建采用一种无状态、面向进程的设计模式。&lt;/p&gt;
+
+&lt;p&gt;多租户也是云计算的基本属性之一，原生云化的系统也必定是多租户架构的系统。利用多租户带来资源上高度共享模式，提高资源资源利用率，降低单位资源成本。但是共享资源越多，会带来租户的隔离性难度越大，成本越高。在按隔离程序不同层次，可分为物理多租架构与逻辑多租架构，物理多租架构技术如采用虚拟化技术，Docker容器，以及应用容器技术来隔离租户资源。逻辑多租架构技术如应用程序进程间隔离，数据切割隔离。&lt;/p&gt;
+
+&lt;p&gt;原生云化的系统也是最大程度自动化。健壮自动化几乎能处理传统IT中需要手工处理的所有事情：当应用实例增减时更新路由器和负载均衡组件，部署应用所需的供应和联网服务，分配新的基础设施，设置监控和灾后恢复服务，日志聚合，当基础设施失效时重新部署应用。这些高级自动化实践，能把你从应对零日危险的痛苦中拯救出来：自动化采用滚动更新的方式，为每一个节点打上安全补丁，同时又保证服务一直在线。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go map key类型分析</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0904_go_map/</link>
+      <pubDate>Sun, 04 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0904_go_map/</guid>
+      <description>&lt;p&gt;团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。&lt;/p&gt;
+
+&lt;h2 id=&#34;map的key类型&#34;&gt;map的key类型&lt;/h2&gt;
+
+&lt;p&gt;map中的key可以是任何的类型，只要它的值能比较是否相等，Go的&lt;a href=&#34;http://golang.org/ref/spec#Comparison_operators&#34;&gt;语言规范&lt;/a&gt;已精确定义，Key的类型可以是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;布尔值&lt;/li&gt;
+&lt;li&gt;数字&lt;/li&gt;
+&lt;li&gt;字符串&lt;/li&gt;
+&lt;li&gt;指针&lt;/li&gt;
+&lt;li&gt;通道&lt;/li&gt;
+&lt;li&gt;接口类型&lt;/li&gt;
+&lt;li&gt;结构体&lt;/li&gt;
+&lt;li&gt;只包含上述类型的数组。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;但不能是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;slice&lt;/li&gt;
+&lt;li&gt;map&lt;/li&gt;
+&lt;li&gt;function
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Key类型只要能支持&lt;code&gt;==&lt;/code&gt;和&lt;code&gt;!=&lt;/code&gt;操作符，即可以做为Key，当两个值&lt;code&gt;==&lt;/code&gt;时，则认为是同一个Key。&lt;/p&gt;
+
+&lt;h2 id=&#34;比较相等&#34;&gt;比较相等&lt;/h2&gt;
+
+&lt;p&gt;我们先看一下样例代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+
+type _key struct {
+}
+
+type point struct {
+	x int
+	y int
+}
+
+type pair struct {
+	x int
+	y int
+}
+
+type Sumer interface {
+	Sum() int
+}
+
+type Suber interface {
+	Sub() int
+}
+
+func (p *pair) Sum() int {
+	return p.x + p.y
+}
+
+func (p *point) Sum() int {
+	return p.x + p.y
+}
+
+func (p pair) Sub() int {
+	return p.x - p.y
+}
+
+func (p point) Sub() int {
+	return p.x - p.y
+}
+
+func main() {
+	fmt.Println(&amp;quot;_key{} == _key{}: &amp;quot;, _key{} == _key{}) // output: true
+
+	fmt.Println(&amp;quot;point{} == point{}: &amp;quot;, point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
+	fmt.Println(&amp;quot;&amp;amp;point{} == &amp;amp;point{}: &amp;quot;, &amp;amp;point{x: 1, y: 2} == &amp;amp;point{x: 1, y: 2}) // output: false
+
+	fmt.Println(&amp;quot;[2]point{} == [2]point{}: &amp;quot;, 
+	  [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
+
+	var a Sumer = &amp;amp;pair{x: 1, y: 2}
+	var a1 Sumer = &amp;amp;pair{x: 1, y: 2}
+	var b Sumer = &amp;amp;point{x: 1, y: 2}
+	fmt.Println(&amp;quot;Sumer.byptr == Sumer.byptr: &amp;quot;, a == b)        // output: false
+	fmt.Println(&amp;quot;Sumer.sametype == Sumer.sametype: &amp;quot;, a == a1) // output: false
+
+	var c Suber = pair{x: 1, y: 2}
+	var d Suber = point{x: 1, y: 2}
+	var d1 point = point{x: 1, y: 2}
+	fmt.Println(&amp;quot;Suber.byvalue == Suber.byvalue: &amp;quot;, c == d)  // output: false
+	fmt.Println(&amp;quot;Suber.byvalue == point.byvalue: &amp;quot;, d == d1) // output: true
+
+	ci1 := make(chan int, 1)
+	ci2 := ci1
+	ci3 := make(chan int, 1)
+	fmt.Println(&amp;quot;chan int == chan int: &amp;quot;, ci1 == ci2) // output: true
+	fmt.Println(&amp;quot;chan int == chan int: &amp;quot;, ci1 == ci3) // output: false
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。&lt;/li&gt;
+&lt;li&gt;Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等&lt;/li&gt;
+&lt;li&gt;Interface values are comparable. Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil.从上面的例子我们可以看出，当接口有相同的动态类型并且有相同的动态值，或者值为都为nil时相等。要注意的是：参考&lt;a href=&#34;http://lanlingzi.cn/post/technical/2016/0803_go_interface/&#34;&gt;理解Go Interface&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. They are equal if t&amp;rsquo;s dynamic type is identical to X and t&amp;rsquo;s dynamic value is equal to x.如果一个是非接口类型X的变量x，也实现了接口T，与另一个接口T的变量t，只t的动态类型也是类型X，并且他们的动态值相同，则他们相等。&lt;/li&gt;
+&lt;li&gt;Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal.结构体当所有字段的值相同，并且没有 相应的非空白字段时，则他们相等，&lt;/li&gt;
+&lt;li&gt;Array values are comparable if values of the array element type are comparable. Two array values are equal if their corresponding elements are equal.两个数组只要他们包括的元素，每个元素的值相同，则他们相等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行&lt;code&gt;==&lt;/code&gt;操作的，例如slice，那么就不能作为map的key。&lt;/p&gt;
+
+&lt;h2 id=&#34;类型判断&#34;&gt;类型判断&lt;/h2&gt;
+
+&lt;p&gt;判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，&lt;code&gt;_type&lt;/code&gt;结构是描述最为基础的类型（&lt;code&gt;runtime/type.go&lt;/code&gt;），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type _type struct {
+	size       uintptr
+	ptrdata    uintptr 
+	hash       uint32
+	tflag      tflag
+	align      uint8
+	fieldalign uint8
+	kind       uint8
+	alg        *typeAlg
+	gcdata    *byte
+	str       nameOff
+	ptrToThis typeOff
+}
+...
+type chantype struct {
+	typ  _type
+	elem *_type
+	dir  uintptr
+}
+...
+type slicetype struct {
+	typ  _type
+	elem *_type
+}
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中对于类型的值是否相等，需要使用到成员&lt;code&gt;alg *typeAlg&lt;/code&gt;(&lt;code&gt;runtime/alg.go&lt;/code&gt;)，它则持有此类型值的hash与equal的算法，它也是一个结构体:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type typeAlg struct {
+	// function for hashing objects of this type
+	// (ptr to object, seed) -&amp;gt; hash
+	hash func(unsafe.Pointer, uintptr) uintptr
+	// function for comparing objects of this type
+	// (ptr to object A, ptr to object B) -&amp;gt; ==?
+	equal func(unsafe.Pointer, unsafe.Pointer) bool
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;runtime/alg.go&lt;/code&gt;中提供了各种基础的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func strhash(a unsafe.Pointer, h uintptr) uintptr {
+	x := (*stringStruct)(a)
+	return memhash(x.str, h, uintptr(x.len))
+}
+
+func strequal(p, q unsafe.Pointer) bool {
+	return *(*string)(p) == *(*string)(q)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;有了这些基础的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在&lt;code&gt;runtime/hashmap.go&lt;/code&gt;中的&lt;code&gt;mapaccess1&lt;/code&gt;函数:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+	...
+	alg := t.key.alg
+	hash := alg.hash(key, uintptr(h.hash0)) // 1
+	m := uintptr(1)&amp;lt;&amp;lt;h.B - 1
+	b := (*bmap)(add(h.buckets, (hash&amp;amp;m)*uintptr(t.bucketsize))) // 2
+	...
+	top := uint8(hash &amp;gt;&amp;gt; (sys.PtrSize*8 - 8))
+	if top &amp;lt; minTopHash {
+		top += minTopHash
+	}
+	for {
+		for i := uintptr(0); i &amp;lt; bucketCnt; i++ {
+			...
+			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
+			if alg.equal(key, k) { // 3
+				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
+				...
+				return v
+			}
+		}
+	...
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;调用&lt;code&gt;key&lt;/code&gt;类型的&lt;code&gt;hash&lt;/code&gt;方法，计算出&lt;code&gt;key&lt;/code&gt;的&lt;code&gt;hash&lt;/code&gt;值&lt;/li&gt;
+&lt;li&gt;根据&lt;code&gt;hash&lt;/code&gt;值找到对应的桶&lt;code&gt;bucket&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在桶中找到&lt;code&gt;key&lt;/code&gt;值相等的map的&lt;code&gt;value&lt;/code&gt;。判断相等需调用&lt;code&gt;key&lt;/code&gt;类型的&lt;code&gt;equal&lt;/code&gt;方法&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;到现在我们也就有了初步了解，map中的&lt;code&gt;key&lt;/code&gt;访问时同时需要使用该类型的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，只要&lt;code&gt;key&lt;/code&gt;值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;m := make(map[interface{}]interface{})
+m[_key{}] = &amp;quot;value&amp;quot;
+if v, ok := m[_key{}];ok {
+	fmt.Println(&amp;quot;%v&amp;quot;, v) // output: value
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://blog.golang.org/go-maps-in-action&#34;&gt;https://blog.golang.org/go-maps-in-action&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;https://golang.org/ref/spec#Comparison_operators&#34;&gt;https://golang.org/ref/spec#Comparison_operators&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go VIM开发环境</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0903_vim/</link>
+      <pubDate>Sat, 03 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0903_vim/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改&lt;/li&gt;
+&lt;li&gt;配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换&lt;/li&gt;
+&lt;li&gt;有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
+
+&lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;
+
+&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
+&lt;img src=&#34;https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966&#34; alt=&#34;unite&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;插件&#34;&gt;插件&lt;/h2&gt;
+
+&lt;p&gt;我配置VIM主要用于Go语言开发，所以对VIM的配置是主要是集中于代码编写，Go语言的代码提示，格式化等。使用了如下主要插件:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Plugin &#39;honza/vim-snippets&#39;                 &amp;quot;快速插入代码片段snippets
+Plugin &#39;scrooloose/nerdtree&#39;                &amp;quot;文件浏览，文件树目录
+Plugin &#39;scrooloose/nerdcommenter&#39;           &amp;quot;快速加减注释
+Plugin &#39;scrooloose/syntastic&#39;               &amp;quot;代码错误检测，其它应该也类似
+Plugin &#39;Xuyuanp/nerdtree-git-plugin&#39;        &amp;quot;Git插件
+Plugin &#39;majutsushi/tagbar&#39;                  &amp;quot;标签列表
+Plugin &#39;kien/ctrlp.vim&#39;                     &amp;quot;文件搜索,杀手级,重新定义了编辑器打开文件的方式
+Plugin &#39;vim-scripts/TaskList.vim&#39;           &amp;quot;快速跳转到TODO列表
+Plugin &#39;vim-scripts/SuperTab&#39;               &amp;quot;Tab代码提示
+Plugin &#39;fannheyward/rainbow_parentheses.vim&#39; &amp;quot;括号匹配高亮
+Plugin &#39;tpope/vim-surround&#39;                 &amp;quot;快速加环绕符
+Plugin &#39;tpope/vim-repeat&#39;                   &amp;quot;配合使用增强版命令重复
+Plugin &#39;tpope/vim-sensible&#39;                 &amp;quot;基本的Vim设置
+Plugin &#39;mhinz/vim-startify&#39;                 &amp;quot;更改开始界面的插件
+Plugin &#39;fatih/vim-go&#39;                       &amp;quot;GO语言
+Plugin &#39;bling/vim-airline&#39;                  &amp;quot;状态栏
+Plugin &#39;junegunn/vim-easy-align&#39;            &amp;quot;方便的按分隔符对齐,比如=号
+Plugin &#39;ConradIrwin/vim-bracketed-paste&#39;    &amp;quot;插入模式下粘贴内容，不会有任何变形 :set paste
+Plugin &#39;fholgado/minibufexpl.vim&#39;           &amp;quot;多文件切换，也可使用鼠标双击相应文件名进行切换
+Plugin &#39;SirVer/ultisnips&#39;                   &amp;quot;宏定义补全
+Plugin &#39;Yggdroot/indentLine&#39;                &amp;quot;缩进虚线
+Plugin &#39;Shougo/neocomplete.vim&#39;             &amp;quot;自动补全
+Plugin &#39;Shougo/unite.vim&#39;                   &amp;quot;文件或Buffer列表
+Plugin &#39;Lokaltog/vim-easymotion&#39;            &amp;quot;快速移动,杀手锏，跳转到光标后任意位置
+Plugin &#39;Raimondi/delimitMate&#39;               &amp;quot;自动括号补全
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;vim-go：已把Go的开发工具大包大揽了，非常省事。可以通过运行:GoInstallBinaries来自行安装&lt;/li&gt;
+&lt;li&gt;neocomplete.vim：非常轻量的基于缓存的代码补全，vim-go中已集成gocode来做代码联想，并能与neocomplete配合使用。&lt;/li&gt;
+&lt;li&gt;unite.vim：又一个神器，使用类似于SublimeText与VSCode的&lt;code&gt;Go to xxx&lt;/code&gt;(快捷键:&lt;code&gt;CMD+P&lt;/code&gt;/&lt;code&gt;Ctrl+Shift+P&lt;/code&gt;)功能，能快速列出最使用打开文件，当前目录下文件，Buffer列表等。&lt;/li&gt;
+&lt;li&gt;tagbar：标签列表，需要ctags，而Go的各元素能正常展示，则需要依赖于gotags，vim-go中已集成。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;分享&#34;&gt;分享&lt;/h2&gt;
+
+&lt;p&gt;个人的VIM的配置，已放入在Github上，若有需要的朋友尽管拿去使用，有问题欢迎反馈。&lt;/p&gt;
+
+&lt;p&gt;GitHub地址：&lt;a href=&#34;https://github.com/xtfly/xvim&#34;&gt;https://github.com/xtfly/xvim&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>入园家长沟通会</title>
+      <link>http://lanlingzi.cn/post/stories/2016/0829_kid_garden/</link>
+      <pubDate>Mon, 29 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/stories/2016/0829_kid_garden/</guid>
+      <description>&lt;p&gt;时间真是过得太快，转眼儿子要上幼儿园了。昨天是第一次参加儿子的入园家长沟通会。&lt;/p&gt;
+
+&lt;h2 id=&#34;上幼儿园的意义&#34;&gt;上幼儿园的意义&lt;/h2&gt;
+
+&lt;p&gt;上幼儿园是小孩步入社会第一步，是融入世界的起点。脱离原生家庭才能独立成长，幼儿园有孩子同龄的伙伴，可以让孩子收获不同的体验；幼儿园也有专业的老师，可以让孩子快乐自由的探索自己，认识朋友，体验世界。&lt;/p&gt;
+
+&lt;p&gt;我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;幼儿园与家长的关系&#34;&gt;幼儿园与家长的关系&lt;/h2&gt;
+
+&lt;p&gt;现在的媒体会经常报道一些幼儿园的老师是怎么不负责的，同时家长也不太可能放心让孩子在外面受丁点的苦。在幼儿园只要有些风吹草动，就会造成冲突。作为家长，先要信任，再及时沟通。&lt;/p&gt;
+
+&lt;p&gt;诚然，当今的社会的幼儿园也是一个趋利机构，在知识学习上急功近利，拔苗助长。我个人是不太在乎小孩在幼儿园是否能学到多少知识，而是关心他过得快不快乐。非常反感把小学生的学习任务强加到幼儿园孩子身上的做法，孩子的天性就是玩，在玩的过程得到性格、情感、心智的成长才重要。&lt;/p&gt;
+
+&lt;p&gt;爸爸妈妈永远是孩子最重要的人，哪怕这个世界真的有一所完美的幼儿园，也永远不要把所有责任都扔给幼儿园。毕竟，对爸爸妈妈来说，自己的孩子独一无二，对孩子来说，自己的爸爸妈妈也独一无二。&lt;/p&gt;
+
+&lt;p&gt;孩子上幼儿园并不是不需要再管孩子，而是更需要花更多的时间去侧面了解孩子，关心孩子，教育孩子。幼儿园是一个小社会，不同的小朋友来自不同的家庭。不同的家庭，有不同的价值观，不同的思维，不同的生活习惯。这些都会影响孩子的性格成长，生活习性。所以也需要家长投入更多的精力来关注孩子的成长。&lt;/p&gt;
+
+&lt;h2 id=&#34;家长如何做&#34;&gt;家长如何做&lt;/h2&gt;
+
+&lt;p&gt;小孩上幼儿园，小孩突然完全脱离了自己的控制，这尤其是对家长的一种考验。孩子的成长也需要家长一起成长，那家长如何做呢？总结起来，有五要，有五不要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;五要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;走路回家&lt;/li&gt;
+&lt;li&gt;保持平静&lt;/li&gt;
+&lt;li&gt;分享快乐&lt;/li&gt;
+&lt;li&gt;主动沟通&lt;/li&gt;
+&lt;li&gt;积极配合&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;五不要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;甜水等待&lt;/li&gt;
+&lt;li&gt;刨根问底&lt;/li&gt;
+&lt;li&gt;迁就放纵&lt;/li&gt;
+&lt;li&gt;零食补偿&lt;/li&gt;
+&lt;li&gt;偏信偏听&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;</description>
+    </item>
+    
+    <item>
+      <title>Hexo NexT主题移植</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0828_hugo_next_theme/</link>
+      <pubDate>Sun, 28 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0828_hugo_next_theme/</guid>
+      <description>&lt;h2 id=&#34;概述&#34;&gt;概述&lt;/h2&gt;
+
+&lt;p&gt;我应该是一个喜欢折腾的技术党。从采用Hugo建静态blog以来，算上今天移植的这个，一共使用了三个主题：&lt;/p&gt;
+
+&lt;p&gt;第一个是修改自&lt;a href=&#34;http://blog.coderzh.com/&#34;&gt;Hueman&lt;/a&gt;，它是一个Wordpress主题。第二个是修改自&lt;a href=&#34;http://coderzh.github.io/hugo-pacman-theme/&#34;&gt;pacman&lt;/a&gt;，它是一个Hexo的主题。&lt;/p&gt;
+
+&lt;p&gt;这二个主题都是&lt;a href=&#34;http://blog.coderzh.com/&#34;&gt;coderzh&lt;/a&gt;最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。&lt;/p&gt;
+
+&lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;功能&#34;&gt;功能&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;支持分类、标签索引&lt;/li&gt;
+&lt;li&gt;支持归档列表索引&lt;/li&gt;
+&lt;li&gt;支持分页栏&lt;/li&gt;
+&lt;li&gt;支持RSS&lt;/li&gt;
+&lt;li&gt;支持文章大纲（TOC）&lt;/li&gt;
+&lt;li&gt;支持分享，采用多说的分享&lt;/li&gt;
+&lt;li&gt;支持统计分析（目前支持百度统计，与REVOLEERMAPS）&lt;/li&gt;
+&lt;li&gt;支持评论系统（多说）&lt;/li&gt;
+&lt;li&gt;支持菜单定制&lt;/li&gt;
+&lt;li&gt;支持社区链接定制&lt;/li&gt;
+&lt;li&gt;支持外部链接定制&lt;/li&gt;
+&lt;li&gt;全配置化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;分享&#34;&gt;分享&lt;/h2&gt;
+
+&lt;p&gt;这个NexT主题是使用Hugo的模板语法，从零开始，经过差不多一天的时间折腾才完工。目前也应用到了我现在的这个Blog上，看起来还行:)。若有需要的朋友尽管拿去使用，有问题欢迎反馈。&lt;/p&gt;
+
+&lt;p&gt;GitHub地址：&lt;a href=&#34;https://github.com/xtfly/hugo-theme-next&#34;&gt;https://github.com/xtfly/hugo-theme-next&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;由于Hugo的模版引擎和Hexo有区别，部分Hexo的样式或功能暂时无法实现，它还没有像Hexo NexT那样能高度地配置定制。并且它也仅仅在自己的Blog简单测试过，可能并不一定完全适合您的定制，您可以根据需求调整。&lt;/p&gt;
+
+&lt;h2 id=&#34;注意&#34;&gt;注意&lt;/h2&gt;
+
+&lt;p&gt;由于Hugo的&lt;code&gt;.Summary&lt;/code&gt;只有70个字符，对于中文文章来说，实在是太短了，你可以在文档中任一地方增加&lt;code&gt;&amp;lt;!--more--&amp;gt;&lt;/code&gt;来分割。&lt;/p&gt;
+
+&lt;hr /&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go测试</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</link>
+      <pubDate>Wed, 24 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</guid>
+      <description>&lt;p&gt;Go语言内置了测试框架，编写单元测试非常方便。&lt;/p&gt;
+
+&lt;h2 id=&#34;命名约定&#34;&gt;命名约定&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;测试代码位于以&lt;code&gt;_test.go&lt;/code&gt;结尾的源文件中，一般与源码在同一个package中。&lt;/p&gt;
+
+&lt;p&gt;位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;测试源码可以修改package名，带上&lt;code&gt;_test&lt;/code&gt;结尾&lt;/p&gt;
+
+&lt;p&gt;修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的&lt;code&gt;bytes&lt;/code&gt;中的测试代码，方便使用被测试的元素，可以采用&lt;code&gt;.&lt;/code&gt;来import测试的package：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package bytes_test
+
+import (
+    . &amp;quot;bytes&amp;quot;
+    &amp;quot;io&amp;quot;
+    ...
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Test开头的功能测试函数&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Benchmark开头的性能测试函数&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Example开头的样例代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func ExampleHello() {
+    hl := hello()
+    fmt.Println(hl)
+    // Output: hello.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;示例函数无需接收参数，但需要使用注释的&lt;code&gt;Output:&lt;/code&gt;标记说明示例函数的输出值，未指定&lt;code&gt;Output:&lt;/code&gt;标记或输出值为空的示例函数不会被执行。&lt;code&gt;go doc&lt;/code&gt;工具会解析示例函数的函数体作为对应&lt;strong&gt;包/函数/类型/类型方法&lt;/strong&gt;的用法。&lt;/p&gt;
+
+&lt;p&gt;示例函数需要归属于某个&lt;strong&gt;包/函数/类型/类型的方法&lt;/strong&gt;，具体命名规则如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Example() { ... }      // 包的示例函数
+func ExampleF() { ... }     // 函数F的示例函数
+func ExampleT() { ... }     // 类型T的示例函数
+func ExampleT_M() { ... }   // 类型T的M方法的示例函数
+
+// 多示例函数 需要跟下划线加小写字母开头的后缀
+func Example_suffix() { ... }
+func ExampleF_suffix() { ... }
+func ExampleT_suffix() { ... }
+func ExampleT_M_suffix() { ... }
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试类型&#34;&gt;测试类型&lt;/h2&gt;
+
+&lt;h3 id=&#34;功能测试&#34;&gt;功能测试&lt;/h3&gt;
+
+&lt;p&gt;功能测试函数以&lt;code&gt;*testing.T&lt;/code&gt;类型为单一参数&lt;code&gt;t&lt;/code&gt;，&lt;code&gt;testing.T&lt;/code&gt;类型用来管理测试状态和格式化测试日志。测试日志在测试执行过程中积累，完成后输出到标准错误输出。&lt;/p&gt;
+
+&lt;p&gt;常用方法:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;测试预期不符，使用&lt;code&gt;t.Error()&lt;/code&gt;或&lt;code&gt;t.Errorf()&lt;/code&gt;记录日志并标记测试失败&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestToTitle(t *testing.T) {
+    for _, tt := range ToTitleTests {
+        if s := string(ToTitle([]byte(tt.in))); s != tt.out {
+            t.Errorf(&amp;quot;ToTitle(%q) = %q, want %q&amp;quot;, tt.in, s, tt.out)
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;测试预期不符，使用&lt;code&gt;t.Fatal()&lt;/code&gt;和&lt;code&gt;t.Fatalf()&lt;/code&gt;跳出该测试函数&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestUnreadByte(t *testing.T) {
+    b := new(Buffer)
+    b.WriteString(&amp;quot;abcdefghijklmnopqrstuvwxyz&amp;quot;)
+
+    _, err := b.ReadBytes(&#39;m&#39;)
+    if err != nil {
+        t.Fatalf(&amp;quot;ReadBytes: %v&amp;quot;, err)
+    }
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;记录日志， 使用&lt;code&gt;t.Log()&lt;/code&gt;和&lt;code&gt;t.Logf()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestFowler(t *testing.T) {
+    files, err := filepath.Glob(&amp;quot;testdata/*.dat&amp;quot;)
+    if err != nil {
+        t.Fatal(err)
+    }
+    for _, file := range files {
+        t.Log(file)
+        testFowler(t, file)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;跳过某条测试用例，使用&lt;code&gt;t.Skip()&lt;/code&gt;和&lt;code&gt;t.Skipf()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestZip64(t *testing.T) {
+    if testing.Short() {
+        t.Skip(&amp;quot;slow test; skipping&amp;quot;)
+    }
+    const size = 1 &amp;lt;&amp;lt; 32 // before the &amp;quot;END\n&amp;quot; part
+    buf := testZip64(t, size)
+    testZip64DirectoryRecordLength(buf, t)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;并发执行测试用例，使用&lt;code&gt;t.Parallel()&lt;/code&gt;标记&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestStackGrowth(t *testing.T) {
+    t.Parallel()
+    var wg sync.WaitGroup
+
+    // in a normal goroutine
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        growStack()
+    }()
+    wg.Wait()
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;性能测试&#34;&gt;性能测试&lt;/h3&gt;
+
+&lt;p&gt;性能测试函数以接收&lt;code&gt;*testing.B&lt;/code&gt;类型为单一参数&lt;code&gt;b&lt;/code&gt;，性能测试函数中需要循环&lt;code&gt;b.N&lt;/code&gt;次调用被测函数。&lt;code&gt;testing.B&lt;/code&gt;类型用来管理测试时间和迭代运行次数，也支持和&lt;code&gt;testing.T&lt;/code&gt;相同的方式管理测试状态和格式化测试日志，不一样的是&lt;code&gt;testing.B&lt;/code&gt;的日志总是会输出。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;启用内存使用分析，使用&lt;code&gt;t.ReportAllocs()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkWriterFlush(b *testing.B) {
+    b.ReportAllocs()
+    bw := NewWriter(ioutil.Discard)
+    str := strings.Repeat(&amp;quot;x&amp;quot;, 50)
+    for i := 0; i &amp;lt; b.N; i++ {
+        bw.WriteString(str)
+        bw.Flush()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;停止/重置/启动时间计值，使用&lt;code&gt;b.StopTimer()&lt;/code&gt;、&lt;code&gt;b.ResetTimer()&lt;/code&gt;、&lt;code&gt;b.StartTimer()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkScanInts(b *testing.B) {
+    b.ResetTimer()
+    ints := makeInts(intCount)
+    var r RecursiveInt
+    for i := b.N - 1; i &amp;gt;= 0; i-- {
+        buf := bytes.NewBuffer(ints)
+        b.StartTimer()
+        scanInts(&amp;amp;r, buf)
+        b.StopTimer()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;记录在一个操作中处理的字节数，使用&lt;code&gt;b.SetBytes()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkFields(b *testing.B) {
+    b.SetBytes(int64(len(fieldsInput)))
+    for i := 0; i &amp;lt; b.N; i++ {
+        Fields(fieldsInput)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;并发执行被测对象，使用&lt;code&gt;b.RunParallel()&lt;/code&gt;和&lt;code&gt;*testing.PB&lt;/code&gt;类型的&lt;code&gt;Next()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkValueRead(b *testing.B) {
+    var v Value
+    v.Store(new(int))
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            x := v.Load().(*int)
+            if *x != 0 {
+                b.Fatalf(&amp;quot;wrong value: got %v, want 0&amp;quot;, *x)
+            }
+        }
+    })
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试执行&#34;&gt;测试执行&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在某一包下执行测试: &lt;code&gt;go test&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行指定的包测试: &lt;code&gt;go test $pkg_in_gopath&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行某一目录下以及子目录下所有测试: &lt;code&gt;go test $pkg_in_gopath/...&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行包下某一些用例: &lt;code&gt;go test -run=xxx&lt;/code&gt;，&lt;code&gt;-run&lt;/code&gt;参数支持使用正则表达式来匹配要执行的功能测试函数名&lt;/li&gt;
+&lt;li&gt;执行包下性能测试: &lt;code&gt;go test -bench=.&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看性能测试时的内存情况: &lt;code&gt;go test -bench=. -benchmem&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看每个函数的执行结果: &lt;code&gt;go test -v&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看覆盖率: &lt;code&gt;go test -cover&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;输出覆盖率到文件: 增加参数&lt;code&gt;-coverprofile&lt;/code&gt;，并使用&lt;code&gt;go tool cover&lt;/code&gt;来查看，用法请参考&lt;code&gt;go tool cover -help&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试工具&#34;&gt;测试工具&lt;/h2&gt;
+
+&lt;h3 id=&#34;io测试&#34;&gt;IO测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;testing/iotest&lt;/code&gt;包中实现了常用的出错的Reader和Writer:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;触发数据错误dataErrReader，通过DataErrReader()函数创建&lt;/li&gt;
+&lt;li&gt;读取一半内容的halfReader，通过HalfReader()函数创建&lt;/li&gt;
+&lt;li&gt;读取一个byte的oneByteReader，通过OneByteReader()函数创建&lt;/li&gt;
+&lt;li&gt;触发超时错误的timeoutReader，通过TimeoutReader()函数创建&lt;/li&gt;
+&lt;li&gt;写入指定位数内容后停止的truncateWriter，通过TruncateWriter()函数创建&lt;/li&gt;
+&lt;li&gt;读取时记录日志的readLogger，通过NewReadLogger()函数创建&lt;/li&gt;
+&lt;li&gt;写入时记录日志的writeLogger，通过NewWriteLogger()函数创建&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;http测试&#34;&gt;HTTP测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;net/http/httptest&lt;/code&gt;包提供了HTTP相关代码的测试工具&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;httptest.Server&lt;/code&gt;用来构建临时的Server，测试发送与接收HTTP请求&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;httptest.ResponseRecorder&lt;/code&gt;用来记录应答&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;黑盒测试&#34;&gt;黑盒测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;testing/quick&lt;/code&gt;包实现了帮助黑盒测试&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Check函数，测试的只返回bool值的黑盒函数f，Check会为f的每个参数设置任意值并多次调用&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestOddMultipleOfThree(t *testing.T) {
+    f := func(x int) bool {
+        y := OddMultipleOfThree(x)
+        return y%2 == 1 &amp;amp;&amp;amp; y%3 == 0
+    }
+    if err := quick.Check(f, nil); err != nil {
+        t.Error(err)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;CheckEqual函数，比较给定的两个黑盒函数是否相等&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func CheckEqual(f, g interface{}, config *Config) (err error)
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试框架&#34;&gt;测试框架&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;github.com/stretchr/testify&#34;&gt;stretchr/testify&lt;/a&gt;是个人觉得目前最好的测试框架，相比标准库中&lt;code&gt;testing&lt;/code&gt;包支持如下特性：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#assert-package&#34;&gt;Easy assertions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#mock-package&#34;&gt;Mocking&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#http-package&#34;&gt;HTTP response trapping&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#suite-package&#34;&gt;Testing suite interfaces and functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://golang.org/pkg/testing&#34;&gt;https://golang.org/pkg/testing&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;https://golang.org/pkg/testing/iotest&#34;&gt;https://golang.org/pkg/testing/iotest&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://golang.org/pkg/testing/quick&#34;&gt;https://golang.org/pkg/testing/quick&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;https://golang.org/pkg/net/http/httptest&#34;&gt;https://golang.org/pkg/net/http/httptest&lt;/a&gt;&lt;br /&gt;
+[5] &lt;a href=&#34;https://github.com/stretchr/testify&#34;&gt;https://github.com/stretchr/testify&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

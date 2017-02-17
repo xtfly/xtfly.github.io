@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>团队管理 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="团队管理">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="团队管理 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />技术
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />感想
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />笔记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-leaf"></i> <br />杂记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+    </ul>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/" itemprop="url">
+        团队管理
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-10-27">
+    2016-10-27
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">849 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。</p>
+
+<p>作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
+</p>
+
+<h2 id="业务">业务</h2>
+
+<p>虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：</p>
+
+<ul>
+<li>价值贡献</li>
+<li>满意度</li>
+</ul>
+
+<p>我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。</p>
+
+<ul>
+<li>面向业务：核心竞争力，价值识别与规划</li>
+<li>面向业务&amp;解决方案：领域级，变革项目级规划、运作</li>
+<li>满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴</li>
+<li>Top产品，问题的攻关</li>
+</ul>
+
+<h2 id="人">人</h2>
+
+<p>人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：</p>
+
+<ul>
+<li><p>选</p>
+
+<ul>
+<li>亲自招聘，选择合适的人</li>
+<li>已有员工中骨干识别</li>
+<li>非关键外包合作</li>
+</ul></li>
+
+<li><p>用</p>
+
+<ul>
+<li>角色与岗位排兵布阵</li>
+<li>合作外包</li>
+</ul></li>
+
+<li><p>育</p>
+
+<ul>
+<li>能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流</li>
+<li>能力培养：提升人员技能；组织能力建设</li>
+<li>全程关注：事前辅导，事中监控，事后总结</li>
+</ul></li>
+
+<li><p>留</p>
+
+<ul>
+<li>绩效辅导</li>
+<li>即时激励</li>
+<li>组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理）</li>
+<li>岗位流动</li>
+</ul></li>
+</ul>
+
+<h2 id="事">事</h2>
+
+<p>以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。</p>
+
+<ul>
+<li>TopN问题与任务跟踪管理</li>
+<li>KPI管理：现状问题分析；改进计划（包括措施）；改进监控；达成评估</li>
+<li>风险管理</li>
+<li>技术持续改进：新技术引入；优秀实践；</li>
+<li>质量持续改进：质量文化；质量监控，问题日清日结；质量回溯；质量改进</li>
+<li>流程运作持续改进</li>
+<li>知识管理</li>
+<li>跨部门协同</li>
+</ul>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e5%9b%a2%e9%98%9f" rel="tag" title="团队">#团队#</a>
+    
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0910_soft_design/" rel="next" title="软件变革下设计原则">
+        <i class="fa fa-chevron-left"></i> 软件变革下设计原则
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/" rel="prev" title="Archlinux on WSL">
+        Archlinux on WSL <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：团队管理
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（蘭陵N散記）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#业务">业务</a></li>
+<li><a href="#人">人</a></li>
+<li><a href="#事">事</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  
+  2016
+   - 2017</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+</body>
+</html>

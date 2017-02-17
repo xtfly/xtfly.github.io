@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>OSGi的缘起缘灭 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="OSGi的缘起缘灭">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="OSGi的缘起缘灭 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />技术
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />感想
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />笔记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-leaf"></i> <br />杂记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+    </ul>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/" itemprop="url">
+        OSGi的缘起缘灭
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-04-22">
+    2015-04-22
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1953 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi" /></p>
+
+<h2 id="什么是osgi">什么是OSGi</h2>
+
+<p>维基百科：</p>
+
+<blockquote>
+<p>OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。</p>
+</blockquote>
+
+<p>我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。</p>
+
+<p>2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
+</p>
+
+<h2 id="缘起">缘起</h2>
+
+<p>正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：</p>
+
+<ul>
+<li>模块化，模块之间基于服务接口通讯。</li>
+<li>插件化，Bunlde可以动态加载。</li>
+<li>组件化，面向服务的组件，组件由多个服务组成。</li>
+<li>生命周期管理，相比普通Jar包，我们可以更细粒度的管理</li>
+<li>&hellip;</li>
+</ul>
+
+<p>我们使用OSGi，采用两种框架，一个是Apache的Felix，使用它主要是看重它很小，用于开发主机代理，在其上开发各种采集插件。一个是Spring的Spring DM，即后面的Eclipse Virgo。使用它主要是看重它集成了Spring，用于开发后端服务，采用Spring DM来简化OSGi的服务发布与引用，以及能较好地使用Spring的其它能力。</p>
+
+<p>可以说从11年到14年，我都是在基于OSGi做开发，从早期喜爱到最后的放弃，个中的滋味真不知怎么说。期间我在整个团队做了不少关于OSGi的推广，写过些文档介绍，规范要求，定位过稀奇的问题，最后大家都觉得我是这一方面的专家，只有搞不定的问题就来找我，我才逐渐意识到OSGi的理念虽好，但要真的把它使用得很好，真是不简单啊。</p>
+
+<p>OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式的系统，所以在后面又折腾过DOSGi，使用是的CXF实现的DOSGi，这个更难使用。先只有少数一两个服务在尝试使用它，期间遇到的问题更多，最后也不得不在13年初就放弃了。我不得不搞出另一个RPC的框架出来。</p>
+
+<h2 id="缘灭">缘灭</h2>
+
+<p>在去年的时候就开始讨论是否去OSGi，连最早鼓吹使用OSGi的阿里，也花了很大精力去OSGi，不过他们的动作早在12年就开始了，Spring也在12年摒弃OSGi，把Spring DM捐献给Eclipse。我们更是受项目进度与人力不足限制，去OSGi也只是停留在讨论中，有点<code>“不破不修”</code>的意思，OSGi凑合着使用。</p>
+
+<p>15年软件界最火爆的两个词可能是：<code>微服务</code>，<code>Docker</code>。去年平台定位发生变化，从偏IaaS转型偏应用的PaaS，原有的架构存在些问题；而今年的<code>微服务</code>概念也直接点然了系统架构重构的火把，而我又是这次架构重构实施落地的组长。这真是有点戏剧性啊！<code>“出来混迟早要还的”</code>，当初我是团队中使用OSGi的带头人，今天又是团队中OSGi的埋葬人。老大们要求我们把架构重构，目标是系统解耦合，轻量化，利于团队分工。自然去掉OSGi，朝分布式微服务化演进在设计考虑的范围中。的确，微服务化与OSGi也不冲突，为什么要去OSGi呢：</p>
+
+<ul>
+<li>OSGi的门槛太高，学好用好它对程序员要求高，而团队新人比例高</li>
+<li>很多第三方组件不是Bundle，需要Bundle化，增加维护成本</li>
+<li>使用到其它部门的中间件也宣称不支持OSGi，越来越处于孤立</li>
+<li>多版本管理问题，在同一套环境中，相同的第三方Jar存在多个版本，版本无法归一，增加维护成本</li>
+<li>基于OSGi的服务接口测试难度高，LLT测试时依赖于OSGi环境，测试成本高</li>
+<li>OSGi的服务接口只是本地接口，而云计算中恰恰需要分布式服务调用框架</li>
+<li>ClassLoder问题，导致很多的开发兄弟考虑不足出问题，经常是运行期抛ClassNotFound</li>
+<li>Virgo， Felix其实也很重，多个组件部署在同一套环境中，隔离性差，不适合微服务理念</li>
+<li>Bundle的动态替换就是伪命题，从来没有用过</li>
+<li>用于做插件机制，动态加载的ClassLoder问题</li>
+<li>JRE在Virgo环境下会出现死锁，需要升级JRE到8才能解决，还不知会有其它问题，社区支持不足</li>
+<li>大环境下，OSGi已成明日黄华，不再是宠儿</li>
+<li>&hellip;</li>
+</ul>
+
+<p>从上面可以看出，OSGi的面向接口编程，服务化，模块化理念在单体应用来说虽不错，在面对分布式的应用时，它带的益处远比它的本身的机制带的问题更多。所以OSGi留得越久，越是技术债务，早去掉早解脱啊。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/java" rel="tag" title="Java">#Java#</a>
+    
+    <a href="http://lanlingzi.cn/tags/osgi" rel="tag" title="OSGi">#OSGi#</a>
+    
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/thoughts/2014/0901_soft_dev_dt_trace/" rel="next" title="软件开发中缺陷管理">
+        <i class="fa fa-chevron-left"></i> 软件开发中缺陷管理
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" rel="prev" title="架构重构">
+        架构重构 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：OSGi的缘起缘灭
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（蘭陵N散記）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#什么是osgi">什么是OSGi</a></li>
+<li><a href="#缘起">缘起</a></li>
+<li><a href="#缘灭">缘灭</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  
+  2016
+   - 2017</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+</body>
+</html>

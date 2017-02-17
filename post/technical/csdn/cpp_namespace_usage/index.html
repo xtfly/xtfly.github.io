@@ -1,0 +1,471 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>C&#43;&#43;技巧之名字空间namespace - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="C&#43;&#43;技巧之名字空间namespace">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="C&#43;&#43;技巧之名字空间namespace - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />技术
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />感想
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />笔记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-leaf"></i> <br />杂记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+    </ul>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" itemprop="url">
+        C&#43;&#43;技巧之名字空间namespace
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-07-13">
+    2009-07-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">964 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
+
+<pre><code>namespace outspname  
+{   
+   const int CVAR1 = 1;  
+   const char* const CVAR2 = &quot;33333&quot;;  
+   void test();  
+
+   namespace inspname  
+   {  
+      enum { A, B, C};  
+      class Klass  
+      {  
+      };  
+   }  
+}
+</code></pre>
+
+<p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
+
+<ul>
+<li><p>当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:</p>
+
+<pre><code>const int  local  = outspname::inspname::A
+</code></pre>
+
+<p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
+
+<pre><code>{  
+   using outspname::inspname::A;  
+   const int local = A;  
+}
+</code></pre></li>
+
+<li><p>通过一个使用指令把该名字空间下所有的名字变成可用。</p>
+
+<p>如下所示，与第一点的用法区别，是<code>using</code> 后面有个<code>namespace</code>。同样只在转换时，或者在一个小的局部作用域内使用<code>using namesapce</code>，否则也会带来名字的污染。</p>
+
+<pre><code>{  
+  using namespace outspname;  
+  const int local2 = CVAR1;  
+  const int local2 = inspname::B;  
+  {  
+     using namespace inspname;  
+     Klass* p = new Klass();  
+  }    
+}
+</code></pre>
+
+<p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
+
+<pre><code>namespace testname  
+{  
+   void test(int param);  
+}
+</code></pre>
+
+<p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。</p>
+
+<pre><code>using testname;  
+void test(int param)  
+{  
+}
+</code></pre>
+
+<p>正确的使用方式是:</p>
+
+<pre><code>namespace testname  
+{  
+   void test(int param)  
+   {  
+   }  
+}  
+</code></pre>
+
+<p>或者是</p>
+
+<pre><code>void testname::test(int param)  
+{  
+}  
+</code></pre></li>
+
+<li><p>名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：</p>
+
+<pre><code>namespace oin = outspname::inspname;  
+</code></pre></li>
+
+<li><p>无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：</p>
+
+<pre><code>namespace   
+{  
+  const int CVAR1 = 1;  
+  void test();  
+}  
+</code></pre>
+
+<p>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:</p>
+
+<pre><code>namespace $$$  
+{  
+  const int CVAR1 = 1;  
+  void test();  
+}
+
+using namespace $$$;
+
+</code></pre>
+
+<p>其中<code>$$$</code>在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，<code>usingnamesapce  $$$</code>只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。</p></li>
+
+<li><p>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</p></li>
+</ul>
+
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/csdn/oo_design_principle/" rel="next" title="面向对象的设计原则">
+        <i class="fa fa-chevron-left"></i> 面向对象的设计原则
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/csdn/perform_design/" rel="prev" title="性能设计">
+        性能设计 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：C&#43;&#43;技巧之名字空间namespace
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（蘭陵N散記）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  
+  2016
+   - 2017</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+</body>
+</html>

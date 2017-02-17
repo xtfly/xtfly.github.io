@@ -1,0 +1,874 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta name="generator" content="Hugo 0.18.1" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>蘭陵N散記 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="蘭陵N散記">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="蘭陵N散記 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="alternate" href="http://lanlingzi.cn/index.xml" title="蘭陵N散記" type="application/rss+xml" />
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item menu-item-active">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />技术
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />感想
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />笔记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-leaf"></i> <br />杂记
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+    </ul>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+    
+ <section id="posts" class="posts-expand">
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/" itemprop="url">
+        虚拟与现实
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-12-31">
+    2015-12-31
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">杂记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1112 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG" alt="Debian" /></p>
+
+<p>万万没想到，在即将迎来2016年时，微信，科技新闻中都在传<a href="http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009">“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”</a>。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/1227_bj_archsummit/" itemprop="url">
+        参加ArchSummit北京站感受
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-12-27">
+    2015-12-27
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4399 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://q.infoqstatic.com/ASSZ2015/LOGO/AS-LOGO358x146.png" alt="ArchSummit" /></p>
+
+<p>参加ArchSummit北京站已有一周时间，一直没有时间来梳理一下。整体来说，这次的北京之行，不是很满意，可能是这类会议听多的原因，感觉ArchSummit的质量是越来越差了，没有什么新鲜感，觉得不值那6K的价格。</p>
+
+<h2 id="组织不足">组织不足</h2>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/1227_bj_archsummit/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/1113_why_love_go/" itemprop="url">
+        我为什么喜欢GoLang
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-11-13">
+    2015-11-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3220 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://img3.imgtn.bdimg.com/it/u=3850601748,68654193&amp;fm=21&amp;gp=0.jpg" alt="gopher" /></p>
+
+<p>从8月份到现在，一直在公司尝试用Go写点东西。虽然我们几乎是清一色的Java开发，但我还是愿意在同事之间推广Go，有时间还是学学Go吧。</p>
+
+<h2 id="认识go">认识Go</h2>
+
+<p>我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。
+
+14年的Docker以席卷全球之势火了一把。在15年，我又投入到平台集成Docker的分析，于是又开始了Go语言之旅，重点研究了Docker Distribution的代码，以及由其它部门开发的Index等相关部件的代码（都是基于Go）。自己也是顺便练练手，如把系统中Java的通用加解密库（是基于AES与HamcSHA256之上的封装库），转换Go实现。经测试发现原来在Java对于HamcSHA256迭代6W+次数时需要差不多一分钟，而Go只需要几秒。由于系统需要对接Docker的API，涉及到Http Hijack，于是又得去分析Docker源码中这一块是怎么实现的，把它的实现转换成Java（虽有开源的Java Client API，但不能满足我们的要求）。所以差不多就是干些Java转Go，Go转Java的体力活。整个版本开发中也协助定位一些Docker相关的问题，需要走读Docker代码。整体来说，我写的Go代码不是太多。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/1113_why_love_go/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/" itemprop="url">
+        Mesos与K8S的区别
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-10-20">
+    2015-10-20
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2006 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg" alt="pets vs cattle" /></p>
+
+<p>最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/stories/2015/0926_chengdu/" itemprop="url">
+        成都映象记
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-09-26">
+    2015-09-26
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">杂记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">718 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://t0.fansimg.com/uploads2012/01/userid65405time20120101160054.jpg" alt="成都锦里" /></p>
+
+<p>风味十足的四川话，风姿卓然的川妹子，麻辣干香的风味菜，是我是对成都的初步映象。有“天府之国”、“蜀中苏杭”美誉的成都蓉城，在小说与故事中都有耳闻，向往已久。在上高中时，就想报考虑成都的高校，无奈分数不够高，被调济到北方。这次作为招聘技术面试官出差来了一趟成都，了却了一桩十几年前的心愿。</p>
+
+<p>作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/stories/2015/0926_chengdu/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0902_bj_cnutcon/" itemprop="url">
+        参加CNUTCon全球容器大会感受
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-09-02">
+    2015-09-02
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3329 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://lanlingzi.cn/images/docker/cnut.png" alt="cnutcon" /></p>
+
+<p>由于最近一直在从事Docker相关的工作，所以有机会参与这次的<a href="http://cnutcon.com/">CNUTCon全球容器大会</a>。名字比较“高格”，虽有少量的外国人分享，大部分还是中国的互联网企业在宣传，忽悠。除去这些，整体来说这次大会还是非常不错的，门票也不算太贵，目前看来应该还是值的。我司还是这次大会的钻石赞助商，也说明我们在容器这一块的发力程度。</p>
+
+<h2 id="整体感受">整体感受</h2>
+
+<p>Docker是这这两年成长最快的技术，受到资本市场的热捧。Docker技术以势不可挡地席卷全球。参考这次大会，整体感受是：</p>
+
+<ul>
+<li>Docker已不再是概念，已进入互联网企业的实际生产环境中</li>
+<li>Docker的创业公司多，有远见的想在这次的浪潮中分享红利</li>
+<li>大公司借Docker东风，亦想在云计算领域中拿下更多话语权</li>
+
+<li><p>容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0902_bj_cnutcon/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0813_cfg_vs_cus/" itemprop="url">
+        配置与定制
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-08-13">
+    2015-08-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">616 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>作为一个软件人员，我们会经常遇到各种各样的需求，有时为了避免定制，通常的做法是提供更多的配置选项，以通过配置出满足不同的特定需求。</p>
+
+<p>原因是而当你开发定制代码来修改或扩展一个功能需求时，有可能会导致软件不能正常的工作，必须通过严格的测试与验证。在重大的版本升级情况下，定制是苛刻的和耗时的。甚至会面临无法修复的功能可能会被重构，从零开始。因此，一些做法是通过采越来越多地选择配置，来解决由于开发定制代码引入的问题与软件带来的成本。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0813_cfg_vs_cus/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0516_microservice_soa/" itemprop="url">
+        微服务与SOA
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-05-16">
+    2015-05-16
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1888 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://martinfowler.com/articles/microservices/images/sketch.png" alt="microservices" /></p>
+
+<p>我司学习一个新的技术，往往是搞得轰轰烈烈，比如数字化转型，向互联网技术学习。其中一个非常重要的方向就是学习互联网的服务化体系架构。国内的阿里，京东，腾讯在服务化，确切地说是微服务应用取得非常大的成功。而国外的Netflix的微服务架构更是成为我们必定的样板教材。你做设计，谈方案，不说说微服务都不好意思。如果你不说这样，说明你思维落后陈旧了。任何一项技术都有一段疯狂期，虽这近一次在搞架构重构，领导遇到你，总是关心地问到：“服务化进展怎么样了”。甚至还得跟一些不太懂的领导解释什么是微服务。</p>
+
+<p>10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《<a href="http://martinfowler.com/articles/microservices.html">微服务</a>》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。
+
+那先来看看Martinfowler怎么说的：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0516_microservice_soa/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="pagination">
+    <a class="extend prev" rel="prev" href="http://lanlingzi.cn/p/5/"><i class="fa fa-angle-left"></i></a>
+    
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/2/">2</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/3/">3</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/4/">4</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/5/">5</a>
+        
+        
+    
+        
+        
+          <span class="page-number current">6</span>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/7/">7</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/8/">8</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/9/">9</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/p/10/">10</a>
+        
+        
+    
+    <a class="extend next" rel="next" href="http://lanlingzi.cn/p/7/"><i class="fa fa-angle-right"></i></a>
+</nav>
+
+
+
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+<div class="feed-link motion-element">
+<a href="http://lanlingzi.cn/index.xml" rel="alternate" type="application/rss+xml" target="_blank">
+    <i class="fa fa-rss"></i>
+    RSS 订阅
+</a>
+</div>
+
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  
+  2016
+   - 2017</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" id="motion.page.archive">
+  $('.archive-year').velocity('transition.slideLeftIn');
+</script>
+
+</body>
+</html>

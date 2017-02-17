@@ -1,0 +1,2408 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/tags/go/index.xml</link>
+    <description>Recent content in Go on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <atom:link href="http://lanlingzi.cn/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Go性能优化小结</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</link>
+      <pubDate>Fri, 03 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</guid>
+      <description>&lt;h2 id=&#34;内存优化&#34;&gt;内存优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;小对象合并成结构体一次分配-减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
+
+&lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
+
+&lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for k, v := range m {
+    k, v := k, v // copy for capturing by the goroutine
+    go func() {
+        // using k &amp;amp; v
+    }()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;替换为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for k, v := range m {
+    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
+    go func() {
+        // using x.k &amp;amp; x.v
+    }()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;缓存区内容一次分配足够大小空间-并适当复用&#34;&gt;缓存区内容一次分配足够大小空间，并适当复用&lt;/h3&gt;
+
+&lt;p&gt;在协议编解码时，需要频繁地操作[]byte，可以使用bytes.Buffer或其它byte缓存区对象。&lt;/p&gt;
+
+&lt;p&gt;建议：bytes.Buffert等通过预先分配足够大的内存，避免当Grow时动态申请内存，这样可以减少内存分配次数。同时对于byte缓存区对象考虑适当地复用。&lt;/p&gt;
+
+&lt;h3 id=&#34;slice和map采make创建时-预估大小指定容量&#34;&gt;slice和map采make创建时，预估大小指定容量&lt;/h3&gt;
+
+&lt;p&gt;slice和map与数组不一样，不存在固定空间大小，可以根据增加元素来动态扩容。&lt;/p&gt;
+
+&lt;p&gt;slice初始会指定一个数组，当对slice进行append等操作时，当容量不够时，会自动扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果新的大小是当前大小2倍以上，则容量增涨为新的大小；&lt;/li&gt;
+&lt;li&gt;否而循环以下操作：如果当前容量小于1024，按2倍增加；否则每次按当前容量1/4增涨，直到增涨的容量超过或等新大小。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;map的扩容比较复杂，每次扩容会增加到上次容量的2倍。它的结构体中有一个buckets和oldbuckets，用于实现增量扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;正常情况下，直接使用buckets，oldbuckets为空；&lt;/li&gt;
+&lt;li&gt;如果正在扩容，则oldbuckets不为空，buckets是oldbuckets的2倍，&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;建议：初始化时预估大小指定容量&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;m := make(map[string]string, 100)
+s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是初始大小，第三个参数才是容量
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;长调用栈避免申请较多的临时对象&#34;&gt;长调用栈避免申请较多的临时对象&lt;/h3&gt;
+
+&lt;p&gt;goroutine的调用栈默认大小是4K（1.7修改为2K），它采用连续栈机制，当栈空间不够时，Go runtime会不动扩容：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;当栈空间不够时，按2倍增加，原有栈的变量崆直接copy到新的栈空间，变量指针指向新的空间地址；&lt;/li&gt;
+&lt;li&gt;退栈会释放栈空间的占用，GC时发现栈空间占用不到1/4时，则栈空间减少一半。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;比如栈的最终大小2M，则极端情况下，就会有10次的扩栈操作，这会带来性能下降。&lt;/p&gt;
+
+&lt;p&gt;建议：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;控制调用栈和函数的复杂度，不要在一个goroutine做完所有逻辑；&lt;/li&gt;
+&lt;li&gt;如查的确需要长调用栈，而考虑goroutine池化，避免频繁创建goroutine带来栈空间的变化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;避免频繁创建临时对象&#34;&gt;避免频繁创建临时对象&lt;/h3&gt;
+
+&lt;p&gt;Go在GC时会引发stop the world，即整个情况暂停。虽1.7版本已大幅优化GC性能，1.8甚至量坏情况下GC为100us。但暂停时间还是取决于临时对象的个数，临时对象数量越多，暂停时间可能越长，并消耗CPU。&lt;/p&gt;
+
+&lt;p&gt;建议：GC优化方式是尽可能地减少临时对象的个数：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;尽量使用局部变量&lt;/li&gt;
+&lt;li&gt;所多个局部变量合并一个大的结构体或数组，减少扫描对象的次数，一次回尽可能多的内存。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;并发优化&#34;&gt;并发优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;高并发的任务处理使用goroutine池&#34;&gt;高并发的任务处理使用goroutine池&lt;/h3&gt;
+
+&lt;p&gt;goroutine虽轻量，但对于高并发的轻量任务处理，频繁来创建goroutine来执行，执行效率并不会太高效：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；&lt;/li&gt;
+&lt;li&gt;高并时若出现调用异常阻塞积压，大量的goroutine短时间积压可能导致程序崩溃。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;避免高并发调用同步系统接口&#34;&gt;避免高并发调用同步系统接口&lt;/h3&gt;
+
+&lt;p&gt;goroutine的实现，是通过同步来模拟异步操作。在如下操作操作不会阻塞go runtime的线程调度：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;网络IO&lt;/li&gt;
+&lt;li&gt;锁&lt;/li&gt;
+&lt;li&gt;channel&lt;/li&gt;
+&lt;li&gt;time.sleep&lt;/li&gt;
+&lt;li&gt;基于底层系统异步调用的Syscall&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面阻塞会创建新的调度线程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;本地IO调用&lt;/li&gt;
+&lt;li&gt;基于底层系统同步调用的Syscall&lt;/li&gt;
+&lt;li&gt;CGo方式调用C语言动态库中的调用IO或其它阻塞&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;网络IO可以基于epoll的异步机制（或kqueue等异步机制），但对于一些系统函数并没有提供异步机制。例如常见的posix api中，对文件的操作就是同步操作。虽有开源的fileepoll来模拟异步文件操作。但Go的Syscall还是依赖底层的操作系统的API。系统API没有异步，Go也做不了异步化处理。&lt;/p&gt;
+
+&lt;p&gt;建议：把涉及到同步调用的goroutine，隔离到可控的goroutine中，而不是直接高并的goroutine调用。&lt;/p&gt;
+
+&lt;h3 id=&#34;高并发时避免共享对象互斥&#34;&gt;高并发时避免共享对象互斥&lt;/h3&gt;
+
+&lt;p&gt;传统多线程编程时，当并发冲突在4~8线程时，性能可能会出现拐点。Go中的推荐是不要通过共享内存来通讯，Go创建goroutine非常容易，当大量goroutine共享同一互斥对象时，也会在某一数量的goroutine出在拐点。&lt;/p&gt;
+
+&lt;p&gt;建议：goroutine尽量独立，无冲突地执行；若goroutine间存在冲突，则可以采分区来控制goroutine的并发个数，减少同一互斥对象冲突并发数。&lt;/p&gt;
+
+&lt;h2 id=&#34;其它优化&#34;&gt;其它优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;避免使用cgo或者减少cgo调用次数&#34;&gt;避免使用CGO或者减少CGO调用次数&lt;/h3&gt;
+
+&lt;p&gt;GO可以调用C库函数，但Go带有垃圾收集器且Go的栈动态增涨，但这些无法与C无缝地对接。Go的环境转入C代码执行前，必须为C创建一个新的调用栈，把栈变量赋值给C调用栈，调用结束现拷贝回来。而这个调用开销也非常大，需要维护Go与C的调用上下文，两者调用栈的映射。相比直接的GO调用栈，单纯的调用栈可能有2个甚至3个数量级以上。&lt;/p&gt;
+
+&lt;p&gt;建议：尽量避免使用CGO，无法避免时，要减少跨CGO的调用次数。&lt;/p&gt;
+
+&lt;h3 id=&#34;减少-byte与string之间转换-尽量采用-byte来字符串处理&#34;&gt;减少[]byte与string之间转换，尽量采用[]byte来字符串处理&lt;/h3&gt;
+
+&lt;p&gt;GO里面的string类型是一个不可变类型，不像c++中std:string，可以直接char*取值转化，指向同一地址内容；而GO中[]byte与string底层两个不同的结构，他们之间的转换存在实实在在的值对象拷贝，所以尽量减少这种不必要的转化&lt;/p&gt;
+
+&lt;p&gt;建议：存在字符串拼接等处理，尽量采用[]byte，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Prefix(b []byte) []byte {
+    return append([]byte(&amp;quot;hello&amp;quot;, b...))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;字符串的拼接优先考虑bytes-buffer&#34;&gt;字符串的拼接优先考虑bytes.Buffer&lt;/h3&gt;
+
+&lt;p&gt;由于string类型是一个不可变类型，但拼接会创建新的string。GO中字符串拼接常见有如下几种方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;string + 操作 ：导致多次对象的分配与值拷贝&lt;/li&gt;
+&lt;li&gt;fmt.Sprintf ：会动态解析参数，效率好不哪去&lt;/li&gt;
+&lt;li&gt;strings.Join ：内部是[]byte的append&lt;/li&gt;
+&lt;li&gt;bytes.Buffer ：可以预先分配大小，减少对象分配与拷贝&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;建议：对于高性能要求，优先考虑bytes.Buffer，预先分配大小。非关键路径，视简洁使用。fmt.Sprintf可以简化不同类型转换与拼接。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+1. &lt;a href=&#34;http://skoo.me/go/2013/10/09/go-memory-manage-system-fixalloc&#34;&gt;Go语言内存分配器-FixAlloc&lt;/a&gt;&lt;br /&gt;
+2. &lt;a href=&#34;https://blog.golang.org/strings&#34;&gt;https://blog.golang.org/strings&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go依赖管理机制</title>
+      <link>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</link>
+      <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</guid>
+      <description>&lt;p&gt;无论何种语言，依赖管理都是一个比较复杂的问题。而Go语言中的依赖管理机制目前还是让人比较失望的。在1.6版本之前，官方只有把依赖放在GOPATH中，并没有多版本管理机制；1.6版本（1.5版本是experimental feature）引入vendor机制，是包依赖管理对一次重要尝试。他在Go生态系统中依然是一个热门的争论话题，还没有想到完美的解决方案。&lt;/p&gt;
+
+&lt;h2 id=&#34;看其它&#34;&gt;看其它&lt;/h2&gt;
+
+&lt;p&gt;我们先来看看其它语言怎么解决，例举两种典型的管理方式：&lt;/p&gt;
+
+&lt;h3 id=&#34;java&#34;&gt;Java&lt;/h3&gt;
+
+&lt;p&gt;开发态，可以通过maven和gradle工具编辑依赖清单列表/脚本，指定依赖库的位置/版本等信息，这些可以帮助你在合适的时间将项目固化到一个可随时随地重复编译发布的状态。这些工具对我来说已经足够优雅有效。但maven中也有不同依赖库的内部依赖版本冲突等令人心烦的问题。尤其是在大型项目中的依赖传递问题，若团队成员对maven机制没有足够了解下，依赖scope的滥用，会让整个项目工程的依赖树变得特别的巨大而每次编译效率低下。运行态，目前Java也没有很好的依赖管理机制，虽有classloader可以做一定的隔离，但像OSGi那种严格的版本管理，会让使用者陷入多版本相互冲突的泥潭。&lt;/p&gt;
+
+&lt;h3 id=&#34;node-js&#34;&gt;Node.js&lt;/h3&gt;
+
+&lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;go-get&#34;&gt;go get&lt;/h2&gt;
+
+&lt;p&gt;Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。并且它支持根据import package分析来递归拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Go这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。&lt;/p&gt;
+
+&lt;p&gt;当然，go get命令，仍然过于简单。对于现实过程中的开发者来说，仍然有其痛苦的地方：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;缺乏明确显示的版本。团队开发不同的项目容易导入不一样的版本，每次都是get最新的代码。尤其像我司对开源软件管理非常严格，开源申请几乎是无法实施。&lt;/li&gt;
+&lt;li&gt;第三方包没有内容安全审计，获取最新的代码很容易引入代码新的Bug，后续运行时出了Bug需要解决，也无法版本跟踪管理。&lt;/li&gt;
+&lt;li&gt;依赖的完整性无法校验，基于域名的package名称，域名变化或子路径变化，都会导致无法正常下载依赖。我们在使用过程，发现还是有不少间接依赖包的名称已失效了（不存在，或又fork成新的项目，旧的已不存维护更新）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;而Go官方对于此类问题的建议是把外部依赖的代码复制到你的&lt;a href=&#34;https://golang.org/doc/faq#get_version&#34;&gt;源码库中管理&lt;/a&gt;。把第三方代码引入自己的代码库仍然是一种折中的办法，对于像我司的软件开发流程来说，是不现实的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;开源扫描会扫描出是相似的代码时，若License不是宽松的，则涉及到法律风险，若是宽松的，开源扫描认证确认工作也很繁琐。&lt;/li&gt;
+&lt;li&gt;如何升级版本，代码复制过来之后，源始的项目的代码可以变化很大了，无明显的版本校验，借助工具或脚本来升级也会带来工作量很大。&lt;/li&gt;
+&lt;li&gt;复制的那一份代码已经开始变成私有，第三方代码的Bug只能自己解决，难以贡献代码来修复Bug，或通过推动社区来解决。&lt;/li&gt;
+&lt;li&gt;普通的程序问题可能不是很大问题，最多就是编译时的依赖。但如果你写的是一个给其他人使用的lib库，引入这个库就会带来麻烦了。你这个库被多人引用，如何管理你这个库的代码依赖呢？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;好在开源的力量就是大，Go官方没有想清楚的版本管理问题，社区就会有人来解决，我们已经可以找到许多不错的解决方案，不妨先参考下&lt;a href=&#34;https://github.com/golang/go/wiki/PackageManagementTools&#34;&gt;官方建议&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;vendor&#34;&gt;vendor&lt;/h2&gt;
+
+&lt;p&gt;vendor是1.5引入为体验，1.6中正式发布的依赖管理特性。Go团队在推出vendor前已经在Golang-dev group上做了长时间的调研。最终Russ Cox在&lt;a href=&#34;https://github.com/kr&#34;&gt;Keith Rarick&lt;/a&gt;的proposal的基础上做了改良，形成了Go 1.5中的vendor:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;不rewrite gopath&lt;/li&gt;
+&lt;li&gt;go tool来解决&lt;/li&gt;
+&lt;li&gt;go get兼容&lt;/li&gt;
+&lt;li&gt;可reproduce building process&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;并给出了vendor机制的&amp;rdquo;4行&amp;rdquo;诠释：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If there is a source directory d/vendor, then, when compiling a source file within the subtree rooted at d, import &amp;ldquo;p&amp;rdquo; is interpreted as import &amp;ldquo;d/vendor/p&amp;rdquo; if that exists.&lt;/p&gt;
+
+&lt;p&gt;When there are multiple possible resolutions,the most specific (longest) path wins.&lt;/p&gt;
+
+&lt;p&gt;The short form must always be used: no import path can  contain “/vendor/” explicitly.&lt;/p&gt;
+
+&lt;p&gt;Import comments are ignored in vendored packages.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;总结解释起来：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;vendor是一个特殊的目录，在应用的源码目录下，go doc工具会忽略它。&lt;/li&gt;
+&lt;li&gt;vendor机制支持嵌套vendor，vendor中的第三方包中也可以包含vendor目录。&lt;/li&gt;
+&lt;li&gt;若不同层次的vendor下存在相同的package，编译查找路径优先搜索当前pakcage下的vendor是否存在，若没有再向parent pacakge下的vendor搜索（x/y/z作为parentpath输入，搜索路径：x/y/z/vendor/path-&amp;gt;x/y/vendor/path-&amp;gt;x/vendor/path-&amp;gt;vendor/path)&lt;/li&gt;
+&lt;li&gt;在使用时不用理会vendor这个路径的存在，该怎么import包就怎么import，不要出现import &amp;ldquo;d/vendor/p&amp;rdquo;的情况。vendor是由go tool隐式处理的。&lt;/li&gt;
+&lt;li&gt;不会校验vendor中package的import path是否与canonical import路径是否一致了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;vendor机制看似像node.js的node_modules，支持嵌套vendor，若一个工程中在着两个版本的相的包，可以放在不同的层次的vendor下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;优点：可能解决不同的版本依赖冲突问题，不同的层次的vendor存放在不同的依赖包。&lt;/li&gt;
+&lt;li&gt;缺点：由于go的package是以路径组织的，在编译时，不同层次的vendor中相同的包会编译两次，链接两份，程序文件变大，运行期是执行不同的代码逻辑。会导致一些问题，如果在package init中全局初始化，可能重复初化出问题，也可能初化为不同的变量（内存中不同），无法共享获取。像之前我们遇到gprc类似的问题就是不同层次的相同package重复init导致的，见&lt;a href=&#34;https://github.com/grpc/grpc-go/issues/566&#34;&gt;社区反馈&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以Russ Cox期望大家良好设计工程布局，作为lib的包&lt;strong&gt;不携带vendor更佳 ，一个project内的所有vendor都集中在顶层vendor里面。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;后续&#34;&gt;后续&lt;/h2&gt;
+
+&lt;p&gt;Go的包依赖问题依旧困扰着开发人员，嵌套vendor可以一定程度解决多版本的依赖冲突问题，但也引入多份编译导致的问题。目前社区也在一直讨论如何更好的解决，将进入下一个改进周期。这次将在Peter Bourgon的主持下正式启动：&lt;a href=&#34;https://docs.google.com/document/d/18tNd8r5DV0
+yluCR7tPvkMTsWD_lYcRO7NhpNSDymRr8/edit#heading=h.6fvzjp2juxex&#34;&gt;go packaging proposal process&lt;/a&gt;，当前1.8版本特性已冻结，不知这个改进是否会引入到1.9版本中。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;http://tonybai.com/2015/07/31/understand-go15-vendor/&#34;&gt;理解Go 1.5 vendor&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://www.infoq.com/cn/articles/golang-package-management&#34;&gt;Golang的包管理之道&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go map key类型分析</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0904_go_map/</link>
+      <pubDate>Sun, 04 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0904_go_map/</guid>
+      <description>&lt;p&gt;团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。&lt;/p&gt;
+
+&lt;h2 id=&#34;map的key类型&#34;&gt;map的key类型&lt;/h2&gt;
+
+&lt;p&gt;map中的key可以是任何的类型，只要它的值能比较是否相等，Go的&lt;a href=&#34;http://golang.org/ref/spec#Comparison_operators&#34;&gt;语言规范&lt;/a&gt;已精确定义，Key的类型可以是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;布尔值&lt;/li&gt;
+&lt;li&gt;数字&lt;/li&gt;
+&lt;li&gt;字符串&lt;/li&gt;
+&lt;li&gt;指针&lt;/li&gt;
+&lt;li&gt;通道&lt;/li&gt;
+&lt;li&gt;接口类型&lt;/li&gt;
+&lt;li&gt;结构体&lt;/li&gt;
+&lt;li&gt;只包含上述类型的数组。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;但不能是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;slice&lt;/li&gt;
+&lt;li&gt;map&lt;/li&gt;
+&lt;li&gt;function
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Key类型只要能支持&lt;code&gt;==&lt;/code&gt;和&lt;code&gt;!=&lt;/code&gt;操作符，即可以做为Key，当两个值&lt;code&gt;==&lt;/code&gt;时，则认为是同一个Key。&lt;/p&gt;
+
+&lt;h2 id=&#34;比较相等&#34;&gt;比较相等&lt;/h2&gt;
+
+&lt;p&gt;我们先看一下样例代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package main
+
+import &amp;quot;fmt&amp;quot;
+
+type _key struct {
+}
+
+type point struct {
+	x int
+	y int
+}
+
+type pair struct {
+	x int
+	y int
+}
+
+type Sumer interface {
+	Sum() int
+}
+
+type Suber interface {
+	Sub() int
+}
+
+func (p *pair) Sum() int {
+	return p.x + p.y
+}
+
+func (p *point) Sum() int {
+	return p.x + p.y
+}
+
+func (p pair) Sub() int {
+	return p.x - p.y
+}
+
+func (p point) Sub() int {
+	return p.x - p.y
+}
+
+func main() {
+	fmt.Println(&amp;quot;_key{} == _key{}: &amp;quot;, _key{} == _key{}) // output: true
+
+	fmt.Println(&amp;quot;point{} == point{}: &amp;quot;, point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
+	fmt.Println(&amp;quot;&amp;amp;point{} == &amp;amp;point{}: &amp;quot;, &amp;amp;point{x: 1, y: 2} == &amp;amp;point{x: 1, y: 2}) // output: false
+
+	fmt.Println(&amp;quot;[2]point{} == [2]point{}: &amp;quot;, 
+	  [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
+
+	var a Sumer = &amp;amp;pair{x: 1, y: 2}
+	var a1 Sumer = &amp;amp;pair{x: 1, y: 2}
+	var b Sumer = &amp;amp;point{x: 1, y: 2}
+	fmt.Println(&amp;quot;Sumer.byptr == Sumer.byptr: &amp;quot;, a == b)        // output: false
+	fmt.Println(&amp;quot;Sumer.sametype == Sumer.sametype: &amp;quot;, a == a1) // output: false
+
+	var c Suber = pair{x: 1, y: 2}
+	var d Suber = point{x: 1, y: 2}
+	var d1 point = point{x: 1, y: 2}
+	fmt.Println(&amp;quot;Suber.byvalue == Suber.byvalue: &amp;quot;, c == d)  // output: false
+	fmt.Println(&amp;quot;Suber.byvalue == point.byvalue: &amp;quot;, d == d1) // output: true
+
+	ci1 := make(chan int, 1)
+	ci2 := ci1
+	ci3 := make(chan int, 1)
+	fmt.Println(&amp;quot;chan int == chan int: &amp;quot;, ci1 == ci2) // output: true
+	fmt.Println(&amp;quot;chan int == chan int: &amp;quot;, ci1 == ci3) // output: false
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。&lt;/li&gt;
+&lt;li&gt;Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等&lt;/li&gt;
+&lt;li&gt;Interface values are comparable. Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil.从上面的例子我们可以看出，当接口有相同的动态类型并且有相同的动态值，或者值为都为nil时相等。要注意的是：参考&lt;a href=&#34;http://lanlingzi.cn/post/technical/2016/0803_go_interface/&#34;&gt;理解Go Interface&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. They are equal if t&amp;rsquo;s dynamic type is identical to X and t&amp;rsquo;s dynamic value is equal to x.如果一个是非接口类型X的变量x，也实现了接口T，与另一个接口T的变量t，只t的动态类型也是类型X，并且他们的动态值相同，则他们相等。&lt;/li&gt;
+&lt;li&gt;Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal.结构体当所有字段的值相同，并且没有 相应的非空白字段时，则他们相等，&lt;/li&gt;
+&lt;li&gt;Array values are comparable if values of the array element type are comparable. Two array values are equal if their corresponding elements are equal.两个数组只要他们包括的元素，每个元素的值相同，则他们相等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行&lt;code&gt;==&lt;/code&gt;操作的，例如slice，那么就不能作为map的key。&lt;/p&gt;
+
+&lt;h2 id=&#34;类型判断&#34;&gt;类型判断&lt;/h2&gt;
+
+&lt;p&gt;判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，&lt;code&gt;_type&lt;/code&gt;结构是描述最为基础的类型（&lt;code&gt;runtime/type.go&lt;/code&gt;），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type _type struct {
+	size       uintptr
+	ptrdata    uintptr 
+	hash       uint32
+	tflag      tflag
+	align      uint8
+	fieldalign uint8
+	kind       uint8
+	alg        *typeAlg
+	gcdata    *byte
+	str       nameOff
+	ptrToThis typeOff
+}
+...
+type chantype struct {
+	typ  _type
+	elem *_type
+	dir  uintptr
+}
+...
+type slicetype struct {
+	typ  _type
+	elem *_type
+}
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中对于类型的值是否相等，需要使用到成员&lt;code&gt;alg *typeAlg&lt;/code&gt;(&lt;code&gt;runtime/alg.go&lt;/code&gt;)，它则持有此类型值的hash与equal的算法，它也是一个结构体:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type typeAlg struct {
+	// function for hashing objects of this type
+	// (ptr to object, seed) -&amp;gt; hash
+	hash func(unsafe.Pointer, uintptr) uintptr
+	// function for comparing objects of this type
+	// (ptr to object A, ptr to object B) -&amp;gt; ==?
+	equal func(unsafe.Pointer, unsafe.Pointer) bool
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;runtime/alg.go&lt;/code&gt;中提供了各种基础的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func strhash(a unsafe.Pointer, h uintptr) uintptr {
+	x := (*stringStruct)(a)
+	return memhash(x.str, h, uintptr(x.len))
+}
+
+func strequal(p, q unsafe.Pointer) bool {
+	return *(*string)(p) == *(*string)(q)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;有了这些基础的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在&lt;code&gt;runtime/hashmap.go&lt;/code&gt;中的&lt;code&gt;mapaccess1&lt;/code&gt;函数:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+	...
+	alg := t.key.alg
+	hash := alg.hash(key, uintptr(h.hash0)) // 1
+	m := uintptr(1)&amp;lt;&amp;lt;h.B - 1
+	b := (*bmap)(add(h.buckets, (hash&amp;amp;m)*uintptr(t.bucketsize))) // 2
+	...
+	top := uint8(hash &amp;gt;&amp;gt; (sys.PtrSize*8 - 8))
+	if top &amp;lt; minTopHash {
+		top += minTopHash
+	}
+	for {
+		for i := uintptr(0); i &amp;lt; bucketCnt; i++ {
+			...
+			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
+			if alg.equal(key, k) { // 3
+				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
+				...
+				return v
+			}
+		}
+	...
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;调用&lt;code&gt;key&lt;/code&gt;类型的&lt;code&gt;hash&lt;/code&gt;方法，计算出&lt;code&gt;key&lt;/code&gt;的&lt;code&gt;hash&lt;/code&gt;值&lt;/li&gt;
+&lt;li&gt;根据&lt;code&gt;hash&lt;/code&gt;值找到对应的桶&lt;code&gt;bucket&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;在桶中找到&lt;code&gt;key&lt;/code&gt;值相等的map的&lt;code&gt;value&lt;/code&gt;。判断相等需调用&lt;code&gt;key&lt;/code&gt;类型的&lt;code&gt;equal&lt;/code&gt;方法&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;到现在我们也就有了初步了解，map中的&lt;code&gt;key&lt;/code&gt;访问时同时需要使用该类型的&lt;code&gt;hash func&lt;/code&gt;与 &lt;code&gt;equal func&lt;/code&gt;，只要&lt;code&gt;key&lt;/code&gt;值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;m := make(map[interface{}]interface{})
+m[_key{}] = &amp;quot;value&amp;quot;
+if v, ok := m[_key{}];ok {
+	fmt.Println(&amp;quot;%v&amp;quot;, v) // output: value
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://blog.golang.org/go-maps-in-action&#34;&gt;https://blog.golang.org/go-maps-in-action&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;https://golang.org/ref/spec#Comparison_operators&#34;&gt;https://golang.org/ref/spec#Comparison_operators&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go VIM开发环境</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0903_vim/</link>
+      <pubDate>Sat, 03 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0903_vim/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改&lt;/li&gt;
+&lt;li&gt;配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换&lt;/li&gt;
+&lt;li&gt;有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
+
+&lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;
+
+&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
+&lt;img src=&#34;https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966&#34; alt=&#34;unite&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;插件&#34;&gt;插件&lt;/h2&gt;
+
+&lt;p&gt;我配置VIM主要用于Go语言开发，所以对VIM的配置是主要是集中于代码编写，Go语言的代码提示，格式化等。使用了如下主要插件:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Plugin &#39;honza/vim-snippets&#39;                 &amp;quot;快速插入代码片段snippets
+Plugin &#39;scrooloose/nerdtree&#39;                &amp;quot;文件浏览，文件树目录
+Plugin &#39;scrooloose/nerdcommenter&#39;           &amp;quot;快速加减注释
+Plugin &#39;scrooloose/syntastic&#39;               &amp;quot;代码错误检测，其它应该也类似
+Plugin &#39;Xuyuanp/nerdtree-git-plugin&#39;        &amp;quot;Git插件
+Plugin &#39;majutsushi/tagbar&#39;                  &amp;quot;标签列表
+Plugin &#39;kien/ctrlp.vim&#39;                     &amp;quot;文件搜索,杀手级,重新定义了编辑器打开文件的方式
+Plugin &#39;vim-scripts/TaskList.vim&#39;           &amp;quot;快速跳转到TODO列表
+Plugin &#39;vim-scripts/SuperTab&#39;               &amp;quot;Tab代码提示
+Plugin &#39;fannheyward/rainbow_parentheses.vim&#39; &amp;quot;括号匹配高亮
+Plugin &#39;tpope/vim-surround&#39;                 &amp;quot;快速加环绕符
+Plugin &#39;tpope/vim-repeat&#39;                   &amp;quot;配合使用增强版命令重复
+Plugin &#39;tpope/vim-sensible&#39;                 &amp;quot;基本的Vim设置
+Plugin &#39;mhinz/vim-startify&#39;                 &amp;quot;更改开始界面的插件
+Plugin &#39;fatih/vim-go&#39;                       &amp;quot;GO语言
+Plugin &#39;bling/vim-airline&#39;                  &amp;quot;状态栏
+Plugin &#39;junegunn/vim-easy-align&#39;            &amp;quot;方便的按分隔符对齐,比如=号
+Plugin &#39;ConradIrwin/vim-bracketed-paste&#39;    &amp;quot;插入模式下粘贴内容，不会有任何变形 :set paste
+Plugin &#39;fholgado/minibufexpl.vim&#39;           &amp;quot;多文件切换，也可使用鼠标双击相应文件名进行切换
+Plugin &#39;SirVer/ultisnips&#39;                   &amp;quot;宏定义补全
+Plugin &#39;Yggdroot/indentLine&#39;                &amp;quot;缩进虚线
+Plugin &#39;Shougo/neocomplete.vim&#39;             &amp;quot;自动补全
+Plugin &#39;Shougo/unite.vim&#39;                   &amp;quot;文件或Buffer列表
+Plugin &#39;Lokaltog/vim-easymotion&#39;            &amp;quot;快速移动,杀手锏，跳转到光标后任意位置
+Plugin &#39;Raimondi/delimitMate&#39;               &amp;quot;自动括号补全
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;vim-go：已把Go的开发工具大包大揽了，非常省事。可以通过运行:GoInstallBinaries来自行安装&lt;/li&gt;
+&lt;li&gt;neocomplete.vim：非常轻量的基于缓存的代码补全，vim-go中已集成gocode来做代码联想，并能与neocomplete配合使用。&lt;/li&gt;
+&lt;li&gt;unite.vim：又一个神器，使用类似于SublimeText与VSCode的&lt;code&gt;Go to xxx&lt;/code&gt;(快捷键:&lt;code&gt;CMD+P&lt;/code&gt;/&lt;code&gt;Ctrl+Shift+P&lt;/code&gt;)功能，能快速列出最使用打开文件，当前目录下文件，Buffer列表等。&lt;/li&gt;
+&lt;li&gt;tagbar：标签列表，需要ctags，而Go的各元素能正常展示，则需要依赖于gotags，vim-go中已集成。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;分享&#34;&gt;分享&lt;/h2&gt;
+
+&lt;p&gt;个人的VIM的配置，已放入在Github上，若有需要的朋友尽管拿去使用，有问题欢迎反馈。&lt;/p&gt;
+
+&lt;p&gt;GitHub地址：&lt;a href=&#34;https://github.com/xtfly/xvim&#34;&gt;https://github.com/xtfly/xvim&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go测试</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</link>
+      <pubDate>Wed, 24 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</guid>
+      <description>&lt;p&gt;Go语言内置了测试框架，编写单元测试非常方便。&lt;/p&gt;
+
+&lt;h2 id=&#34;命名约定&#34;&gt;命名约定&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;测试代码位于以&lt;code&gt;_test.go&lt;/code&gt;结尾的源文件中，一般与源码在同一个package中。&lt;/p&gt;
+
+&lt;p&gt;位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;测试源码可以修改package名，带上&lt;code&gt;_test&lt;/code&gt;结尾&lt;/p&gt;
+
+&lt;p&gt;修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的&lt;code&gt;bytes&lt;/code&gt;中的测试代码，方便使用被测试的元素，可以采用&lt;code&gt;.&lt;/code&gt;来import测试的package：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package bytes_test
+
+import (
+    . &amp;quot;bytes&amp;quot;
+    &amp;quot;io&amp;quot;
+    ...
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Test开头的功能测试函数&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Benchmark开头的性能测试函数&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以Example开头的样例代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func ExampleHello() {
+    hl := hello()
+    fmt.Println(hl)
+    // Output: hello.
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;示例函数无需接收参数，但需要使用注释的&lt;code&gt;Output:&lt;/code&gt;标记说明示例函数的输出值，未指定&lt;code&gt;Output:&lt;/code&gt;标记或输出值为空的示例函数不会被执行。&lt;code&gt;go doc&lt;/code&gt;工具会解析示例函数的函数体作为对应&lt;strong&gt;包/函数/类型/类型方法&lt;/strong&gt;的用法。&lt;/p&gt;
+
+&lt;p&gt;示例函数需要归属于某个&lt;strong&gt;包/函数/类型/类型的方法&lt;/strong&gt;，具体命名规则如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Example() { ... }      // 包的示例函数
+func ExampleF() { ... }     // 函数F的示例函数
+func ExampleT() { ... }     // 类型T的示例函数
+func ExampleT_M() { ... }   // 类型T的M方法的示例函数
+
+// 多示例函数 需要跟下划线加小写字母开头的后缀
+func Example_suffix() { ... }
+func ExampleF_suffix() { ... }
+func ExampleT_suffix() { ... }
+func ExampleT_M_suffix() { ... }
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试类型&#34;&gt;测试类型&lt;/h2&gt;
+
+&lt;h3 id=&#34;功能测试&#34;&gt;功能测试&lt;/h3&gt;
+
+&lt;p&gt;功能测试函数以&lt;code&gt;*testing.T&lt;/code&gt;类型为单一参数&lt;code&gt;t&lt;/code&gt;，&lt;code&gt;testing.T&lt;/code&gt;类型用来管理测试状态和格式化测试日志。测试日志在测试执行过程中积累，完成后输出到标准错误输出。&lt;/p&gt;
+
+&lt;p&gt;常用方法:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;测试预期不符，使用&lt;code&gt;t.Error()&lt;/code&gt;或&lt;code&gt;t.Errorf()&lt;/code&gt;记录日志并标记测试失败&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestToTitle(t *testing.T) {
+    for _, tt := range ToTitleTests {
+        if s := string(ToTitle([]byte(tt.in))); s != tt.out {
+            t.Errorf(&amp;quot;ToTitle(%q) = %q, want %q&amp;quot;, tt.in, s, tt.out)
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;测试预期不符，使用&lt;code&gt;t.Fatal()&lt;/code&gt;和&lt;code&gt;t.Fatalf()&lt;/code&gt;跳出该测试函数&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestUnreadByte(t *testing.T) {
+    b := new(Buffer)
+    b.WriteString(&amp;quot;abcdefghijklmnopqrstuvwxyz&amp;quot;)
+
+    _, err := b.ReadBytes(&#39;m&#39;)
+    if err != nil {
+        t.Fatalf(&amp;quot;ReadBytes: %v&amp;quot;, err)
+    }
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;记录日志， 使用&lt;code&gt;t.Log()&lt;/code&gt;和&lt;code&gt;t.Logf()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestFowler(t *testing.T) {
+    files, err := filepath.Glob(&amp;quot;testdata/*.dat&amp;quot;)
+    if err != nil {
+        t.Fatal(err)
+    }
+    for _, file := range files {
+        t.Log(file)
+        testFowler(t, file)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;跳过某条测试用例，使用&lt;code&gt;t.Skip()&lt;/code&gt;和&lt;code&gt;t.Skipf()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestZip64(t *testing.T) {
+    if testing.Short() {
+        t.Skip(&amp;quot;slow test; skipping&amp;quot;)
+    }
+    const size = 1 &amp;lt;&amp;lt; 32 // before the &amp;quot;END\n&amp;quot; part
+    buf := testZip64(t, size)
+    testZip64DirectoryRecordLength(buf, t)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;并发执行测试用例，使用&lt;code&gt;t.Parallel()&lt;/code&gt;标记&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestStackGrowth(t *testing.T) {
+    t.Parallel()
+    var wg sync.WaitGroup
+
+    // in a normal goroutine
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        growStack()
+    }()
+    wg.Wait()
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;性能测试&#34;&gt;性能测试&lt;/h3&gt;
+
+&lt;p&gt;性能测试函数以接收&lt;code&gt;*testing.B&lt;/code&gt;类型为单一参数&lt;code&gt;b&lt;/code&gt;，性能测试函数中需要循环&lt;code&gt;b.N&lt;/code&gt;次调用被测函数。&lt;code&gt;testing.B&lt;/code&gt;类型用来管理测试时间和迭代运行次数，也支持和&lt;code&gt;testing.T&lt;/code&gt;相同的方式管理测试状态和格式化测试日志，不一样的是&lt;code&gt;testing.B&lt;/code&gt;的日志总是会输出。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;启用内存使用分析，使用&lt;code&gt;t.ReportAllocs()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkWriterFlush(b *testing.B) {
+    b.ReportAllocs()
+    bw := NewWriter(ioutil.Discard)
+    str := strings.Repeat(&amp;quot;x&amp;quot;, 50)
+    for i := 0; i &amp;lt; b.N; i++ {
+        bw.WriteString(str)
+        bw.Flush()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;停止/重置/启动时间计值，使用&lt;code&gt;b.StopTimer()&lt;/code&gt;、&lt;code&gt;b.ResetTimer()&lt;/code&gt;、&lt;code&gt;b.StartTimer()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkScanInts(b *testing.B) {
+    b.ResetTimer()
+    ints := makeInts(intCount)
+    var r RecursiveInt
+    for i := b.N - 1; i &amp;gt;= 0; i-- {
+        buf := bytes.NewBuffer(ints)
+        b.StartTimer()
+        scanInts(&amp;amp;r, buf)
+        b.StopTimer()
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;记录在一个操作中处理的字节数，使用&lt;code&gt;b.SetBytes()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkFields(b *testing.B) {
+    b.SetBytes(int64(len(fieldsInput)))
+    for i := 0; i &amp;lt; b.N; i++ {
+        Fields(fieldsInput)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;并发执行被测对象，使用&lt;code&gt;b.RunParallel()&lt;/code&gt;和&lt;code&gt;*testing.PB&lt;/code&gt;类型的&lt;code&gt;Next()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func BenchmarkValueRead(b *testing.B) {
+    var v Value
+    v.Store(new(int))
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            x := v.Load().(*int)
+            if *x != 0 {
+                b.Fatalf(&amp;quot;wrong value: got %v, want 0&amp;quot;, *x)
+            }
+        }
+    })
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试执行&#34;&gt;测试执行&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在某一包下执行测试: &lt;code&gt;go test&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行指定的包测试: &lt;code&gt;go test $pkg_in_gopath&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行某一目录下以及子目录下所有测试: &lt;code&gt;go test $pkg_in_gopath/...&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;执行包下某一些用例: &lt;code&gt;go test -run=xxx&lt;/code&gt;，&lt;code&gt;-run&lt;/code&gt;参数支持使用正则表达式来匹配要执行的功能测试函数名&lt;/li&gt;
+&lt;li&gt;执行包下性能测试: &lt;code&gt;go test -bench=.&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看性能测试时的内存情况: &lt;code&gt;go test -bench=. -benchmem&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看每个函数的执行结果: &lt;code&gt;go test -v&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;查看覆盖率: &lt;code&gt;go test -cover&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;输出覆盖率到文件: 增加参数&lt;code&gt;-coverprofile&lt;/code&gt;，并使用&lt;code&gt;go tool cover&lt;/code&gt;来查看，用法请参考&lt;code&gt;go tool cover -help&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试工具&#34;&gt;测试工具&lt;/h2&gt;
+
+&lt;h3 id=&#34;io测试&#34;&gt;IO测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;testing/iotest&lt;/code&gt;包中实现了常用的出错的Reader和Writer:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;触发数据错误dataErrReader，通过DataErrReader()函数创建&lt;/li&gt;
+&lt;li&gt;读取一半内容的halfReader，通过HalfReader()函数创建&lt;/li&gt;
+&lt;li&gt;读取一个byte的oneByteReader，通过OneByteReader()函数创建&lt;/li&gt;
+&lt;li&gt;触发超时错误的timeoutReader，通过TimeoutReader()函数创建&lt;/li&gt;
+&lt;li&gt;写入指定位数内容后停止的truncateWriter，通过TruncateWriter()函数创建&lt;/li&gt;
+&lt;li&gt;读取时记录日志的readLogger，通过NewReadLogger()函数创建&lt;/li&gt;
+&lt;li&gt;写入时记录日志的writeLogger，通过NewWriteLogger()函数创建&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;http测试&#34;&gt;HTTP测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;net/http/httptest&lt;/code&gt;包提供了HTTP相关代码的测试工具&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;httptest.Server&lt;/code&gt;用来构建临时的Server，测试发送与接收HTTP请求&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;httptest.ResponseRecorder&lt;/code&gt;用来记录应答&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;黑盒测试&#34;&gt;黑盒测试&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;testing/quick&lt;/code&gt;包实现了帮助黑盒测试&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Check函数，测试的只返回bool值的黑盒函数f，Check会为f的每个参数设置任意值并多次调用&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func TestOddMultipleOfThree(t *testing.T) {
+    f := func(x int) bool {
+        y := OddMultipleOfThree(x)
+        return y%2 == 1 &amp;amp;&amp;amp; y%3 == 0
+    }
+    if err := quick.Check(f, nil); err != nil {
+        t.Error(err)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;CheckEqual函数，比较给定的两个黑盒函数是否相等&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func CheckEqual(f, g interface{}, config *Config) (err error)
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;测试框架&#34;&gt;测试框架&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;github.com/stretchr/testify&#34;&gt;stretchr/testify&lt;/a&gt;是个人觉得目前最好的测试框架，相比标准库中&lt;code&gt;testing&lt;/code&gt;包支持如下特性：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#assert-package&#34;&gt;Easy assertions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#mock-package&#34;&gt;Mocking&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#http-package&#34;&gt;HTTP response trapping&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/stretchr/testify/blob/master/README.md#suite-package&#34;&gt;Testing suite interfaces and functions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://golang.org/pkg/testing&#34;&gt;https://golang.org/pkg/testing&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;https://golang.org/pkg/testing/iotest&#34;&gt;https://golang.org/pkg/testing/iotest&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://golang.org/pkg/testing/quick&#34;&gt;https://golang.org/pkg/testing/quick&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;https://golang.org/pkg/net/http/httptest&#34;&gt;https://golang.org/pkg/net/http/httptest&lt;/a&gt;&lt;br /&gt;
+[5] &lt;a href=&#34;https://github.com/stretchr/testify&#34;&gt;https://github.com/stretchr/testify&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Goroutine Local Storage</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0813_go_gls/</link>
+      <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0813_go_gls/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称&lt;code&gt;GoId&lt;/code&gt;）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。&lt;/p&gt;
+
+&lt;p&gt;在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。&lt;/p&gt;
+
+&lt;p&gt;在Java中，JDK库提供&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;来获取当前线程对象，提供&lt;code&gt;ThreadLocal&lt;/code&gt;来存储与获取线程局部变量。由于Java能通过&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
+
+ThreadLocal的API提供了如下的4个方法：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public T get()
+protected  T initialValue()
+public void remove()
+public void set(T value)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;T get()&lt;/code&gt;:返回此线程局部变量的当前线程副本中的值，如果这是线程第一次调用该方法，则创建并初始化此副本。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;protected  T initialValue()&lt;/code&gt;: 返回此线程局部变量的当前线程的初始值。最多在每次访问线程来获得每个线程局部变量时调用此方法一次，即线程第一次使用&lt;code&gt;get()&lt;/code&gt;方法访问变量的时候。如果线程先于&lt;code&gt;get&lt;/code&gt;方法调用&lt;code&gt;set(T)&lt;/code&gt;方法，则不会在线程中再调用&lt;code&gt;initialValue&lt;/code&gt;方法。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void remove()&lt;/code&gt;: 移除此线程局部变量的值。这可能有助于减少线程局部变量的存储需求。如果再次访问此线程局部变量，那么在默认情况下它将拥有其 &lt;code&gt;initialValue&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void set(T value)&lt;/code&gt;将此线程局部变量的当前线程副本中的值设置为指定值。许多应用程序不需要这项功能，它们只依赖于&lt;code&gt;initialValue()&lt;/code&gt;方法来设置线程局部变量的值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在Go语言中，而Google提供的解决方法是采用&lt;a href=&#34;https://blog.golang.org/context&#34;&gt;&lt;code&gt;golang.org/x/net/context&lt;/code&gt;&lt;/a&gt;包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：&lt;a href=&#34;http://lanlingzi.cn/post/technical/2016/0802_go_context/&#34;&gt;理解Go Context机制&lt;/a&gt;。&lt;code&gt;Context&lt;/code&gt;也是能存储Goroutine一些数据达到共享，但它提供的接口是&lt;code&gt;WithValue&lt;/code&gt;函数来创建一个新的&lt;code&gt;Context&lt;/code&gt;对象。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func WithValue(parent Context, key interface{}, val interface{}) Context {
+	return &amp;amp;valueCtx{parent, key, val}
+}
+
+type valueCtx struct {
+	Context
+	key, val interface{}
+}
+
+func (c *valueCtx) Value(key interface{}) interface{} {
+	if c.key == key {
+		return c.val
+	}
+	return c.Context.Value(key)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;从上面代码中可以看出，&lt;code&gt;Context&lt;/code&gt;设置一次Value，就会产生一个&lt;code&gt;Context&lt;/code&gt;对象，获取Value是先找当前&lt;code&gt;Context&lt;/code&gt;存储的值，若没有再向父一级查找。获取&lt;code&gt;Value&lt;/code&gt;可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine&lt;strong&gt;一次&lt;/strong&gt;设置&lt;code&gt;Key/Value&lt;/code&gt;，其它多Goroutine只能读取&lt;code&gt;Key&lt;/code&gt;的&lt;code&gt;Value&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;为什么无获取goid接口&#34;&gt;为什么无获取GoId接口&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This, among other reasons, to prevent programmers for simulating thread local storage using the goroutine id as a key.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;官方说，就为了避免采用&lt;code&gt;Goroutine Id&lt;/code&gt;当成&lt;code&gt;Thread Local Storage&lt;/code&gt;的&lt;code&gt;Key&lt;/code&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Please don’t use goroutine local storage. It’s highly discouraged. In fact, IIRC, we used to expose Goid, but it is hidden since we don’t want people to do this.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;用户经常使用GoId来实现&lt;code&gt;goroutine local storage&lt;/code&gt;，而Go语言不希望用户使用&lt;code&gt;goroutine local storage&lt;/code&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;when goroutine goes away, its goroutine local storage won’t be GCed. (you can get goid for the current goroutine, but you can’t get a list of all running goroutines)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;不建议使用&lt;code&gt;goroutine local storage&lt;/code&gt;的原因是由于不容易GC，虽然能获当前的GoId，但不能获取其它正在运行的Goroutine。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;what if handler spawns goroutine itself? the new goroutine suddenly loses access to your goroutine local storage. You can guarantee that your own code won’t spawn other goroutines, but in general you can’t make sure the standard library or any 3rd party code won’t do that.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;另一个重要的原因是由于产生一个Goroutine非常地容易（而线程通用会采用线程池），新产生的Goroutine会失去访问&lt;code&gt;goroutine local storage&lt;/code&gt;。需要上层应用保证不会产生新的Goroutine，但我们很难确保标准库或第三库不会这样做。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;thread local storage is invented to help reuse bad/legacy code that assumes global state, Go doesn’t have legacy code like that, and you really should design your code so that state is passed explicitly and not as global (e.g. resort to goroutine local storage)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态的代码。而Go语言建议是重新设计代码，采用显示地传递状态而不是采用全局状态（例如采用&lt;code&gt;goroutine local storage&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;h2 id=&#34;其它手段获取goid&#34;&gt;其它手段获取GoId&lt;/h2&gt;
+
+&lt;p&gt;虽然Go语言有意识地隐藏GoId，但目前还是有手段来获取GoId：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容&lt;/p&gt;
+
+&lt;p&gt;在标准库的&lt;code&gt;runtime/proc.go&lt;/code&gt;（Go 1.6.3）中的&lt;code&gt;newextram&lt;/code&gt;函数，会产生个GoId：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mp.lockedg = gp
+gp.lockedm = mp
+gp.goid = int64(atomic.Xadd64(&amp;amp;sched.goidgen, 1))
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通过&lt;code&gt;runtime.Stack&lt;/code&gt;来分析Stack输出信息获取GoId。&lt;/p&gt;
+
+&lt;p&gt;在标准库的&lt;code&gt;runtime/mprof.go&lt;/code&gt;（Go 1.6.3）中，&lt;code&gt;runtime.Stack&lt;/code&gt;会获取gp对象(包含GoId)并输出整个Stack信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Stack(buf []byte, all bool) int {
+    if all {
+        stopTheWorld(&amp;quot;stack trace&amp;quot;)
+    }
+
+    n := 0
+    if len(buf) &amp;gt; 0 {
+        gp := getg()
+        sp := getcallersp(unsafe.Pointer(&amp;amp;buf))
+        pc := getcallerpc(unsafe.Pointer(&amp;amp;buf))
+        systemstack(func() {
+            g0 := getg()
+            g0.m.traceback = 1
+            g0.writebuf = buf[0:0:len(buf)]
+            goroutineheader(gp)
+            traceback(pc, sp, 0, gp)
+            if all {
+                tracebackothers(gp)
+            }
+            g0.m.traceback = 0
+            n = len(g0.writebuf)
+            g0.writebuf = nil
+        })
+    }
+
+    if all {
+        startTheWorld()
+    }
+    return n
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;从文件名就可以看出，&lt;code&gt;runtime/mprof.go&lt;/code&gt;是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack信息也会导致无法正常获取GoId。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通用&lt;code&gt;runtime.Callers&lt;/code&gt;来给调用Stack来打标签&lt;/p&gt;
+
+&lt;p&gt;代码参考：&lt;a href=&#34;https://github.com/jtolds/gls/blob/master/stack_tags_main.go#L43&#34;&gt;https://github.com/jtolds/gls/blob/master/stack_tags_main.go#L43&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通过内联c或者内联汇编&lt;/p&gt;
+
+&lt;p&gt;go版本1.5，x86_64arc下汇编，估计也不通用&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// func GoID() int64
+TEXT s3lib GoID(SB),NOSPLIT,$0-8
+MOVQ TLS, CX
+MOVQ 0(CX)(TLS*1), AX
+MOVQ AX, ret+0(FP)
+RET
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;开源goroutine-local-storage实现&#34;&gt;开源goroutine local storage实现&lt;/h2&gt;
+
+&lt;p&gt;只要有机制获取GoId，就可以像Java一样来采用全局的map实现&lt;code&gt;goroutine local storage&lt;/code&gt;，在Github上搜索一下，发现有两个：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/tylerb/gls/&#34;&gt;tylerb/gls&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;GoId是通过&lt;code&gt;runtime.Stack&lt;/code&gt;来分析Stack输出信息获取GoId。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/jtolds/gls&#34;&gt;jtolds/gls&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;GoId是通用&lt;code&gt;runtime.Callers&lt;/code&gt;来给调用Stack来打标签&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;第二个有人在2013年测试过性能，数据如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;BenchmarkGetValue 500000 2953 ns/op&lt;br /&gt;
+BenchmarkSetValues 500000 4050 ns/op&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;上面的测试结果看似还不错，但&lt;code&gt;goroutine local storage&lt;/code&gt;实现无外乎是&lt;code&gt;map+RWMutex&lt;/code&gt;，存在性能瓶颈：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Goroutine不像Thread，它的个数可以上十万并发，当这么多的Goroutine同时竞争同一把锁时，性能会急剧恶化。&lt;/li&gt;
+&lt;li&gt;GoId是通过分析调用Stack的信息来获取，也是一个高成本的调用，一个字：慢。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;不管怎么样，没有官方的GLS，的确不是很方便，第三方实现又存在性能与不兼容风险。连&lt;code&gt;jtolds/gls&lt;/code&gt;作者也贴出其它人的评价：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Wow, that&amp;rsquo;s horrifying.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;This is the most terrible thing I have seen in a very long time.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Where is it getting a context from? Is this serializing all the requests? What the heck is the client being bound to? What are these tags? Why does he need callers? Oh god no. No no no.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;小结&#34;&gt;小结&lt;/h2&gt;
+
+&lt;p&gt;Go语言官方认为TLS来存储全局状态是不好的设计，而是要显示地传递状态。Google给的解决方法是&lt;a href=&#34;https://blog.golang.org/context&#34;&gt;&lt;code&gt;golang.org/x/net/context&lt;/code&gt;&lt;/a&gt;。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://groups.google.com/forum/#!topic/golang-nuts/Nt0hVV_nqHE&#34;&gt;golang-nuts&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://grokbase.com/p/gg/golang-nuts/13bdh27k5b/go-nuts-re-goroutine-local-storage-implementation&#34;&gt;go-nuts-re-goroutine-local-storage-implementation&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://github.com/jtolds/gls&#34;&gt;jtolds/gls&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;https://github.com/tylerb/gls/&#34;&gt;tylerb/gls&lt;/a&gt;&lt;br /&gt;
+[5] &lt;a href=&#34;http://www.zhihu.com/question/39863941/answer/83575802&#34;&gt;在golang中如何优雅地获取goroutineID？&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>理解Go Interface</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0803_go_interface/</link>
+      <pubDate>Wed, 03 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0803_go_interface/</guid>
+      <description>&lt;h2 id=&#34;概述&#34;&gt;概述&lt;/h2&gt;
+
+&lt;p&gt;Go语言中的&lt;a href=&#34;http://golang.org/doc/effective_go.html#interfaces&#34;&gt;接口&lt;/a&gt;很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组&lt;a href=&#34;http://golang.org/ref/spec#Method_sets&#34;&gt;方法的集合&lt;/a&gt;，要有方法为&lt;a href=&#34;http://golang.org/ref/spec#Interface_types&#34;&gt;接口类型&lt;/a&gt;就被认为是该接口。从定义上来看，接口有两个特点:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C++/Java中的接口，后者仅用于声明方法签名。&lt;/li&gt;
+&lt;li&gt;接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接口是完全抽象的，因此不能将其实例化。然而，可以创建一个其类型为接口的变量，它可以被赋值为任何满足该接口类型的实际类型的值。接口的重要特性是：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。&lt;/li&gt;
+&lt;li&gt;作为1的推论，任何类型的值都可以赋值给空接口interface{}。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;方法&#34;&gt;方法&lt;/h2&gt;
+
+&lt;p&gt;Go语言中同时有函数和方法。一个方法就是一个包含了&lt;a href=&#34;http://golang.org/ref/spec#Method_declarations&#34;&gt;接受者&lt;/a&gt;的函数，接受者可以是&lt;a href=&#34;http://golang.org/ref/spec#Types&#34;&gt;命名类型&lt;/a&gt;或者&lt;a href=&#34;http://golang.org/ref/spec#Struct_types&#34;&gt;结构体类型&lt;/a&gt;的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type User struct {
+  Name  string
+  Email string
+}
+
+func (u User) Notify() error
+
+// User 类型的值可以调用接受者是值的方法
+damon := User{&amp;quot;AriesDevil&amp;quot;, &amp;quot;ariesdevil@xxoo.com&amp;quot;}
+damon.Notify()
+
+// User 类型的指针同样可以调用接受者是值的方法
+alimon := &amp;amp;User{&amp;quot;A-limon&amp;quot;, &amp;quot;alimon@ooxx.com&amp;quot;}
+alimon.Notify()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;User&lt;/code&gt;的结构体类型，定义了一个该类型的方法叫做&lt;code&gt;Notify&lt;/code&gt;，该方法的接受者是一个&lt;code&gt;User&lt;/code&gt;类型的值。要调用&lt;code&gt;Notify&lt;/code&gt;方法我们需要一个 &lt;code&gt;User&lt;/code&gt;类型的值或者指针。Go&lt;a href=&#34;http://golang.org/ref/spec#Calls&#34;&gt;调用&lt;/a&gt;和解引用指针使得调用可以被执行。&lt;strong&gt;注意&lt;/strong&gt;，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。&lt;/p&gt;
+
+&lt;p&gt;我们可以修改&lt;code&gt;Notify&lt;/code&gt;方法，让它的接受者使用指针类型：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (u *User) Notify() error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。&lt;/p&gt;
+
+&lt;p&gt;总结：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;一个结构体的方法的接收者可能是类型值或指针&lt;/li&gt;
+&lt;li&gt;如果接收者是值，无论调用者是类型值还是类型指针，修改都是值的副本&lt;/li&gt;
+&lt;li&gt;如果接收者是指针，则调用者修改的是指针指向的值本身。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;接口实现&#34;&gt;接口实现&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;type Notifier interface {
+  Notify() error
+}
+
+func SendNotification(notify Notifier) error {
+  return notify.Notify()
+}
+
+unc (u *User) Notify() error {
+  log.Printf(&amp;quot;User: Sending User Email To %s&amp;lt;%s&amp;gt;\n&amp;quot;,
+      u.Name,
+      u.Email)
+  return nil
+}
+
+func main() {
+  user := User{
+    Name:  &amp;quot;AriesDevil&amp;quot;,
+    Email: &amp;quot;ariesdevil@xxoo.com&amp;quot;,
+  }
+  
+  SendNotification(user)
+}
+
+// Output:
+cannot use user (type User) as type Notifier in function argument:
+User does not implement Notifier (Notify method has pointer receiver)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上述代码是编译不过的，见Output，编译错误关键信息&lt;code&gt;Notify method has pointer receiver&lt;/code&gt;。 编译器不考虑我们的&lt;strong&gt;值&lt;/strong&gt;是实现该接口的类型，接口的调用规则是建立在这些方法的接受者和接口如何被调用的基础上。下面的是语言规范里定义的规则，这些规则用来说明是否我们一个类型的值或者指针&lt;a href=&#34;http://golang.org/ref/spec#Method_sets&#34;&gt;实现了&lt;/a&gt;该接口：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;类型 &lt;code&gt;*T&lt;/code&gt; 的可调用方法集包含接受者为 &lt;code&gt;*T&lt;/code&gt; 或 &lt;code&gt;T&lt;/code&gt; 的所有方法集&lt;/li&gt;
+&lt;li&gt;类型 &lt;code&gt;T&lt;/code&gt; 的可调用方法集包含接受者为 &lt;code&gt;T&lt;/code&gt; 的所有方法&lt;/li&gt;
+&lt;li&gt;类型 &lt;code&gt;T&lt;/code&gt; 的可调用方法集&lt;strong&gt;不&lt;/strong&gt;包含接受者为 &lt;code&gt;*T&lt;/code&gt; 的方法&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;也就是说：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;接收者是指针 &lt;code&gt;*T&lt;/code&gt; 时，接口的实例必须是&lt;strong&gt;指针&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;接收者是值 &lt;code&gt;T&lt;/code&gt; 时，接口的实例可以是&lt;strong&gt;指针&lt;/strong&gt;也可以是&lt;strong&gt;值&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;空接口与nil&#34;&gt;空接口与nil&lt;/h2&gt;
+
+&lt;p&gt;空接口(&lt;code&gt;interface{}&lt;/code&gt;)不包含任何的method，正因为如此，所有的类型都实现了&lt;code&gt;interface{}&lt;/code&gt;。&lt;code&gt;interface{}&lt;/code&gt;对于描述起不到任何的作用(因为它不包含任何的method），但是&lt;code&gt;interface{}&lt;/code&gt;在我们需要存储任意类型的数值的时候相当有用，因为它可以存储任意类型的数值。它有点类似于C语言的&lt;code&gt;void*&lt;/code&gt;类型。&lt;/p&gt;
+
+&lt;p&gt;Go语言中的nil在概念上和其它语言的null、None、nil、NULL一样，都指代零值或空值。nil是预先说明的标识符，也即通常意义上的关键字。nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果未遵循这个&lt;a href=&#34;http://pkg.golang.org/pkg/builtin/#Type&#34;&gt;规则&lt;/a&gt;，则会引发panic。&lt;/p&gt;
+
+&lt;p&gt;在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译&lt;a href=&#34;http://my.oschina.net/chai2010/blog/117923&#34;&gt;Go中error类型的nil值和nil&lt;/a&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import (
+    &amp;quot;fmt&amp;quot;
+    &amp;quot;reflect&amp;quot;
+)
+ 
+func main() {
+    var val interface{} = int64(58)
+    fmt.Println(reflect.TypeOf(val))
+    val = 50
+    fmt.Println(reflect.TypeOf(val))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    var val interface{} = nil
+    if val == nil {
+        fmt.Println(&amp;quot;val is nil&amp;quot;)
+    } else {
+        fmt.Println(&amp;quot;val is not nil&amp;quot;)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。&lt;/p&gt;
+
+&lt;p&gt;进一步验证：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    var val interface{} = (*interface{})(nil)
+    if val == nil {
+        fmt.Println(&amp;quot;val is nil&amp;quot;)
+    } else {
+        fmt.Println(&amp;quot;val is not nil&amp;quot;)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;(*interface{})(nil)&lt;/code&gt;是将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。也就是空接口类型指针而不是空指针，这两者的区别蛮大的。&lt;/p&gt;
+
+&lt;p&gt;对于&lt;code&gt;(*int)(nil)&lt;/code&gt;、&lt;code&gt;(*byte)(nil)&lt;/code&gt;等等来说是一样的。上面的代码定义了接口指针类型变量val，它指向无效的地址(0x0)，因此val持有无效的数据。但它是有类型的&lt;code&gt;(*interface{})&lt;/code&gt;。所以val的底层结构应该是：&lt;code&gt;(*interface{}, nil)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;有时候您会看到&lt;code&gt;(*interface{})(nil)&lt;/code&gt;的应用，比如&lt;code&gt;var ptrIface = (*interface{})(nil)&lt;/code&gt;，如果您接下来将ptrIface指向其它类型的指针，将通不过编译。或者您这样赋值：&lt;code&gt;*ptrIface = 123&lt;/code&gt;，那样的话编译是通过了，但在运行时还是会panic的，这是因为ptrIface指向的是无效的内存地址。其实声明类似ptrIface这样的变量，是因为使用者只是关心指针的类型，而忽略它存储的值是什么。&lt;/p&gt;
+
+&lt;p&gt;小结: 无论该指针的值是什么：&lt;code&gt;(*interface{}, nil)&lt;/code&gt;，这样的接口值总是非nil的，即使在该指针的内部为nil。&lt;/p&gt;
+
+&lt;h2 id=&#34;接口变量存储的类型&#34;&gt;接口变量存储的类型&lt;/h2&gt;
+
+&lt;p&gt;接口的变量里面可以存储任意类型的数值(该类型实现了某interface)。那么我们怎么反向知道这个变量里面实际保存了的是哪个类型的对象呢？目前常用的有两种方法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;comma-ok断言&lt;/p&gt;
+
+&lt;p&gt;value, ok = element.(T)，这里value就是变量的值，ok是一个bool类型，element是interface变量，T是断言的类型。如果element里面确实存储了T类型的数值，那么ok返回true，否则返回false。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;switch测试&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;switch value := element.(type) {
+    case int:
+        fmt.Printf(&amp;quot;list[%d] is an int and its value is %d\n&amp;quot;, index, value)
+    case string:
+         fmt.Printf(&amp;quot;list[%d] is a string and its value is %s\n&amp;quot;, index, value)
+    ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;element.(type)语法不能在switch外的任何逻辑里面使用，如果你要在switch外面判断一个类型就使用comma-ok。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;接口与反射&#34;&gt;接口与反射&lt;/h2&gt;
+
+&lt;p&gt;反射是程序运行时检查其所拥有的结构，尤其是类型的一种能力。Go语言也提供对反射的支持。&lt;/p&gt;
+
+&lt;p&gt;在前面的&lt;code&gt;interface{}与nil&lt;/code&gt;的底层实现已提到，在&lt;code&gt;reflect&lt;/code&gt;包中有两个类型需要了解：&lt;code&gt;Type&lt;/code&gt;和&lt;code&gt;Value&lt;/code&gt;。这两个类型使得可以访问接口变量的内容，还有两个简单的函数，&lt;code&gt;reflect.TypeOf&lt;/code&gt;和&lt;code&gt;reflect.ValueOf&lt;/code&gt;，从接口值中分别获取&lt;code&gt;reflect.Type&lt;/code&gt; 和&lt;code&gt;reflect.Value&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如同物理中的反射，在Go语言中的反射也存在它自己的镜像。从&lt;code&gt;reflect.Value&lt;/code&gt;可以使用&lt;code&gt;Interface&lt;/code&gt;方法还原接口值:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var x float64 = 3.4
+v := reflect.ValueOf(x)
+
+// Interface 以 interface{} 返回 v 的值。
+// func (v Value) Interface() interface{}
+
+// y 将为类型 float64
+y := v.Interface().(float64) 
+fmt.Println(y)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;声明：本文是收集网上一些关于Go语言中接口(interface)的说明，是一篇学习笔记，文中多处引用，参考文章列表在最后，可直接访问了解详情。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://se77en.cc/2014/05/05/methods-interfaces-and-embedded-types-in-golang/&#34;&gt;Go 语言中的方法，接口和嵌入类型&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://studygolang.com/articles/1908&#34;&gt;详解interface和nil&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;http://www.jb51.net/article/56812.htm&#34;&gt;Go语言interface详解&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>理解Go Context机制</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0802_go_context/</link>
+      <pubDate>Tue, 02 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0802_go_context/</guid>
+      <description>&lt;h2 id=&#34;什么是context&#34;&gt;什么是Context&lt;/h2&gt;
+
+&lt;p&gt;最近在公司分析gRPC源码，proto文件生成的代码，接口函数第一个参数统一是&lt;code&gt;ctx context.Context&lt;/code&gt;接口，公司不少同事都不了解这样设计的出发点是什么，其实我也不了解其背后的原理。今天趁着&lt;code&gt;妮妲&lt;/code&gt;台风妹子正面登陆深圳，全市停工、停课、停业，在家休息找了一些资料研究把玩一把。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Context&lt;/code&gt;通常被译作&lt;code&gt;上下文&lt;/code&gt;，它是一个比较抽象的概念。在公司技术讨论时也经常会提到&lt;code&gt;上下文&lt;/code&gt;。一般理解为程序单元的一个运行状态、现场、快照，而翻译中&lt;code&gt;上下&lt;/code&gt;又很好地诠释了其本质，上下上下则是存在上下层的传递，&lt;code&gt;上&lt;/code&gt;会把内容传递给&lt;code&gt;下&lt;/code&gt;。在Go语言中，程序单元也就指的是Goroutine。&lt;/p&gt;
+
+&lt;p&gt;每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个&lt;code&gt;Context&lt;/code&gt;变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
+&lt;/p&gt;
+
+&lt;h2 id=&#34;context包&#34;&gt;context包&lt;/h2&gt;
+
+&lt;p&gt;Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。&lt;code&gt;Context&lt;/code&gt;介绍请参考&lt;a href=&#34;http://blog.golang.org/context&#34;&gt;Go Concurrency Patterns: Context&lt;/a&gt;，&lt;a href=&#34;http://godoc.org/golang.org/x/net/context&#34;&gt;golang.org/x/net/context&lt;/a&gt;包就是这种机制的实现。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;context&lt;/code&gt;包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用之间传递&lt;code&gt;Context&lt;/code&gt;，以及判断其状态，就能解决此问题，这是为什么gRPC的接口中带上&lt;code&gt;ctx context.Context&lt;/code&gt;参数的原因之一。&lt;/p&gt;
+
+&lt;p&gt;Go1.7(当前是RC2版本)已将原来的&lt;code&gt;golang.org/x/net/context&lt;/code&gt;包挪入了标准库中，放在$GOROOT/src/context下面。标准库中&lt;code&gt;net&lt;/code&gt;、&lt;code&gt;net/http&lt;/code&gt;、&lt;code&gt;os/exec&lt;/code&gt;都用到了&lt;code&gt;context&lt;/code&gt;。同时为了考虑兼容，在原&lt;code&gt;golang.org/x/net/context&lt;/code&gt;包下存在两个文件，&lt;code&gt;go17.go&lt;/code&gt;是调用标准库的&lt;code&gt;context&lt;/code&gt;包，而&lt;code&gt;pre_go17.go&lt;/code&gt;则是之前的默认实现，其介绍请参考&lt;a href=&#34;http://studygolang.com/articles/5131&#34;&gt;go程序包源码解读&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;context&lt;/code&gt;包的核心就是&lt;code&gt;Context&lt;/code&gt;接口，其定义如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Context interface {
+    Deadline() (deadline time.Time, ok bool)
+    Done() &amp;lt;-chan struct{}
+    Err() error
+    Value(key interface{}) interface{}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;Deadline&lt;/code&gt;会返回一个超时时间，Goroutine获得了超时时间后，例如可以对某些io操作设定超时时间。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;Done&lt;/code&gt;方法返回一个信道（channel），当&lt;code&gt;Context&lt;/code&gt;被撤销或过期时，该信道是关闭的，即它是一个表示Context是否已关闭的信号。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;当&lt;code&gt;Done&lt;/code&gt;信道关闭后，&lt;code&gt;Err&lt;/code&gt;方法表明&lt;code&gt;Contex&lt;/code&gt;t被撤的原因。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;Value&lt;/code&gt;可以让Goroutine共享一些数据，当然获得数据是协程安全的。但使用这些数据的时候要注意同步，比如返回了一个map，而这个map的读写则要加锁。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;Context&lt;/code&gt;接口没有提供方法来设置其值和过期时间，也没有提供方法直接将其自身撤销。也就是说，&lt;code&gt;Context&lt;/code&gt;不能改变和撤销其自身。那么该怎么通过&lt;code&gt;Context&lt;/code&gt;传递改变后的状态呢？&lt;/p&gt;
+
+&lt;h2 id=&#34;context使用&#34;&gt;context使用&lt;/h2&gt;
+
+&lt;p&gt;无论是Goroutine，他们的创建和调用关系总是像层层调用进行的，就像人的辈分一样，而更靠顶部的Goroutine应有办法主动关闭其下属的Goroutine的执行（不然程序可能就失控了）。为了实现这种关系，Context结构也应该像一棵树，叶子节点须总是由根节点衍生出来的。&lt;/p&gt;
+
+&lt;p&gt;要创建Context树，第一步就是要得到根节点，&lt;code&gt;context.Background&lt;/code&gt;函数的返回值就是根节点：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Background() Context
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;该函数返回空的Context，该Context一般由接收请求的第一个Goroutine创建，是与进入请求对应的Context根节点，它不能被取消、没有值、也没有过期时间。它常常作为处理Request的顶层context存在。&lt;/p&gt;
+
+&lt;p&gt;有了根节点，又该怎么创建其它的子节点，孙节点呢？context包为我们提供了多个函数来创建他们：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
+func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+func WithValue(parent Context, key interface{}, val interface{}) Context
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;函数都接收一个&lt;code&gt;Context&lt;/code&gt;类型的参数&lt;code&gt;parent&lt;/code&gt;，并返回一个&lt;code&gt;Context&lt;/code&gt;类型的值，这样就层层创建出不同的节点。子节点是从复制父节点得到的，并且根据接收参数设定子节点的一些状态值，接着就可以将子节点传递给下层的Goroutine了。&lt;/p&gt;
+
+&lt;p&gt;再回到之前的问题：该怎么通过&lt;code&gt;Context&lt;/code&gt;传递改变后的状态呢？使用&lt;code&gt;Context&lt;/code&gt;的Goroutine无法取消某个操作，其实这也是符合常理的，因为这些Goroutine是被某个父Goroutine创建的，而理应只有父Goroutine可以取消操作。在父Goroutine中可以通过WithCancel方法获得一个cancel方法，从而获得cancel的权利。&lt;/p&gt;
+
+&lt;p&gt;第一个&lt;code&gt;WithCancel&lt;/code&gt;函数，它是将父节点复制到子节点，并且还返回一个额外的&lt;code&gt;CancelFunc&lt;/code&gt;函数类型变量，该函数类型的定义为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type CancelFunc func()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;调用&lt;code&gt;CancelFunc&lt;/code&gt;对象将撤销对应的&lt;code&gt;Context&lt;/code&gt;对象，这就是主动撤销&lt;code&gt;Context&lt;/code&gt;的方法。在父节点的&lt;code&gt;Context&lt;/code&gt;所对应的环境中，通过&lt;code&gt;WithCancel&lt;/code&gt;函数不仅可创建子节点的&lt;code&gt;Context&lt;/code&gt;，同时也获得了该节点&lt;code&gt;Context&lt;/code&gt;的控制权，一旦执行该函数，则该节点&lt;code&gt;Context&lt;/code&gt;就结束了，则子节点需要类似如下代码来判断是否已结束，并退出该Goroutine：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;select {
+    case &amp;lt;-cxt.Done():
+        // do some clean...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;WithDeadline&lt;/code&gt;函数的作用也差不多，它返回的Context类型值同样是&lt;code&gt;parent&lt;/code&gt;的副本，但其过期时间由&lt;code&gt;deadline&lt;/code&gt;和&lt;code&gt;parent&lt;/code&gt;的过期时间共同决定。当&lt;code&gt;parent&lt;/code&gt;的过期时间早于传入的&lt;code&gt;deadline&lt;/code&gt;时间时，返回的过期时间应与&lt;code&gt;parent&lt;/code&gt;相同。父节点过期时，其所有的子孙节点必须同时关闭；反之，返回的父节点的过期时间则为&lt;code&gt;deadline&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;WithTimeout&lt;/code&gt;函数与&lt;code&gt;WithDeadline&lt;/code&gt;类似，只不过它传入的是从现在开始Context剩余的生命时长。他们都同样也都返回了所创建的子Context的控制权，一个&lt;code&gt;CancelFunc&lt;/code&gt;类型的函数变量。&lt;/p&gt;
+
+&lt;p&gt;当顶层的Request请求函数结束后，我们就可以cancel掉某个context，从而层层Goroutine根据判断&lt;code&gt;cxt.Done()&lt;/code&gt;来结束。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;WithValue&lt;/code&gt;函数，它返回&lt;code&gt;parent&lt;/code&gt;的一个副本，调用该副本的Value(key)方法将得到val。这样我们不光将根节点原有的值保留了，还在子孙节点中加入了新的值，注意若存在Key相同，则会被覆盖。&lt;/p&gt;
+
+&lt;h3 id=&#34;小结&#34;&gt;小结&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;context&lt;/code&gt;包通过构建树型关系的Context，来达到上一层Goroutine能对传递给下一层Goroutine的控制。对于处理一个Request请求操作，需要采用&lt;code&gt;context&lt;/code&gt;来层层控制Goroutine，以及传递一些变量来共享。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Context对象的生存周期一般仅为一个请求的处理周期。即针对一个请求创建一个Context变量（它为Context树结构的根）；在请求处理结束后，撤销此ctx变量，释放资源。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;每次创建一个Goroutine，要么将原有的Context传递给Goroutine，要么创建一个子Context并传递给Goroutine。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Context能灵活地存储不同类型、不同数目的值，并且使多个Goroutine安全地读写其中的值。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;当通过父Context对象创建子Context对象时，可同时获得子Context的一个撤销函数，这样父Context对象的创建环境就获得了对子Context将要被传递到的Goroutine的撤销权。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在子Context被传递到的goroutine中，应该对该子Context的Done信道（channel）进行监控，一旦该信道被关闭（即上层运行环境撤销了本goroutine的执行），应主动终止对当前请求信息的处理，释放资源并返回。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;使用原则&#34;&gt;使用原则&lt;/h2&gt;
+
+&lt;p&gt;Programs that use Contexts should follow these rules to keep interfaces consistent across packages and enable static analysis tools to check context propagation:&lt;br /&gt;
+使用Context的程序包需要遵循如下的原则来满足接口的一致性以及便于静态分析。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it. The Context should be the first parameter, typically named ctx；不要把Context存在一个结构体当中，显式地传入函数。Context变量需要作为第一个参数使用，一般命名为ctx；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Do not pass a nil Context, even if a function permits it. Pass context.TODO if you are unsure about which Context to use；即使方法允许，也不要传入一个nil的Context，如果你不确定你要用什么Context的时候传一个context.TODO；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Use context Values only for request-scoped data that transits processes and APIs, not for passing optional parameters to functions；使用context的Value相关方法只应该用于在程序和接口中传递的和请求相关的元数据，不要用它来传递一些可选的参数；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The same Context may be passed to functions running in different goroutines; Contexts are safe for simultaneous use by multiple goroutines；同样的Context可以用来传递到不同的goroutine中，Context在多个goroutine中是安全的；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://blog.golang.org/context&#34;&gt;https://blog.golang.org/context&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://blog.golang.org/pipelines&#34;&gt;http://blog.golang.org/pipelines&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;http://studygolang.com/articles/5131&#34;&gt;http://studygolang.com/articles/5131&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;http://blog.csdn.net/sryan/article/details/51969129&#34;&gt;http://blog.csdn.net/sryan/article/details/51969129&lt;/a&gt;&lt;br /&gt;
+[5] &lt;a href=&#34;https://peter.bourgon.org/blog/2016/07/11/context.html&#34;&gt;https://peter.bourgon.org/blog/2016/07/11/context.html&lt;/a&gt;&lt;br /&gt;
+[6] &lt;a href=&#34;http://www.tuicool.com/articles/vaieAbQ&#34;&gt;http://www.tuicool.com/articles/vaieAbQ&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>为什么是Go</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0723_why_go/</link>
+      <pubDate>Sat, 23 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0723_why_go/</guid>
+      <description>&lt;p&gt;HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。&lt;/p&gt;
+
+&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;主要继承了C(func, struct，指针)&lt;/li&gt;
+&lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
+&lt;li&gt;多态吸取自Python与Ruby(duck type)&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。
+
+同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;面向过程（if，switch，for&amp;hellip;)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Go语言打的组合拳:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;简单易用 vs Python&lt;/li&gt;
+&lt;li&gt;机器码性能 vs C/C++&lt;/li&gt;
+&lt;li&gt;跨平台/标准库 vs Java&lt;/li&gt;
+&lt;li&gt;并发模型（goroutine/channel）vs Erlang&lt;/li&gt;
+&lt;li&gt;异步网络 vs Scala/Node.js&lt;/li&gt;
+&lt;li&gt;动态反射 vs Java&lt;/li&gt;
+&lt;li&gt;垃圾回收 vs Java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Go语言可能不是每一条都是No.1，但却是目前同时具备上述全部7点特性唯一语言，看似平衡中庸的组合拳往往威力强大。&lt;/p&gt;
+
+&lt;p&gt;而我司主要开发语言是C/C++，Java，Python，可以说是若应用Go语言具有广泛的群众基础，同时Go语言兼具他们各自的一些优点，在不同的场景下，能一定的范围内可以代替他们。并且我司的程序员大多较底级，Go语言的简洁与工程化能可能大大提升产品研发效率与降低维护成本。&lt;/p&gt;
+
+&lt;h2 id=&#34;云计算&#34;&gt;云计算&lt;/h2&gt;
+
+&lt;p&gt;我司原是一个设备制造厂商，而不是一个软件开发厂商。但是云计算已正快速改变原有的生态，当软件定义一切，尤其是云计算的全面渗透，计算资源统一X86化。即使传统的网络设备也将网络功能虚拟化（&lt;a href=&#34;http://baike.baidu.com/view/12742623.htm&#34;&gt;NFV&lt;/a&gt;）。NFV化是趋势，若拒绝将是失去未来；只有及时拥抱，才能不被抛弃。&lt;/p&gt;
+
+&lt;p&gt;虚拟化/容器化显著的特点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;不再依赖于专用硬件，跨平台跨硬件混合部署：&lt;/p&gt;
+
+&lt;p&gt;如传统的网卡直通，CPU绑定，内核零拷贝将在云计算下无法再发挥优势。而Go语言相比于C/C++天生跨平台，引入内置Runtime，通过它来隔离与不同的系统调用。这让程序迁移到不同的OS或CPU架构成本非常低，程序只需要重新在目标平台上编译而已。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;物理资源更细粒度的分割，提高整体资源利用率：&lt;/p&gt;
+
+&lt;p&gt;Go语言相比于Java，在CPU、内存与磁盘大小占用方面相对比较低。尤其当前Docker等容器技术的兴起，细粒度的资源隔离。Go语言相比于Java动则上G的内存占用情况下，在资源上可能通过细粒度逻辑分割而达到充分灵活共享；而Go语言内置并发机制，并且Goroutine调度机制在设计上就充分考虑利用多核，让编写多核并发的程序变得更加的容易。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;快速上线开发与部署，缩短上线周期：&lt;/p&gt;
+
+&lt;p&gt;Go语言设计的一个主要目的是降代程序员的心智负担，设计哲学是&lt;code&gt;大道至简&lt;/code&gt;，所以一开始就在可读性、模块化、编译速度、适合大型团队（工程优化）和语法简洁上下足了功夫。Go语言相比于Java与C/C++，开发更简洁；内置丰富的标准库也能有效降低代码量。Go程序默认也是编译只是单个文件，减少了部署态的第三方依赖，这让应用上线部署非常容易。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;快速伸缩，故障隔离与自愈：&lt;/p&gt;
+
+&lt;p&gt;Go语言相比于Java与Python，不需额外的运行环境，编译为一个独立的执行文件；相对于C/C++没有依赖动态库版本不一致的问题；Go语言程序相对于Java启动速度快，很适合于快速伸缩。而独立进程相比于Java中类Tomcat容器内多WebApp部署方式有更好的故障隔离；Go语言虽有异常（Panic），但可预知的错误建议采用error处理，引入了内置的error类型以及defer关键字来处理异常安全，这让程序员更容易写健壮的代码。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在云计算环境下，只要是适合的场景产品（Go目前还不适合要求低时延，高实时的场景），如在面向管理控制、网络并发等领域，采用Go语言开发，用来代替部分C/C++开发的系统应用；Java开发的网络或后端服务应用；Python开发的管理控制应用；可能极大提升产品的整体竞争力。&lt;/p&gt;
+
+&lt;h2 id=&#34;微服务&#34;&gt;微服务&lt;/h2&gt;
+
+&lt;p&gt;现在的应用程序规模越来越庞大，逻辑处理也是越来越复杂。在我司的电信领域，一个产品的研发也是动则几百号人的团队一起开发；系统上处理的数据规模，与接入的用户请求数也是几何级增加，在吞吐量、稳定性都会面临着极大的挑战；当前的业务尤其是面向移动终端用户的业务，需求变化快，业务不断推出与消亡，传统的单体架构根本无法适合频繁的变更，系统的可扩展性、定制性尤显得重要。当功能繁杂，结构混乱，以及人员变化等因素影响下，要解决这些问题，不得不在交付中不断地制定策略，演进架构：&lt;/p&gt;
+
+&lt;p&gt;随着云计算应用经验的不断积累，以及相关的工具链不断成熟，也伴随着微服务架构的出现。它通过将功能分解成多个独立的服务，以实现对解决方案或者复杂系统的解耦。微服务的诞生并非偶然:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://dddcommunity.org/&#34;&gt;领域驱动&lt;/a&gt;设计指导我们如何分析并模型化复杂的业务；&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://agilemethodology.org/&#34;&gt;敏捷方法论&lt;/a&gt;帮助我们消除浪费，快速反馈；持续交付促使我们构建更快、更可靠、更频繁的软件部署和交付能力；&lt;/li&gt;
+&lt;li&gt;虚拟化和基础设施自动化( Infrastructure As Code)则帮助我们简化环境的创建、安装；&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://dev2ops.org/2010/02/what-is-devops/&#34;&gt;DevOps&lt;/a&gt;文化的流行以及特性团队的出现，使得小团队更加全功能化。这些都是推动微服务诞生的重要因素。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;微服务通常有如下几个特征,也是与Go语言特征不谋而合：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;小：专注于做一件事情&lt;/p&gt;
+
+&lt;p&gt;小即是极多，这与Go语言遵循设计原则。保持简单性的方法就是：每种特性仅提供一种方法，减少重复、冗余，只提供一种方法做事情，把事情做到极致，这就是Go语言的原则。而微服务通常讲是两个Pizza能吃饱的团队来共用维护一个服务的代码。与”单一职责原则”类似，每个服务只做一件事情，并且把它做好。Go语言在语法特性简洁处理，编写相同的功能，相比于其它语言代码量很少。同时它提供高质量的标准库，让程序员减少对第三方框架选择与熟悉难题，让程序员更多的精力放在业务本身的逻辑上。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;独：运行在独立的进程中&lt;/p&gt;
+
+&lt;p&gt;当初接触Go语言时，发现它既然支持与C的调用，一直不太理解它为何不支持动态库（1.5版本部分支持）。但事实上，Go语言认为如果一项特性不带来显著的有益，那就不提供。其实动态库的版本当编译与运行时不一致导致程序崩溃一直是C/C++开发的噩梦。Go编译单一执行文件，能一定程度缓和这个问题。另外Go一直追求生成代码优化，执行文件最小化。这也方便程序部署在Docker容器中，运行在一个独立的操作系统进程，拥有更好的故障隔离。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;轻：轻量级的通信机制&lt;/p&gt;
+
+&lt;p&gt;服务和服务之间通过轻量级的机制实现彼此间的通信。所谓轻量级通信机制，通常指基于语言无关、平台无关的这类协议，例如XML、JSON。Go语言的主要发力点之一就是网络编程，标准库内置了HTTP协议框架，同时也提供了对JSON、XML的序列化与序列化支持，结合它的Goroutine并发机制，开发一个Rest服务只须很少的代码。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;松：部署态与运行态松耦合&lt;/p&gt;
+
+&lt;p&gt;Go语言是一个强类型静态语言，可以把代码编译为本地机器指令。它的RUNTIME是会在编译时一起链接到执行文件中，这也就意味着我们不需要像JAVA那样装一个JVM。而且编译出的执行文件本身不依赖于其他动态库，完全可以做到轻松的发布。Go语言基于Channel来通讯，也会带来一定程序代码结构上的松耦合。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当产品架构朝微服务架构演进时，Go语言语言特征与微服务不谋而合，采用Go语言在一定程度上会助力微服务架构实施与落地。单体应用拆分成众多微服务时，服务之间从传统的插件机制来获得扩展性，转化成分布式多进程通讯来扩展。Go语言在网络并发上的优势，使得微服务开发变得更为简单，性能上更有优势。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;http://www.infoq.com/cn/articles/enterprise-core-systems-transformation-practice&#34;&gt;基于微服务架构，改造企业核心系统之实践&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering&#34;&gt;Go在谷歌：以软件工程为目的的语言设计&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;http://yager.io/programming/go.html&#34;&gt;Why Go is not Good&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;http://studygolang.com/articles/2405&#34;&gt;说说Golang的使用心得&lt;/a&gt;&lt;br /&gt;
+[5] &lt;a href=&#34;http://studygolang.com/articles/2944&#34;&gt;go语言设计哲学&lt;/a&gt;&lt;br /&gt;
+[6] &lt;a href=&#34;http://www.oschina.net/news/30754/less-is-more-go-language&#34;&gt;少即是极多 - Go 语言设计理念&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go语言不足</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</link>
+      <pubDate>Mon, 18 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</guid>
+      <description>&lt;p&gt;最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。&lt;/p&gt;
+
+&lt;h2 id=&#34;生态不成熟&#34;&gt;生态不成熟&lt;/h2&gt;
+
+&lt;p&gt;一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100+的App从Java转向Go。Google内部主要有三大语言（C++、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。&lt;/p&gt;
+
+&lt;p&gt;目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
+
+采用Go语言的技术因素主要有：&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。&lt;/p&gt;
+
+&lt;h2 id=&#34;动态扩展机制不成熟&#34;&gt;动态扩展机制不成熟&lt;/h2&gt;
+
+&lt;p&gt;对于编译型静态语言，需要有一种机制来支持动态扩展。C/C++是通过动态库来扩展，Java是支持Class动态加载，或基于JVM平台的其它脚本语言互通。Go语言长期没有支持动态库，Go语言的创始人曾明确表态：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;动态库的存在是一个系统的设计Bug&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台（&lt;a href=&#34;https://github.com/golang/go/wiki/cgo&#34;&gt;cgo·golang/go Wiki&lt;/a&gt;,&lt;a href=&#34;https://github.com/golang/go/wiki/WindowsDLLs&#34;&gt;WindowsDLLs·golang/go Wiki&lt;/a&gt;）。同时支持也是有限制：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go语言代码，可以生成动态库给C代码调用，也可能给Go代码调用，但他们使用也有区别，参考：&lt;a href=&#34;http://www.golangtc.com/t/55976045b09ecc0f51000001&#34;&gt;Go1.5生成动态库&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;不支持运行时在代码中动态加载库&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;目前可行的解决方案：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;生成C语言动态库：通过动态加载生成C语言动态库，实现动态扩展，一个进程中，运行了多个“Go世界”（Go的Runtime）&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;这需要GCC编译器，所以严格来说并不支持Win下的纯DLL动态库（cywin之类的gcc没有验证过）&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;嵌入脚本语言，实现功能逻辑的动态扩展。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;目前开源项目已有纯Go实现的Lua VM，也有通过CGo绑定C的Lua。也有开源项目通过Cgo绑定支持Python,Ruby等；&lt;/li&gt;
+&lt;li&gt;自创脚本脚本，或DSL脚本，采用Go来实现脚本解释。但如果对性能要高要求，需要支持对脚本的JIT，这是相当有难度，目前也未见有解决方案。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;实现基于通信机制的插件模式&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;类似于VScode的语言服务插件机制，参考：&lt;a href=&#34;http://www.oschina.net/translate/common-language-protocol&#34;&gt;通用语言协议&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;这本质是进程间的通讯，并不传统意义上的插件扩展机制。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;不支持泛型&#34;&gt;不支持泛型&lt;/h2&gt;
+
+&lt;p&gt;泛型是目前高级语言最常见的语言基础，Java1.5采用擦除法的泛型（并不像C++一样的Template技术）也解放了不少生产力，能大大减少相似的代码。而Go语言官方团队相对是“民主集中制”，很难听取社区的意见，认为这个总是不紧急，并且他们也没有找到满意的实现方式（C++/Java实现方式都不让他们满意：C++是编译期间展示，生成不同的代码，对编译速度与生成文件大小都有影响；而Java是擦除法，只是语法糖，生成Bytecode变成Object对象，并没有本质变化）。&lt;/p&gt;
+
+&lt;p&gt;从目前来看，Go语言在1.0规范发布之后，语法特性几乎没有什么变化，围绕是性能优化与跨平台支持。至少在Go2.0之前，极可能不会引入这个语言特性。&lt;/p&gt;
+
+&lt;p&gt;目前可行的解决方案&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;interface{}&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;类似于C的void*，Java的Object，但这会增加代码的可读性差与安全危险，又与Go的简单哲学不相符&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go generate&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;参考：&lt;a href=&#34;http://www.kuqin.com/shuoit/20141104/343014.html&#34;&gt;Golang generate 草案&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Go泛型编程库：&lt;a href=&#34;http://www.open-open.com/lib/view/open1389580392476.html&#34;&gt;gen&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;gen 项目目的是为 Go 语言带来了类似泛型的函数，灵感来自 C# 的 LinQ 和 JavaScript 的 Array methods 以及 underscore 库。操作包括过滤、分组、排序等等。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;goroutine性能陷阱&#34;&gt;Goroutine性能陷阱&lt;/h2&gt;
+
+&lt;p&gt;Goroutine简化了并发编程，但它并不能消除并发问题（资源竞争，原子性操作），只是把线程的调度预置到了它的Runtime中，让上层应用代码变得很少。它的坑也主要体现在它的调度不可控制上。&lt;/p&gt;
+
+&lt;p&gt;下面阻塞不会创建新的调度线程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;网络IO阻塞&lt;/li&gt;
+&lt;li&gt;Channel阻塞&lt;/li&gt;
+&lt;li&gt;Sleep，同步锁阻塞&lt;/li&gt;
+&lt;li&gt;基于底层系统异步调用的Syscall&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面阻塞会创建新的调度线程：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;磁盘IO阻塞&lt;/li&gt;
+&lt;li&gt;CGo方式调用C语言动态库中的调用IO或其它阻塞&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这些情况下会导致线程数量爆涨，从而导致系统性能下降，而Goroutine通过go func就能产生一个Goroutine，犯错的成本低，容易被滥用。这需要开发人员熟悉Goroutine内部机制，并小心地避开这些坑。期待Go官方将来能重点解决这些问题。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;http://studygolang.com/articles/84&#34;&gt;goroutine背后的系统知识&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://www.zhihu.com/question/20862617&#34;&gt;golang的goroutine是如何实现的&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;http://studygolang.com/articles/1855&#34;&gt;goroutine与调度器&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go语言在线书籍收集</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0717_go_book/</link>
+      <pubDate>Sun, 17 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0717_go_book/</guid>
+      <description>&lt;h2 id=&#34;effective-go&#34;&gt;Effective Go&lt;/h2&gt;
+
+&lt;p&gt;在线阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.hellogcc.org/effective_go.html&#34;&gt;http://www.hellogcc.org/effective_go.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;go语言圣经&#34;&gt;Go语言圣经&lt;/h2&gt;
+
+&lt;p&gt;Go语言圣经，《The Go Programming Language》 中文版本
+&lt;img src=&#34;http://gopl-zh.b0.upaiyun.com/cover_middle.jpg&#34; alt=&#34;Go语言圣经&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;项目主页：&lt;a href=&#34;http://github.com/golang-china/gopl-zh&#34;&gt;http://github.com/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;项目主页：&lt;a href=&#34;http://bitbucket.org/golang-china/gopl-zh&#34;&gt;http://bitbucket.org/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;
+
+在线阅读：&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://gopl-zh.b0.upaiyun.com/&#34;&gt;http://gopl-zh.b0.upaiyun.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://docs.ruanjiadeng.com/gopl-zh/&#34;&gt;http://docs.ruanjiadeng.com/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://shifei.me/gopl-zh/&#34;&gt;http://shifei.me/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://2goo.info/media/html/gopl-zh-gh-pages/&#34;&gt;http://2goo.info/media/html/gopl-zh-gh-pages/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://docs.plhwin.com/gopl-zh/&#34;&gt;http://docs.plhwin.com/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;go-web-编程&#34;&gt;Go Web 编程&lt;/h2&gt;
+
+&lt;p&gt;Go Web 编程，《Build Web Application with Golang》国内首个讲解Go Web编程的在线书籍。
+&lt;img src=&#34;https://github.com/astaxie/build-web-application-with-golang/blob/master/cover.jpg?raw=true&#34; alt=&#34;Go Web 编程&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在线阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/astaxie/build-web-application-with-golang/tree/master/en&#34;&gt;English&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/astaxie/build-web-application-with-golang/tree/master/zh&#34;&gt;中文&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;雨痕学习笔记&#34;&gt;雨痕学习笔记&lt;/h2&gt;
+
+&lt;p&gt;在线下载：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/qyuhen/book&#34;&gt;https://github.com/qyuhen/book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-way-to-go&#34;&gt;The way to Go&lt;/h2&gt;
+
+&lt;p&gt;《The Way to Go》中文译本，中文正式名《Go入门指南》&lt;/p&gt;
+
+&lt;p&gt;在线阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Unknwon/the-way-to-go_ZH_CN/blob/master/eBook/directory.md&#34;&gt;https://github.com/Unknwon/the-way-to-go_ZH_CN/blob/master/eBook/directory.md&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;network-programming-with-go&#34;&gt;Network Programming with Go&lt;/h2&gt;
+
+&lt;p&gt;在线阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://jannewmarch.gitbooks.io/network-programming-with-go-golang-/content/index.html&#34;&gt;https://jannewmarch.gitbooks.io/network-programming-with-go-golang-/content/index.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Goroutine陷阱</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0703_goroutine/</link>
+      <pubDate>Sun, 03 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0703_goroutine/</guid>
+      <description>&lt;p&gt;Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;goroutine泄漏问题&#34;&gt;Goroutine泄漏问题&lt;/h2&gt;
+
+&lt;p&gt;Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func First(query string, replicas ...Search) Result {  
+    c := make(chan Result)
+    searchReplica := func(i int) { c &amp;lt;- replicas[i](query) }
+    for i := range replicas {
+        go searchReplica(i)
+    }
+    return &amp;lt;-c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在First()函数中的结果channel是没缓存的。这意味着只有第一个goroutine返回。其他的goroutine会困在尝试发送结果的过程中，如果你有不止一个的重复时，每个调用将会泄露资源。为了避免泄露，你需要确保所有的goroutine退出。一个不错的方法是使用一个有足够保存所有缓存结果的channel。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func First(query string, replicas ...Search) Result {  
+    c := make(chan Result,len(replicas))
+    searchReplica := func(i int) { c &amp;lt;- replicas[i](query) }
+    for i := range replicas {
+        go searchReplica(i)
+    }
+    return &amp;lt;-c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;另一个不错的解决方法是使用一个有default情况的select语句和一个保存一个缓存结果的channel。default情况保证了即使当结果channel无法收到消息的情况下，goroutine也不会堵塞。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func First(query string, replicas ...Search) Result {  
+    c := make(chan Result,1)
+    searchReplica := func(i int) { 
+        select {
+        case c &amp;lt;- replicas[i](query):
+        default:
+        }
+    }
+    for i := range replicas {
+        go searchReplica(i)
+    }
+    return &amp;lt;-c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;你也可以使用特殊的取消channel来终止workers。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func First(query string, replicas ...Search) Result {  
+    c := make(chan Result)
+    done := make(chan struct{})
+    defer close(done)
+    searchReplica := func(i int) { 
+        select {
+        case c &amp;lt;- replicas[i](query):
+        case &amp;lt;- done:
+        }
+    }
+    for i := range replicas {
+        go searchReplica(i)
+    }
+    return &amp;lt;-c
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为何在演讲中会包含这些bug？Rob Pike仅仅是不想把演示复杂化。这么做是合理的，但对于Go新手而言，可能会直接使用类似代码，而不去思考它可能有问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;goroutine-race问题&#34;&gt;Goroutine Race问题&lt;/h2&gt;
+
+&lt;p&gt;Go语言支持函数中定义函数，看下一个例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func saveRequest(request *Request) {
+            ….
+            go func() {
+                     request.Users = []{1,2,3}
+                      …
+                      db.Save(request)
+            }
+ 
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;很多情况下，由于程序员对goroutine了解不够深入，又由于goroutine使用很容易。为了性能，很容易把一个同步函数变成异步函数，但这违背了go”不要通过共享内存来通信，相反应该通过通信来共享内存“的原则。即上述的例子中起了一个goroutine，并修改了request指针指向的对象。即使对request只读，也可能不是安全，因为你无法保证request指针不在其它goroutine中修改。&lt;/p&gt;
+
+&lt;p&gt;在本质上讲，goroutine的使用会增加了函数的危险系数，尤其是函数参数传递指针时。任何一个对象的操作，如果没有加上锁，当项目比较庞大时，可能不知道这个对象是不是会引起多个goroutine竞争。&lt;/p&gt;
+
+&lt;p&gt;什么是goroutine race（竞争）问题？官网的文章
+&lt;a href=&#34;http://blog.golang.org/race-detector&#34;&gt;Introducing the Go Race Detect&lt;/a&gt;给出的例子如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import(
+    &amp;quot;time&amp;quot;
+    &amp;quot;fmt&amp;quot;
+    &amp;quot;math/rand&amp;quot;
+)
+
+func main() {
+    start := time.Now()
+    var t *time.Timer
+    t = time.AfterFunc(randomDuration(), func() {
+        fmt.Println(time.Now().Sub(start))
+        t.Reset(randomDuration())
+    })
+    time.Sleep(5 * time.Second)
+}
+
+func randomDuration() time.Duration {
+    return time.Duration(rand.Int63n(1e9))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个例子看起来没任何问题，但是实际上，time.AfterFunc是会另外启动一个goroutine来进行计时和执行func()。由于func中有对t(Timer)进行操作(t.Reset)，而主goroutine也有对t进行操作(t=time.After)。
+这个时候，其实有可能会造成两个goroutine对同一个变量进行竞争的情况。&lt;/p&gt;
+
+&lt;p&gt;那什么才是goroutine的使用正确姿势，怎么理解“通过通信来共享内存”来避免Race问题？先看一个例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type SimpleAccount struct{
+  balance int
+}
+
+func NewSimpleAccount(balance int) *SimpleAccount {
+  return &amp;amp;SimpleAccount{balance: balance}
+}
+
+func (acc *SimpleAccount) Deposit(amount uint) {
+  acc.setBalance(acc.balance + int(amount))
+}
+
+func (acc *SimpleAccount) Withdraw(amount uint) {
+  if acc.balance &amp;gt;= int(amount) {
+    acc.setBalance(acc.balance - int(amount))
+  } else {
+    panic(&amp;quot;杰克穷死&amp;quot;)
+  }
+}
+
+func (acc *SimpleAccount) Balance() int {
+  return acc.balance
+}
+
+func (acc *SimpleAccount) setBalance(balance int) {
+  acc.balance = balance
+}
+
+type ConcurrentAccount struct {
+  account     *SimpleAccount
+  deposits    chan uint
+  withdrawals chan uint
+  balances    chan chan int
+}
+
+func NewConcurrentAccount(amount int) *ConcurrentAccount{
+  acc := &amp;amp;ConcurrentAccount{
+    account :    &amp;amp;SimpleAccount{balance: amount},
+    deposits:    make(chan uint),
+    withdrawals: make(chan uint),
+    balances:    make(chan chan int),
+  }
+  acc.listen()
+
+  return acc
+}
+
+func (acc *ConcurrentAccount) Balance() int {
+  ch := make(chan int)
+  acc.balances &amp;lt;- ch
+  return &amp;lt;-ch
+}
+
+func (acc *ConcurrentAccount) Deposit(amount uint) {
+  acc.deposits &amp;lt;- amount
+}
+
+func (acc *ConcurrentAccount) Withdraw(amount uint) {
+  acc.withdrawals &amp;lt;- amount
+}
+
+func (acc *ConcurrentAccount) listen() {
+  go func() {
+    for {
+      select {
+      case amnt := &amp;lt;-acc.deposits:
+        acc.account.Deposit(amnt)
+      case amnt := &amp;lt;-acc.withdrawals:
+        acc.account.Withdraw(amnt)
+      case ch := &amp;lt;-acc.balances:
+        ch &amp;lt;- acc.account.Balance()
+      }
+    }
+  }()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go/Java/C&#43;&#43;杂谈</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</link>
+      <pubDate>Sat, 02 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</guid>
+      <description>&lt;p&gt;最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年+的C++开发经验，也有5年+的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。&lt;/p&gt;
+
+&lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
+
+&lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
+
+这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Although we expected c++ programmers to see Go as an alternative, instead most Go programmers come from languages like Python and Ruby. Very few come from C++.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;C++的价值精髓在于：语言提供更加广泛的抽象，优雅和灵活的特性，而这些表达能力是硬件零成本的。而Go思考的方向显示不是零成本，至少不是零CPU成本，Go的主张更多考虑的是最小化程序员的工作量。&lt;/p&gt;
+
+&lt;p&gt;一个是硬件零成本的极致追求，一个是最小程序员的工作量，谁都替换不了谁最最价值的部分。Go无法同时符合两个目标，选择了动态语法与GC，就注定了选择开发效率，会为开发效率牺牲硬件效率，所以它走向另外一个方向，也就是目前Java所擅长的应用方向，尤其是目前的网络与WEB应用方面，这就需要有良好的标准库和生态系统支持。在标准方面，Go已提供了处理tcp/http/json/crypto/image等方面的标准库，它对网络的核心协议HTTP高并发支持，已经开发在抢Java的地盘了。&lt;/p&gt;
+
+&lt;p&gt;Go目前在分布系统，WEB应用，云计算云平台开始显示出优势，但是我们也必须看到它的不足，Go在创业公司与互联网企业应用越来眼越多，但在企业级还是未看到成功的案例。最重要的原因可能是其语言重要特性与工业工具还远未成熟，还有不少的断层或临时解决方案。但Go这两年来，在开源界发展速度，生态也会越来越成熟。在Go编译与Runtime也是在多个版本不断地优化与调整。Go于12年发布第一个版本，截止目前的1.7 beta版本发布，差不多是一年两个大版本，对于语言级，每年的版本发布可能会让大企业选择它犹豫再三，不敢应在极核心业务领域，担心它的不稳定带来商用风险不可控。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Go已证明在动态语言需要性能，是作为Python与Ruby的理想候选者。在生产方面，其语言特性与生态系统还远没有像Python与Java成熟，目前阶段也是只在某些场景下的可选角色，从长期来看，在Google的战略支持下，肯定越来越蚕食Python与Java等带有GO与动态性的语言地盘。但在C/C++擅长的领域，尤其是要求实时性，CPU密集计算的领域，短期Go还无法渗入。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;java&#34;&gt;Java&lt;/h2&gt;
+
+&lt;p&gt;Java的成功，10年前靠Unix系统的SUN/IBM/Oracle的强国支撑让它在企业应用领域和WEB应用方面站稳了脚跟；而随后的10年，前半段是靠x86+Linux带来的革命继续保持份额，后半段依托于Android的成功让其在步履蹒跚停止脚步后再一次登顶。二十多年，Java积累了最大的生态系统，可以说它是无说不包，已是一艘航空母舰，足已证明它的地址与成功。但是在其语言、库、框架与生态的复杂度，对技术的人员来说，Java已不太简单，已构成巨大的障碍。比如在Go擅长的并发，语言层面有synchronized机制，标准库的lock与notify，再到后来的concurrent库。基于JVM，Java又可以与其它语言具有良好的互操作性，如并发方面的Scala，可以选择Actor或Akka。&lt;/p&gt;
+
+&lt;p&gt;Java的世界轮子太多，你需要重复造轮子，也是Java成功的关键之一，历史沉淀下来让Java选择太多，也显著增加成本。深入后Java的学习成功可以比C++更高，技术人员需要非常精心地组织框架与设计，否则各种复用的结果就是堆砌出一个异常臃肿的程序，其运行时对资源的消耗有时候会让你感到恐惧，而这是太多的基于Java所开发的平台被广泛诟病的重要原因之一。复用是一把双刃剑，是要量体裁衣还是一锅端，拿捏的尺度对于开发人员要求无疑是高昂的。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Java已是无所不包，近十年基本都是排名最好的语言，积累最强大的生态。但其众多的框架，库复杂度也远不是让一个普通程序员能轻易掌握的，拿捏不好也将是一场灾难。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;c-c&#34;&gt;C/C++&lt;/h2&gt;
+
+&lt;p&gt;C/C++在嵌入式和系统编程方面，依然占据差牢固地位，但是在并发、网络和应用编程等方面，一直处于讳莫如深的黑暗时代，语言本身未提供任何支持，而太单薄的标准库也毫无此方面的野心，C/C++的标准库的规模恐怕始终无法比拟Java/Go，因为C/C++不受任何一家大型商业公司控制，而是完全片处于“放养“状态。标准库需要得到大型商业公司持续的投资，这就是为什么C++98标准库在13年后才获得一次大的更新。C/C++需要封装各种硬件平台的系统API，而linux+x86大面积击败Unix之前，众多的Unix系统更加剧了跨平台编程的难度。2000年左右出现跨平台的ACE库，还有Win平台上MFC库，都是糟糕难用，所以也没有大规模地成功，反而成了当时程序员的救命草，显然，这些技术已被历史所丢弃。而同时期Java原生提供了多线程，网络的标准库，以及基于JVM技术的跨平台支持，把Java推向了主流语言。&lt;/p&gt;
+
+&lt;p&gt;对于C/C++程序员，有一个振奋人心的大事件，C++11发布，相比C++98，无论在语言和标准库上，都是一个极大飞跃。C++之父说它是一门新语言，这不为过，同时如此多的顶尖C++高手对boost库的贡献，它也是事实上的标准库，在网络、并发编程和一些基本应用方面，已经提供了性能优秀的库，极大地降低了此方面的开发难度。传统的C++程序员，须尽快过渡到C++11上，这需要编译环境的更新，而编译环境更新又会带来内存检测和性能分析方面最强力的工具。C/C++曾经最广泛的内存越界与泄露总是，在GCC5.2版本与Intel最新CPU面前，内存飞踩可参被抓在第一现场，同时Intel提供的vtune性能分析工具，足也解决绝大多数的问题。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;传统C++程序员，须尽快拥抱C++11，新的标准库，Boost库，这会极大提高开发与维护效率。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>Golang Web开发</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0515_go_web/</link>
+      <pubDate>Sun, 15 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0515_go_web/</guid>
+      <description>&lt;h2 id=&#34;标准库-net-http&#34;&gt;标准库[net/http]&lt;/h2&gt;
+
+&lt;p&gt;采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到&lt;code&gt;net/http&lt;/code&gt;包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的&lt;code&gt;net/http&lt;/code&gt;是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在&lt;code&gt;golang.org/x/net/http2&lt;/code&gt;,后续可能会移到标准库。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;net/http&lt;/code&gt;库中主要涉及到如下几个类型与接口：&lt;/p&gt;
+
+&lt;h3 id=&#34;request结构体&#34;&gt;Request结构体&lt;/h3&gt;
+
+&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  type Request struct {
+      Method string
+      URL *url.URL
+      Proto      string
+      ProtoMajor int
+      ProtoMinor int
+      Header Header
+      Body io.ReadCloser
+      ContentLength int64
+      TransferEncoding []string
+      Close bool
+      Host string
+      Form url.Values
+      PostForm url.Values
+      MultipartForm *multipart.Form
+      Trailer Header
+      RemoteAddr string
+      RequestURI string
+      TLS *tls.ConnectionState
+      Cancel &amp;lt;-chan struct{}
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;response结构体&#34;&gt;Response结构体&lt;/h3&gt;
+
+&lt;p&gt;封装HTTP的响应消息，其结构如下，Response会关联Request。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  type Response struct {
+    Status     string
+    StatusCode int
+    Proto      string
+    ProtoMajor int
+    ProtoMinor int
+    Header Header
+    Body io.ReadCloser
+    ContentLength int64
+    TransferEncoding []string
+    Close bool
+    Trailer Header
+    Request *Request
+    TLS *tls.ConnectionState
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;handler接口&#34;&gt;Handler接口&lt;/h3&gt;
+
+&lt;p&gt;用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; type Handler interface {
+    ServeHTTP(ResponseWriter, *Request)
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;responsewriter接口&#34;&gt;ResponseWriter接口&lt;/h3&gt;
+
+&lt;p&gt;即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了&lt;code&gt;io.Writer&lt;/code&gt;接口，可以写入响应的Body，&lt;code&gt;WriteHeader&lt;/code&gt;方法用于向HTTP响应信息写入状态码，但必须先于&lt;code&gt;Writer&lt;/code&gt;方法调用。若不调用&lt;code&gt;WriteHeader&lt;/code&gt;，使用&lt;code&gt;Write&lt;/code&gt;方法会自动写入状态码&lt;code&gt;http.StatusOK&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; type ResponseWriter interface {
+    Header() Header
+    Write([]byte) (int, error)
+    WriteHeader(int)
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;listenandserve函数&#34;&gt;ListenAndServe函数&lt;/h3&gt;
+
+&lt;p&gt;启动HTTP服务，需要构建Server对象，并调用该Server的&lt;code&gt;ListenAndServe&lt;/code&gt;方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Server struct {
+    Addr           string        // TCP address to listen on, &amp;quot;:http&amp;quot; if empty
+    Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
+    ReadTimeout    time.Duration // maximum duration before timing out read of the request
+    WriteTimeout   time.Duration // maximum duration before timing out write of the response
+    MaxHeaderBytes int           // maximum size of request headers, DefaultMaxHeaderBytes if 0
+    TLSConfig      *tls.Config   // optional TLS config, used by ListenAndServeTLS
+    TLSNextProto map[string]func(*Server, *tls.Conn, Handler)
+    ConnState func(net.Conn, ConnState)
+    ErrorLog *log.Logger
+    disableKeepAlives int32     // accessed atomically.
+    nextProtoOnce     sync.Once // guards initialization of TLSNextProto in Serve
+    nextProtoErr      error
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Server需要关注如下几个方法，从方法名就可能知道它的用途。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (srv *Server) ListenAndServe() error
+func (srv *Server) Serve(l net.Listener) error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;servemux结构体&#34;&gt;ServeMux结构体&lt;/h3&gt;
+
+&lt;p&gt;用于HTTP路由配置，其结构体定义如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type ServeMux struct {
+    mu    sync.RWMutex
+    m     map[string]muxEntry
+    hosts bool // whether any patterns contain hostnames
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ServeMux有如下几个方法，用于配置HTTP与URL的映射关系。其实ServeMux也是实现&lt;code&gt;ServeHTTP&lt;/code&gt;接口，其ServeHTTP方法完成了ServeMux的主要功能，即根据HTTP请求找出最佳匹配的&lt;code&gt;Handler&lt;/code&gt;并执行之，它本身就是一个多&lt;code&gt;Handler&lt;/code&gt;封装器，是各个&lt;code&gt;Handler&lt;/code&gt;执行的总入口。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (mux *ServeMux) Handle(pattern string, handler Handler)
+func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string)
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ServeMux的路由功能是非常简单的，其只支持路径匹配，且匹配能力不强，也不支持对Method的匹配。&lt;code&gt;net/http&lt;/code&gt;包已经为我们定义了一个可导出的ServeMux类型的变量&lt;code&gt;DefaultServeMux&lt;/code&gt;。&lt;code&gt;net/http&lt;/code&gt;包也提供了注册&lt;code&gt;Handler&lt;/code&gt;的方法，它其实也是操作&lt;code&gt;DefaultServeMux&lt;/code&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;调用&lt;code&gt;http.Handle&lt;/code&gt;或&lt;code&gt;http.HandleFunc&lt;/code&gt;实际上就是在调用&lt;code&gt;DefaultServeMux&lt;/code&gt;对应的方法。&lt;/li&gt;
+&lt;li&gt;若&lt;code&gt;ListenAndServe&lt;/code&gt;的第二个参数为nil，它也默认使用&lt;code&gt;DefaultServeMux&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;第三方库-fasthttp&#34;&gt;第三方库[fasthttp]&lt;/h2&gt;
+
+&lt;p&gt;说到Golang的http，也不是只有标准库一家，Github也有人开源了&lt;a href=&#34;https://github.com/valyala/fasthttp&#34;&gt;fasthttp&lt;/a&gt;，并号称比&lt;code&gt;net/http&lt;/code&gt;包快10倍，上面介绍的&lt;a href=&#34;https://github.com/labstack/echo&#34;&gt;echo&lt;/a&gt;，底层同时支持&lt;code&gt;net/http&lt;/code&gt;与&lt;code&gt;fasthttp&lt;/code&gt;，其性能测试对比如下：
+&lt;img src=&#34;https://camo.githubusercontent.com/b3432f107b2bdaaca11a4ee0225edeb121b02607/687474703a2f2f692e696d6775722e636f6d2f665a566e4b35322e706e67&#34; alt=&#34;echo perform&#34; /&gt;
+但是由于&lt;code&gt;fasthttp&lt;/code&gt;的API与&lt;code&gt;net/http&lt;/code&gt;完全不同，这使得无法重用目前基于&lt;code&gt;net/http&lt;/code&gt;开发的路由，Handler等工具，这也让人在选择它时不得不面临考虑的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;工具或框架&#34;&gt;工具或框架&lt;/h2&gt;
+
+&lt;p&gt;由于Golang提供了标准库&lt;code&gt;net/http&lt;/code&gt;，使得开发Go的Web框架变得很简单，在Github上可以搜索到各种不同层次的框架。&lt;/p&gt;
+
+&lt;h3 id=&#34;路由工具&#34;&gt;路由工具&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gorilla/mux&#34;&gt;gorilla/mux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/julienschmidt/httprouter&#34;&gt;julienschmidt/httprouter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;handler工具&#34;&gt;Handler工具&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gorilla/handlers&#34;&gt;gorilla/handlers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/codegangsta/negroni&#34;&gt;codegangsta/negroni&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;轻量框架&#34;&gt;轻量框架&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/labstack/echo&#34;&gt;echo&lt;/a&gt;，底层支持绑定fasthttp，号称10倍快于其它框架。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/goji/goji&#34;&gt;goji&lt;/a&gt;，借鉴了Sinatra了思想。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/go-martini/martini&#34;&gt;martini&lt;/a&gt;，提供了丰富的中间件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gin-gonic/gin&#34;&gt;goin&lt;/a&gt;，借鉴了Martini，号称比它更快。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/go-macaron/macaron&#34;&gt;macaron&lt;/a&gt;，其思路来自martini，个人感觉API比martini方便很多。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;全功能框架&#34;&gt;全功能框架&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/hoisie/web&#34;&gt;web.go&lt;/a&gt;，其思路来自web.py。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://beego.me/&#34;&gt;beego&lt;/a&gt;，其思路来自Tornado, Sinatra与Flask框架。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://revel.github.io/&#34;&gt;revel&lt;/a&gt;，其思路完全来自Java的Play Framework。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Taipei-Torrent源码分析</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</link>
+      <pubDate>Sun, 17 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</guid>
+      <description>&lt;p&gt;提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。&lt;/p&gt;
+
+&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;
+
+&lt;p&gt;一个BitTorrent的文件在网络传输过程，由以下几个部分组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;WEB服务器&lt;/li&gt;
+&lt;li&gt;文件元信息(metainfo)&lt;/li&gt;
+&lt;li&gt;BitTorrent Tracker&lt;/li&gt;
+&lt;li&gt;原始资源发布者&lt;/li&gt;
+&lt;li&gt;目的端用户浏览器&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;目的端用户下载者
+
+其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;有的Tracker结构&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;		[WebServer]
+		  |
+		  | torrent file
+		  |
+	 [  Peer ] ---Get Peers --- [TrackerServer]
+	     \
+	      \
+	      Download&amp;amp;Upload(TCP)
+	       \
+	        \
+	       [ OtherPeer ]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Trackerless的DHT结构&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;		[WebServer]
+		  |
+		  | torrent file
+		  |
+	 [  Peer ] ---Get Peers --- [DHT Nodes]
+	     \
+	      \
+	      Download&amp;amp;Upload(TCP)
+	       \
+	        \
+	       [ OtherPeer ]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。&lt;/p&gt;
+
+&lt;p&gt;每个节点都有一个全局唯一的标识符，称为节点ID。距离度量用来比较两个节点或者节点与infohash之间的远近程度。节点必须维护一个含有少量其他节点联系信息的路由表。ID越靠近自身ID时，路由表越详细。节点知道很多离它很近的节点，只知道少量离它很远地节点。&lt;/p&gt;
+
+&lt;p&gt;在Kademlia中，距离度量采用异或计算，结果解释成一个无符号整数。 distance (A,B)=(A ~| B)，值越小，距离越近。每个节点维护一个路由表，由它所知道的好节点组成。路由表中的节点被用作在DHT中发送请求的起点。当其他节点查询时，就返回路由表中的节点。&lt;/p&gt;
+
+&lt;h2 id=&#34;开源实现&#34;&gt;开源实现&lt;/h2&gt;
+
+&lt;h3 id=&#34;c-语言&#34;&gt;C++语言&lt;/h3&gt;
+
+&lt;p&gt;实现BitTorrent协议最有名要算两个C++的实现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rakshasa/libtorrent&#34;&gt;rakshase&lt;/a&gt; 版本：他来源于Mozilla NSS的项目，LICENSE是GPL，使用它的客户端亦rtorrent等，基于Posix接口开发，可以在兼容Posix系统中编译使用，也支持HDT。这个项目已有12年了，目前还在发展，可以是非常的稳定与成熟，据说是速度之王。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/arvidn/libtorrent&#34;&gt;rasterbar(arvidn/libtorrent)&lt;/a&gt;版本，GitHub上有两个地址，另一个是&lt;a href=&#34;https://github.com/libtorrent/libtorrent&#34;&gt;libtorrent/libtorrent&lt;/a&gt;。前者是还是发展，后者已停止开发了。rasterbar版本是基于boost asio编写的，跨平台不存问题。默认有Python与Ruby的绑定接口。并且具有良好扩展性，例如有uTP，DHT安全扩展&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;go语言&#34;&gt;Go语言&lt;/h3&gt;
+
+&lt;p&gt;由于个人爱好的原因，一真想找是否有Go语言实现版本，于是在GitHub上寻寻觅觅，也找到两个不错的实现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/jackpal/Taipei-Torrent&#34;&gt;Taipei Torrent&lt;/a&gt;：它一个较轻量的，基于命令行接口的Torrent客户端，主要功能有支持多Torrent文件，Magnet链接，DHT，UPnP/NAT-PMP打洞，也提供简单的tracker服务。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/anacrolix/torrent&#34;&gt;anacrolix/torrent&lt;/a&gt;: 它实现了BitTorrent协议相关功能包，以及提供较丰富的命令行工具集。支持加密协议，DHT，PEX，uTP以及多种扩展。从代码结构来说，anacrolix/torrent比Taipei Torrent更容易做二次开发。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;taipei-torrent&#34;&gt;Taipei Torrent&lt;/h2&gt;
+
+&lt;p&gt;首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为&lt;code&gt;Taipei Torrent&lt;/code&gt;。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。&lt;/p&gt;
+
+&lt;h3 id=&#34;代码结构&#34;&gt;代码结构&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;Taipei-Torrent git:(master) tree
+├── main.go
+├── queryTracker.bash
+├── resolveBindIP.go
+├── resolveBindIP_test.go
+├── test.bash
+├── testData
+│   ├── a.torrent
+│   └── testFile
+├── testdht.bash
+├── testswarm.bash
+├── testtracker.bash
+├── torrent
+│   ├── accumulator.go
+│   ├── accumulator_test.go
+│   ├── bitset.go
+│   ├── cache.go
+│   ├── cache_test.go
+.......
+│   ├── upnp.go
+│   ├── uri.go
+│   └── uri_test.go
+└── tracker
+    ├── tracker.go
+    └── tracker_test.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;源码分析&#34;&gt;源码分析&lt;/h3&gt;
+
+&lt;p&gt;花了一个下午走读它的代码，代码简洁易懂，主要功能都在&lt;code&gt;torrent&lt;/code&gt;目录下。每个Peer对一个torrent文件会产生一个会话，在我的笔记本记，使用Docker搭建了6个节点，发布下载77M的go的安装包，是秒级速度。如下所示：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2016/01/17 12:13:13 Starting.
+2016/01/17 12:13:13 Listening for peers on port: 7777
+2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Tracker: [], Comment: , InfoHash: 556871e1ada306c2da5033e8fe0d4f077edbe6f7, Encoding: , Private: 0
+2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Computed missing pieces (0.35 seconds)
+2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Good pieces: 0 Bad pieces: 1223 Bytes left: 80147269
+2016/01/17 12:13:13 Created torrent session for go1.5.3.linux-amd64.tar.gz
+2016/01/17 12:13:13 Starting torrent session for go1.5.3.linux-amd64.tar.gz
+2016/01/17 12:13:14 [ go1.5.3.linux-amd64.tar.gz ] Peers: 0 downloaded: 0 (0.00 B/s) uploaded: 0 ratio: 0.000000 pieces: 0/1223
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;作为Peer Client，主要代码逻辑在&lt;code&gt;torrent\torrentLoop.go&lt;/code&gt;的RunTorrents方法中，它充分利用了Go的channel机制。实现步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;根据命令参数，开启Peer连接端口（TCP）。若不指定端口，则采用随机端口。目前是绑定在所的IP上，如果是内网，可以做NAT转换。&lt;/li&gt;
+&lt;li&gt;根据MaxActive参数，开启Session（对象为TorrentSession）数，如果同时下载torrent多余MaxActive则排队处理&lt;/li&gt;
+&lt;li&gt;如果设置参数useDHT，或torrent文件中没有Tracker服务，则会开启DHT，而DHT是采用UDP，端口与第1步的相同。&lt;/li&gt;
+&lt;li&gt;如果设置useLPD（Use Local Peer Discovery），则又会通过组播在同一个网段内相互发现，组播地址为&lt;code&gt;239.192.152.143:6771&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;当完成上述初始化之后，在mainLoop主要根据事件来处理：
+
+&lt;ol&gt;
+&lt;li&gt;如果是Session创建成功，则异步执行&lt;code&gt;TorrentSession.DoTorrent&lt;/code&gt;方法开始启动下载&lt;/li&gt;
+&lt;li&gt;如果是有Session下载结束，则从排队中取出未处理的torrent文件加入到Session处理。&lt;/li&gt;
+&lt;li&gt;如果是收到退出信号，则等下载结束退出。&lt;/li&gt;
+&lt;li&gt;如果是收到其它Peer的连接请求，根据Infohash来判断是否存在相应的Session，如果存在，则提供给其它的Peer下载数据。&lt;/li&gt;
+&lt;li&gt;如果是收到DHT Peer的请求结果，则处理其它的Peer地址，根据地址从其它Peer下载数据。&lt;/li&gt;
+&lt;li&gt;如果是收到其它Peer的组播请求，则处理其它的Peer地址，根据地址从其它Peer下载数据。&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另一个核心代码逻辑是在&lt;code&gt;torrent\torren.go&lt;/code&gt;的DoTorrent方法中，实现步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;如果设置了内存缓存或硬盘缓存数，则根据torrent文件中元信息（块个数，整个大小）初始化缓存。&lt;/li&gt;
+&lt;li&gt;开启几个定时器，每隔1秒心跳检查，每隔60秒连接KeepAlive，如果采用Tracker服务，每隔20秒与Tracker服务列表请求，直到有Tracker服务有咱应。&lt;/li&gt;
+&lt;li&gt;如果是DHT，则从DHT Peer获取其它的Peer地址。&lt;/li&gt;
+&lt;li&gt;处理各种Channel的消息。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;还一个重要的&lt;code&gt;torrent\torren.go&lt;/code&gt;的DoMessage方法，它用于是产生协议的消息，与一个peer建立TCP连接后，首先向peer发送握手消息，peer收到握手消息后回应一个握手消息。握手消息是一个长度固定为68字节的消息。消息的格式如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[pstrlen][pstr][reserved][info_hash][peer_id]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;参    数&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;含    义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;pstrlen&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;pstr的长度，该值固定为19&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;pstr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;BitTorrent协议的关键字，即“BitTorrent protocol”&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;reserved&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;占8字节，用于扩展BT协议，一般这8字节都设置为0。有些BT软件对BT协议进行了某些扩展，因此可能看到有些peer发来的握手消息这8个字节不全为0，不过不必理会，这不会影响正常的通信&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;info_hash&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;与发往Tracker的GET请求中的info_hash为同一个值，长度固定为20字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;对于除握手消息之外的其他所有消息，其一般的格式为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[length prefix][message ID][payload]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;length prefix（长度前缀）占4个字节，指明message ID和payload的长度和。message ID（消息编号）占一字节，是一个10进制的整数，指明消息的编号。payload（负载），长度未定，是消息的内容。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;keep_alive消息：[len=0000]&lt;/p&gt;
+
+&lt;p&gt;keep_alive消息的长度固定，为4字节，它没有消息编号和负载。如果一段时间内客户端与peer没有交换任何消息，则与这个peer的连接将被关闭。keep_alive消息用于维持这个连接，通常如果2分钟内没有向peer发送任何消息，则发送一个keep_alive消息。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;choke消息：[len=0001][id=0]&lt;/p&gt;
+
+&lt;p&gt;choke消息的长度固定，为5字节，消息长度占4个字节，消息编号占1个字节，没有负载。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;unchoke消息：[len=0001][id=1]&lt;/p&gt;
+
+&lt;p&gt;unchoke消息的长度固定，为5字节，消息长度占4个字节，消息编号占1个字节，没有负载。客户端每隔一定的时间，通常为10秒，计算一次各个peer的下载速度，如果某peer被解除阻塞，则发送unchoke消息。如果某个peer原先是解除阻塞的，而此次被阻塞，则发送choke消息。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;interested消息：[len=0001][id=2]&lt;/p&gt;
+
+&lt;p&gt;interested消息的长度固定，为5字节，消息长度占4个字节，消息编号占1个字节，没有负载。当客户端收到某peer的have消息时，如果发现peer拥有了客户端没有的piece，则发送interested消息告知该peer，客户端对它感兴趣。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;not interested消息：[len=0001][id=3]&lt;/p&gt;
+
+&lt;p&gt;not interested消息的长度固定，为5字节，消息长度占4个字节，消息编号占1个字节，没有负载。当客户端下载了某个piece，如果发现客户端拥有了这个piece后，某个peer拥有的所有piece，客户端都拥有，则发送not interested消息给该peer。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;have消息：[len=0005][id=4][piece index]&lt;/p&gt;
+
+&lt;p&gt;have消息的长度固定，为9字节，消息长度占4个字节，消息编号占1个字节，负载为4个字节。负载为一个整数，指明下标为index的piece，peer已经拥有。每当客户端下载了一个piece，即将该piece的下标作为have消息的负载构造have消息，并把该消息发送给所有与客户端建立连接的peer。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;bitfield消息：[len=0001+X][id=5][bitfield]&lt;/p&gt;
+
+&lt;p&gt;bitfield消息的长度不固定，其中X是bitfield(即位图)的长度。当客户端与peer交换握手消息之后，就交换位图。位图中，每个piece占一位，若该位的值为1，则表明已经拥有该piece；为0则表明该piece尚未下载。具体而言，假定某共享文件共拥有801个piece，则位图为101个字节，位图的第一个字节的最高位指明第一个piece是否拥有，位图的第一个字节的第二高位指明第二个piece是否拥有，依此类推。对于第801个piece，需要单独一个字节，该字节的最高位指明第801个piece是否已被下载，其余的7位放弃不予使用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;request消息：[len=0013][id=6][index][begin][length]&lt;/p&gt;
+
+&lt;p&gt;request消息的长度固定，为17个字节，index是piece的索引，begin是piece内的偏移，length是请求peer发送的数据的长度。当客户端收到某个peer发来的unchoke消息后，即构造request消息，向该peer发送数据请求。前面提到，peer之间交换数据是以slice（长度为16KB的块）为单位的，因此request消息中length的值一般为16K。对于一个256KB的piece，客户端分16次下载，每次下载一个16K的slice。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;piece消息：[len=0009+X][id=7][index][begin][block]&lt;/p&gt;
+
+&lt;p&gt;piece消息是另外一个长度不固定的消息，长度前缀中的9是id、index、begin的长度总和，index和begin固定为4字节，X为block的长度，一般为16K。因此对于piece消息，长度前缀加上id通常为00 00 40 09 07。当客户端收到某个peer的request消息后，如果判定当前未将该peer阻塞，且peer请求的slice，客户端已经下载，则发送piece消息将文件数据上传给该peer。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cancel消息：[len=0013][id[=8][index][begin][length]&lt;/p&gt;
+
+&lt;p&gt;cancel消息的长度固定，为17个字节，len、index、begin、length都占4字节。它与request消息对应，作用刚好相反，用于取消对某个slice的数据请求。如果客户端发现，某个piece中的slice，客户端已经下载，而客户端又向其他peer发送了对该slice的请求，则向该peer发送cancel消息，以取消对该slice的请求。事实上，如果算法设计合理，基本不用发送cancel消息，只在某些特殊的情况下才需要发送cancel消息。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;port消息：[len=0003][id=9][listen-port]
+*
+port消息的长度固定，为7字节，其中listen-port占两个字节。该消息只在支持DHT的客户端中才会使用，用于指明DHT监听的端口号，一般不必理会，收到该消息时，直接丢弃即可。
+&amp;gt; 注：Taipei Torrent未实现此消息&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;extension消息：[len=0009+X][id=20][payload]&lt;/p&gt;
+
+&lt;p&gt;extension消息消息的长度不固定，消息Id为20， Taipei Torrent来来与其它的Peer交换torrent文件的元数据信息（每块Pieces的信息），同样采用B编码格式。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
