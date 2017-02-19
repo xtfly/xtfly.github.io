@@ -1328,7 +1328,7 @@ Plugin &#39;Raimondi/delimitMate&#39;               &amp;quot;自动括号补全
 
 &lt;h2 id=&#34;注意&#34;&gt;注意&lt;/h2&gt;
 
-&lt;p&gt;由于Hugo的&lt;code&gt;.Summary&lt;/code&gt;只有70个字符，对于中文文章来说，实在是太短了，你可以在文档中任一地方增加&lt;code&gt;&amp;lt;!--more--&amp;gt;&lt;/code&gt;来分割。&lt;/p&gt;
+&lt;p&gt;由于Hugo的&lt;code&gt;.Summary&lt;/code&gt;只有70个字符，对于中文文章来说，实在是太短了，你可以在文档中任一地方增加&lt;code&gt;HUGOMORE42&lt;/code&gt;来分割。&lt;/p&gt;
 
 &lt;hr /&gt;</description>
     </item>
