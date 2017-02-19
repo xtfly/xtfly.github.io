@@ -1,6 +1,6 @@
 <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  {{ range (last 1 (where .Data.Pages "Section" "post")) }}
+  {{ range (last 1 (where .Site.Pages "Section" "post")) }}
   {{ .Date.Format "2006"}}
   {{ end }} - {{ .Now.Year }}</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
