@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://lanlingzi.cn/post/technical/2017/0304_paas/</loc>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/post/technical/2017/0216_dff/</loc>
     <lastmod>2017-02-16T00:00:00+00:00</lastmod>
   </url>
@@ -520,8 +525,14 @@
   </url>
   
   <url>
+    <loc>http://lanlingzi.cn/tags/paas/</loc>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/post/</loc>
-    <lastmod>2017-02-16T00:00:00+00:00</lastmod>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -652,7 +663,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2017-02-16T00:00:00+00:00</lastmod>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -688,7 +699,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/</loc>
-    <lastmod>2017-02-16T00:00:00+00:00</lastmod>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -706,7 +717,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/</loc>
-    <lastmod>2017-02-16T00:00:00+00:00</lastmod>
+    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

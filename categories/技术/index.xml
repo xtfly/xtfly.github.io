@@ -9,6 +9,132 @@
     <atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>PaaS的发展</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0304_paas/</link>
+      <pubDate>Sat, 04 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0304_paas/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/paas/paas1.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;云计算按提供服务层次，通常划分为三层：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;IaaS ：基础构架即服务。这一层主要是对基础设施进行管理以给用户提供资源使用，如提供计算服务、安全备份、负载管理等。&lt;/li&gt;
+&lt;li&gt;PaaS ：平台即服务。这一层主要是基于IaaS之上，简化应用的部署、运行等，提供一些通用平台软件能力，如数据挖掘、系统管理、编程模型等。&lt;/li&gt;
+&lt;li&gt;SaaS ：软件即服务。这一层主要是面向终端客户，提供一站式的解决方案。 如提供CRM、HRM、SCM等，是可以直接使用其服务。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;个人一直从事PaaS的研发，而我们做的又是面向电信领域的PaaS。与外面的朋又交流发现，大家对PaaS的理解是不一样的，主要还是由于PaaS的本质是要解决的问题是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;简化开发，打通DevOps，实现业务应用的敏捷与弹性。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;不同的业务领域，要面对是如果从&lt;code&gt;不同的传统应用架构如果通过PaaS平台来转型到云化应用&lt;/code&gt;，这就会导致各自对PaaS的需求或多或少有着不同的差异，理解不一样也是正常的。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;paas定义&#34;&gt;PaaS定义&lt;/h2&gt;
+
+&lt;p&gt;NIST（National Institute Of Standards and Technoloy）曾对PaaS有过经典的定义：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;面向应用的核心平台，封装应用分布式复杂性，实现应用层自动化、高可用。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;从功能定义来看，主要包含三个方面：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;应用托管：可将开发者创建或拥有的应用部署到云基础设施上。其价值是应用对基础设施资源的获取自动化。&lt;/li&gt;
+&lt;li&gt;应用开发：开发者使用供应商提供的运行环境，编程语言框架，服务以及工具等来构建应用。其价值是应用对中间件服务的获取自动化，软件开发自动化。&lt;/li&gt;
+&lt;li&gt;应用运维：应用的运维无需管理或控制底下的基础设施（计算、网络、存储、OS等），可以控制已部署的应用，并有可能对应用托管的环境、其配置进行控制。其价值是应用的运维管理（伸缩，配置，升级等）自动化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以PaaS是以应用开发为中心，解决如下三个问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;应用全生命周期管理：从应用的开发、部署，到运维的全流程生命周期管理。开发者可使用供应商提供的运行环境，编程语言框架，服务与工具等快速构建应用；通过平台将应用部署到云基础设施上，并对应用进行自动伸缩，弹性扩展，灰度发布等；对上线的应用可以实现监控管理，故障分析，自动迁移，自动恢复，为应用提供高用性，高可扩展性。&lt;/li&gt;
+&lt;li&gt;中间件云服务：提供丰富的预集成服务，如分布式数据库服务，分布式消息队列服务，分布式缓存服务等。把通用的软件能力服务化，使得应用能快速拥有分布式的高用性，高可扩展性。同时中间件服务让多租能力变得可行，在中间件云服务层，不同的租户可参共享或隔离不同的服务资源。&lt;/li&gt;
+&lt;li&gt;基础资源的高效利用：对底层资源的抽象，可以按用户要求分配的相应用资源部署实例。大规模的应用部署在云基础设施上，PaaS可能通过调度算法，把应用实例调度到不同的资源上运行。通过资源层的隔离，尽可能地共享或平摊资源，以提高资源整体使用率，从而降低基础设施的投入。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;paas的发展历史&#34;&gt;PaaS的发展历史&lt;/h2&gt;
+
+&lt;p&gt;早期公有云，主要是提供高效多语言多框架的开发与运维环境：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;2005年，Rackspace，提供托管PHP与.Net语言的Web应用，不支持多租户，API和自动伸缩。&lt;/li&gt;
+&lt;li&gt;2007年，Heroku/Force.com，支持Ruby语言，引进数据库，企业工作流服务，主要是支持托管CRM相关的应用。&lt;/li&gt;
+&lt;li&gt;2008年，GAE, Google发布面向WEB的开发和托管的平台，早期支持python、java语言。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;开源PaaS成长期，主要是提供应用快速部署到基础设施上的能力：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;2008年，CloudFoundry，提供支持多语言，多框架的可移植的PaaS平台。2011年被VMWare收获，其后开源。&lt;/li&gt;
+&lt;li&gt;2010年，OpenShift，Redhat发布OpenShift，支持多种异构I层。受2011的CloudFoundry，也开源。&lt;/li&gt;
+&lt;li&gt;2010年，Cloudify，Gigaspace开始基于Java构建支持多种异构I层的PaaS，重点在应用部署，并开源。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在2014年之后，PaaS也不在仅仅是互联网的公有云玩法，而是百花齐放。软件开发管理模式正在PaaS技术的驱动下，经历一场新的变革：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;传统软件巨头份份杀人：Oracle，SAP，IBM，HP等发布云战略，构建PaaS平台，极力在其各自的传统领域打造云生态系统。&lt;/li&gt;
+&lt;li&gt;公有云PaaS呈现三国鼎立：AWS， Azure与GAE的PaaS平台走向成熟，构建方式呈现多层次，应用可以按需组合；并且在提供的服务数量，服务性能不断提升。&lt;/li&gt;
+&lt;li&gt;PaaS开源项目爆发：早期的CloudFoundry，OpenShift，Cloudify历经多个版本也走向成熟；轻量级的PaaS不断涌现，如Apache Stratos, Deio, Flynn等；面向应用与资源调度的PaaS开源抢占风头，Docker，CoreOS, Mesos, Kubernetes。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以说，当前的PaaS也不在局限于NIST的经典定义，而是在大规模的云基础设施上，提供更多的高性能的云服务，更高效的资源使用方式。PaaS已经呈现多样形态，在灵活性和易用性上不断地提升。同时多形态并存，但也没有一个形态可以满足所有用户需求。&lt;/p&gt;
+
+&lt;h2 id=&#34;paas的发展趋势&#34;&gt;PaaS的发展趋势&lt;/h2&gt;
+
+&lt;p&gt;随着新技术的出现，目前PaaS的发展趋势主是容器化，微服务化，分布式化。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;容器化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Docker简化了软件打包，形成了新的软件分发标准；同时解决了应用环境的一致性，加快了应用的部署，DevOps; Docker能更粒度地的资源分割。这些特性使得Docker技术快速应用，其技术以及生态的发展正对PaaS产生革命性的冲击与影响。基于Docker的PaaS平台也是层出不穷，如OpenShift，CloudFoundry，Deis与Flynn等，而公有云AWS， Azure，GCE与IBM等都份份支持Docker容器。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;微服务化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;传统的集中式的三层架构，转变到微服务架构。应用由一组无状态，功能分离，可独立部署的小服务集组合而成。而每个服务又具体语言多样性，不同的开发团队可以选择其熟悉与场景适合的语言。服务间是解耦合的，每个服务内部可能快速上线，而不影响其它的服务。某个服务的故障只会影响到自己。微服务化架构下，PaaS平台要支持对微服务架构的应用平滑地演进。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;分布式化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;传统PaaS面临着缺少大规模跨DC跨集群的管理能力；资源分配算法比较简单，不支持应用感知的多集群等资源分配需求；资源分配并行技术缺少在大量资源需求时验证，分配速度不理想。但无论是公有云还是私有云大规模地发展，都驱动了大规模集群管理与资源跨Region跨DC跨AZ调度。当前基于容器集群管理编排、资源调度技术还在不断地演进发展。&lt;/p&gt;
+
+&lt;h2 id=&#34;paas构建新目标&#34;&gt;PaaS构建新目标&lt;/h2&gt;
+
+&lt;p&gt;应用敏捷性，集中式朝分布式架构演进，构建PaaS时需考虑如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;PaaS支持应用渐进式地演进：构建基础通用技术共享平台（如微服务框架，DevOps流水线，通用中间件服务等），逐步迁移改造应用，让应用更好地Cloud Native。&lt;/li&gt;
+&lt;li&gt;PaaS支持应用的高用性：基于Design for failure理念，构建基础的可靠性工具集，通过软件来实现应用层的高可用性，支持跨DC，AZ等高用性部署；支持跨2地3中心的高可用性路由；支持应用分布式下事务管理，数据的一致性等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;大规模的基础设施建设，需要打通IaaS/PaaS，构建基于应用层的统一资源编排调度：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;全自动化：支持应用自动化部署，伸缩，灰度发布等；开发环境的自助式获取与应用自动化验证。&lt;/li&gt;
+&lt;li&gt;混合调度：支持基于物理机，虚拟机，以及容器在应用层的不同需求下的混合调度。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;开放性才能让PaaS更具有生命力，PaaS需易集成，无锁定，让应用可以快速平滑迁移：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;多IaaS： 公有层场景下，可能由PaaS供应用商自建IaaS。但在私有云场景下，支持多IaaS对接是非常有价值的。&lt;/li&gt;
+&lt;li&gt;多运行环境： 微服务化，不同的服务可能采用不语言开发，这要求PaaS支持多语言的运行环境。&lt;/li&gt;
+&lt;li&gt;多服务：无论是平台本身提供的中间件云服务，PaaS还要能支持第三方传统服务的接入以供应用使用。&lt;/li&gt;
+&lt;li&gt;多工具：目前开源的自动化工具非常多，PaaS平台需要考虑支持可以集成多种工具，拉通现有应用的DevOps。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
       <title>Design for Failure</title>
       <link>http://lanlingzi.cn/post/technical/2017/0216_dff/</link>
       <pubDate>Thu, 16 Feb 2017 00:00:00 +0000</pubDate>
@@ -1925,129 +2051,6 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 [4] &lt;a href=&#34;http://studygolang.com/articles/2405&#34;&gt;说说Golang的使用心得&lt;/a&gt;&lt;br /&gt;
 [5] &lt;a href=&#34;http://studygolang.com/articles/2944&#34;&gt;go语言设计哲学&lt;/a&gt;&lt;br /&gt;
 [6] &lt;a href=&#34;http://www.oschina.net/news/30754/less-is-more-go-language&#34;&gt;少即是极多 - Go 语言设计理念&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Go语言不足</title>
-      <link>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</link>
-      <pubDate>Mon, 18 Jul 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</guid>
-      <description>&lt;p&gt;最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。&lt;/p&gt;
-
-&lt;h2 id=&#34;生态不成熟&#34;&gt;生态不成熟&lt;/h2&gt;
-
-&lt;p&gt;一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100+的App从Java转向Go。Google内部主要有三大语言（C++、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。&lt;/p&gt;
-
-&lt;p&gt;目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
-
-采用Go语言的技术因素主要有：&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。&lt;/p&gt;
-
-&lt;h2 id=&#34;动态扩展机制不成熟&#34;&gt;动态扩展机制不成熟&lt;/h2&gt;
-
-&lt;p&gt;对于编译型静态语言，需要有一种机制来支持动态扩展。C/C++是通过动态库来扩展，Java是支持Class动态加载，或基于JVM平台的其它脚本语言互通。Go语言长期没有支持动态库，Go语言的创始人曾明确表态：&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;动态库的存在是一个系统的设计Bug&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台（&lt;a href=&#34;https://github.com/golang/go/wiki/cgo&#34;&gt;cgo·golang/go Wiki&lt;/a&gt;,&lt;a href=&#34;https://github.com/golang/go/wiki/WindowsDLLs&#34;&gt;WindowsDLLs·golang/go Wiki&lt;/a&gt;）。同时支持也是有限制：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Go语言代码，可以生成动态库给C代码调用，也可能给Go代码调用，但他们使用也有区别，参考：&lt;a href=&#34;http://www.golangtc.com/t/55976045b09ecc0f51000001&#34;&gt;Go1.5生成动态库&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;不支持运行时在代码中动态加载库&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;目前可行的解决方案：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;生成C语言动态库：通过动态加载生成C语言动态库，实现动态扩展，一个进程中，运行了多个“Go世界”（Go的Runtime）&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;这需要GCC编译器，所以严格来说并不支持Win下的纯DLL动态库（cywin之类的gcc没有验证过）&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;嵌入脚本语言，实现功能逻辑的动态扩展。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;目前开源项目已有纯Go实现的Lua VM，也有通过CGo绑定C的Lua。也有开源项目通过Cgo绑定支持Python,Ruby等；&lt;/li&gt;
-&lt;li&gt;自创脚本脚本，或DSL脚本，采用Go来实现脚本解释。但如果对性能要高要求，需要支持对脚本的JIT，这是相当有难度，目前也未见有解决方案。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;实现基于通信机制的插件模式&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;类似于VScode的语言服务插件机制，参考：&lt;a href=&#34;http://www.oschina.net/translate/common-language-protocol&#34;&gt;通用语言协议&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;这本质是进程间的通讯，并不传统意义上的插件扩展机制。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;不支持泛型&#34;&gt;不支持泛型&lt;/h2&gt;
-
-&lt;p&gt;泛型是目前高级语言最常见的语言基础，Java1.5采用擦除法的泛型（并不像C++一样的Template技术）也解放了不少生产力，能大大减少相似的代码。而Go语言官方团队相对是“民主集中制”，很难听取社区的意见，认为这个总是不紧急，并且他们也没有找到满意的实现方式（C++/Java实现方式都不让他们满意：C++是编译期间展示，生成不同的代码，对编译速度与生成文件大小都有影响；而Java是擦除法，只是语法糖，生成Bytecode变成Object对象，并没有本质变化）。&lt;/p&gt;
-
-&lt;p&gt;从目前来看，Go语言在1.0规范发布之后，语法特性几乎没有什么变化，围绕是性能优化与跨平台支持。至少在Go2.0之前，极可能不会引入这个语言特性。&lt;/p&gt;
-
-&lt;p&gt;目前可行的解决方案&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;interface{}&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;类似于C的void*，Java的Object，但这会增加代码的可读性差与安全危险，又与Go的简单哲学不相符&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go generate&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;参考：&lt;a href=&#34;http://www.kuqin.com/shuoit/20141104/343014.html&#34;&gt;Golang generate 草案&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go泛型编程库：&lt;a href=&#34;http://www.open-open.com/lib/view/open1389580392476.html&#34;&gt;gen&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;gen 项目目的是为 Go 语言带来了类似泛型的函数，灵感来自 C# 的 LinQ 和 JavaScript 的 Array methods 以及 underscore 库。操作包括过滤、分组、排序等等。&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;goroutine性能陷阱&#34;&gt;Goroutine性能陷阱&lt;/h2&gt;
-
-&lt;p&gt;Goroutine简化了并发编程，但它并不能消除并发问题（资源竞争，原子性操作），只是把线程的调度预置到了它的Runtime中，让上层应用代码变得很少。它的坑也主要体现在它的调度不可控制上。&lt;/p&gt;
-
-&lt;p&gt;下面阻塞不会创建新的调度线程：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;网络IO阻塞&lt;/li&gt;
-&lt;li&gt;Channel阻塞&lt;/li&gt;
-&lt;li&gt;Sleep，同步锁阻塞&lt;/li&gt;
-&lt;li&gt;基于底层系统异步调用的Syscall&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;下面阻塞会创建新的调度线程：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;磁盘IO阻塞&lt;/li&gt;
-&lt;li&gt;CGo方式调用C语言动态库中的调用IO或其它阻塞&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这些情况下会导致线程数量爆涨，从而导致系统性能下降，而Goroutine通过go func就能产生一个Goroutine，犯错的成本低，容易被滥用。这需要开发人员熟悉Goroutine内部机制，并小心地避开这些坑。期待Go官方将来能重点解决这些问题。&lt;/p&gt;
-
-&lt;p&gt;参考：&lt;br /&gt;
-[1] &lt;a href=&#34;http://studygolang.com/articles/84&#34;&gt;goroutine背后的系统知识&lt;/a&gt;&lt;br /&gt;
-[2] &lt;a href=&#34;http://www.zhihu.com/question/20862617&#34;&gt;golang的goroutine是如何实现的&lt;/a&gt;&lt;br /&gt;
-[3] &lt;a href=&#34;http://studygolang.com/articles/1855&#34;&gt;goroutine与调度器&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
