@@ -17,6 +17,7 @@ toc: true
 
 每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个`Context`变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
 <!--more-->
+
 ## context包
 
 Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。`Context`介绍请参考[Go Concurrency Patterns: Context](http://blog.golang.org/context)，[golang.org/x/net/context](http://godoc.org/golang.org/x/net/context)包就是这种机制的实现。

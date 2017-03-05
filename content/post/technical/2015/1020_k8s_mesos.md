@@ -16,6 +16,7 @@ toc: true
 
 最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
 <!--more-->
+
 ## Mesos
 
 Mesos是倾向于是IaaS层上的 __资源管理器__。Mesos不要求计算计算是物理服务器还是虚拟机，只要是Linux操作系统计算资源就可以，Mesos可以理解成一个分布式的Kernel。所以讲师强调DCOS一个OS(阿里云栖讲师的分享)，而不是一个调度器。Mesos只分配集群计算资源，不负责任务调度。基于Mesos之上可以运行不同的分布式平台，如Spark，Storm，Hadoop，Marathon，Chronos等。

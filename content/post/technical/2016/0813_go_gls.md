@@ -17,6 +17,7 @@ toc: true
 
 在Java中，JDK库提供`Thread.CurrentThread()`来获取当前线程对象，提供`ThreadLocal`来存储与获取线程局部变量。由于Java能通过`Thread.CurrentThread()`获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
 <!--more-->
+
 ThreadLocal的API提供了如下的4个方法：
 
 ```

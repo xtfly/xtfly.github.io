@@ -24,6 +24,7 @@ Go语言圣经，《The Go Programming Language》 中文版本
 - 项目主页：<http://bitbucket.org/golang-china/gopl-zh>
 - 原版官网：<http://gopl.io>
 <!--more-->
+
 在线阅读：
 
 - <http://gopl-zh.b0.upaiyun.com/>

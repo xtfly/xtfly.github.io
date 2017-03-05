@@ -25,6 +25,7 @@ Go语言中的[接口](http://golang.org/doc/effective_go.html#interfaces)很特
 
 接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做"[Structural Typing](http://en.wikipedia.org/wiki/Structural_type_system)"。
 <!--more-->
+
 ## 方法
 
 Go语言中同时有函数和方法。一个方法就是一个包含了[接受者](http://golang.org/ref/spec#Method_declarations)的函数，接受者可以是[命名类型](http://golang.org/ref/spec#Types)或者[结构体类型](http://golang.org/ref/spec#Struct_types)的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。

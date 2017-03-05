@@ -18,6 +18,7 @@ toc: true
 
 我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。
 <!--more-->
+
 14年的Docker以席卷全球之势火了一把。在15年，我又投入到平台集成Docker的分析，于是又开始了Go语言之旅，重点研究了Docker Distribution的代码，以及由其它部门开发的Index等相关部件的代码（都是基于Go）。自己也是顺便练练手，如把系统中Java的通用加解密库（是基于AES与HamcSHA256之上的封装库），转换Go实现。经测试发现原来在Java对于HamcSHA256迭代6W+次数时需要差不多一分钟，而Go只需要几秒。由于系统需要对接Docker的API，涉及到Http Hijack，于是又得去分析Docker源码中这一块是怎么实现的，把它的实现转换成Java（虽有开源的Java Client API，但不能满足我们的要求）。所以差不多就是干些Java转Go，Go转Java的体力活。整个版本开发中也协助定位一些Docker相关的问题，需要走读Docker代码。整体来说，我写的Go代码不是太多。
 
 

@@ -14,6 +14,7 @@ Go在语言层面通过Goroutine与channel来支持并发编程，使并发编�
 ## Goroutine泄漏问题
 Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
 <!--more-->
+
 ```go
 func First(query string, replicas ...Search) Result {  
     c := make(chan Result)
