@@ -171,8 +171,9 @@
 </code></pre>
 
 <p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
+</p>
 
-每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。</p>
+<p>每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。</p>
 
 <p>ClassLoader有两种载入类方式：</p>
 

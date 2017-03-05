@@ -1307,8 +1307,9 @@ if v, ok := m[_key{}];ok {
 &lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;
+&lt;/p&gt;
 
-&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
 &lt;img src=&#34;https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966&#34; alt=&#34;unite&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;插件&#34;&gt;插件&lt;/h2&gt;

@@ -100,16 +100,16 @@
 &lt;li&gt;主要继承了C(func, struct，指针)&lt;/li&gt;
 &lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
 &lt;li&gt;多态吸取自Python与Ruby(duck type)&lt;/li&gt;
+&lt;li&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。
+&lt;p&gt;
+同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;
 
-同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面向过程（if，switch，for&amp;hellip;)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/p&gt;&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;面向过程（if，switch，for&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/li&gt;
+&lt;li&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Go语言打的组合拳:&lt;/p&gt;
@@ -213,16 +213,16 @@
 &lt;ul&gt;
 &lt;li&gt;云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整&lt;/li&gt;
 &lt;li&gt;云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用&lt;/li&gt;
+&lt;li&gt;云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛
+&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛
+&lt;p&gt;云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:&lt;/p&gt;
 
-云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;技术方面的问题：面向工业互联网仍然有大量未知问题，在大数据分析和处理能力仍然需要发展；可靠性、安全性、系统能力方面不断加强；核心技术面对新的挑战需要不断地进行优化和完成。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;标准方面的问题：通过推动标准，推动各类云计算系统互联互通，共享创造为更多应用有效服务的应用内容。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;产业变革的总是：建立有效的人才培养和产业发展的环境，来推动产业有序、健康和快速的增长以推动产业结构的调整，同时建立有效的安全环境和有效的机制，以保障信息的安全、个人隐私安全和云数据交换交流当中所提供的安全保护机制。&lt;/p&gt;&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;技术方面的问题：面向工业互联网仍然有大量未知问题，在大数据分析和处理能力仍然需要发展；可靠性、安全性、系统能力方面不断加强；核心技术面对新的挑战需要不断地进行优化和完成。&lt;/li&gt;
+&lt;li&gt;标准方面的问题：通过推动标准，推动各类云计算系统互联互通，共享创造为更多应用有效服务的应用内容。&lt;/li&gt;
+&lt;li&gt;产业变革的总是：建立有效的人才培养和产业发展的环境，来推动产业有序、健康和快速的增长以推动产业结构的调整，同时建立有效的安全环境和有效的机制，以保障信息的安全、个人隐私安全和云数据交换交流当中所提供的安全保护机制。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;点评：传统产业正面临云计算的冲击，谁先拥抱云计算，对产业信息化调整，谁就有可能先抢占新的机会。工业云、智能制造、工业互联网和工业大数据将推动产业发展和技术进步。&lt;/p&gt;
@@ -338,10 +338,13 @@
 &lt;/ul&gt;
 
 &lt;p&gt;从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：
+&lt;/p&gt;
 
-  * 客户关系管理：销售管理（Sales），市场管理（Marketing），服务管理（Service），电子商务（Commerce），社交媒体（Social）
-  * 供应链管理：产品创意与研发，供应认证与寻源，采购管理，物流管理，销售管理，计划管理，生产管理
-  * 财务及人力资源：财务管理，差旅报销，财务报告与分析，见血预算管理，项目管理，人力资源管理&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;客户关系管理：销售管理（Sales），市场管理（Marketing），服务管理（Service），电子商务（Commerce），社交媒体（Social）&lt;/li&gt;
+&lt;li&gt;供应链管理：产品创意与研发，供应认证与寻源，采购管理，物流管理，销售管理，计划管理，生产管理&lt;/li&gt;
+&lt;li&gt;财务及人力资源：财务管理，差旅报销，财务报告与分析，见血预算管理，项目管理，人力资源管理&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;Oracle的云应用具有如下特点：&lt;/p&gt;
 

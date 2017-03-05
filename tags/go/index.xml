@@ -529,8 +529,9 @@ if v, ok := m[_key{}];ok {
 &lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;
+&lt;/p&gt;
 
-&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
+&lt;p&gt;&lt;img src=&#34;https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67&#34; alt=&#34;vim-go&#34; /&gt;
 &lt;img src=&#34;https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966&#34; alt=&#34;unite&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;插件&#34;&gt;插件&lt;/h2&gt;
@@ -873,8 +874,9 @@ func ExampleT_M_suffix() { ... }
 &lt;p&gt;在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。&lt;/p&gt;
 
 &lt;p&gt;在Java中，JDK库提供&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;来获取当前线程对象，提供&lt;code&gt;ThreadLocal&lt;/code&gt;来存储与获取线程局部变量。由于Java能通过&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
+&lt;/p&gt;
 
-ThreadLocal的API提供了如下的4个方法：&lt;/p&gt;
+&lt;p&gt;ThreadLocal的API提供了如下的4个方法：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;public T get()
 protected  T initialValue()
@@ -1424,16 +1426,16 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 &lt;li&gt;主要继承了C(func, struct，指针)&lt;/li&gt;
 &lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
 &lt;li&gt;多态吸取自Python与Ruby(duck type)&lt;/li&gt;
+&lt;li&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。
+&lt;p&gt;
+同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;
 
-同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面向过程（if，switch，for&amp;hellip;)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/p&gt;&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;面向过程（if，switch，for&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/li&gt;
+&lt;li&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Go语言打的组合拳:&lt;/p&gt;
@@ -1538,14 +1540,15 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 
 &lt;ul&gt;
 &lt;li&gt;公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；&lt;/li&gt;
+&lt;li&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
+&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
+&lt;p&gt;采用Go语言的技术因素主要有：&lt;/p&gt;
 
-采用Go语言的技术因素主要有：&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；&lt;/p&gt;&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；&lt;/li&gt;
+&lt;li&gt;Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。&lt;/p&gt;
@@ -1667,20 +1670,18 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 &lt;ul&gt;
 &lt;li&gt;项目主页：&lt;a href=&#34;http://github.com/golang-china/gopl-zh&#34;&gt;http://github.com/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;项目主页：&lt;a href=&#34;http://bitbucket.org/golang-china/gopl-zh&#34;&gt;http://bitbucket.org/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;
+&lt;p&gt;在线阅读：&lt;/p&gt;
 
-在线阅读：&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://gopl-zh.b0.upaiyun.com/&#34;&gt;http://gopl-zh.b0.upaiyun.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://docs.ruanjiadeng.com/gopl-zh/&#34;&gt;http://docs.ruanjiadeng.com/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://shifei.me/gopl-zh/&#34;&gt;http://shifei.me/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://2goo.info/media/html/gopl-zh-gh-pages/&#34;&gt;http://2goo.info/media/html/gopl-zh-gh-pages/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://docs.plhwin.com/gopl-zh/&#34;&gt;http://docs.plhwin.com/gopl-zh/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://gopl-zh.b0.upaiyun.com/&#34;&gt;http://gopl-zh.b0.upaiyun.com/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://docs.ruanjiadeng.com/gopl-zh/&#34;&gt;http://docs.ruanjiadeng.com/gopl-zh/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://shifei.me/gopl-zh/&#34;&gt;http://shifei.me/gopl-zh/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://2goo.info/media/html/gopl-zh-gh-pages/&#34;&gt;http://2goo.info/media/html/gopl-zh-gh-pages/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://docs.plhwin.com/gopl-zh/&#34;&gt;http://docs.plhwin.com/gopl-zh/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;go-web-编程&#34;&gt;Go Web 编程&lt;/h2&gt;
@@ -1936,8 +1937,9 @@ func (acc *ConcurrentAccount) listen() {
 &lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
 
 &lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
+&lt;/p&gt;
 
-这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
+&lt;p&gt;这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Although we expected c++ programmers to see Go as an alternative, instead most Go programmers come from languages like Python and Ruby. Very few come from C++.&lt;/p&gt;
@@ -2168,14 +2170,14 @@ func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
 &lt;li&gt;BitTorrent Tracker&lt;/li&gt;
 &lt;li&gt;原始资源发布者&lt;/li&gt;
 &lt;li&gt;目的端用户浏览器&lt;/li&gt;
+&lt;li&gt;目的端用户下载者
+&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;li&gt;&lt;p&gt;目的端用户下载者
-
-其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。&lt;/p&gt;
+&lt;p&gt;其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;有的Tracker结构&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;pre&gt;&lt;code&gt;		[WebServer]

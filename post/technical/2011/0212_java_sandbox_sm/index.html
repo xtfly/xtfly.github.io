@@ -164,8 +164,9 @@
 <h2 id="security-manager">Security Manager</h2>
 
 <p>Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（<code>SecurityManager</code>）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
+</p>
 
-<code>SecurityManager</code>是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置<code>SecurityManager</code>实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过<code>System.setSecurityManager</code>来设置。一般情况下，检查权限是通过<code>SecurityManager.checkPermission(Permission perm)</code>来完成的。外部程序通过创建<code>Permission</code>实例，传递给前面的<code>check</code>方法。<code>Permission</code>是一个抽象类，需要继承它实现不同的权限验证，比如<code>FilePermission</code>，代表对某个文件的读写权限。<code>new FilePermission(&quot;test.txt&quot;, &quot;read&quot;)；</code>将这个实例传给<code>SecurityManager</code>，检查是否要读test.txt这个文件。</p>
+<p><code>SecurityManager</code>是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置<code>SecurityManager</code>实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过<code>System.setSecurityManager</code>来设置。一般情况下，检查权限是通过<code>SecurityManager.checkPermission(Permission perm)</code>来完成的。外部程序通过创建<code>Permission</code>实例，传递给前面的<code>check</code>方法。<code>Permission</code>是一个抽象类，需要继承它实现不同的权限验证，比如<code>FilePermission</code>，代表对某个文件的读写权限。<code>new FilePermission(&quot;test.txt&quot;, &quot;read&quot;)；</code>将这个实例传给<code>SecurityManager</code>，检查是否要读test.txt这个文件。</p>
 
 <p>但<code>SecurityManager</code>也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。</p>
 

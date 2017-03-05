@@ -230,6 +230,9 @@
     <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/110311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
 
 <h2 id="security-manager">Security Manager</h2>
+
+<p>Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（<code>SecurityManager</code>）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -300,8 +303,7 @@
 </code></pre>
 
 <p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
-
-每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。</p>
+</p>
     </div>
     
     <div class="post-more-link text-center">

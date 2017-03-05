@@ -229,12 +229,11 @@ Libnetwork引入了容器网络模型（CNM）:&lt;/p&gt;
 &lt;li&gt;Docker已不再是概念，已进入互联网企业的实际生产环境中&lt;/li&gt;
 &lt;li&gt;Docker的创业公司多，有远见的想在这次的浪潮中分享红利&lt;/li&gt;
 &lt;li&gt;大公司借Docker东风，亦想在云计算领域中拿下更多话语权&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
-&lt;/p&gt;
-
-&lt;h2 id=&#34;看国外&#34;&gt;看国外&lt;/h2&gt;&lt;/li&gt;
+&lt;li&gt;容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
+&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h2 id=&#34;看国外&#34;&gt;看国外&lt;/h2&gt;
 
 &lt;p&gt;这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。&lt;/p&gt;
 

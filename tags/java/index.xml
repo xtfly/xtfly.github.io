@@ -19,8 +19,9 @@
 &lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
 
 &lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
+&lt;/p&gt;
 
-这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
+&lt;p&gt;这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Although we expected c++ programmers to see Go as an alternative, instead most Go programmers come from languages like Python and Ruby. Very few come from C++.&lt;/p&gt;
@@ -166,8 +167,9 @@
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
 
 &lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
+&lt;/p&gt;
 
-&lt;code&gt;SecurityManager&lt;/code&gt;是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置&lt;code&gt;SecurityManager&lt;/code&gt;实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过&lt;code&gt;System.setSecurityManager&lt;/code&gt;来设置。一般情况下，检查权限是通过&lt;code&gt;SecurityManager.checkPermission(Permission perm)&lt;/code&gt;来完成的。外部程序通过创建&lt;code&gt;Permission&lt;/code&gt;实例，传递给前面的&lt;code&gt;check&lt;/code&gt;方法。&lt;code&gt;Permission&lt;/code&gt;是一个抽象类，需要继承它实现不同的权限验证，比如&lt;code&gt;FilePermission&lt;/code&gt;，代表对某个文件的读写权限。&lt;code&gt;new FilePermission(&amp;quot;test.txt&amp;quot;, &amp;quot;read&amp;quot;)；&lt;/code&gt;将这个实例传给&lt;code&gt;SecurityManager&lt;/code&gt;，检查是否要读test.txt这个文件。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SecurityManager&lt;/code&gt;是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置&lt;code&gt;SecurityManager&lt;/code&gt;实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过&lt;code&gt;System.setSecurityManager&lt;/code&gt;来设置。一般情况下，检查权限是通过&lt;code&gt;SecurityManager.checkPermission(Permission perm)&lt;/code&gt;来完成的。外部程序通过创建&lt;code&gt;Permission&lt;/code&gt;实例，传递给前面的&lt;code&gt;check&lt;/code&gt;方法。&lt;code&gt;Permission&lt;/code&gt;是一个抽象类，需要继承它实现不同的权限验证，比如&lt;code&gt;FilePermission&lt;/code&gt;，代表对某个文件的读写权限。&lt;code&gt;new FilePermission(&amp;quot;test.txt&amp;quot;, &amp;quot;read&amp;quot;)；&lt;/code&gt;将这个实例传给&lt;code&gt;SecurityManager&lt;/code&gt;，检查是否要读test.txt这个文件。&lt;/p&gt;
 
 &lt;p&gt;但&lt;code&gt;SecurityManager&lt;/code&gt;也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。&lt;/p&gt;
 
@@ -231,8 +233,9 @@
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
+&lt;/p&gt;
 
-每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。&lt;/p&gt;
+&lt;p&gt;每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。&lt;/p&gt;
 
 &lt;p&gt;ClassLoader有两种载入类方式：&lt;/p&gt;
 
