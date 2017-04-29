@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Archlinux on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/archlinux/index.xml</link>
+    <link>http://lanlingzi.cn/tags/archlinux/</link>
     <description>Recent content in Archlinux on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Oct 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Archlinux on WSL</title>
@@ -15,104 +18,7 @@
       
       <guid>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</guid>
       <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
-&lt;/p&gt;
-
-&lt;h2 id=&#34;wsl&#34;&gt;WSL&lt;/h2&gt;
-
-&lt;p&gt;Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;用户模式会话管理器服务，处理Linux实例的生命周期；&lt;/li&gt;
-&lt;li&gt;Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核；&lt;/li&gt;
-&lt;li&gt;承载未经修改的用户模式Linux的Pico进程，例如/bin/bash。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。&lt;/p&gt;
-
-&lt;p&gt;Bash on Ubuntu on Windows就是WSL的具体应用。它是由微软与Canonical公司合作开发，目标是使纯正的 Ubuntu 14.04镜像能下载和解压到用户的本地计算机，并且镜像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。&lt;/p&gt;
-
-&lt;h2 id=&#34;bash-on-ubuntu-on-windows&#34;&gt;Bash on Ubuntu on Windows&lt;/h2&gt;
-
-&lt;p&gt;作为一名ArchLinux忠实爱好者，自然想在WSL上运行ArchLinux。参考了一些网上的资料，我已把Win10升级到14955，首先还是先得安装Bash on Ubuntu on Windows：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;开启开发人员模式：设置-更新与恢复-针对开发人员-开发人员模式&lt;/li&gt;
-&lt;li&gt;开启WSL子系统：控制面板-程序和功能-启用或关闭 Windows 功能-适用于 Linux 的 Windows 子系统（beta）&lt;/li&gt;
-&lt;li&gt;安装Bash on Ubuntu on Windows: 命令提示符（cmd）-输入bash-按提示完成安装&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;由于需要下载Ubuntu需要从应用商店下载，在天朝的网络，可能会比较慢，甚至会连接不上，我就折腾好久。并且它居然没有断点续传，好几次下载到70%多，就断开了，真让人受不了。&lt;/p&gt;
-
-&lt;p&gt;由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools工具是用于解压sfs文件的，所以先把Ubuntu的更新源替换成国内的，比如&lt;a href=&#34;http://mirrors.163.com/.help/ubuntu.html&#34;&gt;mirrors.163.com/ubuntu&lt;/a&gt;或&lt;a href=&#34;http://mirrors.aliyun.com/help/ubuntu&#34;&gt;mirrors.aliyun.com/ubuntu&lt;/a&gt;。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo apt-get update
-$ sudo apt-get install squashfs-tools
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;archlinux-on-wsl&#34;&gt;Archlinux on WSL&lt;/h2&gt;
-
-&lt;p&gt;首先从&lt;a href=&#34;http://mirrors.aliyun.com/archlinux/iso/latest/&#34;&gt;http://mirrors.aliyun.com/archlinux/iso/latest/&lt;/a&gt;下载最新的ArchISO。&lt;/p&gt;
-
-&lt;p&gt;从ArchISO中提取出/arch/x86_64/airoot.sfs文件放在Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。&lt;/p&gt;
-
-&lt;p&gt;在Ubuntu中把airoot.sfs解压，建议在当前Ubuntu的用户Home目录下执行：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ sudo unsquashfs airoot.sfs
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后把Bash窗口关掉，通过Windows的文件资源管理器进行到&lt;code&gt;C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Lxss&lt;/code&gt;文件夹。由于AppData与Lxss都是隐藏目录，可以在地址栏上直接输入路径就可以直接进入，否则需要在文件夹选项 中把“隐藏受保护的操作系统文件”选项取消才能看到。&lt;/p&gt;
-
-&lt;p&gt;其中的&lt;code&gt;rootfs&lt;/code&gt;文件夹就是Linux中的&lt;code&gt;/&lt;/code&gt;，先把原有的&lt;code&gt;rootfs&lt;/code&gt;修改其它名称备份，还把之前&lt;code&gt;airoot.sfs&lt;/code&gt;解压的&lt;code&gt;squashfs-root&lt;/code&gt;直接剪切到Lxss，重命名为&lt;code&gt;rootfs&lt;/code&gt;。&lt;strong&gt;注意&lt;/strong&gt;，&lt;code&gt;squashfs-root&lt;/code&gt;不能在Windows下拷贝到&lt;code&gt;Lxss\rootfs&lt;/code&gt;，由于在WSL与Windows对文件读写操作还是有区别，Windows下拷贝可能存在丢失文件。&lt;/p&gt;
-
-&lt;p&gt;先在命令提示符（cmd）用&lt;code&gt;lxrun /setdefaultuser root&lt;/code&gt; 把默认的用户换成root。再输入bash进入Linux。&lt;/p&gt;
-
-&lt;p&gt;这个我们就把Ubuntu替换成Archlinux。我们就可以像使用Archlinux一样来在WSL中使用Archlinux。比如创建新的用户，设置locale，替换Archlinux的更新源。不过由于我最早是在14396版本中使用WSL，还是在使用过程遇到了几个问题：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;无法chroot，解决办法：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;升级到14936或以后的Insider Preview版本。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code&gt;# pacman-key --init
-# pacman-key --populate
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code&gt;# cd /usr/share/i18n/charmaps
-# tar zxvf UTF-8.gz
-# locale-gen
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;升级到14959或以后的Insider Preview版本。&lt;/p&gt;
-
-&lt;h2 id=&#34;wsl终端&#34;&gt;WSL终端&lt;/h2&gt;
-
-&lt;p&gt;windows下命令提示符（cmd），输入bash可以直接进入WSL，但它的使用体验无法跟Linux中的终端相比。好在网上已有同学先贡献了终端模拟器，都是基于mintty，总算能找回一些在纯Linux中使用终端的感觉。若使用下msys2的同学应该对它比较熟悉。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/mintty/wsltty&#34;&gt;https://github.com/mintty/wsltty&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/goreliu/wsl-terminal&#34;&gt;https://github.com/goreliu/wsl-terminal&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;参考：&lt;br /&gt;
-[1] &lt;a href=&#34;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&#34;&gt;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&lt;/a&gt;&lt;br /&gt;
-[2] &lt;a href=&#34;http://tieba.baidu.com/p/4834742871&#34;&gt;http://tieba.baidu.com/p/4834742871&lt;/a&gt;&lt;br /&gt;
-[3] &lt;a href=&#34;https://linux.cn/article-7857-1.html&#34;&gt;https://linux.cn/article-7857-1.html&lt;/a&gt;&lt;br /&gt;
-[4] &lt;a href=&#34;https://linux.cn/article-7209-1.html&#34;&gt;https://linux.cn/article-7209-1.html&lt;/a&gt;&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -124,55 +30,7 @@ $ sudo apt-get install squashfs-tools
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
 
 &lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：
-&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。&lt;/li&gt;
-&lt;li&gt;默认安装&lt;code&gt;openssh&lt;/code&gt;软件，可以通过ssh来连接Container。&lt;/li&gt;
-&lt;li&gt;增加一个入口脚本&lt;code&gt;run.sh&lt;/code&gt;，在此脚本主配置&lt;code&gt;sshd&lt;/code&gt;，并启动&lt;code&gt;sshd&lt;/code&gt;。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用&lt;code&gt;sshd&lt;/code&gt;上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;先是采用systemd来启动sshd，在&lt;code&gt;run.sh&lt;/code&gt;使用&lt;code&gt;systemctl enable sshd&lt;/code&gt;是OK的，但&lt;code&gt;systemctl start sshd&lt;/code&gt;却无法启动报找不到文件。&lt;/li&gt;
-&lt;li&gt;是systemd的配置问题，也没有再去深究，放弃&lt;code&gt;systemd&lt;/code&gt;，于是又直接使用&lt;code&gt;/usr/bin/sshd -D&lt;/code&gt;来启动&lt;code&gt;sshd&lt;/code&gt;，发现还启动失败报没有sshkey。&lt;/li&gt;
-&lt;li&gt;再使用&lt;code&gt;ssh-keygen&lt;/code&gt;来生成系统的&lt;code&gt;ssh_host_*_key&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;终于&lt;code&gt;sshd&lt;/code&gt;可以正常启动了，但使用&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@&amp;lt;host&amp;gt;&lt;/code&gt;来连接Container，发现报无权限。&lt;/li&gt;
-&lt;li&gt;于是又得修改&lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt;，让&lt;code&gt;root&lt;/code&gt;可以ssh登陆。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;修改之后的脚本已提交到个人github上，可以在&lt;a href=&#34;https://github.com/xtfly/dockerimage&#34;&gt;这里&lt;/a&gt;下载，使用方式如下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;前提Archlinux中也安装了docker引擎&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# pacman -S docker
-# systemctl enable docker
-# systemctl start docker
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;以root用户执行mkimage.sh脚本&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# ./mkimage.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;制作完成之后，使用&lt;code&gt;docker images&lt;/code&gt;查看，生成一个名为&lt;code&gt;archlinux&lt;/code&gt;的images&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# docker images
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;使用如下命令生成一个container，容器名为&lt;code&gt;arch1&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;使用ssh登陆验证，&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@127.0.0.1&lt;/code&gt;，默认密码是&lt;code&gt;123456&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;也可以使用命令&lt;code&gt;docker exec -it arch1 bash&lt;/code&gt;来执行&lt;code&gt;bash&lt;/code&gt;进入container操作。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -184,54 +42,7 @@ archlinux           latest              dc54036acaa4        About an hour ago   
       <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
 
 &lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
-&lt;/p&gt;
-
-&lt;p&gt;我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# grub-install --target=i386-pc --recheck /dev/sda
-# grub-mkconfig -o /boot/grub/grub.cfg
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在&lt;code&gt;30_os-prober&lt;/code&gt;文件，说明os-prober是安装的（&lt;code&gt;pacman -S grub&lt;/code&gt;会自动安装）。&lt;/p&gt;
-
-&lt;p&gt;我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# mount /dev/sda1 /mnt
-# grub-probe --target=fs_uuid /mnt/bootmgr
-70B235F6749E84AE
-# grub-probe --target=hints_string /mnt/bootmgr
---hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;接着，将下面的代码添加到&lt;code&gt;/boot/grub/grub.cfg&lt;/code&gt;中，注意替换其中的&lt;code&gt;fs_uuid&lt;/code&gt;，即&lt;code&gt;70B235F6749E84AE&lt;/code&gt;。保存&lt;code&gt;grub.cfg&lt;/code&gt;文件，重启系统，在gurb菜单就可以看到&lt;code&gt;Windows 10 (loader) (on /dev/sda1)&lt;/code&gt;项了。选择，成功进入win10。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;### BEGIN /etc/grub.d/30_os-prober ###
-menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class os $menuentry_id_option &#39;osprober-chain-70B235F6749E84AE&#39; {
-    insmod part_msdos
-    insmod ntfs
-    set root=&#39;hd0,msdos1&#39;
-    if [ x$feature_platform_search_hint = xy ]; then
-      search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1  70B235F6749E84AE
-    else
-      search --no-floppy --fs-uuid --set=root 70B235F6749E84AE
-    fi
-    parttool ${root} hidden-
-    drivemap -s (hd0) ${root}
-    chainloader +1
-}
-set timeout_style=menu
-if [ &amp;quot;${timeout}&amp;quot; = 0 ]; then
-  set timeout=10
-fi
-### END /etc/grub.d/30_os-prober ###
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;注：后经验证，grub-mkconfig无法扫描到win10，是由于少安装了os-prober。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# pacman -S os-prober
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;参考：&lt;a href=&#34;https://wiki.archlinux.org/index.php/GRUB_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)&#34;&gt;GRUB_(简体中文)&lt;/a&gt;&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

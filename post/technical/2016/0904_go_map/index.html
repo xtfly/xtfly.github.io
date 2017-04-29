@@ -199,65 +199,65 @@ type _key struct {
 }
 
 type point struct {
-	x int
-	y int
+    x int
+    y int
 }
 
 type pair struct {
-	x int
-	y int
+    x int
+    y int
 }
 
 type Sumer interface {
-	Sum() int
+    Sum() int
 }
 
 type Suber interface {
-	Sub() int
+    Sub() int
 }
 
 func (p *pair) Sum() int {
-	return p.x + p.y
+    return p.x + p.y
 }
 
 func (p *point) Sum() int {
-	return p.x + p.y
+    return p.x + p.y
 }
 
 func (p pair) Sub() int {
-	return p.x - p.y
+    return p.x - p.y
 }
 
 func (p point) Sub() int {
-	return p.x - p.y
+    return p.x - p.y
 }
 
 func main() {
-	fmt.Println(&quot;_key{} == _key{}: &quot;, _key{} == _key{}) // output: true
+    fmt.Println(&quot;_key{} == _key{}: &quot;, _key{} == _key{}) // output: true
 
-	fmt.Println(&quot;point{} == point{}: &quot;, point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
-	fmt.Println(&quot;&amp;point{} == &amp;point{}: &quot;, &amp;point{x: 1, y: 2} == &amp;point{x: 1, y: 2}) // output: false
+    fmt.Println(&quot;point{} == point{}: &quot;, point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
+    fmt.Println(&quot;&amp;point{} == &amp;point{}: &quot;, &amp;point{x: 1, y: 2} == &amp;point{x: 1, y: 2}) // output: false
 
-	fmt.Println(&quot;[2]point{} == [2]point{}: &quot;, 
-	  [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
+    fmt.Println(&quot;[2]point{} == [2]point{}: &quot;, 
+      [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
 
-	var a Sumer = &amp;pair{x: 1, y: 2}
-	var a1 Sumer = &amp;pair{x: 1, y: 2}
-	var b Sumer = &amp;point{x: 1, y: 2}
-	fmt.Println(&quot;Sumer.byptr == Sumer.byptr: &quot;, a == b)        // output: false
-	fmt.Println(&quot;Sumer.sametype == Sumer.sametype: &quot;, a == a1) // output: false
+    var a Sumer = &amp;pair{x: 1, y: 2}
+    var a1 Sumer = &amp;pair{x: 1, y: 2}
+    var b Sumer = &amp;point{x: 1, y: 2}
+    fmt.Println(&quot;Sumer.byptr == Sumer.byptr: &quot;, a == b)        // output: false
+    fmt.Println(&quot;Sumer.sametype == Sumer.sametype: &quot;, a == a1) // output: false
 
-	var c Suber = pair{x: 1, y: 2}
-	var d Suber = point{x: 1, y: 2}
-	var d1 point = point{x: 1, y: 2}
-	fmt.Println(&quot;Suber.byvalue == Suber.byvalue: &quot;, c == d)  // output: false
-	fmt.Println(&quot;Suber.byvalue == point.byvalue: &quot;, d == d1) // output: true
+    var c Suber = pair{x: 1, y: 2}
+    var d Suber = point{x: 1, y: 2}
+    var d1 point = point{x: 1, y: 2}
+    fmt.Println(&quot;Suber.byvalue == Suber.byvalue: &quot;, c == d)  // output: false
+    fmt.Println(&quot;Suber.byvalue == point.byvalue: &quot;, d == d1) // output: true
 
-	ci1 := make(chan int, 1)
-	ci2 := ci1
-	ci3 := make(chan int, 1)
-	fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci2) // output: true
-	fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci3) // output: false
+    ci1 := make(chan int, 1)
+    ci2 := ci1
+    ci3 := make(chan int, 1)
+    fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci2) // output: true
+    fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci3) // output: false
 }
 </code></pre>
 
@@ -279,28 +279,28 @@ func main() {
 <p>判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，<code>_type</code>结构是描述最为基础的类型（<code>runtime/type.go</code>），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。</p>
 
 <pre><code>type _type struct {
-	size       uintptr
-	ptrdata    uintptr 
-	hash       uint32
-	tflag      tflag
-	align      uint8
-	fieldalign uint8
-	kind       uint8
-	alg        *typeAlg
-	gcdata    *byte
-	str       nameOff
-	ptrToThis typeOff
+    size       uintptr
+    ptrdata    uintptr 
+    hash       uint32
+    tflag      tflag
+    align      uint8
+    fieldalign uint8
+    kind       uint8
+    alg        *typeAlg
+    gcdata    *byte
+    str       nameOff
+    ptrToThis typeOff
 }
 ...
 type chantype struct {
-	typ  _type
-	elem *_type
-	dir  uintptr
+    typ  _type
+    elem *_type
+    dir  uintptr
 }
 ...
 type slicetype struct {
-	typ  _type
-	elem *_type
+    typ  _type
+    elem *_type
 }
 ...
 </code></pre>
@@ -308,52 +308,52 @@ type slicetype struct {
 <p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
 
 <pre><code>type typeAlg struct {
-	// function for hashing objects of this type
-	// (ptr to object, seed) -&gt; hash
-	hash func(unsafe.Pointer, uintptr) uintptr
-	// function for comparing objects of this type
-	// (ptr to object A, ptr to object B) -&gt; ==?
-	equal func(unsafe.Pointer, unsafe.Pointer) bool
+    // function for hashing objects of this type
+    // (ptr to object, seed) -&gt; hash
+    hash func(unsafe.Pointer, uintptr) uintptr
+    // function for comparing objects of this type
+    // (ptr to object A, ptr to object B) -&gt; ==?
+    equal func(unsafe.Pointer, unsafe.Pointer) bool
 }
 </code></pre>
 
 <p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
 
 <pre><code>func strhash(a unsafe.Pointer, h uintptr) uintptr {
-	x := (*stringStruct)(a)
-	return memhash(x.str, h, uintptr(x.len))
+    x := (*stringStruct)(a)
+    return memhash(x.str, h, uintptr(x.len))
 }
 
 func strequal(p, q unsafe.Pointer) bool {
-	return *(*string)(p) == *(*string)(q)
+    return *(*string)(p) == *(*string)(q)
 }
 </code></pre>
 
 <p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
 
 <pre><code>func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
-	...
-	alg := t.key.alg
-	hash := alg.hash(key, uintptr(h.hash0)) // 1
-	m := uintptr(1)&lt;&lt;h.B - 1
-	b := (*bmap)(add(h.buckets, (hash&amp;m)*uintptr(t.bucketsize))) // 2
-	...
-	top := uint8(hash &gt;&gt; (sys.PtrSize*8 - 8))
-	if top &lt; minTopHash {
-		top += minTopHash
-	}
-	for {
-		for i := uintptr(0); i &lt; bucketCnt; i++ {
-			...
-			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
-			if alg.equal(key, k) { // 3
-				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
-				...
-				return v
-			}
-		}
-	...
-	}
+    ...
+    alg := t.key.alg
+    hash := alg.hash(key, uintptr(h.hash0)) // 1
+    m := uintptr(1)&lt;&lt;h.B - 1
+    b := (*bmap)(add(h.buckets, (hash&amp;m)*uintptr(t.bucketsize))) // 2
+    ...
+    top := uint8(hash &gt;&gt; (sys.PtrSize*8 - 8))
+    if top &lt; minTopHash {
+        top += minTopHash
+    }
+    for {
+        for i := uintptr(0); i &lt; bucketCnt; i++ {
+            ...
+            k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
+            if alg.equal(key, k) { // 3
+                v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
+                ...
+                return v
+            }
+        }
+    ...
+    }
 }
 
 </code></pre>
@@ -371,7 +371,7 @@ func strequal(p, q unsafe.Pointer) bool {
 <pre><code>m := make(map[interface{}]interface{})
 m[_key{}] = &quot;value&quot;
 if v, ok := m[_key{}];ok {
-	fmt.Println(&quot;%v&quot;, v) // output: value
+    fmt.Println(&quot;%v&quot;, v) // output: value
 }
 </code></pre>
 
@@ -471,7 +471,7 @@ if v, ok := m[_key{}];ok {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -484,7 +484,7 @@ if v, ok := m[_key{}];ok {
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span>
         </a>
     </div>

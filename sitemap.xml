@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>http://lanlingzi.cn/post/technical/2017/0304_paas/</loc>
@@ -272,6 +273,11 @@
   </url>
   
   <url>
+    <loc>http://lanlingzi.cn/post/notes/2014/0322_github/</loc>
+    <lastmod>2014-03-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/post/thoughts/2013/1113_good_programmer/</loc>
     <lastmod>2013-11-13T00:00:00+00:00</lastmod>
   </url>
@@ -447,6 +453,12 @@
   </url>
   
   <url>
+    <loc>http://lanlingzi.cn/tags/git/</loc>
+    <lastmod>2014-03-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/tags/go/</loc>
     <lastmod>2017-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -550,6 +562,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/tags/</loc>
+    <lastmod>2016-10-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

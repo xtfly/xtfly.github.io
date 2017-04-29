@@ -186,19 +186,19 @@ public void set(T value)
 <p>在Go语言中，而Google提供的解决方法是采用<a href="https://blog.golang.org/context"><code>golang.org/x/net/context</code></a>包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：<a href="http://lanlingzi.cn/post/technical/2016/0802_go_context/">理解Go Context机制</a>。<code>Context</code>也是能存储Goroutine一些数据达到共享，但它提供的接口是<code>WithValue</code>函数来创建一个新的<code>Context</code>对象。</p>
 
 <pre><code>func WithValue(parent Context, key interface{}, val interface{}) Context {
-	return &amp;valueCtx{parent, key, val}
+    return &amp;valueCtx{parent, key, val}
 }
 
 type valueCtx struct {
-	Context
-	key, val interface{}
+    Context
+    key, val interface{}
 }
 
 func (c *valueCtx) Value(key interface{}) interface{} {
-	if c.key == key {
-		return c.val
-	}
-	return c.Context.Value(key)
+    if c.key == key {
+        return c.val
+    }
+    return c.Context.Value(key)
 }
 </code></pre>
 
@@ -446,7 +446,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -459,7 +459,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span>
         </a>
     </div>
