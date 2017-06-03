@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://lanlingzi.cn/post/notes/2017/0603_mac_mysql/</loc>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/post/technical/2017/0304_paas/</loc>
     <lastmod>2017-03-04T00:00:00+00:00</lastmod>
   </url>
@@ -501,6 +506,12 @@
   </url>
   
   <url>
+    <loc>http://lanlingzi.cn/tags/macos/</loc>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://lanlingzi.cn/tags/markdown/</loc>
     <lastmod>2016-07-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -515,6 +526,12 @@
   <url>
     <loc>http://lanlingzi.cn/tags/multicast/</loc>
     <lastmod>2016-01-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://lanlingzi.cn/tags/mysql/</loc>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -544,7 +561,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/post/</loc>
-    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -700,7 +717,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2016-10-30T00:00:00+00:00</lastmod>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -712,7 +729,7 @@
   
   <url>
     <loc>http://lanlingzi.cn/</loc>
-    <lastmod>2017-03-04T00:00:00+00:00</lastmod>
+    <lastmod>2017-06-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
