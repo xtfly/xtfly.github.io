@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Web on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/web/</link>
+    <link>http://lanlingzi.cn/tags/web/index.xml</link>
     <description>Recent content in Web on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 15 May 2016 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/web/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/web/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Golang Web开发</title>
@@ -26,7 +23,165 @@
 &lt;h3 id=&#34;request结构体&#34;&gt;Request结构体&lt;/h3&gt;
 
 &lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  type Request struct {
+      Method string
+      URL *url.URL
+      Proto      string
+      ProtoMajor int
+      ProtoMinor int
+      Header Header
+      Body io.ReadCloser
+      ContentLength int64
+      TransferEncoding []string
+      Close bool
+      Host string
+      Form url.Values
+      PostForm url.Values
+      MultipartForm *multipart.Form
+      Trailer Header
+      RemoteAddr string
+      RequestURI string
+      TLS *tls.ConnectionState
+      Cancel &amp;lt;-chan struct{}
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;response结构体&#34;&gt;Response结构体&lt;/h3&gt;
+
+&lt;p&gt;封装HTTP的响应消息，其结构如下，Response会关联Request。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  type Response struct {
+    Status     string
+    StatusCode int
+    Proto      string
+    ProtoMajor int
+    ProtoMinor int
+    Header Header
+    Body io.ReadCloser
+    ContentLength int64
+    TransferEncoding []string
+    Close bool
+    Trailer Header
+    Request *Request
+    TLS *tls.ConnectionState
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;handler接口&#34;&gt;Handler接口&lt;/h3&gt;
+
+&lt;p&gt;用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; type Handler interface {
+    ServeHTTP(ResponseWriter, *Request)
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;responsewriter接口&#34;&gt;ResponseWriter接口&lt;/h3&gt;
+
+&lt;p&gt;即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了&lt;code&gt;io.Writer&lt;/code&gt;接口，可以写入响应的Body，&lt;code&gt;WriteHeader&lt;/code&gt;方法用于向HTTP响应信息写入状态码，但必须先于&lt;code&gt;Writer&lt;/code&gt;方法调用。若不调用&lt;code&gt;WriteHeader&lt;/code&gt;，使用&lt;code&gt;Write&lt;/code&gt;方法会自动写入状态码&lt;code&gt;http.StatusOK&lt;/code&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; type ResponseWriter interface {
+    Header() Header
+    Write([]byte) (int, error)
+    WriteHeader(int)
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;listenandserve函数&#34;&gt;ListenAndServe函数&lt;/h3&gt;
+
+&lt;p&gt;启动HTTP服务，需要构建Server对象，并调用该Server的&lt;code&gt;ListenAndServe&lt;/code&gt;方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Server struct {
+    Addr           string        // TCP address to listen on, &amp;quot;:http&amp;quot; if empty
+    Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
+    ReadTimeout    time.Duration // maximum duration before timing out read of the request
+    WriteTimeout   time.Duration // maximum duration before timing out write of the response
+    MaxHeaderBytes int           // maximum size of request headers, DefaultMaxHeaderBytes if 0
+    TLSConfig      *tls.Config   // optional TLS config, used by ListenAndServeTLS
+    TLSNextProto map[string]func(*Server, *tls.Conn, Handler)
+    ConnState func(net.Conn, ConnState)
+    ErrorLog *log.Logger
+    disableKeepAlives int32     // accessed atomically.
+    nextProtoOnce     sync.Once // guards initialization of TLSNextProto in Serve
+    nextProtoErr      error
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Server需要关注如下几个方法，从方法名就可能知道它的用途。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (srv *Server) ListenAndServe() error
+func (srv *Server) Serve(l net.Listener) error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;servemux结构体&#34;&gt;ServeMux结构体&lt;/h3&gt;
+
+&lt;p&gt;用于HTTP路由配置，其结构体定义如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type ServeMux struct {
+    mu    sync.RWMutex
+    m     map[string]muxEntry
+    hosts bool // whether any patterns contain hostnames
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ServeMux有如下几个方法，用于配置HTTP与URL的映射关系。其实ServeMux也是实现&lt;code&gt;ServeHTTP&lt;/code&gt;接口，其ServeHTTP方法完成了ServeMux的主要功能，即根据HTTP请求找出最佳匹配的&lt;code&gt;Handler&lt;/code&gt;并执行之，它本身就是一个多&lt;code&gt;Handler&lt;/code&gt;封装器，是各个&lt;code&gt;Handler&lt;/code&gt;执行的总入口。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (mux *ServeMux) Handle(pattern string, handler Handler)
+func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string)
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ServeMux的路由功能是非常简单的，其只支持路径匹配，且匹配能力不强，也不支持对Method的匹配。&lt;code&gt;net/http&lt;/code&gt;包已经为我们定义了一个可导出的ServeMux类型的变量&lt;code&gt;DefaultServeMux&lt;/code&gt;。&lt;code&gt;net/http&lt;/code&gt;包也提供了注册&lt;code&gt;Handler&lt;/code&gt;的方法，它其实也是操作&lt;code&gt;DefaultServeMux&lt;/code&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;调用&lt;code&gt;http.Handle&lt;/code&gt;或&lt;code&gt;http.HandleFunc&lt;/code&gt;实际上就是在调用&lt;code&gt;DefaultServeMux&lt;/code&gt;对应的方法。&lt;/li&gt;
+&lt;li&gt;若&lt;code&gt;ListenAndServe&lt;/code&gt;的第二个参数为nil，它也默认使用&lt;code&gt;DefaultServeMux&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;第三方库-fasthttp&#34;&gt;第三方库[fasthttp]&lt;/h2&gt;
+
+&lt;p&gt;说到Golang的http，也不是只有标准库一家，Github也有人开源了&lt;a href=&#34;https://github.com/valyala/fasthttp&#34;&gt;fasthttp&lt;/a&gt;，并号称比&lt;code&gt;net/http&lt;/code&gt;包快10倍，上面介绍的&lt;a href=&#34;https://github.com/labstack/echo&#34;&gt;echo&lt;/a&gt;，底层同时支持&lt;code&gt;net/http&lt;/code&gt;与&lt;code&gt;fasthttp&lt;/code&gt;，其性能测试对比如下：
+&lt;img src=&#34;https://camo.githubusercontent.com/b3432f107b2bdaaca11a4ee0225edeb121b02607/687474703a2f2f692e696d6775722e636f6d2f665a566e4b35322e706e67&#34; alt=&#34;echo perform&#34; /&gt;
+但是由于&lt;code&gt;fasthttp&lt;/code&gt;的API与&lt;code&gt;net/http&lt;/code&gt;完全不同，这使得无法重用目前基于&lt;code&gt;net/http&lt;/code&gt;开发的路由，Handler等工具，这也让人在选择它时不得不面临考虑的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;工具或框架&#34;&gt;工具或框架&lt;/h2&gt;
+
+&lt;p&gt;由于Golang提供了标准库&lt;code&gt;net/http&lt;/code&gt;，使得开发Go的Web框架变得很简单，在Github上可以搜索到各种不同层次的框架。&lt;/p&gt;
+
+&lt;h3 id=&#34;路由工具&#34;&gt;路由工具&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gorilla/mux&#34;&gt;gorilla/mux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/julienschmidt/httprouter&#34;&gt;julienschmidt/httprouter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;handler工具&#34;&gt;Handler工具&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gorilla/handlers&#34;&gt;gorilla/handlers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/codegangsta/negroni&#34;&gt;codegangsta/negroni&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;轻量框架&#34;&gt;轻量框架&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/labstack/echo&#34;&gt;echo&lt;/a&gt;，底层支持绑定fasthttp，号称10倍快于其它框架。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/goji/goji&#34;&gt;goji&lt;/a&gt;，借鉴了Sinatra了思想。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/go-martini/martini&#34;&gt;martini&lt;/a&gt;，提供了丰富的中间件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/gin-gonic/gin&#34;&gt;goin&lt;/a&gt;，借鉴了Martini，号称比它更快。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/go-macaron/macaron&#34;&gt;macaron&lt;/a&gt;，其思路来自martini，个人感觉API比martini方便很多。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;全功能框架&#34;&gt;全功能框架&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/hoisie/web&#34;&gt;web.go&lt;/a&gt;，其思路来自web.py。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://beego.me/&#34;&gt;beego&lt;/a&gt;，其思路来自Tornado, Sinatra与Flask框架。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://revel.github.io/&#34;&gt;revel&lt;/a&gt;，其思路完全来自Java的Play Framework。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Git on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/git/</link>
+    <link>http://lanlingzi.cn/tags/git/index.xml</link>
     <description>Recent content in Git on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 22 Mar 2014 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/git/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Git SSH设置</title>
@@ -17,7 +14,114 @@
       <pubDate>Sat, 22 Mar 2014 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2014/0322_github/</guid>
-      <description>Git HTTPS 和 SSH 的区别： 前者可以随意克隆github上的项目，而不管是谁的；而后者则是你必须是你要克隆的项目的拥有者或管理员，且需要先添加 SSH key ，否则</description>
+      <description>
+
+&lt;p&gt;Git HTTPS 和 SSH 的区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;前者可以随意克隆github上的项目，而不管是谁的；而后者则是你必须是你要克隆的项目的拥有者或管理员，且需要先添加 SSH key ，否则无法克隆。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;https url 在push的时候是需要验证用户名和密码的；而 SSH 在push的时候，是不需要输入用户名的，如果配置SSH key的时候设置了密码，则需要输入密码的，否则直接是不需要输入密码的。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;首先检查是否已经有-ssh-key&#34;&gt;首先检查是否已经有 SSH key&lt;/h3&gt;
+
+&lt;p&gt;运行 git Bash 客户端，输入如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd ~/.ssh
+$ ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这两个命令就是检查是否已经存在 id_rsa.pub 或 id_dsa.pub 文件，如果文件已经存在，那么你可以跳过步骤2，直接进入步骤3。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建一个-ssh-key&#34;&gt;创建一个 SSH key&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;参数含义：&lt;/p&gt;
+
+&lt;p&gt;-t 指定密钥类型，默认是 rsa ，可以省略。&lt;br /&gt;
+-C 设置注释文字，比如邮箱。&lt;br /&gt;
+-f 指定密钥文件存储文件名。&lt;/p&gt;
+
+&lt;p&gt;以上代码省略了 -f 参数，因此，运行上面那条命令后会让你输入一个文件名，用于保存刚才生成的 SSH key 代码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Generating public/private rsa key pair.
+# Enter file in which to save the key (/c/Users/xiao/.ssh/id_rsa): [Press enter]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然，你也可以不输入文件名，使用默认文件名（推荐），那么就会生成 id_rsa 和 id_rsa.pub 两个秘钥文件。&lt;/p&gt;
+
+&lt;p&gt;接着又会提示你输入两次密码（该密码是你push文件的时候要输入的密码，而不是github管理者的密码），&lt;/p&gt;
+
+&lt;p&gt;当然，你也可以不输入密码，直接按回车。那么push的时候就不需要输入密码，直接提交到github上了，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Enter passphrase (empty for no passphrase): 
+# Enter same passphrase again:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来，就会显示如下代码提示，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Your identification has been saved in /c/Users/xiao/.ssh/id_rsa.
+# Your public key has been saved in /c/Users/xiao/.ssh/id_rsa.pub.
+# The key fingerprint is:
+# 01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当你看到上面这段代码的收，那就说明，你的 SSH key 已经创建成功，你只需要添加到github的SSH key上就可以了。&lt;/p&gt;
+
+&lt;h3 id=&#34;添加你的-ssh-key-到-github上面去&#34;&gt;添加你的 SSH key 到 github上面去&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先你需要拷贝 id_rsa.pub 文件的内容，你可以用编辑器打开文件复制。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;登录你的github账号，从又上角的设置（ Account Settings ）进入，然后点击菜单栏的 SSH key 进入页面添加 SSH key。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;点击 Add SSH key 按钮添加一个 SSH key 。把你复制的 SSH key 代码粘贴到 key 所对应的输入框中，记得 SSH key 代码的前后不要留有空格或者回车。当然，上面的 Title 所对应的输入框你也可以输入一个该 SSH key 显示在 github 上的一个别名。默认的会使用你的邮件名称。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;测试一下该ssh-key&#34;&gt;测试一下该SSH key&lt;/h3&gt;
+
+&lt;p&gt;在git Bash 中输入以下代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh -T git@github.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当你输入以上代码时，会有一段警告代码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The authenticity of host &#39;github.com (207.97.227.239)&#39; can&#39;t be established.
+# RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+# Are you sure you want to continue connecting (yes/no)?
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是正常的，你输入 yes 回车既可。如果你创建 SSH key 的时候设置了密码，接下来就会提示你输入密码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Enter passphrase for key &#39;/c/Users/xiao/.ssh/id_rsa&#39;:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然如果你密码输错了，会再要求你输入，知道对了为止。&lt;/p&gt;
+
+&lt;p&gt;注意：输入密码时如果输错一个字就会不正确，使用删除键是无法更正的。&lt;/p&gt;
+
+&lt;p&gt;密码正确后你会看到下面这段话，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hi username! You&#39;ve successfully authenticated, but GitHub does not
+# provide shell access.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果用户名是正确的,你已经成功设置SSH密钥。如果你看到 “access denied” ，者表示拒绝访问，那么你就需要使用 https 去访问，而不是 SSH 。2&lt;/p&gt;
+
+&lt;h3 id=&#34;设置全局git账号&#34;&gt;设置全局git账号&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;  git config --global user.email &amp;quot;your_email@example.com&amp;quot;
+  git config --global user.name &amp;quot;your name&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考文档：&lt;a href=&#34;https://help.github.com/articles/generating-ssh-keys&#34;&gt;https://help.github.com/articles/generating-ssh-keys&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

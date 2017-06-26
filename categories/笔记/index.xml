@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>笔记 on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/</link>
+    <link>http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml</link>
     <description>Recent content in 笔记 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 03 Jun 2017 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Install MySQL on MacOS</title>
@@ -28,7 +25,60 @@ Open source relational database management system
 ➜  ~ brew install mysql
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;mysql的安装过程会显示，注，我安装的5.7.18，目录为&lt;code&gt;/usr/local/Cellar/mysql/5.7.18_1&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;==&amp;gt; /usr/local/Cellar/mysql/5.7.18_1/bin/mysqld –initialize-insecure –user=xiao –basedir=/usr/local/Cellar/mysql/5.7.18_1 –datadir=/usr/local/var/mysql –t
+..... 
+We’ve installed your MySQL database without a root password. To secure it run: 
+mysql_secure_installation
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这说明MySQL已安装成功，必需要使用mysql_secure_installation来初始化用户密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  ~ mysql.server start
+Starting MySQL
+SUCCESS!
+➜  ~ mysql_secure_installation
+Securing the MySQL server deployment.
+
+Connecting to MySQL using a blank password.
+
+......
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;按英文提示一步步设置password validation policy与password等。&lt;/p&gt;
+
+&lt;p&gt;测试，输入mysql_secure_installation设置过程的密码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  ~ mysql -u root –p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 6
+Server version: 5.7.18 Homebrew
+......
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;新增用户xiao，密码为123456，并赋所有权限给他：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mysql&amp;gt;use mysql;
+mysql&amp;gt;GRANT ALL PRIVILEGES ON *.* TO &#39;xiao&#39;@&#39;%&#39; IDENTIFIED BY &#39;123456&#39; WITH GRANT OPTION;
+mysql&amp;gt;flush privileges;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果想设置开机启动MySQL，执行如下命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;➜  ~ mkdir -p ~/Library/LaunchAgents
+➜  ~ cp /usr/local/Cellar/mysql/5.7.18_1/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/  
+➜  ~ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用命令行来操作MySQL不方便，推荐使用Navicat MySQL/Preminum软件。软件安装包在网上搜索吧。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;/p&gt;
+
+&lt;p&gt;[1] &lt;a href=&#34;https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html&#34;&gt;https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -38,7 +88,104 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</guid>
       <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;wsl&#34;&gt;WSL&lt;/h2&gt;
+
+&lt;p&gt;Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;用户模式会话管理器服务，处理Linux实例的生命周期；&lt;/li&gt;
+&lt;li&gt;Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核；&lt;/li&gt;
+&lt;li&gt;承载未经修改的用户模式Linux的Pico进程，例如/bin/bash。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。&lt;/p&gt;
+
+&lt;p&gt;Bash on Ubuntu on Windows就是WSL的具体应用。它是由微软与Canonical公司合作开发，目标是使纯正的 Ubuntu 14.04镜像能下载和解压到用户的本地计算机，并且镜像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。&lt;/p&gt;
+
+&lt;h2 id=&#34;bash-on-ubuntu-on-windows&#34;&gt;Bash on Ubuntu on Windows&lt;/h2&gt;
+
+&lt;p&gt;作为一名ArchLinux忠实爱好者，自然想在WSL上运行ArchLinux。参考了一些网上的资料，我已把Win10升级到14955，首先还是先得安装Bash on Ubuntu on Windows：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;开启开发人员模式：设置-更新与恢复-针对开发人员-开发人员模式&lt;/li&gt;
+&lt;li&gt;开启WSL子系统：控制面板-程序和功能-启用或关闭 Windows 功能-适用于 Linux 的 Windows 子系统（beta）&lt;/li&gt;
+&lt;li&gt;安装Bash on Ubuntu on Windows: 命令提示符（cmd）-输入bash-按提示完成安装&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;由于需要下载Ubuntu需要从应用商店下载，在天朝的网络，可能会比较慢，甚至会连接不上，我就折腾好久。并且它居然没有断点续传，好几次下载到70%多，就断开了，真让人受不了。&lt;/p&gt;
+
+&lt;p&gt;由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools工具是用于解压sfs文件的，所以先把Ubuntu的更新源替换成国内的，比如&lt;a href=&#34;http://mirrors.163.com/.help/ubuntu.html&#34;&gt;mirrors.163.com/ubuntu&lt;/a&gt;或&lt;a href=&#34;http://mirrors.aliyun.com/help/ubuntu&#34;&gt;mirrors.aliyun.com/ubuntu&lt;/a&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get update
+$ sudo apt-get install squashfs-tools
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;archlinux-on-wsl&#34;&gt;Archlinux on WSL&lt;/h2&gt;
+
+&lt;p&gt;首先从&lt;a href=&#34;http://mirrors.aliyun.com/archlinux/iso/latest/&#34;&gt;http://mirrors.aliyun.com/archlinux/iso/latest/&lt;/a&gt;下载最新的ArchISO。&lt;/p&gt;
+
+&lt;p&gt;从ArchISO中提取出/arch/x86_64/airoot.sfs文件放在Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。&lt;/p&gt;
+
+&lt;p&gt;在Ubuntu中把airoot.sfs解压，建议在当前Ubuntu的用户Home目录下执行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo unsquashfs airoot.sfs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后把Bash窗口关掉，通过Windows的文件资源管理器进行到&lt;code&gt;C:\Users\&amp;lt;用户名&amp;gt;\AppData\Local\Lxss&lt;/code&gt;文件夹。由于AppData与Lxss都是隐藏目录，可以在地址栏上直接输入路径就可以直接进入，否则需要在文件夹选项 中把“隐藏受保护的操作系统文件”选项取消才能看到。&lt;/p&gt;
+
+&lt;p&gt;其中的&lt;code&gt;rootfs&lt;/code&gt;文件夹就是Linux中的&lt;code&gt;/&lt;/code&gt;，先把原有的&lt;code&gt;rootfs&lt;/code&gt;修改其它名称备份，还把之前&lt;code&gt;airoot.sfs&lt;/code&gt;解压的&lt;code&gt;squashfs-root&lt;/code&gt;直接剪切到Lxss，重命名为&lt;code&gt;rootfs&lt;/code&gt;。&lt;strong&gt;注意&lt;/strong&gt;，&lt;code&gt;squashfs-root&lt;/code&gt;不能在Windows下拷贝到&lt;code&gt;Lxss\rootfs&lt;/code&gt;，由于在WSL与Windows对文件读写操作还是有区别，Windows下拷贝可能存在丢失文件。&lt;/p&gt;
+
+&lt;p&gt;先在命令提示符（cmd）用&lt;code&gt;lxrun /setdefaultuser root&lt;/code&gt; 把默认的用户换成root。再输入bash进入Linux。&lt;/p&gt;
+
+&lt;p&gt;这个我们就把Ubuntu替换成Archlinux。我们就可以像使用Archlinux一样来在WSL中使用Archlinux。比如创建新的用户，设置locale，替换Archlinux的更新源。不过由于我最早是在14396版本中使用WSL，还是在使用过程遇到了几个问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;无法chroot，解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;升级到14936或以后的Insider Preview版本。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;# pacman-key --init
+# pacman-key --populate
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;# cd /usr/share/i18n/charmaps
+# tar zxvf UTF-8.gz
+# locale-gen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;升级到14959或以后的Insider Preview版本。&lt;/p&gt;
+
+&lt;h2 id=&#34;wsl终端&#34;&gt;WSL终端&lt;/h2&gt;
+
+&lt;p&gt;windows下命令提示符（cmd），输入bash可以直接进入WSL，但它的使用体验无法跟Linux中的终端相比。好在网上已有同学先贡献了终端模拟器，都是基于mintty，总算能找回一些在纯Linux中使用终端的感觉。若使用下msys2的同学应该对它比较熟悉。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mintty/wsltty&#34;&gt;https://github.com/mintty/wsltty&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/goreliu/wsl-terminal&#34;&gt;https://github.com/goreliu/wsl-terminal&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&#34;&gt;https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://tieba.baidu.com/p/4834742871&#34;&gt;http://tieba.baidu.com/p/4834742871&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;https://linux.cn/article-7857-1.html&#34;&gt;https://linux.cn/article-7857-1.html&lt;/a&gt;&lt;br /&gt;
+[4] &lt;a href=&#34;https://linux.cn/article-7209-1.html&#34;&gt;https://linux.cn/article-7209-1.html&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -50,7 +197,78 @@ Open source relational database management system
       <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
 
 &lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;业务&#34;&gt;业务&lt;/h2&gt;
+
+&lt;p&gt;虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;价值贡献&lt;/li&gt;
+&lt;li&gt;满意度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;面向业务：核心竞争力，价值识别与规划&lt;/li&gt;
+&lt;li&gt;面向业务&amp;amp;解决方案：领域级，变革项目级规划、运作&lt;/li&gt;
+&lt;li&gt;满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴&lt;/li&gt;
+&lt;li&gt;Top产品，问题的攻关&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;人&#34;&gt;人&lt;/h2&gt;
+
+&lt;p&gt;人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;选&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;亲自招聘，选择合适的人&lt;/li&gt;
+&lt;li&gt;已有员工中骨干识别&lt;/li&gt;
+&lt;li&gt;非关键外包合作&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;用&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;角色与岗位排兵布阵&lt;/li&gt;
+&lt;li&gt;合作外包&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;育&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流&lt;/li&gt;
+&lt;li&gt;能力培养：提升人员技能；组织能力建设&lt;/li&gt;
+&lt;li&gt;全程关注：事前辅导，事中监控，事后总结&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;留&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;绩效辅导&lt;/li&gt;
+&lt;li&gt;即时激励&lt;/li&gt;
+&lt;li&gt;组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理）&lt;/li&gt;
+&lt;li&gt;岗位流动&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;事&#34;&gt;事&lt;/h2&gt;
+
+&lt;p&gt;以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;TopN问题与任务跟踪管理&lt;/li&gt;
+&lt;li&gt;KPI管理：现状问题分析；改进计划（包括措施）；改进监控；达成评估&lt;/li&gt;
+&lt;li&gt;风险管理&lt;/li&gt;
+&lt;li&gt;技术持续改进：新技术引入；优秀实践；&lt;/li&gt;
+&lt;li&gt;质量持续改进：质量文化；质量监控，问题日清日结；质量回溯；质量改进&lt;/li&gt;
+&lt;li&gt;流程运作持续改进&lt;/li&gt;
+&lt;li&gt;知识管理&lt;/li&gt;
+&lt;li&gt;跨部门协同&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -76,7 +294,195 @@ Open source relational database management system
 &lt;/ol&gt;
 
 &lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;方法&#34;&gt;方法&lt;/h2&gt;
+
+&lt;p&gt;Go语言中同时有函数和方法。一个方法就是一个包含了&lt;a href=&#34;http://golang.org/ref/spec#Method_declarations&#34;&gt;接受者&lt;/a&gt;的函数，接受者可以是&lt;a href=&#34;http://golang.org/ref/spec#Types&#34;&gt;命名类型&lt;/a&gt;或者&lt;a href=&#34;http://golang.org/ref/spec#Struct_types&#34;&gt;结构体类型&lt;/a&gt;的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type User struct {
+  Name  string
+  Email string
+}
+
+func (u User) Notify() error
+
+// User 类型的值可以调用接受者是值的方法
+damon := User{&amp;quot;AriesDevil&amp;quot;, &amp;quot;ariesdevil@xxoo.com&amp;quot;}
+damon.Notify()
+
+// User 类型的指针同样可以调用接受者是值的方法
+alimon := &amp;amp;User{&amp;quot;A-limon&amp;quot;, &amp;quot;alimon@ooxx.com&amp;quot;}
+alimon.Notify()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;User&lt;/code&gt;的结构体类型，定义了一个该类型的方法叫做&lt;code&gt;Notify&lt;/code&gt;，该方法的接受者是一个&lt;code&gt;User&lt;/code&gt;类型的值。要调用&lt;code&gt;Notify&lt;/code&gt;方法我们需要一个 &lt;code&gt;User&lt;/code&gt;类型的值或者指针。Go&lt;a href=&#34;http://golang.org/ref/spec#Calls&#34;&gt;调用&lt;/a&gt;和解引用指针使得调用可以被执行。&lt;strong&gt;注意&lt;/strong&gt;，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。&lt;/p&gt;
+
+&lt;p&gt;我们可以修改&lt;code&gt;Notify&lt;/code&gt;方法，让它的接受者使用指针类型：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func (u *User) Notify() error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。&lt;/p&gt;
+
+&lt;p&gt;总结：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;一个结构体的方法的接收者可能是类型值或指针&lt;/li&gt;
+&lt;li&gt;如果接收者是值，无论调用者是类型值还是类型指针，修改都是值的副本&lt;/li&gt;
+&lt;li&gt;如果接收者是指针，则调用者修改的是指针指向的值本身。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;接口实现&#34;&gt;接口实现&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;type Notifier interface {
+  Notify() error
+}
+
+func SendNotification(notify Notifier) error {
+  return notify.Notify()
+}
+
+unc (u *User) Notify() error {
+  log.Printf(&amp;quot;User: Sending User Email To %s&amp;lt;%s&amp;gt;\n&amp;quot;,
+      u.Name,
+      u.Email)
+  return nil
+}
+
+func main() {
+  user := User{
+    Name:  &amp;quot;AriesDevil&amp;quot;,
+    Email: &amp;quot;ariesdevil@xxoo.com&amp;quot;,
+  }
+  
+  SendNotification(user)
+}
+
+// Output:
+cannot use user (type User) as type Notifier in function argument:
+User does not implement Notifier (Notify method has pointer receiver)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上述代码是编译不过的，见Output，编译错误关键信息&lt;code&gt;Notify method has pointer receiver&lt;/code&gt;。 编译器不考虑我们的&lt;strong&gt;值&lt;/strong&gt;是实现该接口的类型，接口的调用规则是建立在这些方法的接受者和接口如何被调用的基础上。下面的是语言规范里定义的规则，这些规则用来说明是否我们一个类型的值或者指针&lt;a href=&#34;http://golang.org/ref/spec#Method_sets&#34;&gt;实现了&lt;/a&gt;该接口：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;类型 &lt;code&gt;*T&lt;/code&gt; 的可调用方法集包含接受者为 &lt;code&gt;*T&lt;/code&gt; 或 &lt;code&gt;T&lt;/code&gt; 的所有方法集&lt;/li&gt;
+&lt;li&gt;类型 &lt;code&gt;T&lt;/code&gt; 的可调用方法集包含接受者为 &lt;code&gt;T&lt;/code&gt; 的所有方法&lt;/li&gt;
+&lt;li&gt;类型 &lt;code&gt;T&lt;/code&gt; 的可调用方法集&lt;strong&gt;不&lt;/strong&gt;包含接受者为 &lt;code&gt;*T&lt;/code&gt; 的方法&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;也就是说：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;接收者是指针 &lt;code&gt;*T&lt;/code&gt; 时，接口的实例必须是&lt;strong&gt;指针&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;接收者是值 &lt;code&gt;T&lt;/code&gt; 时，接口的实例可以是&lt;strong&gt;指针&lt;/strong&gt;也可以是&lt;strong&gt;值&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;空接口与nil&#34;&gt;空接口与nil&lt;/h2&gt;
+
+&lt;p&gt;空接口(&lt;code&gt;interface{}&lt;/code&gt;)不包含任何的method，正因为如此，所有的类型都实现了&lt;code&gt;interface{}&lt;/code&gt;。&lt;code&gt;interface{}&lt;/code&gt;对于描述起不到任何的作用(因为它不包含任何的method），但是&lt;code&gt;interface{}&lt;/code&gt;在我们需要存储任意类型的数值的时候相当有用，因为它可以存储任意类型的数值。它有点类似于C语言的&lt;code&gt;void*&lt;/code&gt;类型。&lt;/p&gt;
+
+&lt;p&gt;Go语言中的nil在概念上和其它语言的null、None、nil、NULL一样，都指代零值或空值。nil是预先说明的标识符，也即通常意义上的关键字。nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果未遵循这个&lt;a href=&#34;http://pkg.golang.org/pkg/builtin/#Type&#34;&gt;规则&lt;/a&gt;，则会引发panic。&lt;/p&gt;
+
+&lt;p&gt;在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译&lt;a href=&#34;http://my.oschina.net/chai2010/blog/117923&#34;&gt;Go中error类型的nil值和nil&lt;/a&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import (
+    &amp;quot;fmt&amp;quot;
+    &amp;quot;reflect&amp;quot;
+)
+ 
+func main() {
+    var val interface{} = int64(58)
+    fmt.Println(reflect.TypeOf(val))
+    val = 50
+    fmt.Println(reflect.TypeOf(val))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    var val interface{} = nil
+    if val == nil {
+        fmt.Println(&amp;quot;val is nil&amp;quot;)
+    } else {
+        fmt.Println(&amp;quot;val is not nil&amp;quot;)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。&lt;/p&gt;
+
+&lt;p&gt;进一步验证：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    var val interface{} = (*interface{})(nil)
+    if val == nil {
+        fmt.Println(&amp;quot;val is nil&amp;quot;)
+    } else {
+        fmt.Println(&amp;quot;val is not nil&amp;quot;)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;(*interface{})(nil)&lt;/code&gt;是将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。也就是空接口类型指针而不是空指针，这两者的区别蛮大的。&lt;/p&gt;
+
+&lt;p&gt;对于&lt;code&gt;(*int)(nil)&lt;/code&gt;、&lt;code&gt;(*byte)(nil)&lt;/code&gt;等等来说是一样的。上面的代码定义了接口指针类型变量val，它指向无效的地址(0x0)，因此val持有无效的数据。但它是有类型的&lt;code&gt;(*interface{})&lt;/code&gt;。所以val的底层结构应该是：&lt;code&gt;(*interface{}, nil)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;有时候您会看到&lt;code&gt;(*interface{})(nil)&lt;/code&gt;的应用，比如&lt;code&gt;var ptrIface = (*interface{})(nil)&lt;/code&gt;，如果您接下来将ptrIface指向其它类型的指针，将通不过编译。或者您这样赋值：&lt;code&gt;*ptrIface = 123&lt;/code&gt;，那样的话编译是通过了，但在运行时还是会panic的，这是因为ptrIface指向的是无效的内存地址。其实声明类似ptrIface这样的变量，是因为使用者只是关心指针的类型，而忽略它存储的值是什么。&lt;/p&gt;
+
+&lt;p&gt;小结: 无论该指针的值是什么：&lt;code&gt;(*interface{}, nil)&lt;/code&gt;，这样的接口值总是非nil的，即使在该指针的内部为nil。&lt;/p&gt;
+
+&lt;h2 id=&#34;接口变量存储的类型&#34;&gt;接口变量存储的类型&lt;/h2&gt;
+
+&lt;p&gt;接口的变量里面可以存储任意类型的数值(该类型实现了某interface)。那么我们怎么反向知道这个变量里面实际保存了的是哪个类型的对象呢？目前常用的有两种方法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;comma-ok断言&lt;/p&gt;
+
+&lt;p&gt;value, ok = element.(T)，这里value就是变量的值，ok是一个bool类型，element是interface变量，T是断言的类型。如果element里面确实存储了T类型的数值，那么ok返回true，否则返回false。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;switch测试&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;switch value := element.(type) {
+    case int:
+        fmt.Printf(&amp;quot;list[%d] is an int and its value is %d\n&amp;quot;, index, value)
+    case string:
+         fmt.Printf(&amp;quot;list[%d] is a string and its value is %s\n&amp;quot;, index, value)
+    ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;element.(type)语法不能在switch外的任何逻辑里面使用，如果你要在switch外面判断一个类型就使用comma-ok。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;接口与反射&#34;&gt;接口与反射&lt;/h2&gt;
+
+&lt;p&gt;反射是程序运行时检查其所拥有的结构，尤其是类型的一种能力。Go语言也提供对反射的支持。&lt;/p&gt;
+
+&lt;p&gt;在前面的&lt;code&gt;interface{}与nil&lt;/code&gt;的底层实现已提到，在&lt;code&gt;reflect&lt;/code&gt;包中有两个类型需要了解：&lt;code&gt;Type&lt;/code&gt;和&lt;code&gt;Value&lt;/code&gt;。这两个类型使得可以访问接口变量的内容，还有两个简单的函数，&lt;code&gt;reflect.TypeOf&lt;/code&gt;和&lt;code&gt;reflect.ValueOf&lt;/code&gt;，从接口值中分别获取&lt;code&gt;reflect.Type&lt;/code&gt; 和&lt;code&gt;reflect.Value&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如同物理中的反射，在Go语言中的反射也存在它自己的镜像。从&lt;code&gt;reflect.Value&lt;/code&gt;可以使用&lt;code&gt;Interface&lt;/code&gt;方法还原接口值:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var x float64 = 3.4
+v := reflect.ValueOf(x)
+
+// Interface 以 interface{} 返回 v 的值。
+// func (v Value) Interface() interface{}
+
+// y 将为类型 float64
+y := v.Interface().(float64) 
+fmt.Println(y)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;声明：本文是收集网上一些关于Go语言中接口(interface)的说明，是一篇学习笔记，文中多处引用，参考文章列表在最后，可直接访问了解详情。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;br /&gt;
+[1] &lt;a href=&#34;https://se77en.cc/2014/05/05/methods-interfaces-and-embedded-types-in-golang/&#34;&gt;Go 语言中的方法，接口和嵌入类型&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href=&#34;http://studygolang.com/articles/1908&#34;&gt;详解interface和nil&lt;/a&gt;&lt;br /&gt;
+[3] &lt;a href=&#34;http://www.jb51.net/article/56812.htm&#34;&gt;Go语言interface详解&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -90,7 +496,93 @@ Open source relational database management system
 &lt;p&gt;在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。&lt;/p&gt;
 
 &lt;p&gt;Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;pandoc&#34;&gt;Pandoc&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://pandoc.org/&#34;&gt;Pandoc&lt;/a&gt; 则是一款非常优秀的开源文本格式转化神器。Markdown转换为HTML Slide也自然不在话下。Pandoc是由Haskell开发，Pandoc作者John MacFarlane一位来自美国加州大学伯克利分校的哲学教授。Haskell是一种函数式编程语言。而文本格式转换，看似简单，其实非常麻烦。Haskell干这脏活、累活的最恰当选择，Pandoc也的确成功了，并已成功在短期内构建一个完整的生态链。&lt;/p&gt;
+
+&lt;h3 id=&#34;安装&#34;&gt;安装&lt;/h3&gt;
+
+&lt;p&gt;个人PC使用的Macbook，所以安装比较简单：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install pandoc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;检验&#34;&gt;检验&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pandoc --version
+pandoc 1.17.1
+Compiled with texmath 0.8.6.3, highlighting-kate 0.6.2.
+Syntax highlighting is supported for the following languages:
+    abc, actionscript, ada, agda, apache, asn1, asp, awk, bash, bibtex, boo, c,
+    changelog, clojure, cmake, coffee, coldfusion, commonlisp, cpp, cs, css,
+    curry, d, diff, djangotemplate, dockerfile, dot, doxygen, doxygenlua, dtd,
+    eiffel, elixir, email, erlang, fasm, fortran, fsharp, gcc, glsl,
+    gnuassembler, go, hamlet, haskell, haxe, html, idris, ini, isocpp, java,
+    javadoc, javascript, json, jsp, julia, kotlin, latex, lex, lilypond,
+    literatecurry, literatehaskell, llvm, lua, m4, makefile, mandoc, markdown,
+    mathematica, matlab, maxima, mediawiki, metafont, mips, modelines, modula2,
+    modula3, monobasic, nasm, noweb, objectivec, objectivecpp, ocaml, octave,
+    opencl, pascal, perl, php, pike, postscript, prolog, pure, python, r,
+    relaxng, relaxngcompact, rest, rhtml, roff, ruby, rust, scala, scheme, sci,
+    sed, sgml, sql, sqlmysql, sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl,
+    xml, xorg, xslt, xul, yacc, yaml, zsh
+......
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。&lt;/p&gt;
+
+&lt;h3 id=&#34;样例&#34;&gt;样例&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;% Markdown + Pandoc
+% lanlingzi
+% 2016-07-16
+
+## Web-based slideshow
+
+- is a slide show which can be played (viewed or presented) using a web browser
+- is typically generated to or authored in HTML, JavaScript and CSS code (files)
+- are generated from presentation software
+- offer templates allowing the slide show to be easily edited and changed.
+
+## Features
+
+- Keyboard navigation
+- Slide transitions and animations
+- Auto-play/timed transitions
+- Displays a table of contents
+- Nested slides
+- Separate slide notes for the speaker
+- Full screen support, with automatic text and images resizing to fit full screen
+- .....
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。&lt;/p&gt;
+
+&lt;p&gt;默认情况下每个二级标题是一张独立的幻灯片，所以，注意把每个二级标题下的内容控制在适当的长度。列表的显示效果可以人为设定，例如在幻灯片演示的时候逐条渐入。也可以直接在文本中嵌入HTML，用于显示Markdown等标记语言不支持的表格，或控制字体大小，以及进行其他更加复杂的排版。当然，如果用到的HTML标签过多，这不是Markdown这些轻量级标记语言的错，也许是做幻灯片的方式出了问题。因为演示本身要传达的是内容，复杂的排版没有任何意义。&lt;/p&gt;
+
+&lt;h3 id=&#34;命令&#34;&gt;命令&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pandoc -s -i -t slidy demo.md -o demo.html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中&lt;code&gt;-t slidy&lt;/code&gt;是生成Slide采用样式框架，目前Pandoc包含了对五种HTML Slide框架的支持:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/paulrouget/dzslides&#34;&gt;DZSlides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.w3.org/Talks/Tools/Slidy2/&#34;&gt;Slidy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://meyerweb.com/eric/tools/s5/&#34;&gt;S5&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://goessner.net/articles/slideous/slideous.html&#34;&gt;Slideous&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://lab.hakim.se/reveal-js&#34;&gt;revealjs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其中&lt;code&gt;-i&lt;/code&gt;表示渐进显示，即控制列表的显示效果（逐条渐入）。&lt;/p&gt;
+
+&lt;h2 id=&#34;后记&#34;&gt;后记&lt;/h2&gt;
+
+&lt;p&gt;采用Pandoc把Markdown转化为Slide也不是万能的。受限于Markdown的标签表达能力，其中的表格、复杂公式、多国语言、上下标、交叉引用、图表对齐较多的场合，它并不适合。使用Pandoc，只是喜欢Slide的样式，不用去辛辛苦苦的做PPT， 也有PPT的展示效果，何乐而不为呢？&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -102,7 +594,55 @@ Open source relational database management system
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
 
 &lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。&lt;/li&gt;
+&lt;li&gt;默认安装&lt;code&gt;openssh&lt;/code&gt;软件，可以通过ssh来连接Container。&lt;/li&gt;
+&lt;li&gt;增加一个入口脚本&lt;code&gt;run.sh&lt;/code&gt;，在此脚本主配置&lt;code&gt;sshd&lt;/code&gt;，并启动&lt;code&gt;sshd&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用&lt;code&gt;sshd&lt;/code&gt;上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;先是采用systemd来启动sshd，在&lt;code&gt;run.sh&lt;/code&gt;使用&lt;code&gt;systemctl enable sshd&lt;/code&gt;是OK的，但&lt;code&gt;systemctl start sshd&lt;/code&gt;却无法启动报找不到文件。&lt;/li&gt;
+&lt;li&gt;是systemd的配置问题，也没有再去深究，放弃&lt;code&gt;systemd&lt;/code&gt;，于是又直接使用&lt;code&gt;/usr/bin/sshd -D&lt;/code&gt;来启动&lt;code&gt;sshd&lt;/code&gt;，发现还启动失败报没有sshkey。&lt;/li&gt;
+&lt;li&gt;再使用&lt;code&gt;ssh-keygen&lt;/code&gt;来生成系统的&lt;code&gt;ssh_host_*_key&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;终于&lt;code&gt;sshd&lt;/code&gt;可以正常启动了，但使用&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@&amp;lt;host&amp;gt;&lt;/code&gt;来连接Container，发现报无权限。&lt;/li&gt;
+&lt;li&gt;于是又得修改&lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt;，让&lt;code&gt;root&lt;/code&gt;可以ssh登陆。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;修改之后的脚本已提交到个人github上，可以在&lt;a href=&#34;https://github.com/xtfly/dockerimage&#34;&gt;这里&lt;/a&gt;下载，使用方式如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;前提Archlinux中也安装了docker引擎&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# pacman -S docker
+# systemctl enable docker
+# systemctl start docker
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;以root用户执行mkimage.sh脚本&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# ./mkimage.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;制作完成之后，使用&lt;code&gt;docker images&lt;/code&gt;查看，生成一个名为&lt;code&gt;archlinux&lt;/code&gt;的images&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;使用如下命令生成一个container，容器名为&lt;code&gt;arch1&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;使用ssh登陆验证，&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@127.0.0.1&lt;/code&gt;，默认密码是&lt;code&gt;123456&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;也可以使用命令&lt;code&gt;docker exec -it arch1 bash&lt;/code&gt;来执行&lt;code&gt;bash&lt;/code&gt;进入container操作。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -114,7 +654,54 @@ Open source relational database management system
       <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
 
 &lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# grub-install --target=i386-pc --recheck /dev/sda
+# grub-mkconfig -o /boot/grub/grub.cfg
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在&lt;code&gt;30_os-prober&lt;/code&gt;文件，说明os-prober是安装的（&lt;code&gt;pacman -S grub&lt;/code&gt;会自动安装）。&lt;/p&gt;
+
+&lt;p&gt;我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# mount /dev/sda1 /mnt
+# grub-probe --target=fs_uuid /mnt/bootmgr
+70B235F6749E84AE
+# grub-probe --target=hints_string /mnt/bootmgr
+--hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接着，将下面的代码添加到&lt;code&gt;/boot/grub/grub.cfg&lt;/code&gt;中，注意替换其中的&lt;code&gt;fs_uuid&lt;/code&gt;，即&lt;code&gt;70B235F6749E84AE&lt;/code&gt;。保存&lt;code&gt;grub.cfg&lt;/code&gt;文件，重启系统，在gurb菜单就可以看到&lt;code&gt;Windows 10 (loader) (on /dev/sda1)&lt;/code&gt;项了。选择，成功进入win10。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;### BEGIN /etc/grub.d/30_os-prober ###
+menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class os $menuentry_id_option &#39;osprober-chain-70B235F6749E84AE&#39; {
+    insmod part_msdos
+    insmod ntfs
+    set root=&#39;hd0,msdos1&#39;
+    if [ x$feature_platform_search_hint = xy ]; then
+      search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1  70B235F6749E84AE
+    else
+      search --no-floppy --fs-uuid --set=root 70B235F6749E84AE
+    fi
+    parttool ${root} hidden-
+    drivemap -s (hd0) ${root}
+    chainloader +1
+}
+set timeout_style=menu
+if [ &amp;quot;${timeout}&amp;quot; = 0 ]; then
+  set timeout=10
+fi
+### END /etc/grub.d/30_os-prober ###
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注：后经验证，grub-mkconfig无法扫描到win10，是由于少安装了os-prober。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# pacman -S os-prober
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;参考：&lt;a href=&#34;https://wiki.archlinux.org/index.php/GRUB_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)&#34;&gt;GRUB_(简体中文)&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -139,7 +726,104 @@ Open source relational database management system
 
 &lt;h2 id=&#34;tmux的基本概念&#34;&gt;tmux的基本概念&lt;/h2&gt;
 
-&lt;p&gt;tmux的主要元素分为三层：&lt;/p&gt;</description>
+&lt;p&gt;tmux的主要元素分为三层：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Session会话： 一组窗口的集合，通常用来概括同一个任务。session可以有自己的名字便于任务之间的切换。&lt;/li&gt;
+&lt;li&gt;Window 窗口： 单个可见窗口。Windows有自己的编号，也可以认为和ITerm2中的Tab类似。&lt;/li&gt;
+&lt;li&gt;Pane 窗格： 被划分成小块的窗口，类似于Vim中 &lt;code&gt;C-w +v&lt;/code&gt; 后的效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/mw690/7178f37egw1esoxc7hp5oj20gm0bkjs6.jpg&#34; alt=&#34;层次结构&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;安装&#34;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;在Mac环境下，先安装&lt;a href=&#34;http://brew.sh/&#34;&gt;Brew&lt;/a&gt;，使用Brew安装tmux命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;brew install tmux
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
+
+&lt;p&gt;安装完成之后，在终端中直接敲入&lt;code&gt;tmux&lt;/code&gt;就可启动一个 tmux 的会话。退出会话敲入 &lt;code&gt;exit&lt;/code&gt; 即可退出当前会话Pane。可以使用 &lt;code&gt;tmux detach&lt;/code&gt; 命令断开已有的会话。也可以使用快捷键 &lt;code&gt;Ctrl-b d&lt;/code&gt; 断开会话&lt;/p&gt;
+
+&lt;p&gt;tmux 默认使用 &lt;code&gt;Ctrl-b&lt;/code&gt; 作为激活快捷键的开关,开关开启后就可以通过快捷键迅速调用大量的功能。快捷键参考如下：&lt;/p&gt;
+
+&lt;h3 id=&#34;基础&#34;&gt;基础&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;? 获取帮助信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;session管理&#34;&gt;Session管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;s 列出所有会话&lt;/li&gt;
+&lt;li&gt;$ 重命名当前的会话&lt;/li&gt;
+&lt;li&gt;d 断开当前的会话&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;window管理&#34;&gt;window管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;c 创建一个新窗口&lt;/li&gt;
+&lt;li&gt;, 重命名当前窗口&lt;/li&gt;
+&lt;li&gt;w 列出所有窗口&lt;/li&gt;
+&lt;li&gt;% 水平分割窗口&lt;/li&gt;
+&lt;li&gt;&amp;rdquo; 竖直分割窗口&lt;/li&gt;
+&lt;li&gt;n 选择下一个窗口&lt;/li&gt;
+&lt;li&gt;p 选择上一个窗口&lt;/li&gt;
+&lt;li&gt;0~9 选择0~9对应的窗口&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;pane管理&#34;&gt;pane管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;% 创建一个水平窗格&lt;/li&gt;
+&lt;li&gt;&amp;rdquo; 创建一个竖直窗格&lt;/li&gt;
+&lt;li&gt;h 将光标移入左侧的窗格*&lt;/li&gt;
+&lt;li&gt;j 将光标移入下方的窗格*&lt;/li&gt;
+&lt;li&gt;l 将光标移入右侧的窗格*&lt;/li&gt;
+&lt;li&gt;k 将光标移入上方的窗格*&lt;/li&gt;
+&lt;li&gt;q 显示窗格的编号&lt;/li&gt;
+&lt;li&gt;o 在窗格间切换&lt;/li&gt;
+&lt;li&gt;} 与下一个窗格交换位置&lt;/li&gt;
+&lt;li&gt;{ 与上一个窗格交换位置&lt;/li&gt;
+&lt;li&gt;! 在新窗口中显示当前窗格&lt;/li&gt;
+&lt;li&gt;x 关闭当前窗格&amp;gt; 要使用带“*”的快捷键需要提前配置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;其他&#34;&gt;其他&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;t 在当前窗格显示时间&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;配置&#34;&gt;配置&lt;/h2&gt;
+
+&lt;p&gt;像VIM一样，可以定制你的tmux。tmux默认会先从 &lt;code&gt;/etc/tmux.conf&lt;/code&gt; 加载系统级的配置项，然后从 &lt;code&gt;~/.tmux.conf&lt;/code&gt; 加载用户级的配置项。也可以启动tmux时使用参数 &lt;code&gt;-f&lt;/code&gt; 指定一个配置文件。配置包含如下几个配置项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;自定义各种快捷键&lt;/li&gt;
+&lt;li&gt;自定义屏幕下方的状态条&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如配置激活快捷键：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set -g prefix ^k
+unbind ^b
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;默认的tmux风格比较朴素甚至有些丑陋。如果希望做一些美化和个性化配置的话，建议使用&lt;a href=&#34;https://github.com/gpakosz/.tmux&#34;&gt;gpakosz&lt;/a&gt; 的tmux配置。它的本质是一个tmux配置文件，实现了以下功能：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;基于powerline的美化&lt;/li&gt;
+&lt;li&gt;显示笔记本电池电量&lt;/li&gt;
+&lt;li&gt;和Mac互通的剪切板&lt;/li&gt;
+&lt;li&gt;和vim更相近的快捷键&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/553208/9890858/ee3c0ca6-5c02-11e5-890e-05d825a46c92.gif&#34; alt=&#34;.tmux&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -151,7 +835,67 @@ Open source relational database management system
       <description>&lt;h2 id=&#34;什么是软件架构设计&#34;&gt;什么是软件架构设计&lt;/h2&gt;
 
 &lt;p&gt;依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的&lt;a href=&#34;http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_&#34;&gt;《软件架构设计》&lt;/a&gt;才知道这只是其中一大阵营的观点。而软件架构在定义上分为&lt;code&gt;“组成派”&lt;/code&gt;和&lt;code&gt;“决策派”&lt;/code&gt;两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;“组成派”的两个明显的特点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;关注架构实践的客体——软件，以软件本身作为描述对象。&lt;/li&gt;
+&lt;li&gt;分析了软件的组成，说明软件不是一个‘原子’意义上的整体，而是有不同的部分经过特定的接口进行连接组成的一个整体，这对软件开发来说很重要。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;“决策派”的两个明显的特点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;关注软件架构中的实体——人，以人的决策为描述对象。&lt;/li&gt;
+&lt;li&gt;归纳了软件架构决策的类型，指出架构决策不仅包括关于软件系统的组织、元素、子系统和架构风格等几类决策，还包括关于众多非功能性需求的决策。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;按照“组成派”的观点，软件架构关注的是软件整体的分割和交互，之所以分割，是因为不同的部分在逻辑或物理上相对独立，通过“分而治之”的原则进行分割可以更好的理解整个系统，把握用户的需求，但是虽然整个软件可以分割成多个模块或子系统，但是模块和子系统之间的通信和交互也是很重要的。按照这种观点，架构师的主要任务是将软件分割成不同的模块，并定义模块之间的接口。&lt;/p&gt;
+
+&lt;p&gt;按照“决策派”的观点，软件是一个在很多限制下产生的产品，这些限制包括用户和技术两方面，用户方面包括功能需求、性能需求、硬件需求等，技术方面包括技术选择、可扩展性、可重用性、可维护性等。按照这中观点，架构师的主要任务就是作出上述个各种限制作出选择或决策，是一系列的有层次的决策。&lt;/p&gt;
+
+&lt;h2 id=&#34;软件架构设计的质量属性&#34;&gt;软件架构设计的质量属性&lt;/h2&gt;
+
+&lt;p&gt;按照“决策派”的观点，软件架构并不仅仅关注软件本身的结构和行为，还注重其他特性：使用、功能性、性能、弹性、重用、可理解、经济以及技术的限制和权衡等。&lt;/p&gt;
+
+&lt;p&gt;软件架构设计中需要考虑软件的质量属性，也是上述所说需要权衡与决策的。质量属性可归类为三类：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;软件系统本身的质量属性：可用性，可维护性，高性能，安全性，可测试性，易用性。&lt;/li&gt;
+&lt;li&gt;软件系统的商用属性：上市时间，成本与收益，目标市场，生命周期，系统生态。&lt;/li&gt;
+&lt;li&gt;架构本身的质量属性：概念完整性，正确性，可理解性，可构建性。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如何描述质量属性需求呢？一般采用质量属性场景作为一种规范。 质量属性场景是一种面向特定的质量属性的需求。它由六部分组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;刺激源：这是某个生成该刺激的实体（人、计算机系统或者任何其他刺激器）。&lt;/li&gt;
+&lt;li&gt;刺激：该刺激是当刺激到达系统时需要考虑的条件。&lt;/li&gt;
+&lt;li&gt;环境：该刺激在某些条件内发生。当刺激发生时，系统可能处于过载，或者运行，也可能是其他情况。&lt;/li&gt;
+&lt;li&gt;制品：某个制品被刺激。这可能是整个系统，也可能是系统的一部分。&lt;/li&gt;
+&lt;li&gt;响应：该响应是在刺激到达后所采取的行动。&lt;/li&gt;
+&lt;li&gt;响应度量：当响应发生时，应当能够以某种方式对其进行度量，以对需求进行测试。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;软件架构设计的原则&#34;&gt;软件架构设计的原则&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;全面解耦合原则：对业务进行抽象建模，业务数据与业务逻辑解耦，软件件与硬件解耦，平台与产品解耦，系统各部件之间解耦。&lt;/li&gt;
+&lt;li&gt;服务化、组件化原则：以服务，数据为中心，构建服务化，组件化的架构，具备灵活，按需组合的能力。&lt;/li&gt;
+&lt;li&gt;隔离与自治原则：通过接口隐藏服务、组件的实现细节，服务与组件之间只能基于接口交互，接口契约化、标准化。跨版本兼容；服务、组件可独立发展，独立发布，独立升级。服务自治，可视，可管，可控，可测，可维，故障自愈。&lt;/li&gt;
+&lt;li&gt;弹性伸缩原则：构建全分布式云化架构，或借鉴云化架构思想，每个服务具备横向扩展能务，支持按需使用、自动弹性伸缩，可动态替换，灵活部署，支持高性能、高吞吐量、高并发，高可用业务场景。&lt;/li&gt;
+&lt;li&gt;安全可靠原则：构建最小的权限、纵深防御、最小公共化、权限分享、不轻信、开放设计、完全仲裁、失效安全、保护薄弱环节、安全机制经济性、用户接受度以及加强隐私保护的安全体系，确保系统、网络、数据的机密性，完整性、可用性、可追溯。业务系统零故障为导向，按需构建分层分级的可靠性，通过故障的预测、预防、快速恢复，避免故障的发生。&lt;/li&gt;
+&lt;li&gt;高效开发原则：创建支持迭代、增量、持续交付的架构，支持部件可独立开发，自动化编译构建、测试、集成验证，并易于高效修改与持续优化；支持开发组织小型化、扁平化，支持小团队独立高效并行开发。&lt;/li&gt;
+&lt;li&gt;持续演进原则：架构并非一蹴而就，需要有效地管理架构需求，持续构建和发展架构，适应业务需求变化，适时引入业界最佳实践，及时重构，确保架构生命力和竞争力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;参考材料：&lt;br /&gt;
+* 温昱的《软件架构设计》&lt;br /&gt;
+* 软件体系结构的质量属性&lt;br /&gt;
+* 华为产品架构设计原则&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
@@ -160,7 +904,114 @@ Open source relational database management system
       <pubDate>Sat, 22 Mar 2014 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2014/0322_github/</guid>
-      <description>Git HTTPS 和 SSH 的区别： 前者可以随意克隆github上的项目，而不管是谁的；而后者则是你必须是你要克隆的项目的拥有者或管理员，且需要先添加 SSH key ，否则</description>
+      <description>
+
+&lt;p&gt;Git HTTPS 和 SSH 的区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;前者可以随意克隆github上的项目，而不管是谁的；而后者则是你必须是你要克隆的项目的拥有者或管理员，且需要先添加 SSH key ，否则无法克隆。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;https url 在push的时候是需要验证用户名和密码的；而 SSH 在push的时候，是不需要输入用户名的，如果配置SSH key的时候设置了密码，则需要输入密码的，否则直接是不需要输入密码的。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;首先检查是否已经有-ssh-key&#34;&gt;首先检查是否已经有 SSH key&lt;/h3&gt;
+
+&lt;p&gt;运行 git Bash 客户端，输入如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd ~/.ssh
+$ ls
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这两个命令就是检查是否已经存在 id_rsa.pub 或 id_dsa.pub 文件，如果文件已经存在，那么你可以跳过步骤2，直接进入步骤3。&lt;/p&gt;
+
+&lt;h3 id=&#34;创建一个-ssh-key&#34;&gt;创建一个 SSH key&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;参数含义：&lt;/p&gt;
+
+&lt;p&gt;-t 指定密钥类型，默认是 rsa ，可以省略。&lt;br /&gt;
+-C 设置注释文字，比如邮箱。&lt;br /&gt;
+-f 指定密钥文件存储文件名。&lt;/p&gt;
+
+&lt;p&gt;以上代码省略了 -f 参数，因此，运行上面那条命令后会让你输入一个文件名，用于保存刚才生成的 SSH key 代码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Generating public/private rsa key pair.
+# Enter file in which to save the key (/c/Users/xiao/.ssh/id_rsa): [Press enter]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然，你也可以不输入文件名，使用默认文件名（推荐），那么就会生成 id_rsa 和 id_rsa.pub 两个秘钥文件。&lt;/p&gt;
+
+&lt;p&gt;接着又会提示你输入两次密码（该密码是你push文件的时候要输入的密码，而不是github管理者的密码），&lt;/p&gt;
+
+&lt;p&gt;当然，你也可以不输入密码，直接按回车。那么push的时候就不需要输入密码，直接提交到github上了，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Enter passphrase (empty for no passphrase): 
+# Enter same passphrase again:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来，就会显示如下代码提示，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Your identification has been saved in /c/Users/xiao/.ssh/id_rsa.
+# Your public key has been saved in /c/Users/xiao/.ssh/id_rsa.pub.
+# The key fingerprint is:
+# 01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当你看到上面这段代码的收，那就说明，你的 SSH key 已经创建成功，你只需要添加到github的SSH key上就可以了。&lt;/p&gt;
+
+&lt;h3 id=&#34;添加你的-ssh-key-到-github上面去&#34;&gt;添加你的 SSH key 到 github上面去&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先你需要拷贝 id_rsa.pub 文件的内容，你可以用编辑器打开文件复制。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;登录你的github账号，从又上角的设置（ Account Settings ）进入，然后点击菜单栏的 SSH key 进入页面添加 SSH key。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;点击 Add SSH key 按钮添加一个 SSH key 。把你复制的 SSH key 代码粘贴到 key 所对应的输入框中，记得 SSH key 代码的前后不要留有空格或者回车。当然，上面的 Title 所对应的输入框你也可以输入一个该 SSH key 显示在 github 上的一个别名。默认的会使用你的邮件名称。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;测试一下该ssh-key&#34;&gt;测试一下该SSH key&lt;/h3&gt;
+
+&lt;p&gt;在git Bash 中输入以下代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ssh -T git@github.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当你输入以上代码时，会有一段警告代码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The authenticity of host &#39;github.com (207.97.227.239)&#39; can&#39;t be established.
+# RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+# Are you sure you want to continue connecting (yes/no)?
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是正常的，你输入 yes 回车既可。如果你创建 SSH key 的时候设置了密码，接下来就会提示你输入密码，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Enter passphrase for key &#39;/c/Users/xiao/.ssh/id_rsa&#39;:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然如果你密码输错了，会再要求你输入，知道对了为止。&lt;/p&gt;
+
+&lt;p&gt;注意：输入密码时如果输错一个字就会不正确，使用删除键是无法更正的。&lt;/p&gt;
+
+&lt;p&gt;密码正确后你会看到下面这段话，如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hi username! You&#39;ve successfully authenticated, but GitHub does not
+# provide shell access.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果用户名是正确的,你已经成功设置SSH密钥。如果你看到 “access denied” ，者表示拒绝访问，那么你就需要使用 https 去访问，而不是 SSH 。2&lt;/p&gt;
+
+&lt;h3 id=&#34;设置全局git账号&#34;&gt;设置全局git账号&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;  git config --global user.email &amp;quot;your_email@example.com&amp;quot;
+  git config --global user.name &amp;quot;your name&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;参考文档：&lt;a href=&#34;https://help.github.com/articles/generating-ssh-keys&#34;&gt;https://help.github.com/articles/generating-ssh-keys&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -179,7 +1030,20 @@ Open source relational database management system
 &lt;li&gt;&lt;p&gt;角色认知，系统化思考：&lt;/p&gt;
 
 &lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。
-&lt;/p&gt;</description>
+&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;面对不增值的事：&lt;/p&gt;
+
+&lt;p&gt;其实在工作中我们总会遇到不少此类的重复又不增值的事情，从个人来讲，可能得不到技能上的提升。但对组织，对团队是非常有益的，需要你无条件地服从，不要去报怨。很多时候，这种忍耐，坚持会帮助你脱颖而出。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;面对困难的事：&lt;/p&gt;
+
+&lt;p&gt;如果你所带的团队在最困难的时候，一个团队已经差到谷底了，这时不论住哪个方向走都是往上走。团队的困难时期正是我们做出变革的最佳时机。所以对团队来讲，困难和挫折是福，把一个团队从弱势带到强势的时候，这过程所积累的经验，以及团队的战斗力是无可比拟的。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;积极主动，追求卓越：&lt;/p&gt;
+
+&lt;p&gt;有些事情不是组织强制就能做好的，如果没有组织约定我们就不做事了吗，需要我们积极思考推动，价值思维，系统考虑，全力共赢，树立标杆，营造氛围，不断突破。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -191,7 +1055,33 @@ Open source relational database management system
       <description>&lt;h2 id=&#34;战乱多&#34;&gt;战乱多&lt;/h2&gt;
 
 &lt;p&gt;自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;杀功臣&#34;&gt;杀功臣&lt;/h2&gt;
+
+&lt;p&gt;一个人一旦成了皇帝，真的成了孤家寡人了，父亲儿子可以杀，那么下面的臣子更不用说了，中国历史上开国皇帝杀功臣的太多了。&lt;/p&gt;
+
+&lt;p&gt;汉朝的刘邦怕韩信功高盖主，杀之。唐朝李世民对开国功臣处理比较得当，没有什么杀戮。宋朝赵匡胤对开国功臣采用较和平的方式，让他们回家养老，重文不重武，明朱元璋对开国功臣则是一率的赶尽杀绝，做事做绝。清朝由于前期左右势力均衡，才把顺治推上历史舞台，但其叔父多尔衮却杀了不少他的政敌（也有一些是开国功臣）。&lt;/p&gt;
+
+&lt;p&gt;现代企业也普遍存在这种情况，尤其是在国有企业。一个企业的老总，就是这里的皇帝，整一个人太容易。随他一起创业的功臣，老总对他们忌惮太多，这可能也是中国很多企业昙花一现的原因之一。&lt;/p&gt;
+
+&lt;h2 id=&#34;两极化&#34;&gt;两极化&lt;/h2&gt;
+
+&lt;p&gt;中国人的宗教生活不应该分成儒、佛、道三家，更确切地说，应当分成两个等级。即:普通百姓为一个等级，学者(学优而仕，中国古代没有独立的学者，学者即官员)为一个等级。&lt;/p&gt;
+
+&lt;p&gt;普通百姓崇拜古代的、佛教的、道教的及其他来源的诸神和自然物。学者们却只信奉皇帝和祖宗，有时也敬奉孔子、佛陀、老子和几位伟大的历史人物，但从不信奉其他神灵。&lt;/p&gt;
+
+&lt;p&gt;普通百姓相信占星术，历书、释梦、泥土占卜、巫术、骨相学、手相术、招魂术、各式算命、符咒、魔术以及各种迷信；学者们很少相信这些玩艺。&lt;/p&gt;
+
+&lt;p&gt;普通百姓经常出入各类庙宇和神殿；学者们则回避这些地方，只光顾圣堂、孔庙和祠堂，有时也去历史伟人的庙地。&lt;/p&gt;
+
+&lt;p&gt;普通百姓认为宗教仪式是神秘的；学者们认为纯属形式而已。&lt;/p&gt;
+
+&lt;p&gt;普通百姓多是宿命论者，认为祸福均由神灵直接支配；学者们却不相信命运。&lt;/p&gt;
+
+&lt;p&gt;普通百姓敬神，主要是为了求神赐福，尤其是为了求神保佑子女平安，保佑他们生活富裕，长命百岁；学者们的崇拜，并不企求神灵恩赐，只是为了表示敬意。&lt;/p&gt;
+
+&lt;p&gt;所以中国不会有绝对的宗教信仰，不会为其献身，宗教对百姓来说只是一时的精神依寄、安慰，学者可能是一种的统治手段、形式。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -220,7 +1110,49 @@ Open source relational database management system
 &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;软件的复用的好处有：&lt;/p&gt;</description>
+&lt;p&gt;软件的复用的好处有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;较高的生产效率&lt;/li&gt;
+&lt;li&gt;较高的软件质量&lt;/li&gt;
+&lt;li&gt;恰当使用复用可改善系统的可维护性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在面向对象的语言中，数据的抽象化、继承、封装和多态性是几项最重要的语言特性，这些特性使得一个系统可以在更高的层次上提供可复用性。数据的抽象化和继承关系使得概念和定义可以复用；多态性使得实现和应用可以复用；而抽象化和封装可以保持和促进系统的可维护性。&lt;/p&gt;
+
+&lt;p&gt;在一个设计得当的系统中，每一个模块都相对于其它模块独立存在，并只保持与其它模块的尽可能少的通信。这样一来，在其中某一个模块发生代码修改的时候，这个修改的压力不会传递到其它的模块。&lt;/p&gt;
+
+&lt;p&gt;常见的设计原则有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;“开闭”原则（Open-Closed Principle）&lt;/p&gt;
+
+&lt;p&gt;“开闭”原则讲的是：一个软件实体应当对扩展开放，对修改关闭。其英文原文是：Software entities should be open for extension,but closed for modification.满足开闭原则的设计可以给一个软件系统两个无可比拟的优越性：1.通过扩展已有的软件系统，可以提供新的行为，以满足对软件的新需求，使变化中的软件系统有一定的适应性和灵活必。2.已有的软件模块，特别是最重要的抽象层模块不能再修改，这就使变化中的软件系统有一定的稳定性和延续性。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;里氏代换原则（Liskov Substitution Principle）&lt;/p&gt;
+
+&lt;p&gt;里氏代换原则指一个软件实体如果使用的是一个基类的话，那么一定适用于其子类，而且它根本不能察觉出基类和子类对象的区别。里氏代换原则是继承复用的基石。只有当衍生类可以替换掉基类，软件单位的功能不会受到影响时，基类才能真正被复用，而衍生类也才能在基类的基础上增加新的行为。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;依赖倒转原则（Dependency Inversion Principle）&lt;/p&gt;
+
+&lt;p&gt;依赖倒转原则要求客户端依赖于抽象耦合，依赖倒转原则的表述是：抽象不应当依赖于细节；细节应当依赖于抽象。（Abstractions should not depend upon details,Details should depend upon abstractions）依赖倒转原则的另一种表达是：要针对接口编程，不要针对实现编程。（Program to an interface, not an implementation）&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;接口隔离原则（Interface Segregatioon Principle）&lt;/p&gt;
+
+&lt;p&gt;接口隔离原则，指一个类对另外一个类的依赖性应用是建立在最小的接口上的。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;组合／聚合复用原则（Composition/Aggregation Principle）&lt;/p&gt;
+
+&lt;p&gt;组合／聚合复用原则，就是在一个新的对象里面使用一些已有的对象，使之成为新对象的一部分；新的对象通过向这些对象的委派达到复用已有功能的目的。另一个更简短的表述：要尽量使用合成／聚合，尽量不要使用继承。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;迪米特法则（Law of Demeter）&lt;/p&gt;
+
+&lt;p&gt;迪米特法则又叫做最少知识原则（Least Knowledge Principle），就是说，一个对象应当对其它对象有尽可能少的了解。迪米特法则有很多表达方式，较有代表性的有：只与你直接的朋友们通信（Only talk to your immediate friends）。不要跟“陌生人”说话（Don&amp;rsquo;t talk to strangers）。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;本文上述均节选摘抄自阎宏博士的《Java与模式》一书&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
   </channel>

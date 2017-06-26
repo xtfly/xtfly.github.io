@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Debian on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/debian/</link>
+    <link>http://lanlingzi.cn/tags/debian/index.xml</link>
     <description>Recent content in Debian on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 31 Dec 2015 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/debian/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/debian/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>虚拟与现实</title>
@@ -20,7 +17,31 @@
       <description>&lt;p&gt;&lt;img src=&#34;http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG&#34; alt=&#34;Debian&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;万万没想到，在即将迎来2016年时，微信，科技新闻中都在传&lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;30日Debian社区正式发表了悼念声明如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;我们怀着沉重地心情哀悼刚刚离我们而去的 Ian Murdock，开源软件的坚定支持者，父亲，儿子，和 Debian 中的 &amp;ldquo;ian&amp;rdquo;。&lt;/p&gt;
+
+&lt;p&gt;Ian 从 1993 年8 月开始启动 Debian 项目，并在同一年的稍晚时间正式发布了它的第一个版本，Debian 还会一直坚定不移地继续努力，成为流行世界、亿万人受惠的通用操作系统，不管是嵌入式设备还是太空站，都能看到它的身影。&lt;/p&gt;
+
+&lt;p&gt;Ian 一直非常关注在创建一个发行版和开源社区文化的过程中做正取的事情，不管是技术上，还是道德上。每一次准备好的系统发布，都包含着对自由软件和自由精神立场的坚定支持。&lt;/p&gt;
+
+&lt;p&gt;Ian 对开源的忠诚奉献一直引导着他的工作，不管是在 Debian 还是在后来的年月里，一直伴随他朝着最好的未来。Ian 的梦想一直都在发扬和纪旭，Debian 社区仍然非常活跃，成千上万的开发者们用数不清的工作时间带给世界一个安全可靠的操作系统。&lt;/p&gt;
+
+&lt;p&gt;这段特殊时期，Debian 社区的精神会一直陪伴着 Ian 的家庭，会陪伴一起共度难关。&lt;/p&gt;
+
+&lt;p&gt;他的家庭同时也请求大家在这个艰难的时刻留给他们一些隐私空间，我们对此非常尊重，同时也号召大家尊重 Ian 家人的愿望，来自 Debian 社区和开源社区的关心他的人们的慰问，可以发送到这个专属邮箱，Debian 社区会保存这份善意，并存档。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Debian的诞生本来就是一件很浪费的事，理想主义，追求纯粹，不包含非自由软件，充满激情，同也是非常的沉稳。Debian也是目前Linux发行版本中，最为彻底，最为忠实，践行开源精神的版本。它曾经是一个符号，一面旗帜。&lt;/p&gt;
+
+&lt;p&gt;Debian的名称也据说来源一个美丽的爱情故事（Deb来自于前女友Debra，Ian来自他自己的名字），Ian长期担任Linux基金会的首席技术官，他的成就在自由软件，开源社区是一个了不起的传说。&lt;/p&gt;
+
+&lt;p&gt;逝者已往，愿Ian安息，这位把自己的浪漫书写在了Debian和OpenSource的传奇人物，一路走好，我们会永远记住您！&lt;/p&gt;
+
+&lt;p&gt;他能在软件开源这个虚拟世界中，一呼百应呼风唤雨，但在现实世界也是一个普通人。作为一名程序员，或许不经意的创作，能改变世界科技的发展。开源摧动了技术的发展，使得知识更容易获取，使得技术更容易创新。但他们却可能不是这个过程中最大的获利者。在虚拟的技术世界中，我们敬奉他们为大神，而在现实世界中，很少有人能获得像政要，企业家的社会地位，甚至不如某国一名歌坛明星。即使面对一名小警察，或许只能通过自杀来表达诉求或无奈。&lt;/p&gt;</description>
     </item>
     
   </channel>

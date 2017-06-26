@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Shell on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/shell/</link>
+    <link>http://lanlingzi.cn/tags/shell/index.xml</link>
     <description>Recent content in Shell on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 21 Feb 2016 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/shell/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/shell/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>使用tmux</title>
@@ -33,7 +30,104 @@
 
 &lt;h2 id=&#34;tmux的基本概念&#34;&gt;tmux的基本概念&lt;/h2&gt;
 
-&lt;p&gt;tmux的主要元素分为三层：&lt;/p&gt;</description>
+&lt;p&gt;tmux的主要元素分为三层：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Session会话： 一组窗口的集合，通常用来概括同一个任务。session可以有自己的名字便于任务之间的切换。&lt;/li&gt;
+&lt;li&gt;Window 窗口： 单个可见窗口。Windows有自己的编号，也可以认为和ITerm2中的Tab类似。&lt;/li&gt;
+&lt;li&gt;Pane 窗格： 被划分成小块的窗口，类似于Vim中 &lt;code&gt;C-w +v&lt;/code&gt; 后的效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://ww1.sinaimg.cn/mw690/7178f37egw1esoxc7hp5oj20gm0bkjs6.jpg&#34; alt=&#34;层次结构&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;安装&#34;&gt;安装&lt;/h2&gt;
+
+&lt;p&gt;在Mac环境下，先安装&lt;a href=&#34;http://brew.sh/&#34;&gt;Brew&lt;/a&gt;，使用Brew安装tmux命令如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;brew install tmux
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;使用&#34;&gt;使用&lt;/h2&gt;
+
+&lt;p&gt;安装完成之后，在终端中直接敲入&lt;code&gt;tmux&lt;/code&gt;就可启动一个 tmux 的会话。退出会话敲入 &lt;code&gt;exit&lt;/code&gt; 即可退出当前会话Pane。可以使用 &lt;code&gt;tmux detach&lt;/code&gt; 命令断开已有的会话。也可以使用快捷键 &lt;code&gt;Ctrl-b d&lt;/code&gt; 断开会话&lt;/p&gt;
+
+&lt;p&gt;tmux 默认使用 &lt;code&gt;Ctrl-b&lt;/code&gt; 作为激活快捷键的开关,开关开启后就可以通过快捷键迅速调用大量的功能。快捷键参考如下：&lt;/p&gt;
+
+&lt;h3 id=&#34;基础&#34;&gt;基础&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;? 获取帮助信息&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;session管理&#34;&gt;Session管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;s 列出所有会话&lt;/li&gt;
+&lt;li&gt;$ 重命名当前的会话&lt;/li&gt;
+&lt;li&gt;d 断开当前的会话&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;window管理&#34;&gt;window管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;c 创建一个新窗口&lt;/li&gt;
+&lt;li&gt;, 重命名当前窗口&lt;/li&gt;
+&lt;li&gt;w 列出所有窗口&lt;/li&gt;
+&lt;li&gt;% 水平分割窗口&lt;/li&gt;
+&lt;li&gt;&amp;rdquo; 竖直分割窗口&lt;/li&gt;
+&lt;li&gt;n 选择下一个窗口&lt;/li&gt;
+&lt;li&gt;p 选择上一个窗口&lt;/li&gt;
+&lt;li&gt;0~9 选择0~9对应的窗口&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;pane管理&#34;&gt;pane管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;% 创建一个水平窗格&lt;/li&gt;
+&lt;li&gt;&amp;rdquo; 创建一个竖直窗格&lt;/li&gt;
+&lt;li&gt;h 将光标移入左侧的窗格*&lt;/li&gt;
+&lt;li&gt;j 将光标移入下方的窗格*&lt;/li&gt;
+&lt;li&gt;l 将光标移入右侧的窗格*&lt;/li&gt;
+&lt;li&gt;k 将光标移入上方的窗格*&lt;/li&gt;
+&lt;li&gt;q 显示窗格的编号&lt;/li&gt;
+&lt;li&gt;o 在窗格间切换&lt;/li&gt;
+&lt;li&gt;} 与下一个窗格交换位置&lt;/li&gt;
+&lt;li&gt;{ 与上一个窗格交换位置&lt;/li&gt;
+&lt;li&gt;! 在新窗口中显示当前窗格&lt;/li&gt;
+&lt;li&gt;x 关闭当前窗格&amp;gt; 要使用带“*”的快捷键需要提前配置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;其他&#34;&gt;其他&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;t 在当前窗格显示时间&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;配置&#34;&gt;配置&lt;/h2&gt;
+
+&lt;p&gt;像VIM一样，可以定制你的tmux。tmux默认会先从 &lt;code&gt;/etc/tmux.conf&lt;/code&gt; 加载系统级的配置项，然后从 &lt;code&gt;~/.tmux.conf&lt;/code&gt; 加载用户级的配置项。也可以启动tmux时使用参数 &lt;code&gt;-f&lt;/code&gt; 指定一个配置文件。配置包含如下几个配置项：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;自定义各种快捷键&lt;/li&gt;
+&lt;li&gt;自定义屏幕下方的状态条&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如配置激活快捷键：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set -g prefix ^k
+unbind ^b
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;默认的tmux风格比较朴素甚至有些丑陋。如果希望做一些美化和个性化配置的话，建议使用&lt;a href=&#34;https://github.com/gpakosz/.tmux&#34;&gt;gpakosz&lt;/a&gt; 的tmux配置。它的本质是一个tmux配置文件，实现了以下功能：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;基于powerline的美化&lt;/li&gt;
+&lt;li&gt;显示笔记本电池电量&lt;/li&gt;
+&lt;li&gt;和Mac互通的剪切板&lt;/li&gt;
+&lt;li&gt;和vim更相近的快捷键&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/553208/9890858/ee3c0ca6-5c02-11e5-890e-05d825a46c92.gif&#34; alt=&#34;.tmux&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

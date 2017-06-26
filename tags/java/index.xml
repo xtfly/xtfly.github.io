@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Java on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/java/</link>
+    <link>http://lanlingzi.cn/tags/java/index.xml</link>
     <description>Recent content in Java on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 02 Jul 2016 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Go/Java/C&#43;&#43;杂谈</title>
@@ -22,7 +19,43 @@
 &lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
 
 &lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C++大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Although we expected c++ programmers to see Go as an alternative, instead most Go programmers come from languages like Python and Ruby. Very few come from C++.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;C++的价值精髓在于：语言提供更加广泛的抽象，优雅和灵活的特性，而这些表达能力是硬件零成本的。而Go思考的方向显示不是零成本，至少不是零CPU成本，Go的主张更多考虑的是最小化程序员的工作量。&lt;/p&gt;
+
+&lt;p&gt;一个是硬件零成本的极致追求，一个是最小程序员的工作量，谁都替换不了谁最最价值的部分。Go无法同时符合两个目标，选择了动态语法与GC，就注定了选择开发效率，会为开发效率牺牲硬件效率，所以它走向另外一个方向，也就是目前Java所擅长的应用方向，尤其是目前的网络与WEB应用方面，这就需要有良好的标准库和生态系统支持。在标准方面，Go已提供了处理tcp/http/json/crypto/image等方面的标准库，它对网络的核心协议HTTP高并发支持，已经开发在抢Java的地盘了。&lt;/p&gt;
+
+&lt;p&gt;Go目前在分布系统，WEB应用，云计算云平台开始显示出优势，但是我们也必须看到它的不足，Go在创业公司与互联网企业应用越来眼越多，但在企业级还是未看到成功的案例。最重要的原因可能是其语言重要特性与工业工具还远未成熟，还有不少的断层或临时解决方案。但Go这两年来，在开源界发展速度，生态也会越来越成熟。在Go编译与Runtime也是在多个版本不断地优化与调整。Go于12年发布第一个版本，截止目前的1.7 beta版本发布，差不多是一年两个大版本，对于语言级，每年的版本发布可能会让大企业选择它犹豫再三，不敢应在极核心业务领域，担心它的不稳定带来商用风险不可控。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Go已证明在动态语言需要性能，是作为Python与Ruby的理想候选者。在生产方面，其语言特性与生态系统还远没有像Python与Java成熟，目前阶段也是只在某些场景下的可选角色，从长期来看，在Google的战略支持下，肯定越来越蚕食Python与Java等带有GO与动态性的语言地盘。但在C/C++擅长的领域，尤其是要求实时性，CPU密集计算的领域，短期Go还无法渗入。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;java&#34;&gt;Java&lt;/h2&gt;
+
+&lt;p&gt;Java的成功，10年前靠Unix系统的SUN/IBM/Oracle的强国支撑让它在企业应用领域和WEB应用方面站稳了脚跟；而随后的10年，前半段是靠x86+Linux带来的革命继续保持份额，后半段依托于Android的成功让其在步履蹒跚停止脚步后再一次登顶。二十多年，Java积累了最大的生态系统，可以说它是无说不包，已是一艘航空母舰，足已证明它的地址与成功。但是在其语言、库、框架与生态的复杂度，对技术的人员来说，Java已不太简单，已构成巨大的障碍。比如在Go擅长的并发，语言层面有synchronized机制，标准库的lock与notify，再到后来的concurrent库。基于JVM，Java又可以与其它语言具有良好的互操作性，如并发方面的Scala，可以选择Actor或Akka。&lt;/p&gt;
+
+&lt;p&gt;Java的世界轮子太多，你需要重复造轮子，也是Java成功的关键之一，历史沉淀下来让Java选择太多，也显著增加成本。深入后Java的学习成功可以比C++更高，技术人员需要非常精心地组织框架与设计，否则各种复用的结果就是堆砌出一个异常臃肿的程序，其运行时对资源的消耗有时候会让你感到恐惧，而这是太多的基于Java所开发的平台被广泛诟病的重要原因之一。复用是一把双刃剑，是要量体裁衣还是一锅端，拿捏的尺度对于开发人员要求无疑是高昂的。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Java已是无所不包，近十年基本都是排名最好的语言，积累最强大的生态。但其众多的框架，库复杂度也远不是让一个普通程序员能轻易掌握的，拿捏不好也将是一场灾难。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;c-c&#34;&gt;C/C++&lt;/h2&gt;
+
+&lt;p&gt;C/C++在嵌入式和系统编程方面，依然占据差牢固地位，但是在并发、网络和应用编程等方面，一直处于讳莫如深的黑暗时代，语言本身未提供任何支持，而太单薄的标准库也毫无此方面的野心，C/C++的标准库的规模恐怕始终无法比拟Java/Go，因为C/C++不受任何一家大型商业公司控制，而是完全片处于“放养“状态。标准库需要得到大型商业公司持续的投资，这就是为什么C++98标准库在13年后才获得一次大的更新。C/C++需要封装各种硬件平台的系统API，而linux+x86大面积击败Unix之前，众多的Unix系统更加剧了跨平台编程的难度。2000年左右出现跨平台的ACE库，还有Win平台上MFC库，都是糟糕难用，所以也没有大规模地成功，反而成了当时程序员的救命草，显然，这些技术已被历史所丢弃。而同时期Java原生提供了多线程，网络的标准库，以及基于JVM技术的跨平台支持，把Java推向了主流语言。&lt;/p&gt;
+
+&lt;p&gt;对于C/C++程序员，有一个振奋人心的大事件，C++11发布，相比C++98，无论在语言和标准库上，都是一个极大飞跃。C++之父说它是一门新语言，这不为过，同时如此多的顶尖C++高手对boost库的贡献，它也是事实上的标准库，在网络、并发编程和一些基本应用方面，已经提供了性能优秀的库，极大地降低了此方面的开发难度。传统的C++程序员，须尽快过渡到C++11上，这需要编译环境的更新，而编译环境更新又会带来内存检测和性能分析方面最强力的工具。C/C++曾经最广泛的内存越界与泄露总是，在GCC5.2版本与Intel最新CPU面前，内存飞踩可参被抓在第一现场，同时Intel提供的vtune性能分析工具，足也解决绝大多数的问题。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;传统C++程序员，须尽快拥抱C++11，新的标准库，Boost库，这会极大提高开发与维护效率。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
@@ -44,7 +77,49 @@
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
 
 &lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;缘起&#34;&gt;缘起&lt;/h2&gt;
+
+&lt;p&gt;正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;模块化，模块之间基于服务接口通讯。&lt;/li&gt;
+&lt;li&gt;插件化，Bunlde可以动态加载。&lt;/li&gt;
+&lt;li&gt;组件化，面向服务的组件，组件由多个服务组成。&lt;/li&gt;
+&lt;li&gt;生命周期管理，相比普通Jar包，我们可以更细粒度的管理&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们使用OSGi，采用两种框架，一个是Apache的Felix，使用它主要是看重它很小，用于开发主机代理，在其上开发各种采集插件。一个是Spring的Spring DM，即后面的Eclipse Virgo。使用它主要是看重它集成了Spring，用于开发后端服务，采用Spring DM来简化OSGi的服务发布与引用，以及能较好地使用Spring的其它能力。&lt;/p&gt;
+
+&lt;p&gt;可以说从11年到14年，我都是在基于OSGi做开发，从早期喜爱到最后的放弃，个中的滋味真不知怎么说。期间我在整个团队做了不少关于OSGi的推广，写过些文档介绍，规范要求，定位过稀奇的问题，最后大家都觉得我是这一方面的专家，只有搞不定的问题就来找我，我才逐渐意识到OSGi的理念虽好，但要真的把它使用得很好，真是不简单啊。&lt;/p&gt;
+
+&lt;p&gt;OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式的系统，所以在后面又折腾过DOSGi，使用是的CXF实现的DOSGi，这个更难使用。先只有少数一两个服务在尝试使用它，期间遇到的问题更多，最后也不得不在13年初就放弃了。我不得不搞出另一个RPC的框架出来。&lt;/p&gt;
+
+&lt;h2 id=&#34;缘灭&#34;&gt;缘灭&lt;/h2&gt;
+
+&lt;p&gt;在去年的时候就开始讨论是否去OSGi，连最早鼓吹使用OSGi的阿里，也花了很大精力去OSGi，不过他们的动作早在12年就开始了，Spring也在12年摒弃OSGi，把Spring DM捐献给Eclipse。我们更是受项目进度与人力不足限制，去OSGi也只是停留在讨论中，有点&lt;code&gt;“不破不修”&lt;/code&gt;的意思，OSGi凑合着使用。&lt;/p&gt;
+
+&lt;p&gt;15年软件界最火爆的两个词可能是：&lt;code&gt;微服务&lt;/code&gt;，&lt;code&gt;Docker&lt;/code&gt;。去年平台定位发生变化，从偏IaaS转型偏应用的PaaS，原有的架构存在些问题；而今年的&lt;code&gt;微服务&lt;/code&gt;概念也直接点然了系统架构重构的火把，而我又是这次架构重构实施落地的组长。这真是有点戏剧性啊！&lt;code&gt;“出来混迟早要还的”&lt;/code&gt;，当初我是团队中使用OSGi的带头人，今天又是团队中OSGi的埋葬人。老大们要求我们把架构重构，目标是系统解耦合，轻量化，利于团队分工。自然去掉OSGi，朝分布式微服务化演进在设计考虑的范围中。的确，微服务化与OSGi也不冲突，为什么要去OSGi呢：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;OSGi的门槛太高，学好用好它对程序员要求高，而团队新人比例高&lt;/li&gt;
+&lt;li&gt;很多第三方组件不是Bundle，需要Bundle化，增加维护成本&lt;/li&gt;
+&lt;li&gt;使用到其它部门的中间件也宣称不支持OSGi，越来越处于孤立&lt;/li&gt;
+&lt;li&gt;多版本管理问题，在同一套环境中，相同的第三方Jar存在多个版本，版本无法归一，增加维护成本&lt;/li&gt;
+&lt;li&gt;基于OSGi的服务接口测试难度高，LLT测试时依赖于OSGi环境，测试成本高&lt;/li&gt;
+&lt;li&gt;OSGi的服务接口只是本地接口，而云计算中恰恰需要分布式服务调用框架&lt;/li&gt;
+&lt;li&gt;ClassLoder问题，导致很多的开发兄弟考虑不足出问题，经常是运行期抛ClassNotFound&lt;/li&gt;
+&lt;li&gt;Virgo， Felix其实也很重，多个组件部署在同一套环境中，隔离性差，不适合微服务理念&lt;/li&gt;
+&lt;li&gt;Bundle的动态替换就是伪命题，从来没有用过&lt;/li&gt;
+&lt;li&gt;用于做插件机制，动态加载的ClassLoder问题&lt;/li&gt;
+&lt;li&gt;JRE在Virgo环境下会出现死锁，需要升级JRE到8才能解决，还不知会有其它问题，社区支持不足&lt;/li&gt;
+&lt;li&gt;大环境下，OSGi已成明日黄华，不再是宠儿&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;从上面可以看出，OSGi的面向接口编程，服务化，模块化理念在单体应用来说虽不错，在面对分布式的应用时，它带的益处远比它的本身的机制带的问题更多。所以OSGi留得越久，越是技术债务，早去掉早解脱啊。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -59,7 +134,26 @@
 &lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。
-&lt;/p&gt;</description>
+&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;大多直接是使用Exectors.newXXX直接new线程池，没有设置队列的大小，默认是整型的最大值，一旦有线程处理阻塞，队列上涨，内存不可控制啊。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;最好不要使用newCachedThreadPool，曾经有个模块这么干，在工作线程处理慢时，线程线会不断上涨没能及时回收。这个模块出现异常，线程dump之出来发现有2000多个由它产生的线程，内存超高。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;所有线程都要受管理，不允许直接new Thread就直接start就不管了。同样所有从Exectors.newXXX创建的线程池，当bundle去激活时，一定要shutdown。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;线程个数设置多少合适？不是越多越好，多了竞争资源反而效率低。建议配置的线程数=可用的CPU数/(1-阻塞系数)。阻塞系统在0到1之间，所谓阻塞系数就是发生的IO操作，如读文件，读socket流，读写数据库等占程序时间的比率。这个数值每个系统肯定不一样，可通过分析工具或java.lang.managementAPI来确定这个值，也可以做个估计，然后测试逐步往最佳值靠拢。如果线程不是瓶颈所在，那么大概估一个值就好了。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;不要在多线程中共享数据，最佳的实践是无锁编程。所谓有锁编程，就是当你需要共享数据的时候，你需要有序的去访问，所有改变共享数据的操作都必须表现出原子的语义，在无锁编程中，并不是说所有操作都是原子的，只有一个很有限的操作集是原子的。采用wait-free 和lock-free 的算法，基于FIFO 的队列和LIFO的栈，或者更复杂的优化级队列、 hash表及红黑树的lock-free 算法以达到无锁编程。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;定时器中Runnable一定要catch所有异常，否则会由于异常导致定时不再执行。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果你在多个线程之间共享数据了，且采用锁了。那一定要防止出现死锁，什么是死锁：线程A加锁锁a，等待线程B已加锁的锁b释放，而线程B却也要锁a才很能释放锁b，就会发生死锁。平台基于monitor会定时检查死锁，一旦存在死锁，平台会自动重启。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;不要在构造函数中启动线程，这个会引起什么问题呢？如果有个类B继承了类A，依据java类初始化的顺序，A的构造函数一定会在B的构造函数调用前被调用，那么thread线程也将在B被完全初始化之前启动，当thread运行时使用到了类A中的某些变量，那么就可能使用的不是你预期中的值，因为在B的构造函数中你可能赋给这些变量新的值。也就是说此时将有两个线程（构造线程与新启线程）在使用这些变量，而这些变量却没有同步。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;你确认你的业务真的需要使用线程池吗？并发异步处理才需要，单线程无阻塞也是效率很高的。多线程在多CPU多核下才有它的真正价值。我们去分析优化时系统时，首先要考虑是减少阻塞，而不是一上来先加几个线程呗。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -73,7 +167,52 @@
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
 
 &lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;SecurityManager&lt;/code&gt;是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置&lt;code&gt;SecurityManager&lt;/code&gt;实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过&lt;code&gt;System.setSecurityManager&lt;/code&gt;来设置。一般情况下，检查权限是通过&lt;code&gt;SecurityManager.checkPermission(Permission perm)&lt;/code&gt;来完成的。外部程序通过创建&lt;code&gt;Permission&lt;/code&gt;实例，传递给前面的&lt;code&gt;check&lt;/code&gt;方法。&lt;code&gt;Permission&lt;/code&gt;是一个抽象类，需要继承它实现不同的权限验证，比如&lt;code&gt;FilePermission&lt;/code&gt;，代表对某个文件的读写权限。&lt;code&gt;new FilePermission(&amp;quot;test.txt&amp;quot;, &amp;quot;read&amp;quot;)；&lt;/code&gt;将这个实例传给&lt;code&gt;SecurityManager&lt;/code&gt;，检查是否要读test.txt这个文件。&lt;/p&gt;
+
+&lt;p&gt;但&lt;code&gt;SecurityManager&lt;/code&gt;也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。&lt;/p&gt;
+
+&lt;h2 id=&#34;检查permission时机&#34;&gt;检查Permission时机&lt;/h2&gt;
+
+&lt;p&gt;所以在设计方案时必须考虑对WebApp进行的资源授权只针对WebApp，不能影响Web容器其它代码运行。由于检查权限是通过&lt;code&gt;SecurityManager.checkPermission(Permission perm)&lt;/code&gt;来完成的，如果在&lt;code&gt;checkPermission&lt;/code&gt;实现很复杂的逻辑会对性能造成影响。所以需要分二个层次来设计Security Manager的设置：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;当Web容器启动时不设置任何的&lt;code&gt;SecurityManager&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;WebApp支行时采用新的&lt;code&gt;SecurityManager&lt;/code&gt;类，在部署它时指定新&lt;code&gt;SecurityManager&lt;/code&gt;类与&lt;code&gt;Policy&lt;/code&gt;,在自定义的Filter中init方法中实现&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;重载&lt;code&gt;java.security.SecurityManager&lt;/code&gt;(假定子类名定为&lt;code&gt;CustomSecurityManager&lt;/code&gt;)。它主要是重载如下几个方法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;checkPermission(Permission perm)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;checkPermission(Permission perm, Object context)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;checkAccess(ThreadGroup g)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;checkAccess(Threa t)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在两个&lt;code&gt;checkPermission&lt;/code&gt;方法中主要是判断不是不WebApp的工作线程，如果是再做授权检查，使用自定义的Permissions。否则不做任何的处理.&lt;/p&gt;
+
+&lt;p&gt;在两个&lt;code&gt;checkAccess&lt;/code&gt;方法中，对Thread权限如创建做一些检查特殊处理,如检查 &lt;code&gt;RuntimePermission(&amp;quot;modifyThread&amp;quot;)&lt;/code&gt;与&lt;code&gt;RuntimePermission(&amp;quot;modifyThreadGroup&amp;quot;)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;如果判断WebApp执行线程？由于不允许WebApp创建新的线程，那一个WebApp的一次http请求在Servlet的service方法实现的逻辑肯定只会在一个线程调用栈中。在Servlet的service方法入口前设置当前线程名到系统环境量Value为true，在service方法出口后设置当前线程名到系统环境量Value为false，为了能把上面的&lt;code&gt;Permission&lt;/code&gt;只限制在WebApp中使用。需要在&lt;code&gt;CustomSecurityManager.checkPermission&lt;/code&gt;根据当前线程名在系统环境量Value是否为true来判断是否需要做&lt;code&gt;Permission&lt;/code&gt;检查。&lt;/p&gt;
+
+&lt;p&gt;如何在Servlet的service方法入口设置环境变量？Servlet规范中的Filter机制可以使得Web请求在交给Web Servlet处理前进行对请求的预先处理，以及Web Servlet处理完成之后响应后处理。也就是说在相同的URL请求下，容器会优先由Filter处理，再给Web Servlet处理，利用这个特性完成对当前线程名在系统环境变量中的设置。&lt;/p&gt;
+
+&lt;p&gt;同样，在Filter的init方法也就可以对&lt;code&gt;CustomSecurityManager&lt;/code&gt;注册到系统全局的&lt;code&gt;SecurityManager&lt;/code&gt;中。&lt;/p&gt;
+
+&lt;h2 id=&#34;自定义permission&#34;&gt;自定义Permission&lt;/h2&gt;
+
+&lt;p&gt;配置WebApp安全策略的&lt;code&gt;Permission&lt;/code&gt;，可以基于Policy文件配置，以不同的CodeBase来区分不同的权限。由于配置Policy文件时，并不知道WebApp war包解压的具体目录。以Jetty为例，默认会把War解压在java.io.tmpdir目录下，那对WebApp的CodeBase可设置为java.io.tmpdir，否则根据部署实际目录来调整。&lt;/p&gt;
+
+&lt;p&gt;另外，需要对容器的其它jar文件的代码权限授权。由于类动态加载的原因，WebApp ClassLoder会委托它的双亲加载。如果不设置，也会在WebApp的工作线程中，会导致在Servlet运行时报一些权限禁止，如&lt;code&gt;SecurityPermission&lt;/code&gt;。通过不同的CodeBase来进行不同的授权，除WebApp的Class之外，假定可以考虑是AllPermission。&lt;/p&gt;
+
+&lt;p&gt;那如果WebApp的工作线程调用系统平台提供一些API，而平台API要求可以读写文件，开启特定的端口等，这也与WebApp在同一个线程调用栈中，同样也没有权限，那就又何处理？需要两步来完成对平台API的权限授权：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;平台的API Jar包不能放在WebApps目录下，应用与WebApp的War属于不现的保护域（ProtectionDomain）&lt;/li&gt;
+&lt;li&gt;在平台的API的入口需要加上对&lt;code&gt;AccessController.doPrivileged&lt;/code&gt;设置，这样是在调用&lt;code&gt;doPrivileged&lt;/code&gt;的方法相关联的保护域拥有执行被请求的操作的权限，&lt;code&gt;AccessController&lt;/code&gt;将立即返回，不再在栈的下层继续检查操作权限（也就是说它的代码主休是享受“privileged”特权），它单独负责对它的可使用的资源的访问请求，而不管这个请求是由什么代码所引发的。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -94,7 +233,148 @@
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;p&gt;每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。&lt;/p&gt;
+
+&lt;p&gt;ClassLoader有两种载入类方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;pre-loading：预先载入，载入基础类。&lt;/li&gt;
+&lt;li&gt;load-on-demand：按需求载入，动态载入。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当JVM载入Java类的时候，需要经过三个步骤，装载、连接、初始化。装载就是找到相应的Class文件，读入JVM。连接分三步：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;验证Java类是否符合规格&lt;/li&gt;
+&lt;li&gt;准备，就是为类变量分配内存同时设置默认初始值&lt;/li&gt;
+&lt;li&gt;解释，而这步就是可选的，解释就是根据类中的符号引用查找相应的实体，再把符号引用替换成一个直接引用的过程。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;每个ClassLoader加载Java类的过程如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;检测此Java类是否载入过（即在Cache中是否有此Java类，包括所有Parent的ClassLoader已载入的Java类），如果有到第8步，如果没有到第2步&lt;/li&gt;
+&lt;li&gt;如果Parent ClassLoader不存在(没有Parent，那Parent一定是Bootstrap Loader)，到第4步&lt;/li&gt;
+&lt;li&gt;请求Parent ClassLoader载入，如果成功到第8步，不成功到第5步&lt;/li&gt;
+&lt;li&gt;请求JVM从Bootstrap Loacler中载入，如果成功到第8步&lt;/li&gt;
+&lt;li&gt;寻找Class文件（从与此classloader相关的类路径中寻找）,如果找不到则到第7步&lt;/li&gt;
+&lt;li&gt;从文件中载入Class，到第8步&lt;/li&gt;
+&lt;li&gt;否则找不到，抛出 ClassNotFoundException&lt;/li&gt;
+&lt;li&gt;返回Class类&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这个过程就是双亲委托模式，一是可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次；二是出于考虑到安全因素，避免覆盖基础类。例如无法随时使用自定义的String动态替代java核心api中定义String类型。其中第5、6步我们可以通过覆盏ClassLoader的findClass方法来实现自己的载入策略。&lt;/p&gt;
+
+&lt;h2 id=&#34;thread-context-classloader&#34;&gt;Thread Context ClassLoader&lt;/h2&gt;
+
+&lt;p&gt;Java 2中引入了线程上下文(Thread Context)类ClassLoader的概念，每一个线程有一个ContextClassLoader。这个Context ClassLoader是通过方法Thread.setContextClassLoader()设置的，如果当前线程在创建后没有调用这个方法设置Context ClassLoader，则当前线程从他的父线程继承Context ClassLoader。此Context ClassLoader默认的是System ClassLoader。&lt;/p&gt;
+
+&lt;p&gt;利用这个特性，我们可以“打破”ClassLoader委托机制，父ClassLoader可以获得当前线程的Context ClassLoader，而这个Context ClassLoader可以是它的子ClassLoader或者其他其他的ClassLoader，那么父ClassLoader就可以从其获得所需的Class，这就打破了只能向父ClassLoader请求的限制。&lt;/p&gt;
+
+&lt;p&gt;这个机制可以满足当我们的classpath是在运行时才确定，并由定制的ClassLoader加载的时候，由System Loader(即在JVM classpath中)加载的Class可以通过Context ClassLoader获得定制的ClassLoader并加载入特定的ClassLoader（通常是抽象类和接口，定制的ClassLoader中实现），例如web应用中的Servlet就是用这种机制加载的。&lt;/p&gt;
+
+&lt;h2 id=&#34;class-instance&#34;&gt;Class Instance&lt;/h2&gt;
+
+&lt;p&gt;一个java类只有要实例化时，才会被ClassLoader动态载入，未使用并不会载入。而动态载类又分为两种方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Implicit隐式，即利用实例化才载入的特性来动态载入类，如new-个类的对象。&lt;/li&gt;
+&lt;li&gt;Explicit显式方式，又分为两种使用java.lang.Class的forName()方法与使用java.lang.ClassLoader的loadClass()方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当java类加载时，有一个&lt;code&gt;Class&lt;/code&gt;类（JRE中基础类）与每个其它的Java类相关，每个被ClassLoader加载的class文件，最终都会以Class类的实例被程序引用，我们可以把&lt;code&gt;Class&lt;/code&gt;类当作是普通类的一个模板。JVM根据这个模板生成对应的实例，最终被程序所使用。某个类的所有实例内部都有一个栏位记录着该类对应的&lt;code&gt;Class&lt;/code&gt;的实例位置。java类对应的&lt;code&gt;Class&lt;/code&gt;实例可以当作是类在内存中的代理者，所以当要获得类的信息（如有哪些类变量，有哪些方法）时，都可以让类对应的&lt;code&gt;Class&lt;/code&gt;实例代劳。java的Reflection机制就大量的使用这种方法来实现。每个java类都是由某个ClassLoader(ClassLoader的实例)来载入的，因此&lt;code&gt;Class&lt;/code&gt;类别的实例中都会有栏位记录他的ClassLoader的实例。&lt;/p&gt;
+
+&lt;h2 id=&#34;webapp-class-whitelist&#34;&gt;WebApp Class WhiteList&lt;/h2&gt;
+
+&lt;p&gt;对于WebApp，不管是Web容器采用Jetty还是Tomcat。他们都针对每个WebApp Context自定义ClassLoader。为了能达到白名单检查的功能，我们可能在这个自定义ClassLoader的实现对类进行检查(如不在白名单内的类load时报ClassNotFoundException)。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;一种方案是重载ClassLoader.loadClass方法，不允许load此类，也不会在Cache中存在。但这种方案会带来很大的性能问题。每次运行时实例化一个Java类，在Cache中肯定不会存在此java类的Class类。那又会去调用loadClass尝试加载此java类，那又会再一次去检查一下白名单列表，而且白名单列表会很多，遍历会损耗性能。另外，WebApp自己创建的ClassLoader，没有办法重载loadClass方法。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;另一个方案是在WebApp Context的ClassLoader.defineClass方法中修改从Class文件中读取的WebApp中每个类的字节码。使用ASM工具来解释与修改字节码，如果发现此Class的方法中在调用有不在白名单内中的类，则插入抛出NoClassDefFoundError代码。这种方案可以只在第一次加载WebApp类时，判断了它依赖的类是否有不在白名单内中。这种相对前一种方案可以提高性能。同样，WebApp自己创建的ClassLoader，没有办法重载defineClass方法。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于ClassLoader.defineClass方法的实现：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;一种方案重载Web容器的WebApp Context自定义ClassLoader.defineClass方法，这要求Web容器支持插件方式替换已有WebApp Context ClassLoader。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;另一种方案是采用JVM的Instrumentation功能。在JVM级别，以插件的方法动态AOP切入JVM或JRE类中已有的实现。正好Instrumentation提供一种机制切入到每个ClassLoader.defineClass方法之前。应用只需要实现接口java.lang.instrument.ClassFileTransformer。在transform方法实现对类字符码的转换。此方法的原型为&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  byte[] transform(ClassLoader loader,  String className,  Class&amp;lt;?&amp;gt; classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;转换器ClassFileTransformer利用Instrumentation.addTransformer注册之后，在定义每个新类和重定义每个类时都将调用该转换器。对新的类定义的请求通过ClassLoader.defineClass进行。对类重定义的请求通过Instrumentation.redefineClasses方法进行。转换器是在验证或应用class文件字节之前的处理请求过程中进行调用的。&lt;/p&gt;
+
+&lt;p&gt;如果实现的方法确定不需要进行字节码转换，则将返回null。否则它将刨建一个新的byte[]数组。将输入classfileBuffer连同所有需要的转换复制到其中，并返回新数组。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;采用第二种方案是不个不错的选择，即使用Instrurnentation功能。在transform方法扫描类的字节码，检查类的方法中是否有非白名单中的类。如果有，则插入抛出NoClassDefFounclError代码。&lt;/p&gt;
+
+&lt;h2 id=&#34;实现简介&#34;&gt;实现简介&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;定义-个类实现premain接口，做为Instrumentationa机制的入口。并在MANIFEST.MF文件中指定Premain-Class为此类．premain接口如下，顾名思义，它是在main方法之前调用：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;public static void premain(String agentArgs, Instrumentation inst);&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;实现ClaSsFileTransformer接口。并在premain方法中调用Instrumentation.addTransfanner注册此接口。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;当每个ClassLoader加载字节码时，会回调ClaaaFileTransfonner.transform方法，它实现主要逻辑：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;判断是加载类的ClassLoader是否Web容器中WebAppCantext ClasaLoader。对于WebAppContext ClassLoader可以通过类名在判断。对于webApp创建的新ClassLoader。需扫描字节码，获取类的类型继承列表是否属于ClassLoader，并记录下来。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果加载类的ClasaLoade不是应用的ClasSLoader，直接口返回null&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果是，使用ASM工具对字节码进行分析与重写:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;第一遍扫描类的所有方法字节码，如果Visit到类的类型在不在白名单列表中，则在原有方法中直接插入抛NoClassDefFoundErro代码。满足如下条件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;调用黑名单列表类的方法&lt;/li&gt;
+&lt;li&gt;调用黑名单列表类的属性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;新的代码类似如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;//插入抛NoClassDefFoundError代码，调用一个类的静态方法
+//原代码
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;WebApp可能创建的自己实现的ClassLoader。第二遍扫描类的所有方法字节码，判断Visit到类的类型是否URLclassLoader，SecureClassLoader，ClassLoader其中的一个，或者是否继承自他们。则插入记录这些ClassLoader名的代码。自己实现的ClassLoader满足如下条件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;任何一个新创建的ClassLoader，肯定会在它的调用父类的构造方法，那在此方法中它的字节码肯定会调用URLClassLoader，SecureCldaaLoader，ClassLonder其中一个构造方法；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;另外还可能使用URLClassLoader.newinstance(…）来创建新的classloader；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述两种方法新创建的ClassLoader，它的双亲ClassLoader可能不是WebAppContext的Classloader(构造方法或newinatance没有指定参数parent，那parent默认为System ClaaSLoader)，修改字节码时需要修改为调用有参数parent的方法，并且把parent指向WebApp Context的ClasSloader。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;WebApp也可能使用反射机制来访问类。第三遍扫描类的所有方法字节码，判断所Visit到类的类型与Viait到方法，满足如下条件：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;类型为java/lang/reflect/Method，调用方法为invoke&lt;/li&gt;
+&lt;li&gt;类型为java/lang/reflect/Field，调用方法为getXXXX/setXXXX等方法&lt;/li&gt;
+&lt;li&gt;类型为java/lang/reflect/Constructor，调用方法为newinstance;&lt;/li&gt;
+&lt;li&gt;类型为java/lang/Class，调用方法为newlnstance.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当满足上面条件时，修改原有这些方法调用，则在原有方法中插入检查反射的target对象的类型是否不在白名单列表中。新的代码类似如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void setBoolean (Field f, Object a, final boolean value) {
+／／插入检查obj是否有访问权限（配合Securtiy访问控制）
+／／插入检查obj是否在黑名单列表中
+／／再加上原有的f.setBoolean(obj，value)；
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
   </channel>

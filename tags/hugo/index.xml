@@ -2,14 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hugo on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/hugo/</link>
+    <link>http://lanlingzi.cn/tags/hugo/index.xml</link>
     <description>Recent content in Hugo on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 28 Aug 2016 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="http://lanlingzi.cn/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Hexo NexT主题移植</title>
@@ -26,7 +23,38 @@
 &lt;p&gt;这二个主题都是&lt;a href=&#34;http://blog.coderzh.com/&#34;&gt;coderzh&lt;/a&gt;最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。&lt;/p&gt;
 
 &lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
-&lt;/p&gt;</description>
+&lt;/p&gt;
+
+&lt;h2 id=&#34;功能&#34;&gt;功能&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;支持分类、标签索引&lt;/li&gt;
+&lt;li&gt;支持归档列表索引&lt;/li&gt;
+&lt;li&gt;支持分页栏&lt;/li&gt;
+&lt;li&gt;支持RSS&lt;/li&gt;
+&lt;li&gt;支持文章大纲（TOC）&lt;/li&gt;
+&lt;li&gt;支持分享，采用多说的分享&lt;/li&gt;
+&lt;li&gt;支持统计分析（目前支持百度统计，与REVOLEERMAPS）&lt;/li&gt;
+&lt;li&gt;支持评论系统（多说）&lt;/li&gt;
+&lt;li&gt;支持菜单定制&lt;/li&gt;
+&lt;li&gt;支持社区链接定制&lt;/li&gt;
+&lt;li&gt;支持外部链接定制&lt;/li&gt;
+&lt;li&gt;全配置化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;分享&#34;&gt;分享&lt;/h2&gt;
+
+&lt;p&gt;这个NexT主题是使用Hugo的模板语法，从零开始，经过差不多一天的时间折腾才完工。目前也应用到了我现在的这个Blog上，看起来还行:)。若有需要的朋友尽管拿去使用，有问题欢迎反馈。&lt;/p&gt;
+
+&lt;p&gt;GitHub地址：&lt;a href=&#34;https://github.com/xtfly/hugo-theme-next&#34;&gt;https://github.com/xtfly/hugo-theme-next&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;由于Hugo的模版引擎和Hexo有区别，部分Hexo的样式或功能暂时无法实现，它还没有像Hexo NexT那样能高度地配置定制。并且它也仅仅在自己的Blog简单测试过，可能并不一定完全适合您的定制，您可以根据需求调整。&lt;/p&gt;
+
+&lt;h2 id=&#34;注意&#34;&gt;注意&lt;/h2&gt;
+
+&lt;p&gt;由于Hugo的&lt;code&gt;.Summary&lt;/code&gt;只有70个字符，对于中文文章来说，实在是太短了，你可以在文档中任一地方增加&lt;code&gt;HUGOMORE42&lt;/code&gt;来分割。&lt;/p&gt;
+
+&lt;hr /&gt;</description>
     </item>
     
   </channel>
