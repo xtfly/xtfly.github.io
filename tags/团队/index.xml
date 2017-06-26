@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>团队 on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/%E5%9B%A2%E9%98%9F/index.xml</link>
+    <link>http://lanlingzi.cn/tags/%E5%9B%A2%E9%98%9F/</link>
     <description>Recent content in 团队 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/%E5%9B%A2%E9%98%9F/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Oct 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/%E5%9B%A2%E9%98%9F/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>团队管理</title>
@@ -17,78 +20,7 @@
       <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
 
 &lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
-&lt;/p&gt;
-
-&lt;h2 id=&#34;业务&#34;&gt;业务&lt;/h2&gt;
-
-&lt;p&gt;虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;价值贡献&lt;/li&gt;
-&lt;li&gt;满意度&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;面向业务：核心竞争力，价值识别与规划&lt;/li&gt;
-&lt;li&gt;面向业务&amp;amp;解决方案：领域级，变革项目级规划、运作&lt;/li&gt;
-&lt;li&gt;满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴&lt;/li&gt;
-&lt;li&gt;Top产品，问题的攻关&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;人&#34;&gt;人&lt;/h2&gt;
-
-&lt;p&gt;人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;选&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;亲自招聘，选择合适的人&lt;/li&gt;
-&lt;li&gt;已有员工中骨干识别&lt;/li&gt;
-&lt;li&gt;非关键外包合作&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;用&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;角色与岗位排兵布阵&lt;/li&gt;
-&lt;li&gt;合作外包&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;育&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流&lt;/li&gt;
-&lt;li&gt;能力培养：提升人员技能；组织能力建设&lt;/li&gt;
-&lt;li&gt;全程关注：事前辅导，事中监控，事后总结&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;留&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;绩效辅导&lt;/li&gt;
-&lt;li&gt;即时激励&lt;/li&gt;
-&lt;li&gt;组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理）&lt;/li&gt;
-&lt;li&gt;岗位流动&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;事&#34;&gt;事&lt;/h2&gt;
-
-&lt;p&gt;以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;TopN问题与任务跟踪管理&lt;/li&gt;
-&lt;li&gt;KPI管理：现状问题分析；改进计划（包括措施）；改进监控；达成评估&lt;/li&gt;
-&lt;li&gt;风险管理&lt;/li&gt;
-&lt;li&gt;技术持续改进：新技术引入；优秀实践；&lt;/li&gt;
-&lt;li&gt;质量持续改进：质量文化；质量监控，问题日清日结；质量回溯；质量改进&lt;/li&gt;
-&lt;li&gt;流程运作持续改进&lt;/li&gt;
-&lt;li&gt;知识管理&lt;/li&gt;
-&lt;li&gt;跨部门协同&lt;/li&gt;
-&lt;/ul&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -107,20 +39,7 @@
 &lt;li&gt;&lt;p&gt;角色认知，系统化思考：&lt;/p&gt;
 
 &lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。
-&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面对不增值的事：&lt;/p&gt;
-
-&lt;p&gt;其实在工作中我们总会遇到不少此类的重复又不增值的事情，从个人来讲，可能得不到技能上的提升。但对组织，对团队是非常有益的，需要你无条件地服从，不要去报怨。很多时候，这种忍耐，坚持会帮助你脱颖而出。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;面对困难的事：&lt;/p&gt;
-
-&lt;p&gt;如果你所带的团队在最困难的时候，一个团队已经差到谷底了，这时不论住哪个方向走都是往上走。团队的困难时期正是我们做出变革的最佳时机。所以对团队来讲，困难和挫折是福，把一个团队从弱势带到强势的时候，这过程所积累的经验，以及团队的战斗力是无可比拟的。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;积极主动，追求卓越：&lt;/p&gt;
-
-&lt;p&gt;有些事情不是组织强制就能做好的，如果没有组织约定我们就不做事了吗，需要我们积极思考推动，价值思维，系统考虑，全力共赢，树立标杆，营造氛围，不断突破。&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>微服务 on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml</link>
+    <link>http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
     <description>Recent content in 微服务 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Feb 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>再说说微服务</title>
@@ -25,65 +28,7 @@
 &lt;li&gt;我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;what&#34;&gt;What&lt;/h2&gt;
-
-&lt;p&gt;微服务架构转变当前遇到的各种问题，不是我们不实施微服务架构的理由。软件全云化，微服务这是趋势。再说说微服务对我们目前软件开发的核心价值吧：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;设计：微服务架构下，设计上可以重用已有微服务，反哺微服务仓库，达到软件功能更好的复用；同时由于微服务具有9大特性，使架构师能更好的守护软件架构。&lt;/li&gt;
-&lt;li&gt;开发：相比原来组件化架构，每个开发人员负责的代码量减少，更能把事件做精；微服务架构下，一般会有像JDF或HSF的服务框架，使开发难度降低；业务功能的细分，基于服务化接口契约，使并行开发变成可能，工期缩短；细粒度快速验证，单个微服务的更容易稳定。&lt;/li&gt;
-&lt;li&gt;部署：基于微服务的功能组合，可以按不同的特性交付，特性独立上线，而不原有的通过License开关控制；容量上可以按小颗粒度，自动化地伸缩，系统拥有更好的弹性。&lt;/li&gt;
-&lt;li&gt;运行：可以小颗粒度，自动化地故障隔离，故障影响范围可控；按服务的滚动升级。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;有上面的这些理由，难道我们还不选择微服务架构吗？架构上是OK的，但我司的矩阵性管理，有项目经理，有产品管理，有服务人员，有部门经理，有成本管理等，他们会看到，会认可吗？会有产品上收益来支撑吗？遗憾是目前没有，所以仅仅是研发体系上的隐性收益很难快速地推进。&lt;/p&gt;
-
-&lt;h2 id=&#34;how&#34;&gt;How&lt;/h2&gt;
-
-&lt;p&gt;在我司，那如何地渐进式地推进微服务架构，从四个维度架构视图展开：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;逻辑视图：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;存量代码按特性功能进行分析梳理，优先有商业价值的特性功能重构&lt;/li&gt;
-&lt;li&gt;将老版本进程进行拆分与整合，对于相对稳定的原有组件尽量只服务化，而不微服务化&lt;/li&gt;
-&lt;li&gt;新增特性直接按照微服务架构设计，并优先考虑重用已有拆分的微服务&lt;/li&gt;
-&lt;li&gt;服务独立自治，多实例集群负荷均衡，可靠性服务内完成，服务内性能并发，服务使用者性能透明&lt;/li&gt;
-&lt;li&gt;去中心化治理，无全局控制节点，避免全局故障&lt;/li&gt;
-&lt;li&gt;服务划分原则：数据私有化，功能实例化，接口标准化，依赖最小化&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;部署视图：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;独立进程承载服务功能，在部署形态上做到可分可合&lt;/li&gt;
-&lt;li&gt;服务尽量部署独立数据库，在设计上考虑Schema的隔离&lt;/li&gt;
-&lt;li&gt;服务内的多进程统一服务控制节点管理&lt;/li&gt;
-&lt;li&gt;服务可靠性，并发性统一由服务控制节点管理&lt;/li&gt;
-&lt;li&gt;改造老进程新增服务接口，新老并存，调通后再去除老接口&lt;/li&gt;
-&lt;li&gt;新服务新进程承载，调通后替换老进程&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;开发视图：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;按照服务构建开发视图&lt;/li&gt;
-&lt;li&gt;按照服务构建测试工程&lt;/li&gt;
-&lt;li&gt;按照服务适配个人构建&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;能力视图：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;配置能力完善，包括基础架构，研发工具，人员能力&lt;/li&gt;
-&lt;li&gt;探索适合我司交付模式的微服务的开发模式&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;总之，微服务架构落地不可能一蹴而蹴，更不可能一场运行就能解决的。&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -97,48 +42,7 @@
 &lt;p&gt;我司学习一个新的技术，往往是搞得轰轰烈烈，比如数字化转型，向互联网技术学习。其中一个非常重要的方向就是学习互联网的服务化体系架构。国内的阿里，京东，腾讯在服务化，确切地说是微服务应用取得非常大的成功。而国外的Netflix的微服务架构更是成为我们必定的样板教材。你做设计，谈方案，不说说微服务都不好意思。如果你不说这样，说明你思维落后陈旧了。任何一项技术都有一段疯狂期，虽这近一次在搞架构重构，领导遇到你，总是关心地问到：“服务化进展怎么样了”。甚至还得跟一些不太懂的领导解释什么是微服务。&lt;/p&gt;
 
 &lt;p&gt;10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《&lt;a href=&#34;http://martinfowler.com/articles/microservices.html&#34;&gt;微服务&lt;/a&gt;》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。
-&lt;/p&gt;
-
-&lt;p&gt;那先来看看Martinfowler怎么说的：&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;微服务风格也与SOA所提倡的一些优势非常相似。尽管如此，问题在于SOA意味的太多&lt;a href=&#34;http://martinfowler.com/bliki/ServiceOrientedAmbiguity.html&#34;&gt;不同的东西&lt;/a&gt;了，因此通常时候我们谈的所谓“SOA”时，它与我们谈论的风格不一致，因为它通常是指在整体风格应用中的ESB。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;从试图使用ESB隐藏复杂性，到集中治理模式抑制变更，这种面向服务的风格是复杂的，没有ESB什么都不是。互联网的发展，利用简单的协议方法，让它从这些经验传达的出来。可能说对SOA集中式标准中的一种反模式，而SOA需要用一个服务来管理你的所有的服务，你就知道这很麻烦。&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;SOA的这种常见行为让微服务的提倡者拒绝打上SOA的标签，尽管有人认为微服务是从SOA中发展而来的，或许面向服务是对的。无论如何，事实上SOA表达这么多的含义，它给一个团队清醒的认识到这种构架风格就已经值的了。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;至少Martinfowler在面向服务体系中，微服务是从SOA发展出来的，只是大家受到SOA的伤害而不太愿意打上SOA的标签。他们本质与出发点是相同的。微服务是细粒度的SOA，你不用去关心“庞大的”ESB，也不用去熟悉大堆的WS-*术语。当服务变得微小（micro）时，服务可能是由规模恰当的团队（12个人）制定的，也可能是单个人制定的。&lt;/p&gt;
-
-&lt;p&gt;我们没有办法对微服务进行准确的定义，怎么去划分服务，什么算是微服务？两个比萨能吃饱的团队（12个人）也说得太抽象了，在面对具体的实践来说，到底怎么才是SOA中微小服务，我们又如何去分析与设计？以为团队中的成员能力来划分，学是以业务功能集来划分，再去组织团队？这些问题都是我们在实践中面对的挑战。&lt;/p&gt;
-
-&lt;p&gt;微服务架构中的“微”体现了其核心要素，即服务的微型化，就是每个服务微小到只需专注做好一件事。 这件事紧密围绕业务领域，形成高度内聚的自治性。&lt;/p&gt;
-
-&lt;p&gt;微服务架构强调“微”，与之前有些采用了SOA服务化架构思想的系统搞出很多胖服务来说，一点也不微，这依然带来耦合。 这一点只能依赖系统架构师的服务化建模能力了，但微服务架构强调每个服务一个进程， 使用进程为边界来隔离代码库至少让同一应用系统不同层次的开发人员享有自己完全自治的领地，每个微服务都有一个掌控者。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://book.douban.com/subject/25881698/&#34;&gt;《Building Microservices》&lt;/a&gt;一书对实施微服务架构有系统性的描述和很多业界案例的简单引用描述，这里不展开讲实施细节，那样就太长了。简单总结下实施的要点：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;自动化文化与环境：自动构建、自动测试、自动部署。&lt;/li&gt;
-&lt;li&gt;围绕业务能力建模服务，松耦合、高内聚、暴露接口而隐藏实现细节。&lt;/li&gt;
-&lt;li&gt;服务协作模型：中心化（乐队模型：中心指挥）和去中心化（舞蹈模型：群舞自组织），各自场景不同。&lt;/li&gt;
-&lt;li&gt;服务交互方式：RPC/REST/WS 技术很多但考虑统一。&lt;/li&gt;
-&lt;li&gt;服务部署：独立性、失败隔离性、可监控性。&lt;/li&gt;
-&lt;li&gt;服务流控：降级、限流&lt;/li&gt;
-&lt;li&gt;服务恢复：多考虑故障发生如何快速恢复而非如何避免发生故障。&lt;/li&gt;
-&lt;li&gt;服务发布：灰度。&lt;/li&gt;
-&lt;li&gt;服务部署：一服务一主机模型，需要虚拟化(Hypervisor)、容器化(LXC, Docker)等技术支持，实现硬件资源隔离。&lt;/li&gt;
-&lt;li&gt;服务配置：中心化配置服务支持&lt;/li&gt;
-&lt;li&gt;康威定律：任何设计系统的组织，最终产生的设计等同于组织之内、之间的沟通结构。系统架构的设计符合组织沟通结构取得的收益最大。&lt;/li&gt;
-&lt;li&gt;伯斯塔尔法则：服务健壮性原则 —— 发送时要保守，接收时要开放。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;注：部分参考 &lt;a href=&#34;http://mindwind.me/blog/2015/05/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E5%AE%9E%E8%B7%B5%E6%84%9F%E6%82%9F.html&#34;&gt;《微服务架构实践感悟》&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

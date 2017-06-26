@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cloud on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/cloud/index.xml</link>
+    <link>http://lanlingzi.cn/tags/cloud/</link>
     <description>Recent content in Cloud on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/cloud/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Jan 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/cloud/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>CloudNative初探</title>
@@ -21,67 +24,7 @@
 &lt;p&gt;目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。&lt;/p&gt;
 
 &lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：
-&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Distributed/Dynamically wired，分布式/动态连接&lt;/li&gt;
-&lt;li&gt;Elastic，弹性；Scale down as well as up, based on load，基于系统负载的动态伸缩&lt;/li&gt;
-&lt;li&gt;Granularly metered and billed，粒度合适的计量计费；Pay per user，按使用量计费&lt;/li&gt;
-&lt;li&gt;Multi-tenant，多租户&lt;/li&gt;
-&lt;li&gt;Self service，自服务&lt;/li&gt;
-&lt;li&gt;Incrementally deployed and tested， 增量的部署与测试&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。&lt;/p&gt;
-
-&lt;p&gt;在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对&lt;a href=&#34;https://www.infoq.com/presentations/migration-cloud-microservices&#34;&gt;CloudNative新的定义&lt;/a&gt;：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率&lt;/li&gt;
-&lt;li&gt;原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织&lt;/li&gt;
-&lt;li&gt;特点：Public Cloud，基于公有云； Mirco-services，微服务；De-normalized data，反范式化数据；Chaos Engines，混沌引擎；Continues Deployment，持续部署；DevOps等等&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在2015年，Pivotal的产品经理Matt Stine又对&lt;a href=&#34;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&#34;&gt;CloudNative关键架构特征&lt;/a&gt;进行补充：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://12factor.net/&#34;&gt;Twelve Factor App&lt;/a&gt;，十二因子应用&lt;/li&gt;
-&lt;li&gt;Mirco-services，微服务&lt;/li&gt;
-&lt;li&gt;Self Service Agile Infrastructure，自服务敏捷的基础设施&lt;/li&gt;
-&lt;li&gt;API Based Clolaboration， 基于API的协作&lt;/li&gt;
-&lt;li&gt;Anti-Fragility，反脆弱性&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;总结起来，要实施CloudNative，包括三个维度：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;软件架构：基于敏捷基础设施，是整个Cloud Native的根基；基于微服务架构，微服务架构是Cloud Native的一个核心要素；基于Design for failure理论，构建高可用的系统；基于容器部署，确保环境一致性，应用快速启动终止，水平扩展。&lt;/li&gt;
-&lt;li&gt;组织变革：根据康威定律，如果要达到比较理想的云化效果，必须进行组织变革。一个合理的组织架构，将会极大提高云化的推行；推行DevOps文化，倡导开放、合作的组织文化。&lt;/li&gt;
-&lt;li&gt;软件工程：推行持续集成与持续交付，联合开发、质量、运维各个环节，打通代码，编译，检查，打包，上线，发布各个环节。全自动化，包括自动化部署，升级，灰度，以及运维。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;CloudNative背后的软件架构需求：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;按需特性的伸缩&lt;/li&gt;
-&lt;li&gt;按特性持续演进&lt;/li&gt;
-&lt;li&gt;应用快速上线&lt;/li&gt;
-&lt;li&gt;系统的高用性&lt;/li&gt;
-&lt;li&gt;全面解耦合&lt;/li&gt;
-&lt;li&gt;系统自服务&lt;/li&gt;
-&lt;li&gt;支持多租户&lt;/li&gt;
-&lt;li&gt;异构公有云&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;参考：&lt;br /&gt;
-1. &lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native&#34;&gt;http://wso2.com/library/articles/2010/05/blog-post-cloud-native&lt;/a&gt;&lt;br /&gt;
-2. &lt;a href=&#34;https://www.infoq.com/presentations/migration-cloud-microservices&#34;&gt;https://www.infoq.com/presentations/migration-cloud-microservices&lt;/a&gt;&lt;br /&gt;
-3. &lt;a href=&#34;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&#34;&gt;http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine&lt;/a&gt;&lt;br /&gt;
-4. &lt;a href=&#34;http://www.open-open.com/lib/view/open1447420363069.html&#34;&gt;一篇文章带你了解Cloud Native&lt;/a&gt;&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -101,101 +44,7 @@
 &lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
 &lt;li&gt;多态吸取自Python与Ruby(duck type)&lt;/li&gt;
 &lt;li&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;
-同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;面向过程（if，switch，for&amp;hellip;)&lt;/li&gt;
-&lt;li&gt;面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）&lt;/li&gt;
-&lt;li&gt;函数式（部分支持）：闭包，函数作为参数（入参，返回值）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Go语言打的组合拳:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;简单易用 vs Python&lt;/li&gt;
-&lt;li&gt;机器码性能 vs C/C++&lt;/li&gt;
-&lt;li&gt;跨平台/标准库 vs Java&lt;/li&gt;
-&lt;li&gt;并发模型（goroutine/channel）vs Erlang&lt;/li&gt;
-&lt;li&gt;异步网络 vs Scala/Node.js&lt;/li&gt;
-&lt;li&gt;动态反射 vs Java&lt;/li&gt;
-&lt;li&gt;垃圾回收 vs Java&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Go语言可能不是每一条都是No.1，但却是目前同时具备上述全部7点特性唯一语言，看似平衡中庸的组合拳往往威力强大。&lt;/p&gt;
-
-&lt;p&gt;而我司主要开发语言是C/C++，Java，Python，可以说是若应用Go语言具有广泛的群众基础，同时Go语言兼具他们各自的一些优点，在不同的场景下，能一定的范围内可以代替他们。并且我司的程序员大多较底级，Go语言的简洁与工程化能可能大大提升产品研发效率与降低维护成本。&lt;/p&gt;
-
-&lt;h2 id=&#34;云计算&#34;&gt;云计算&lt;/h2&gt;
-
-&lt;p&gt;我司原是一个设备制造厂商，而不是一个软件开发厂商。但是云计算已正快速改变原有的生态，当软件定义一切，尤其是云计算的全面渗透，计算资源统一X86化。即使传统的网络设备也将网络功能虚拟化（&lt;a href=&#34;http://baike.baidu.com/view/12742623.htm&#34;&gt;NFV&lt;/a&gt;）。NFV化是趋势，若拒绝将是失去未来；只有及时拥抱，才能不被抛弃。&lt;/p&gt;
-
-&lt;p&gt;虚拟化/容器化显著的特点：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;不再依赖于专用硬件，跨平台跨硬件混合部署：&lt;/p&gt;
-
-&lt;p&gt;如传统的网卡直通，CPU绑定，内核零拷贝将在云计算下无法再发挥优势。而Go语言相比于C/C++天生跨平台，引入内置Runtime，通过它来隔离与不同的系统调用。这让程序迁移到不同的OS或CPU架构成本非常低，程序只需要重新在目标平台上编译而已。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;物理资源更细粒度的分割，提高整体资源利用率：&lt;/p&gt;
-
-&lt;p&gt;Go语言相比于Java，在CPU、内存与磁盘大小占用方面相对比较低。尤其当前Docker等容器技术的兴起，细粒度的资源隔离。Go语言相比于Java动则上G的内存占用情况下，在资源上可能通过细粒度逻辑分割而达到充分灵活共享；而Go语言内置并发机制，并且Goroutine调度机制在设计上就充分考虑利用多核，让编写多核并发的程序变得更加的容易。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;快速上线开发与部署，缩短上线周期：&lt;/p&gt;
-
-&lt;p&gt;Go语言设计的一个主要目的是降代程序员的心智负担，设计哲学是&lt;code&gt;大道至简&lt;/code&gt;，所以一开始就在可读性、模块化、编译速度、适合大型团队（工程优化）和语法简洁上下足了功夫。Go语言相比于Java与C/C++，开发更简洁；内置丰富的标准库也能有效降低代码量。Go程序默认也是编译只是单个文件，减少了部署态的第三方依赖，这让应用上线部署非常容易。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;快速伸缩，故障隔离与自愈：&lt;/p&gt;
-
-&lt;p&gt;Go语言相比于Java与Python，不需额外的运行环境，编译为一个独立的执行文件；相对于C/C++没有依赖动态库版本不一致的问题；Go语言程序相对于Java启动速度快，很适合于快速伸缩。而独立进程相比于Java中类Tomcat容器内多WebApp部署方式有更好的故障隔离；Go语言虽有异常（Panic），但可预知的错误建议采用error处理，引入了内置的error类型以及defer关键字来处理异常安全，这让程序员更容易写健壮的代码。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在云计算环境下，只要是适合的场景产品（Go目前还不适合要求低时延，高实时的场景），如在面向管理控制、网络并发等领域，采用Go语言开发，用来代替部分C/C++开发的系统应用；Java开发的网络或后端服务应用；Python开发的管理控制应用；可能极大提升产品的整体竞争力。&lt;/p&gt;
-
-&lt;h2 id=&#34;微服务&#34;&gt;微服务&lt;/h2&gt;
-
-&lt;p&gt;现在的应用程序规模越来越庞大，逻辑处理也是越来越复杂。在我司的电信领域，一个产品的研发也是动则几百号人的团队一起开发；系统上处理的数据规模，与接入的用户请求数也是几何级增加，在吞吐量、稳定性都会面临着极大的挑战；当前的业务尤其是面向移动终端用户的业务，需求变化快，业务不断推出与消亡，传统的单体架构根本无法适合频繁的变更，系统的可扩展性、定制性尤显得重要。当功能繁杂，结构混乱，以及人员变化等因素影响下，要解决这些问题，不得不在交付中不断地制定策略，演进架构：&lt;/p&gt;
-
-&lt;p&gt;随着云计算应用经验的不断积累，以及相关的工具链不断成熟，也伴随着微服务架构的出现。它通过将功能分解成多个独立的服务，以实现对解决方案或者复杂系统的解耦。微服务的诞生并非偶然:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://dddcommunity.org/&#34;&gt;领域驱动&lt;/a&gt;设计指导我们如何分析并模型化复杂的业务；&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://agilemethodology.org/&#34;&gt;敏捷方法论&lt;/a&gt;帮助我们消除浪费，快速反馈；持续交付促使我们构建更快、更可靠、更频繁的软件部署和交付能力；&lt;/li&gt;
-&lt;li&gt;虚拟化和基础设施自动化( Infrastructure As Code)则帮助我们简化环境的创建、安装；&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://dev2ops.org/2010/02/what-is-devops/&#34;&gt;DevOps&lt;/a&gt;文化的流行以及特性团队的出现，使得小团队更加全功能化。这些都是推动微服务诞生的重要因素。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;微服务通常有如下几个特征,也是与Go语言特征不谋而合：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;小：专注于做一件事情&lt;/p&gt;
-
-&lt;p&gt;小即是极多，这与Go语言遵循设计原则。保持简单性的方法就是：每种特性仅提供一种方法，减少重复、冗余，只提供一种方法做事情，把事情做到极致，这就是Go语言的原则。而微服务通常讲是两个Pizza能吃饱的团队来共用维护一个服务的代码。与”单一职责原则”类似，每个服务只做一件事情，并且把它做好。Go语言在语法特性简洁处理，编写相同的功能，相比于其它语言代码量很少。同时它提供高质量的标准库，让程序员减少对第三方框架选择与熟悉难题，让程序员更多的精力放在业务本身的逻辑上。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;独：运行在独立的进程中&lt;/p&gt;
-
-&lt;p&gt;当初接触Go语言时，发现它既然支持与C的调用，一直不太理解它为何不支持动态库（1.5版本部分支持）。但事实上，Go语言认为如果一项特性不带来显著的有益，那就不提供。其实动态库的版本当编译与运行时不一致导致程序崩溃一直是C/C++开发的噩梦。Go编译单一执行文件，能一定程度缓和这个问题。另外Go一直追求生成代码优化，执行文件最小化。这也方便程序部署在Docker容器中，运行在一个独立的操作系统进程，拥有更好的故障隔离。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;轻：轻量级的通信机制&lt;/p&gt;
-
-&lt;p&gt;服务和服务之间通过轻量级的机制实现彼此间的通信。所谓轻量级通信机制，通常指基于语言无关、平台无关的这类协议，例如XML、JSON。Go语言的主要发力点之一就是网络编程，标准库内置了HTTP协议框架，同时也提供了对JSON、XML的序列化与序列化支持，结合它的Goroutine并发机制，开发一个Rest服务只须很少的代码。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;松：部署态与运行态松耦合&lt;/p&gt;
-
-&lt;p&gt;Go语言是一个强类型静态语言，可以把代码编译为本地机器指令。它的RUNTIME是会在编译时一起链接到执行文件中，这也就意味着我们不需要像JAVA那样装一个JVM。而且编译出的执行文件本身不依赖于其他动态库，完全可以做到轻松的发布。Go语言基于Channel来通讯，也会带来一定程序代码结构上的松耦合。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;当产品架构朝微服务架构演进时，Go语言语言特征与微服务不谋而合，采用Go语言在一定程度上会助力微服务架构实施与落地。单体应用拆分成众多微服务时，服务之间从传统的插件机制来获得扩展性，转化成分布式多进程通讯来扩展。Go语言在网络并发上的优势，使得微服务开发变得更为简单，性能上更有优势。&lt;/p&gt;
-
-&lt;p&gt;参考：&lt;br /&gt;
-[1] &lt;a href=&#34;http://www.infoq.com/cn/articles/enterprise-core-systems-transformation-practice&#34;&gt;基于微服务架构，改造企业核心系统之实践&lt;/a&gt;&lt;br /&gt;
-[2] &lt;a href=&#34;http://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering&#34;&gt;Go在谷歌：以软件工程为目的的语言设计&lt;/a&gt;&lt;br /&gt;
-[3] &lt;a href=&#34;http://yager.io/programming/go.html&#34;&gt;Why Go is not Good&lt;/a&gt;&lt;br /&gt;
-[4] &lt;a href=&#34;http://studygolang.com/articles/2405&#34;&gt;说说Golang的使用心得&lt;/a&gt;&lt;br /&gt;
-[5] &lt;a href=&#34;http://studygolang.com/articles/2944&#34;&gt;go语言设计哲学&lt;/a&gt;&lt;br /&gt;
-[6] &lt;a href=&#34;http://www.oschina.net/news/30754/less-is-more-go-language&#34;&gt;少即是极多 - Go 语言设计理念&lt;/a&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -217,110 +66,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;技术方面的问题：面向工业互联网仍然有大量未知问题，在大数据分析和处理能力仍然需要发展；可靠性、安全性、系统能力方面不断加强；核心技术面对新的挑战需要不断地进行优化和完成。&lt;/li&gt;
-&lt;li&gt;标准方面的问题：通过推动标准，推动各类云计算系统互联互通，共享创造为更多应用有效服务的应用内容。&lt;/li&gt;
-&lt;li&gt;产业变革的总是：建立有效的人才培养和产业发展的环境，来推动产业有序、健康和快速的增长以推动产业结构的调整，同时建立有效的安全环境和有效的机制，以保障信息的安全、个人隐私安全和云数据交换交流当中所提供的安全保护机制。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;点评：传统产业正面临云计算的冲击，谁先拥抱云计算，对产业信息化调整，谁就有可能先抢占新的机会。工业云、智能制造、工业互联网和工业大数据将推动产业发展和技术进步。&lt;/p&gt;
-
-&lt;h2 id=&#34;云计算挑战与机遇并存&#34;&gt;云计算挑战与机遇并存&lt;/h2&gt;
-
-&lt;p&gt;第二场是IFIP主席Mike Hinchey致辞，英文不好，不太听懂。第三场是工信部信息化和软件服务业司司长谢少峰的演讲，全程都是念稿子，整个过程比较枯燥。开始是介绍我国云计算产业发展的现状，一堆的数字，没有太仔细听。后面是谈一下当前云计算发展面临的挑战：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;公有云的安全性和可靠性和可迁移性，行业对公有云的顾虑，政务、金融采购公有云服务的还面临着政策、标准等障碍。（PS：个人觉得不是什么问题，云计算也有细分市场，公有云，私有云，混合云都会发展）&lt;/li&gt;
-&lt;li&gt;产业规模小，技术产品服务仍需提高。（PS：这的确是一个总是，目前国内的云计算针对行业来说，没有形成成熟的解决方案，这也说明这一块的发展空间很大）&lt;/li&gt;
-&lt;li&gt;标准体系和认证测评体系不完备。（PS：中国的流氓公司太多，个人隐私数据保护法律法规有待健全啊）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;云计算产业发展的未来趋势展望：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;中国制造2025年和互联网+战略的不断推进，行业迫切需要通过云计算系统助推行业转型升级发展。（PS：行业转型会有阵痛）&lt;/li&gt;
-&lt;li&gt;开源技术推动云计算的发展。开源将是事实上的标准。（PS：对于我们这种屌丝程序员来说，参与开源也是提升自己的职业空间）&lt;/li&gt;
-&lt;li&gt;混合云将成为云服务业态的重要方向，私有云和公有云之间需要高效对接和无缝的切换。（PS：云集成将又是一片蓝海）&lt;/li&gt;
-&lt;li&gt;大数据的整合。云计算与大数据的深度融合，才能发挥更大的作用。（PS：马云早就说过已进入DT时代）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;云计算这十年&#34;&gt;云计算这十年&lt;/h2&gt;
-
-&lt;p&gt;这个分享个人觉得非常精彩，内容比较多。云计算已经成为我们互联网创新的一个主要的基础设施。计算理论和技术方法随着网络化、泛载网络智能化，形成新模式和新思维方式。面向未来我们基于物三元社会在整个信息社会推动之下的融合也需要我们云计算提供基本的技术和基础设施的支撑。云资源管理全面走向软件定义，我们可以对规模化的资源进行高效的管理，这是软件定义技术基于虚拟化和管理编程综合的体现，我们涉及到软件定义计算，软件定义网络，软件定义的存储。&lt;/p&gt;
-
-&lt;p&gt;过去云涌十年分成三个阶段：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;概念探索期：争论云到底是什么，主要的是一些专业实践&lt;/li&gt;
-&lt;li&gt;技术落地期：技术落地基本上形成共识开始呈现对云计算的大众化。&lt;/li&gt;
-&lt;li&gt;应用繁荣期：各个领域各个行业都会大量基于云计算搭建它的服务。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;未来云计算发展趋势以及展望，三化一提升：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;应用领域化&lt;/p&gt;
-
-&lt;p&gt;在领域化基本里面能不能对这种各种的应用，我们提供面向领域的按需开发，面向特定的领域需求提供支持云涌开发运行的API解决方案及其他一体化的解决方案，支撑更多的应用，是云未来发展在应用繁荣面临非常重要的挑战。&lt;/p&gt;
-
-&lt;p&gt;云感知的软件服务正在成为一种新形态，我们可以看到软件服务提出已经很久了，在软件服务的早期，以前系统是紧偶合一体化的，SOA出现出现双偶合分布式应用，基于云所提供的服务或者微服务进行构建，感知云环境各种资源的变化，充分利用提供的各种API。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;资源泛载化&lt;/p&gt;
-
-&lt;p&gt;客户端软件资源、硬件资源、能耗资源，和服务端软件资源、硬件资源、能耗资源可以在两端合理分布，数据两端分布成熟，以及两端独特资源的共享，这样云端不仅是我们现在移动互联网支撑智能手机端，甚至包含物联网所承担的各种各样的联网设备，这样态势之下我们可以看到未来面临一定的挑战。存在万物互联的阶段，各种端上的设备能不能在云平台形成统一管理模式，这是云端面临的挑战。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;系统平台化&lt;/p&gt;
-
-&lt;p&gt;正在走向云操作系统的概念。操作系统是什么？向下管理资源，向上提供服务。单机操作系统基本构成，管理资源、管理作业、我们现在云管理系统主要管理云的资源，上面支撑各种操作系统运行，未来云操作系统除了管理云资源之外，还要管理云上面各种各样的作业，把操作系统的理念在整个云环境中间进行一次复制。&lt;/p&gt;
-
-&lt;p&gt;云操作系统可能面临这么一系列的挑战，一个是复杂多样的应用需求、传统应用可能怎么实现无缝的云化，支持基于互联网多终端的交互，云内海量资源的管理。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;服务质量的提升&lt;/p&gt;
-
-&lt;p&gt;服务质量的提升，用三个字概括，更高、更快、更强壮。高意味着支持高吞吐，需要聚合大规模资源提供海量处理能力实现高吞吐并发访问。快响应就是提供高吞吐的同时能够盘活降低请求的响应机制，能够降低我们所有请求的机制，也就是形成一种新的提升用户的体验，提升他的服务质量。更强壮体现在可靠可用，像云计算和规模复杂度的快速增长，要求更为全面质量保证，数据中心规模不断增长大规模部署成为事实，高吞吐的云计算环境大家看到增加的故障越来越多，故障损失很大。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;点评：三化一提升还是很有高度地概括性的。&lt;/p&gt;
-
-&lt;h2 id=&#34;云网将为运营商带来新的融合和创新&#34;&gt;云网将为运营商带来新的融合和创新&lt;/h2&gt;
-
-&lt;p&gt;国内互联网的企业做云计算从08年就开始了，而运营商开始进入到云计算领域在2012年末到2013年开始，是后来者。十年前左右开始的趋势是，网络和内容服务商开始崛起，这让运营商与做SP的赚了不少钱。但互联网的发展，尤其是移动互联网的发展，但运营商变成了管道，OTT长尾业务都被其它赚走了运营商就开始坐不住了。&lt;/p&gt;
-
-&lt;p&gt;从分享的内容来看，中国电信的云计算来停留建设数据中心的阶段，做自己定位为云服务商，也就是提供基础设施供应商，帮助客户完成互联网+。其中谈到行业系统云计算化面临两点挑战，我个人非常赞同：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;行业应用的IT系统的迁移，迁到云上面有非常大的工作量，甚至迁移的工作量比我们新建一套还要大。&lt;/li&gt;
-&lt;li&gt;需要一个服务型的工具，不能两套人马两套班子维护这么一个东西。还有一个层面是安全，安全变得异常作用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;应用和数据的特征，变得多样化。不同的应用当都移的云上去的时候，要求也不一致，服务无法提供标准化。未来面临都做混合云，混合云对于网络或者一体化部署的要求远远会超过原来我们单做一个私有云或者说我们仅仅是去面临一个相较而言可靠性、安全性没有那么高的公有云服务不同。业务的迁移服务变成了本身云服务其中的一个内容。理想的云服务商应该具备什么特征，五个方面：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;网络基础设施&lt;/li&gt;
-&lt;li&gt;产品研发&lt;/li&gt;
-&lt;li&gt;运营安全&lt;/li&gt;
-&lt;li&gt;营销和服务&lt;/li&gt;
-&lt;li&gt;定制和实施&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;当前运营商提供云服务的长板：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;在网络的基础设施，尤其是咱们的基于客户贴身营销和服务方面，运营安全方面有优势&lt;/li&gt;
-&lt;li&gt;原有的运营商的基础网络之上，继续把这个网络变得更强健。如通过CDN让业务流量都发生在它的身边，提升服务。又如去做基于冷数据、温数据以及热数据，根据目前的地理敏感的要求重新设计我们目前的资源部署。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;运营商提供云服务的短板：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;在研发、和定制实施方面有短版。&lt;/li&gt;
-&lt;li&gt;除云资源的安全，数据的安全之外，以及网络安全方面。&lt;/li&gt;
-&lt;li&gt;可定制的服务，重新定制化服务自己作为的定制化一朵云。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;点评：主要观点，运营商来讲依然应合作双融的驱动继产业链之力满足客户端到端的优势，产业合作方面应该做更多的一些事情。基础能力的合作伙伴，最终给客户提供一个针对性、整体性的服务。&lt;/p&gt;</description>
+&lt;p&gt;云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -338,37 +84,7 @@
 &lt;/ul&gt;
 
 &lt;p&gt;从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：
-&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;客户关系管理：销售管理（Sales），市场管理（Marketing），服务管理（Service），电子商务（Commerce），社交媒体（Social）&lt;/li&gt;
-&lt;li&gt;供应链管理：产品创意与研发，供应认证与寻源，采购管理，物流管理，销售管理，计划管理，生产管理&lt;/li&gt;
-&lt;li&gt;财务及人力资源：财务管理，差旅报销，财务报告与分析，见血预算管理，项目管理，人力资源管理&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Oracle的云应用具有如下特点：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;完整：一个云平台支持所有业务动作&lt;/li&gt;
-&lt;li&gt;一流：基于Oracle在企业领域的最佳实践&lt;/li&gt;
-&lt;li&gt;现代：数据驱动的业务执行与管理；&lt;/li&gt;
-&lt;li&gt;个性：个性化的“云”应用体验，提供SaaS（来ERP，HCM）来定制用户体验，提供PaaS来丰富与创建新的应用&lt;/li&gt;
-&lt;li&gt;集成：提供iPaas与集成能力来连接与协作已有资产&lt;/li&gt;
-&lt;li&gt;安全：大使级的安全性和兼容，支持传统的多租户的安全数据隔离，以及SaaS的便利&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;今天的cloud day也是从上述几个方面的展开的，我感兴趣的是他们的PaaS平台。确切地说，Oracle的PaaS是一个较泛的统称，今天主要介始的包括如下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;应用开发云：提供代码配置库（git/svn）集成，支持直接从github同步代码，基于Maven等代码构建能力，有限地支持DevOps。&lt;/li&gt;
-&lt;li&gt;应用部署云：提供企业级的Java云服务，它是基于Weblogic的Java应用，每个WebLogic部署在一个虚拟机内。也提供支持其它JEE的应用环境，如scala, groovy, jypthon, jruby, 它们基于Docker容器部署。也支持对Node应用的部署。&lt;/li&gt;
-&lt;li&gt;数据库云：提供Oracle 11g与12c的数据库服务。&lt;/li&gt;
-&lt;li&gt;集成云：集成平台即服务(iPassS)，其中包括了Oracle集成云服务(ICS)、Oracle SOA云服务以及Oracle Cloud中的Oracle SOA套件与Oracle API Manager Cloud Service。&lt;/li&gt;
-&lt;li&gt;内容和协作云平台：个人感觉是就支持审批流程管理的文档管理云平台，像云盘一个共享文档，基于流程编排来文档审批。&lt;/li&gt;
-&lt;li&gt;移动云：提供统一的App开发MAF，针对多种平台，只需编写一个应用，可以运行在iOS、Android，支持本地或混合开发。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;一天下来，感觉Oracle的垂直整合能力太强了，即使在PaaS领域，你也要什么，它就能给你什么。相比与我司的企业BG，在企业云整合能力与之相差太远了，不知要追赶多少年。可见预见，未来在云计算领域，公有云的领导者是AWS，私有云的领导者或许就是Oracle。IBM呢？Pure System与BlueMix在Oracle面前，感觉有点小打小闹了。&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -382,69 +98,7 @@
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
 
 &lt;p&gt;在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。
-&lt;/p&gt;
-
-&lt;h2 id=&#34;常用技术&#34;&gt;常用技术&lt;/h2&gt;
-
-&lt;h3 id=&#34;组播&#34;&gt;组播&lt;/h3&gt;
-
-&lt;p&gt;传统的IP通信有如下三种方式：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;单播（Unicast）：源主机与目的主机之间点对点的通信。&lt;/li&gt;
-&lt;li&gt;广播（Broadcast）：源主机与同一网段中所有其它主机之间一点对多点的通信。&lt;/li&gt;
-&lt;li&gt;组播（Multicast）：源主机与一组目的主机之间一点对多点的通信。与广播不同的是组播组中的所有接收者都可收到同样的数据拷贝，并且只有组播组内的主机可以接收该数据，而其它主机则不能收到。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;组播技术有效地解决了单点发送、多点接收的问题。所以组播非常适合运用在云环境下的软件分发场景，单点到多点的高效数据传送，能够大量节约网络带宽、降低网络负载。&lt;/p&gt;
-
-&lt;p&gt;一般情况下，在二层网络中，交换机会默认开启组播，但会对组播带宽进行抑制，防止网络风暴造成的影响。在实现应用中可以在交换机上设置合适的组播带宽。如果组播需要跨二层网络，需要在路由器上开启组播路由协议。&lt;/p&gt;
-
-&lt;p&gt;组播组内的所有主机共享同一个地址，这种地址称为组播地址。组播地址是范围在224.0.0.0~239.255.255.255之间的IP地址。此范围内的所有地址的前4个二进制为都是“1110“。组播地址也被称为D类IP地址，与其它的A类、B类和C类地址相区别。组播组是开放的，主机可以在任何时候进入或离开组。
-IANA(Internet Assigned Numbers Authority)组织负责分发永久组播地址。&lt;/p&gt;
-
-&lt;p&gt;由于组播地址是开放的，在实现组播服务，需要在上层设计加入组播的认证机制，如采用IP白名单，或在自定义上层协议，会话协商时进做登录认证。&lt;/p&gt;
-
-&lt;p&gt;组播是采有UDP，与单播UDP不同，前者必须考虑TTL(Time to live)值，它用IP数据包的头部的一个字节表示。
-TTL通过限制IP包被丢弃前通过的路由器数目，来决定IP包的生存时间。IP包每通过一个路由器，TTL就减一，当TTL变为0，这个包就被丢弃。
-TTL的一个作用是防止配置有误的路由器把包在路由器之间无限的来回传递，还有一个作用是限制组播的地理范围。&lt;/p&gt;
-
-&lt;p&gt;由于UDP不可靠，会存在丢包的情况，在设计组播服务需要考虑对传包个数与内容的校验，以及重传机制，或者在最坏的情况，采用TCP的补偿传输。通常的做法是在另开TCP连接来控制组播的传输质量，而UDP是负责数据流。&lt;/p&gt;
-
-&lt;p&gt;Java在1.7中，已支持MulticastSocket API。API比较低层，需要结合NIO一起使用，另外JGroup与Netty也对组播有更高层的封装。&lt;/p&gt;
-
-&lt;h3 id=&#34;p2p&#34;&gt;P2P&lt;/h3&gt;
-
-&lt;p&gt;P2P(Peer to Peer)端到端传输模型，与传统的C/S（Client-Server）模型相对应的。P2P与C/S都是单播。但C/S是集中由Server端来分发中转，所以当多个节点从Server下载软件时，对Server的流量与性能影响最大。而在P2P网络中，每个节点都是对等的。网络中的每个节点既能充当网络服务的请求者，又对其它节点的请求作出响应，提供资源和服务。&lt;/p&gt;
-
-&lt;p&gt;P2P组网按是否有中心索引节点来分有三种：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;集中式P2P：存在中心服务器，保存所有节点信息与资源信息，其它节点通过它找到需要连接的节点与资源。&lt;/li&gt;
-&lt;li&gt;无结构化P2P：节点同时作为客户端和服务器端，无中心服务器，无中心路由器。&lt;/li&gt;
-&lt;li&gt;结构化P2P： 将网络中所有资源整理成一张巨大的表，表内包含资源的关键字与存入节点地址，这张表裸眼分割分别存储到网络中每个节点中。结构化组网常见有三种：
-
-&lt;ul&gt;
-&lt;li&gt;DHT结构&lt;/li&gt;
-&lt;li&gt;树形结构&lt;/li&gt;
-&lt;li&gt;网状结构&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在实现P2P技术中，需要考虑如下几点：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;可控性：由于P2P流量特征具有上下行流量对称的特性，这使得直接面向用户的接入网络需要相应提高所能承载上行流量的能力。&lt;/li&gt;
-&lt;li&gt;安全性：P2P相对随机的端口号，难以实话实行有效地监测和管理，加大了日常维护的难度。&lt;/li&gt;
-&lt;li&gt;效率性：对等的节点需要尽快地得到所需要文件块，需要有机制查找出节点已有文件块信息。&lt;/li&gt;
-&lt;li&gt;可靠性：不能存在文件块永久丢失的情况，必须存在源节点是可靠的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;所以，在私有云环境下的软件分发，需要同时考虑安全与可靠性。一般是采用集中式P2P，存在中心服务器，只不过这个中心服务器可以是集群的。每个节点与中心服务器建立控制连接，什么节点下载什么软件，从哪些节点来下载软件，由中心服务器根据不同节点的负载来做出决策。利用近播原则、分域调度的思想来尽可能控制P2P流程对网络节点的影响。&lt;/p&gt;
-
-&lt;h2 id=&#34;实施建议&#34;&gt;实施建议&lt;/h2&gt;
-
-&lt;p&gt;在我们的实际测试中，一个400M软件包，100个节点的分发场景下，组播速度大约是P2P的5倍右右。但组播只能在一个二层网络中，如果跨二层网络需要在路由器上开启组播功能。而一般出于安全等多因素考虑，路由器会禁掉。P2P在安全与可靠性更难以控制，以及会对网络节点的产生影响，甚到会影响节点的业务正常的性能。所以优先是选择组播，如果存在跨二层网络，可以部署多套软件仓库。P2P可以运用在组播不能使用，以及节点并发初始部署软件时，而节点上已运行业务时，则需要从P2P网络退出，不能长期做来提供服务的节点。&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

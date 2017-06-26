@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/docker/index.xml</link>
+    <link>http://lanlingzi.cn/tags/docker/</link>
     <description>Recent content in Docker on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Apr 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>制作Archlinux Docker基础Image</title>
@@ -17,55 +20,7 @@
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
 
 &lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：
-&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。&lt;/li&gt;
-&lt;li&gt;默认安装&lt;code&gt;openssh&lt;/code&gt;软件，可以通过ssh来连接Container。&lt;/li&gt;
-&lt;li&gt;增加一个入口脚本&lt;code&gt;run.sh&lt;/code&gt;，在此脚本主配置&lt;code&gt;sshd&lt;/code&gt;，并启动&lt;code&gt;sshd&lt;/code&gt;。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用&lt;code&gt;sshd&lt;/code&gt;上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;先是采用systemd来启动sshd，在&lt;code&gt;run.sh&lt;/code&gt;使用&lt;code&gt;systemctl enable sshd&lt;/code&gt;是OK的，但&lt;code&gt;systemctl start sshd&lt;/code&gt;却无法启动报找不到文件。&lt;/li&gt;
-&lt;li&gt;是systemd的配置问题，也没有再去深究，放弃&lt;code&gt;systemd&lt;/code&gt;，于是又直接使用&lt;code&gt;/usr/bin/sshd -D&lt;/code&gt;来启动&lt;code&gt;sshd&lt;/code&gt;，发现还启动失败报没有sshkey。&lt;/li&gt;
-&lt;li&gt;再使用&lt;code&gt;ssh-keygen&lt;/code&gt;来生成系统的&lt;code&gt;ssh_host_*_key&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;终于&lt;code&gt;sshd&lt;/code&gt;可以正常启动了，但使用&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@&amp;lt;host&amp;gt;&lt;/code&gt;来连接Container，发现报无权限。&lt;/li&gt;
-&lt;li&gt;于是又得修改&lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt;，让&lt;code&gt;root&lt;/code&gt;可以ssh登陆。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;修改之后的脚本已提交到个人github上，可以在&lt;a href=&#34;https://github.com/xtfly/dockerimage&#34;&gt;这里&lt;/a&gt;下载，使用方式如下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;前提Archlinux中也安装了docker引擎&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# pacman -S docker
-# systemctl enable docker
-# systemctl start docker
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;以root用户执行mkimage.sh脚本&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# ./mkimage.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;制作完成之后，使用&lt;code&gt;docker images&lt;/code&gt;查看，生成一个名为&lt;code&gt;archlinux&lt;/code&gt;的images&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# docker images
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;使用如下命令生成一个container，容器名为&lt;code&gt;arch1&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;使用ssh登陆验证，&lt;code&gt;ssh -p &amp;lt;port&amp;gt; root@127.0.0.1&lt;/code&gt;，默认密码是&lt;code&gt;123456&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;也可以使用命令&lt;code&gt;docker exec -it arch1 bash&lt;/code&gt;来执行&lt;code&gt;bash&lt;/code&gt;进入container操作。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -77,84 +32,7 @@ archlinux           latest              dc54036acaa4        About an hour ago   
       <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/docker_ecosystem.jpg&#34; alt=&#34;docker ecosystem&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：
-&lt;/p&gt;
-
-&lt;h2 id=&#34;标准化是基础&#34;&gt;标准化是基础&lt;/h2&gt;
-
-&lt;p&gt;从对Linux的贡献角度来说，Docker并没有什么技术创新。但为什么它会得到如此众多的追捧，主要他得益它制定了标准。尤其是我所在电信行业感受最深，真是得标准得天下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;容器镜像：软件的交付件标准化，使得软件在云环境中的构建，发布，运行，迁移，复制等软件分发变得更加容易。&lt;/li&gt;
-&lt;li&gt;容器引擎：容器操作方式标准化，提供标准的Rest API，使得对容器的创建，删除，启停等生命周期管理更简单。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;简单就是生产力&#34;&gt;简单就是生产力&lt;/h2&gt;
-
-&lt;p&gt;我们再来看Docker的诞生，它是来源于Docker公司前身dotCloud的实践，出发点是为了解决如何帮助开发人员实现软件的快速打包，部署。其实也就是目前大家都在说的CICD，通过统一的格式来提升打包，测试，部署的效率。所以大家看到Docker宣传的“Build，Ship，Run”，也就说它最大的特点，简化了开发到部署操作，极大地提高的软件开发验证效率。&lt;/p&gt;
-
-&lt;h2 id=&#34;会带来什么价值&#34;&gt;会带来什么价值&lt;/h2&gt;
-
-&lt;p&gt;除前面的提高软件的开发验证效率，它还能给出我们带来什么价值？首先，Docker屏蔽了软件运行环境差异，这个怎么理解呢？因为它的镜像具有便携性，一致性的特点。这极大地简化了软件在部署过程由于环境的差异带来的不确认性。其次Docker本身就是一种OS容器技术。而OS容器是基于操作系统内核的虚拟化，是一种轻量的虚拟化。相比于Hypervisor的虚拟化技术，它没有指令转化这一层，只是共享主机内核，划出不同的Namesapce。在计算能力上它是没有什么性能损耗的。容器可以运行在物理机或虚拟机之上，不依赖于虚拟化软件。所以它的价值主要体现在两大方面：&lt;/p&gt;
-
-&lt;h3 id=&#34;降成本-相比hypervisor&#34;&gt;降成本（相比Hypervisor）&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;基于Hypervisor虚拟化的应用性能下降比较高，尤其是IO密集型，同等性能指标需要消耗更多的资源。&lt;br /&gt;&lt;/li&gt;
-&lt;li&gt;采Hypervisor虚拟化技术，License费用支出高，虚拟化管理软件也有成本支出。&lt;/li&gt;
-&lt;li&gt;Hypervisor虚拟化对资源划分粒度比较大，而容器可以更细粒度你分割资源，可以提整体资源利用率。&lt;/li&gt;
-&lt;li&gt;虚拟机镜像大（以G为单位），启动慢（分钟级）；而容器镜像相对小（以M为单位），启动快（秒级），应用可以快速伸缩，降低维护成本&lt;/li&gt;
-&lt;li&gt;容器能快速创建与销毁，可以应用在一些短任务的业务（如大数据分析），长短任务的业务混合部署，错峰填谷来提升资源利用率。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;加速创新&#34;&gt;加速创新&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;改变软件的交付模式：CICD变得更加容易，可以使软件快速开发、上线、验证。软件开发迭代周期缩短，试错风险小，加速业务的创新能力。&lt;/li&gt;
-&lt;li&gt;改变软件的架构模式：容器即完整执行环境，可以使用软件“微”服务化，服务之间能够快速组合和重构，提升业务的创新能力。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;网络与存储&#34;&gt;网络与存储&lt;/h2&gt;
-
-&lt;p&gt;相对于传统的虚拟化来说，包括三个方面，计算虚拟化，网络虚拟化，存储虚拟化。映射到容器技术上来说，计算能力就是Docker引擎，而网络则是容器网络管理，存储则是容器卷管理。Docker在容器管理上是相对比较成熟的，但在网络方面目前还是相对比较弱，Docker现有的网络模型主要是通过使用Network namespace、Linux Bridge、Iptables、veth pair等技术实现的。Docker提供了四种网络模式：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;host模式： 容器和宿主机共享Network namespace。没有网络隔离，多容器需要规划端口，适合不需要动态调度的静态部署使用Docker。&lt;/li&gt;
-&lt;li&gt;bridge模式： Bridge模式是Docker的默认模式，即NAT方式，容器网卡从docker0网桥所在的IP网段中选取一个未使用的IP，容器端口映射到主机上。性能下降15~20%，对网络性能与时延敏感的应用不适合。&lt;/li&gt;
-&lt;li&gt;container模式： 容器和另外一个容器共享Network namespace。kubernetes中的pod就是多个容器共享一个Network namespace。这些方式有它特定的应用场景。&lt;/li&gt;
-&lt;li&gt;none模式：容器有独立的Network namespace，但并没有对其进行任何网络设置，如分配veth pair 和网桥连接，配置IP等。这些方式适合通过Libnetwokr方式扩展。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;目前Docker释放出Libnetwork，旨在将Docker的网络功能从Docker核心代码中分离出去，形成一个单独的库。 Libnetwork通过插件的形式为Docker提供网络功能。用户可以根据自己的需求实现自己的Driver来提供不同的网络功能。
-Libnetwork引入了容器网络模型（CNM）:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Network Sandbox：容器中一个网络配置的隔离环境&lt;/li&gt;
-&lt;li&gt;Endpoint：在某个网络上进行网络通讯的接口，Endpoint可以加入一个network，同时，多个Endpoint也可以在一个网络沙盒中共存。&lt;/li&gt;
-&lt;li&gt;Network：一个唯一的、可识别的endpoint组，组内endpoint可以相互通讯。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Libnetwork从Docker1.7开始，目前整体来说，还是属于起步阶段。由于网络是一个绕不开的话题，网络方案热度很高，目前各个企业在使用Docker时也是有各自的解决方案，他们各所有长，没有包打天下的方案。Docker 1.9发布，已把libnetwork合入，号称已Production Ready，实际还是底层调用OVS或Vxlan。OVS与Vxlan在性能上都存在损耗。&lt;/p&gt;
-
-&lt;p&gt;容器卷的管理相对网络来说，热度比较低。Docker之前可以通过Monut主机的目录来解决数据持久存储的问题，由于容器的特点是便携，本地数据肯定存在数据迁移的问题。Docker 1.9重新设计的一套完整存储卷管理系统，也像网络一样，支持能过插件形式来为Docker提供卷功能，实现自己的Driver来提供不同的卷管理功能。卷管理这一块走在前面是Flocker，其它没有看到较成熟的产品。&lt;/p&gt;
-
-&lt;p&gt;Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑。毕竟即使开源，如果系统的开放性不够，就会导致商业可能为黑寡妇，最终伤害也是自己的利益。&lt;/p&gt;
-
-&lt;h2 id=&#34;使用方式&#34;&gt;使用方式&lt;/h2&gt;
-
-&lt;p&gt;正如前面所说的，容器涉及到计算，存储，网络。而目前网络与存储相对不是很成熟，也是影响着大家使用Docker的方式，目前主要有几种形态：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;IaaS + Docker：在虚拟机或物理机上是使用容器，容器是对资源进一步的分割与隔离。目前是主流，应用较成熟。&lt;/li&gt;
-&lt;li&gt;轻量虚拟机 + Docker：主要是虚拟化技术厂商为准，借助虚拟化在存储，网络，安全的能力。像Vmware的Photon，创建虚拟机时同时拉起容器。其它代表有Intel的ClearLinux，国内的Hyper.sh。目前还实验阶段。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;目前大家还是把Docker当工具使用，因为整个工具链还不太成熟。容器编排与调度领域目前有K8S与Mesos/Marathon，Docker自家也有compose与swarm，但明显Google在这一领域更有发言权（Borg的成熟应用），也主导了CNCF。将来Google领导的K8S可能是容器编排的事实标准。&lt;/p&gt;
-
-&lt;p&gt;而传统的虚拟化厂商明显感到来自Docker的挑战，所以也顺适而为，摧出轻量虚拟化+Docker结合技术，来继续巩固已有的虚拟化市场，这真是一个有意义的现象。&lt;/p&gt;
-
-&lt;h2 id=&#34;标准之争&#34;&gt;标准之争&lt;/h2&gt;
-
-&lt;p&gt;CoreOS不满于Docker在容器技术一家独食，发起了&lt;a href=&#34;https://github.com/appc/spec&#34;&gt;AppC&lt;/a&gt;的容器规范，并实现该规范RTK与其竞争。其后在15年6月大家握手言和，成立了OCI（Open Container Initiative）组织。&lt;a href=&#34;https://github.com/opencontainers/runc&#34;&gt;RunC&lt;/a&gt;就是Docker贡献出来的，按照该开放容器格式标准（OCF, Open Container Format）制定的一种具体实现。而Docker公司也很不情愿地把&lt;a href=&#34;https://github.com/docker/libcontainer&#34;&gt;LibContainer&lt;/a&gt;以RunC方式贡献出来。从使用量来看，目前RKT使用很少，Docker是事实标准。值得一提的是，我司也在标准这块发挥着重要作用，并发布了&lt;a href=&#34;https://github.com/huawei-openlab/oct&#34;&gt;OCT&lt;/a&gt;，一个基于开放容器规范的测试框架。&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -166,49 +44,7 @@ Libnetwork引入了容器网络模型（CNM）:&lt;/p&gt;
       <description>&lt;p&gt;&lt;img src=&#34;https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg&#34; alt=&#34;pets vs cattle&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
-&lt;/p&gt;
-
-&lt;h2 id=&#34;mesos&#34;&gt;Mesos&lt;/h2&gt;
-
-&lt;p&gt;Mesos是倾向于是IaaS层上的 &lt;strong&gt;资源管理器&lt;/strong&gt;。Mesos不要求计算计算是物理服务器还是虚拟机，只要是Linux操作系统计算资源就可以，Mesos可以理解成一个分布式的Kernel。所以讲师强调DCOS一个OS(阿里云栖讲师的分享)，而不是一个调度器。Mesos只分配集群计算资源，不负责任务调度。基于Mesos之上可以运行不同的分布式平台，如Spark，Storm，Hadoop，Marathon，Chronos等。&lt;/p&gt;
-
-&lt;p&gt;Mesos中的核心是DFS，即资源管理策略 Dominant Resource Fairness。Mesos能够保证集群内的所有用户有平等的机会使用集群内的资源，这些资源包括 CPU，内存，磁盘等等。Mesos只做一件事，就是分布式集群资源分配，不管任务调度。Mesos只要你给出CPU、Memory参数就能分配资源，用于你的计算。&lt;/p&gt;
-
-&lt;p&gt;Mesos 是一个双层调度器。 &lt;strong&gt;在第一层中&lt;/strong&gt;，Mesos 将一定的资源提供（以容器的形式）给对应的框架或应用程序。&lt;strong&gt;在第二层中&lt;/strong&gt; ，应用程序将收到的资源进一步分配给内部的任务。但是资源分配器智能化程度不同，mesos是基于resource offer的调度机制，包含非常少的调度语义，他只是简单的将资源推给各个应用程序，由应用程序选择是否接受资源，而mesos本身并不知道各个应用程序资源需求。&lt;/p&gt;
-
-&lt;p&gt;Mesos是Apache的开源项目，起源于UC Berkeley的一个研究项目。而背后的商业运作公司是Mesosphere，主要产品是基于Mesos构建的DCOS(datacenter operation system)。Mesos的商用程度很高，在国外的Airbnb, Apple, Uber, Twitter在使用，其中Apple的语音助手 siri是基于DCOS部署，有6000+节点。而国内有携程，爱奇艺在使用。&lt;/p&gt;
-
-&lt;h3 id=&#34;mesos与docker&#34;&gt;Mesos与Docker&lt;/h3&gt;
-
-&lt;p&gt;没有Dokcer之前，物理机，虚拟机都可以作为Mesos的集群节点，引入Docker之后，对资源的管理与分配粒度更细，更能提高对资源的利用率。但Mesos只负责资源的分配，对Docker的调度需要上层的调度器，而马拉松Marathon框架就是解决这个问题。当前Mesos + Marathon 基本上是现在最成熟的分布式运行框架。&lt;/p&gt;
-
-&lt;h2 id=&#34;k8s&#34;&gt;K8S&lt;/h2&gt;
-
-&lt;p&gt;与Mesos最大的不同就是，Kubernetes(K8S)一开始设计是 &lt;strong&gt;面向应用的&lt;/strong&gt;，而Mesos是 &lt;strong&gt;面向资源的&lt;/strong&gt; 。Kubernetes是应用的集群管理工具。它是构建Docker技术（也可支持其它的容器技术，如Rocket）之上，为容器化的应用提供资源调度、部署运行、服务发现、扩容缩容等整一套功能，本质上可看作是基于容器技术的mini-PaaS平台。&lt;/p&gt;
-
-&lt;p&gt;Kubernetes重新实现了Google在构建集群应用时积累的经验。这些概念包括如下内容：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Pods：一种将容器组织在一起的方法&lt;/li&gt;
-&lt;li&gt;Replication Controllers：一种控制容器生命周期的方法（Replication Controller确保任何时候Kubernetes集群中有指定数量的pod副本(replicas)在运行）&lt;/li&gt;
-&lt;li&gt;Labels：一种可以找到和查询容器的方法&lt;/li&gt;
-&lt;li&gt;Services：一个用于实现某一特定功能的容器组&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;K8S和Borg系出同门，基本是Borg的开源改进版本，吸收了包括Omega在内的容器管理器的经验和教训，label, annotaion等功能的加入让容器分类检索信息标记管理更加便捷。目的就是将Borg最精华的部分提取出来，使现在的开发者能够更简单、直接地应用。K8S是在Google内部积累发展10年的容器及集群管理专家经验基础上开源实现，有其自身的独特优势来构建容器应用部署、可伸缩可扩展，多平台兼容的容器集群管理体系。可以说，K8S的出现，也是为容器而生。&lt;/p&gt;
-
-&lt;p&gt;使用K8S你就能够简单并快速的启动、移植并扩展集群。在这种情况下，集群就像是类似虚拟机一样灵活的资源，它是一个逻辑运算单元。打开它，使用它，调整它的大小，然后关闭它。&lt;/p&gt;
-
-&lt;h3 id=&#34;mesos与k8s&#34;&gt;Mesos与K8S&lt;/h3&gt;
-
-&lt;p&gt;Mesos与K8S都起源于Borg，Mesos和K8S的愿景差不多，但是它们在不同的生命周期中各有不同的优势。Mesos 虽更多的是侧重在资源管理上。而Mesos+Marathon与K8S存在竞争关系，他们在容器调度编排上有些交叉，后续如何发展，还需要看社区的走向。目前K8S是可以运行在Mesos上。&lt;/p&gt;
-
-&lt;h2 id=&#34;如何选型&#34;&gt;如何选型&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Mesos更适合做跨DC的资源管理，对于大数据领域，大量存在短任务，可以采用Mesos+上层调度器来解决大数据的资源池化调度问题。&lt;/li&gt;
-&lt;li&gt;K8S更适合当应用的集群管理，它解决大规模应用部署的问题，而它的集群的热升级，动态伸缩，负载均衡，服务发现等特性可以让你的应用的更可靠。&lt;/li&gt;
-&lt;/ul&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -235,57 +71,7 @@ Libnetwork引入了容器网络模型（CNM）:&lt;/p&gt;
 
 &lt;h2 id=&#34;看国外&#34;&gt;看国外&lt;/h2&gt;
 
-&lt;p&gt;这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。&lt;/p&gt;
-
-&lt;p&gt;第一天的首场分享是来自RedHat副总裁，印度英语原来在公司就听到不少的印度同事，虽说听不太清楚，却有一股莫名的亲切感。由于是副总裁人物，讲的东西也是太High了，主要是分享OpenShift为什么要使用Docker，以及对Docker的认识。可以说在技术上空洞无物，对我来说“然并卵”。过程中的演示貌似险出了岔子。总之，他是来宣传OpenShift。&lt;/p&gt;
-
-&lt;p&gt;其次是来自CoreOS产品负责人分享，不过也没有什么干货，可能他对国内Docker技术应用程度还不太了解，还停留在宣传概念阶段。主要讲了两组项目：一个是Chubby+Borg，之后是etcd+k8s。并分别对比了Chubby以及etcd，最后是基于etcd的使用演示，&lt;a href=&#34;https://github.com/kelseyhightower/cnutcon-2015&#34;&gt;Demo&lt;/a&gt;放到了Git上。只能说这个Demo是对etcd相当的入门级。总之，他是来宣传etcd。&lt;/p&gt;
-
-&lt;p&gt;可以说，第一天的两场分享，其实跟Docker，或容器技术关联不是很大，看来InfoQ请错人了。&lt;/p&gt;
-
-&lt;p&gt;第二天的来自国外的分享，有Google的华人美女工程师分享了“Kubernetes和Borg的设计哲学”。这一场还是不错的，虽也是比较High Level的介绍，不过让我这种屌丝有机会了解一下Google十多年前就开始的容器管理理论，感觉是真是简单实用：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;declarative &amp;gt; imperative&lt;/li&gt;
-&lt;li&gt;Control loops&lt;/li&gt;
-&lt;li&gt;Simple &amp;gt; Complex&lt;/li&gt;
-&lt;li&gt;Modularity&lt;/li&gt;
-&lt;li&gt;Legacy compatible&lt;/li&gt;
-&lt;li&gt;Network-centric&lt;/li&gt;
-&lt;li&gt;No grouping&lt;/li&gt;
-&lt;li&gt;Cattle &amp;gt; Pets&lt;/li&gt;
-&lt;li&gt;Open &amp;gt; Closed&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;再次是来自Rancher Labs的秦总分享的“Rancher Labs 企业级私有容器服务平台解决方案分析”，并且他还跟我一起在现场的另外一个同事是之前的同事。干货比较多，演讲者虽说不懂技术，但Rancher给我带来是思维，尤其是后面介绍的“RancherOS”，在会场没有听太明白什么是“Dockerized OS”，后面查询一些资料，发现它除了内核之后，PID1就是Docker，其它的系统服务都Dockerized，并且在发行包的大小做到了极致，只有20M。能把Linux的系统服务通过Docker容器来管理，不得不说这这一项不错的创意，如果能实现应用在生产中，这不知又会对Linux产生什么样的深远影响。&lt;/p&gt;
-
-&lt;h3 id=&#34;小结&#34;&gt;小结&lt;/h3&gt;
-
-&lt;p&gt;由于只有四场，OpenShift与CoreOS是来做广告，我也曾经想在OpenShift免费空间上搭建Go的Web环境，发现真TMD的难用，OpenShift又想借Docker打个翻身仗，PaaS本身的体验不解决，Docker也“然并卵“。而CoreOS在容器中扮演着是一个搅局者，对防止Docker一家独大是益的，但它的RKT差不多落后Docker一年半，但是ETCD还是不错的。&lt;/p&gt;
-
-&lt;p&gt;Google是老牌的容器使用者，他在这一这方面的经验可能是最具有发言权的。他也乘着Docker之势，迅速摧出K8S。并极力去构建Container Orchestration，ContainerInfrastructure，ContainerManagement的生态。虽说K8S目前还是很成熟，但在未来在容器界K8S必定举足轻重，甚于可能是Container Orchestration的事实领导者。&lt;/p&gt;
-
-&lt;h2 id=&#34;看国内&#34;&gt;看国内&lt;/h2&gt;
-
-&lt;p&gt;在国内，自然少不了BAT，以及后之秀京东。商业的成功驱动他们在技术上必定走在前列。第一天下午几场都使来自大厂的分享。&lt;/p&gt;
-
-&lt;p&gt;首位是京东云平台的分享，京东最初的希望是通过一个平台，将物理机，虚拟机，容器，三种资源统一管理，随后的演化中，容器逐渐成为了一等公民。一种是容器直接在VM上，一种是让VM看起来像容器。开始是采用“胖容器”的模式，这一思路与我们的不谋而合，首先是要把容器使用起来，不管它是容器还是虚拟机；再次是业务的纯容器化。如何把容器中融合到已有系统中是目前大家遇到的最大挑战。&lt;/p&gt;
-
-&lt;p&gt;其次是来自大众点评的分享，同样对容器的使用，也是使得容器看起来像虚拟机。重点介绍了在网络方面的经验，如通过新创建的br0网桥与eth连接，使得docker 容器可以有自己独立的IP。最后也分享在使用容器过程中一些坑。&lt;/p&gt;
-
-&lt;p&gt;再次是阿里百川的TAE Docker全架构分享，干货是相当的多，信息量是相当的大的。Docker只是TAE中非常小的一部分，目前还是把Docker当做工具来用，重要介绍不是为了Docker而Docker，Docker并不等于容器。在实践的过程中，Docker的优势，基于Docker的全架构的PaaS平台，才兼具IaaS的灵活性和PaaS的易运维性。其实也说明Docker技术拉低了云平台的技术门槛，像原有的IaaS只有大投入才能玩得起，而Docker让你使用云资源变得更轻捷。&lt;/p&gt;
-
-&lt;p&gt;再次是也来自腾讯的在游戏上，Docker实践：现状、经验及展望。其中有意义是在网络上的改造，目前Docker在网络上是很弱的。像点评一样，不得不面对网络打通的问题。一般来说，游戏业务的生命周期长短不一，这需要弹性的资源管理和交付。相比于虚拟机，容器更加轻量，效率更高，资源的交付和销毁更快。可能说像Docker的应用可对针对游戏业务提升资源的利用率，降低运营成本，也是Docker的魅力之一。&lt;/p&gt;
-
-&lt;p&gt;第二天是来自百度的分享，感觉百度对于容器的实践比较牛逼，在docker没出来之前，他们就学Google都着眼于容器技术了。对于大企业来说，在资源调度上面对的困难是如何错峰填谷，如何将服务与机器解耦、预算调度，资源精细分配，统一池化，如何解决混合部署带来问题。而基于容器技术构建的Matrix平台，直接是在cgroup （划出一个资源框）namespace（内部的话只需要部分）的基础上定制操作。再通过agent来把这些所谓的“容器”启动起来，架构上有统一的container操作接口。其次是百度对于容器的安全性也有了很多实践，其实所说的安全性就是让容器上的代码不会跳到主机上去，让host上的代码不会逃逸出去。分享的内容很多，整体来说，百度应该是在国内互联网企业研究容器技术比较深的，而不仅仅是Docker的简单使用。&lt;/p&gt;
-
-&lt;h3 id=&#34;小结-1&#34;&gt;小结&lt;/h3&gt;
-
-&lt;p&gt;大公司的docker实践更有发言权，实际上他们对于docker的实践才是真正切合实际的，在实践过程中也是对于原有业务的相关性迁就比较多，不是为了容器而容器。各个公司解决方案，定制的过程，玩法，基本上是各有各的招。如遇到的网络的改进，渐进式的使用，某种程度上把docker当成虚拟机的来用。究其原因，还是因为业务解耦，平台自由，容器化的过程并没有那么简单。&lt;/p&gt;
-
-&lt;h2 id=&#34;看编排调度&#34;&gt;看编排调度&lt;/h2&gt;
-
-&lt;p&gt;这次会议上有几个都在分享K8S，Swarn的技术。由于一直关注K8S，我只是选择都听了一下。谈到K8S，大家都要说说mesos swarm，对比一番。后也听了我司的线超博对Swarn分享。整体来说，像K8s这种，还是理念较新的技术，大公司没有看到一个在采用，一是它出来太新了，二是在性能及稳定上存在问题。只有新创业的一些公司，赶上打着这些的旗号。一些散户玩玩还行，但对一企业级的业务，如何彻底地服务化，如何灵活地容器调度，原有业务如何契合，明显还有很长的路要走。而swarm更是不适合在生产环境中使用，并且docker公司想一家独食的原因，又要在编排上分一怀羹，目前大家都不看好它。另外swarm在设计上缺乏集群管理的视角，也难以在生产环境中发挥调度的优势。个人认为K8S在编排调度上会完胜Swarn。&lt;/p&gt;</description>
+&lt;p&gt;这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。&lt;/p&gt;</description>
     </item>
     
   </channel>

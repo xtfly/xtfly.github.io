@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Osgi on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/osgi/index.xml</link>
+    <link>http://lanlingzi.cn/tags/osgi/</link>
     <description>Recent content in Osgi on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/osgi/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Apr 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/osgi/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>OSGi的缘起缘灭</title>
@@ -27,49 +30,7 @@
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
 
 &lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
-&lt;/p&gt;
-
-&lt;h2 id=&#34;缘起&#34;&gt;缘起&lt;/h2&gt;
-
-&lt;p&gt;正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;模块化，模块之间基于服务接口通讯。&lt;/li&gt;
-&lt;li&gt;插件化，Bunlde可以动态加载。&lt;/li&gt;
-&lt;li&gt;组件化，面向服务的组件，组件由多个服务组成。&lt;/li&gt;
-&lt;li&gt;生命周期管理，相比普通Jar包，我们可以更细粒度的管理&lt;/li&gt;
-&lt;li&gt;&amp;hellip;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;我们使用OSGi，采用两种框架，一个是Apache的Felix，使用它主要是看重它很小，用于开发主机代理，在其上开发各种采集插件。一个是Spring的Spring DM，即后面的Eclipse Virgo。使用它主要是看重它集成了Spring，用于开发后端服务，采用Spring DM来简化OSGi的服务发布与引用，以及能较好地使用Spring的其它能力。&lt;/p&gt;
-
-&lt;p&gt;可以说从11年到14年，我都是在基于OSGi做开发，从早期喜爱到最后的放弃，个中的滋味真不知怎么说。期间我在整个团队做了不少关于OSGi的推广，写过些文档介绍，规范要求，定位过稀奇的问题，最后大家都觉得我是这一方面的专家，只有搞不定的问题就来找我，我才逐渐意识到OSGi的理念虽好，但要真的把它使用得很好，真是不简单啊。&lt;/p&gt;
-
-&lt;p&gt;OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式的系统，所以在后面又折腾过DOSGi，使用是的CXF实现的DOSGi，这个更难使用。先只有少数一两个服务在尝试使用它，期间遇到的问题更多，最后也不得不在13年初就放弃了。我不得不搞出另一个RPC的框架出来。&lt;/p&gt;
-
-&lt;h2 id=&#34;缘灭&#34;&gt;缘灭&lt;/h2&gt;
-
-&lt;p&gt;在去年的时候就开始讨论是否去OSGi，连最早鼓吹使用OSGi的阿里，也花了很大精力去OSGi，不过他们的动作早在12年就开始了，Spring也在12年摒弃OSGi，把Spring DM捐献给Eclipse。我们更是受项目进度与人力不足限制，去OSGi也只是停留在讨论中，有点&lt;code&gt;“不破不修”&lt;/code&gt;的意思，OSGi凑合着使用。&lt;/p&gt;
-
-&lt;p&gt;15年软件界最火爆的两个词可能是：&lt;code&gt;微服务&lt;/code&gt;，&lt;code&gt;Docker&lt;/code&gt;。去年平台定位发生变化，从偏IaaS转型偏应用的PaaS，原有的架构存在些问题；而今年的&lt;code&gt;微服务&lt;/code&gt;概念也直接点然了系统架构重构的火把，而我又是这次架构重构实施落地的组长。这真是有点戏剧性啊！&lt;code&gt;“出来混迟早要还的”&lt;/code&gt;，当初我是团队中使用OSGi的带头人，今天又是团队中OSGi的埋葬人。老大们要求我们把架构重构，目标是系统解耦合，轻量化，利于团队分工。自然去掉OSGi，朝分布式微服务化演进在设计考虑的范围中。的确，微服务化与OSGi也不冲突，为什么要去OSGi呢：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;OSGi的门槛太高，学好用好它对程序员要求高，而团队新人比例高&lt;/li&gt;
-&lt;li&gt;很多第三方组件不是Bundle，需要Bundle化，增加维护成本&lt;/li&gt;
-&lt;li&gt;使用到其它部门的中间件也宣称不支持OSGi，越来越处于孤立&lt;/li&gt;
-&lt;li&gt;多版本管理问题，在同一套环境中，相同的第三方Jar存在多个版本，版本无法归一，增加维护成本&lt;/li&gt;
-&lt;li&gt;基于OSGi的服务接口测试难度高，LLT测试时依赖于OSGi环境，测试成本高&lt;/li&gt;
-&lt;li&gt;OSGi的服务接口只是本地接口，而云计算中恰恰需要分布式服务调用框架&lt;/li&gt;
-&lt;li&gt;ClassLoder问题，导致很多的开发兄弟考虑不足出问题，经常是运行期抛ClassNotFound&lt;/li&gt;
-&lt;li&gt;Virgo， Felix其实也很重，多个组件部署在同一套环境中，隔离性差，不适合微服务理念&lt;/li&gt;
-&lt;li&gt;Bundle的动态替换就是伪命题，从来没有用过&lt;/li&gt;
-&lt;li&gt;用于做插件机制，动态加载的ClassLoder问题&lt;/li&gt;
-&lt;li&gt;JRE在Virgo环境下会出现死锁，需要升级JRE到8才能解决，还不知会有其它问题，社区支持不足&lt;/li&gt;
-&lt;li&gt;大环境下，OSGi已成明日黄华，不再是宠儿&lt;/li&gt;
-&lt;li&gt;&amp;hellip;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;从上面可以看出，OSGi的面向接口编程，服务化，模块化理念在单体应用来说虽不错，在面对分布式的应用时，它带的益处远比它的本身的机制带的问题更多。所以OSGi留得越久，越是技术债务，早去掉早解脱啊。&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

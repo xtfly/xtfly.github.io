@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Win10 on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/win10/index.xml</link>
+    <link>http://lanlingzi.cn/tags/win10/</link>
     <description>Recent content in Win10 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/win10/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Mar 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/win10/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Grub引导Win10</title>
@@ -17,54 +20,7 @@
       <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
 
 &lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
-&lt;/p&gt;
-
-&lt;p&gt;我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# grub-install --target=i386-pc --recheck /dev/sda
-# grub-mkconfig -o /boot/grub/grub.cfg
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在&lt;code&gt;30_os-prober&lt;/code&gt;文件，说明os-prober是安装的（&lt;code&gt;pacman -S grub&lt;/code&gt;会自动安装）。&lt;/p&gt;
-
-&lt;p&gt;我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# mount /dev/sda1 /mnt
-# grub-probe --target=fs_uuid /mnt/bootmgr
-70B235F6749E84AE
-# grub-probe --target=hints_string /mnt/bootmgr
---hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;接着，将下面的代码添加到&lt;code&gt;/boot/grub/grub.cfg&lt;/code&gt;中，注意替换其中的&lt;code&gt;fs_uuid&lt;/code&gt;，即&lt;code&gt;70B235F6749E84AE&lt;/code&gt;。保存&lt;code&gt;grub.cfg&lt;/code&gt;文件，重启系统，在gurb菜单就可以看到&lt;code&gt;Windows 10 (loader) (on /dev/sda1)&lt;/code&gt;项了。选择，成功进入win10。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;### BEGIN /etc/grub.d/30_os-prober ###
-menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class os $menuentry_id_option &#39;osprober-chain-70B235F6749E84AE&#39; {
-    insmod part_msdos
-    insmod ntfs
-    set root=&#39;hd0,msdos1&#39;
-    if [ x$feature_platform_search_hint = xy ]; then
-      search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1  70B235F6749E84AE
-    else
-      search --no-floppy --fs-uuid --set=root 70B235F6749E84AE
-    fi
-    parttool ${root} hidden-
-    drivemap -s (hd0) ${root}
-    chainloader +1
-}
-set timeout_style=menu
-if [ &amp;quot;${timeout}&amp;quot; = 0 ]; then
-  set timeout=10
-fi
-### END /etc/grub.d/30_os-prober ###
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;注：后经验证，grub-mkconfig无法扫描到win10，是由于少安装了os-prober。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# pacman -S os-prober
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;参考：&lt;a href=&#34;https://wiki.archlinux.org/index.php/GRUB_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)&#34;&gt;GRUB_(简体中文)&lt;/a&gt;&lt;/p&gt;</description>
+&lt;/p&gt;</description>
     </item>
     
   </channel>

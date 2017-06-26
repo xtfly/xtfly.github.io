@@ -2,11 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Macos on 蘭陵N散記</title>
-    <link>http://lanlingzi.cn/tags/macos/index.xml</link>
+    <link>http://lanlingzi.cn/tags/macos/</link>
     <description>Recent content in Macos on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <atom:link href="http://lanlingzi.cn/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 Jun 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Install MySQL on MacOS</title>
@@ -25,60 +28,7 @@ Open source relational database management system
 ➜  ~ brew install mysql
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;mysql的安装过程会显示，注，我安装的5.7.18，目录为&lt;code&gt;/usr/local/Cellar/mysql/5.7.18_1&lt;/code&gt;：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;==&amp;gt; /usr/local/Cellar/mysql/5.7.18_1/bin/mysqld –initialize-insecure –user=xiao –basedir=/usr/local/Cellar/mysql/5.7.18_1 –datadir=/usr/local/var/mysql –t
-..... 
-We’ve installed your MySQL database without a root password. To secure it run: 
-mysql_secure_installation
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这说明MySQL已安装成功，必需要使用mysql_secure_installation来初始化用户密码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;➜  ~ mysql.server start
-Starting MySQL
-SUCCESS!
-➜  ~ mysql_secure_installation
-Securing the MySQL server deployment.
-
-Connecting to MySQL using a blank password.
-
-......
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;按英文提示一步步设置password validation policy与password等。&lt;/p&gt;
-
-&lt;p&gt;测试，输入mysql_secure_installation设置过程的密码：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;➜  ~ mysql -u root –p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 6
-Server version: 5.7.18 Homebrew
-......
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;新增用户xiao，密码为123456，并赋所有权限给他：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;mysql&amp;gt;use mysql;
-mysql&amp;gt;GRANT ALL PRIVILEGES ON *.* TO &#39;xiao&#39;@&#39;%&#39; IDENTIFIED BY &#39;123456&#39; WITH GRANT OPTION;
-mysql&amp;gt;flush privileges;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;如果想设置开机启动MySQL，执行如下命令：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;➜  ~ mkdir -p ~/Library/LaunchAgents
-➜  ~ cp /usr/local/Cellar/mysql/5.7.18_1/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/  
-➜  ~ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;使用命令行来操作MySQL不方便，推荐使用Navicat MySQL/Preminum软件。软件安装包在网上搜索吧。&lt;/p&gt;
-
-&lt;p&gt;参考：&lt;/p&gt;
-
-&lt;p&gt;[1] &lt;a href=&#34;https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html&#34;&gt;https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
