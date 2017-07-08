@@ -9,6 +9,8 @@ tags:
 
 ---
 
+![](/images/y17/mysql.jpg)
+
 最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：[brew官网](https://brew.sh/index_zh-cn.html)
 
 安装：

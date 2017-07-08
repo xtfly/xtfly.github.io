@@ -10,6 +10,8 @@ toc: true
 
 ---
 
+![](/images/y17/write_thinking.jpg)
+
 近一年来，写博客很少。总结起来有如下三点：
 
  - 没有时间
