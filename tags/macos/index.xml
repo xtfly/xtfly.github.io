@@ -17,7 +17,9 @@
       <pubDate>Sat, 03 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2017/0603_mac_mysql/</guid>
-      <description>&lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/mysql.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;安装：&lt;/p&gt;
 
