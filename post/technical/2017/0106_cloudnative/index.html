@@ -100,7 +100,19 @@
           </a>
         </li>
       
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
     </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
 </nav>
 
  </div>
@@ -154,7 +166,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1695 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1694 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -179,7 +191,7 @@
 
 <p>CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。</p>
 
-<p>在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对<a href="https://www.infoq.com/presentations/migration-cloud-microservices">CloudNative新的定义</a>：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：</p>
+<p>在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对<a href="https://www.infoq.com/presentations/migration-cloud-microservices">CloudNative新的定义</a>：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：</p>
 
 <ul>
 <li>目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率</li>
@@ -396,7 +408,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.25.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
@@ -447,5 +459,6 @@
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
 
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
 </body>
 </html>

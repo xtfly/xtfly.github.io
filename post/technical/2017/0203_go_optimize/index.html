@@ -100,7 +100,19 @@
           </a>
         </li>
       
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
     </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
 </nav>
 
  </div>
@@ -154,7 +166,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2872 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2871 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -253,7 +265,7 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
 <p>goroutine虽轻量，但对于高并发的轻量任务处理，频繁来创建goroutine来执行，执行效率并不会太高效：</p>
 
 <ul>
-<li>过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；</li>
+<li>过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；</li>
 <li>高并时若出现调用异常阻塞积压，大量的goroutine短时间积压可能导致程序崩溃。</li>
 </ul>
 
@@ -509,7 +521,7 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.25.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
@@ -560,5 +572,6 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
 
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
 </body>
 </html>

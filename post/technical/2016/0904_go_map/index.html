@@ -100,7 +100,19 @@
           </a>
         </li>
       
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
     </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
 </nav>
 
  </div>
@@ -154,7 +166,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1948 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1947 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -363,7 +375,7 @@ func strequal(p, q unsafe.Pointer) bool {
 <ol>
 <li>调用<code>key</code>类型的<code>hash</code>方法，计算出<code>key</code>的<code>hash</code>值</li>
 <li>根据<code>hash</code>值找到对应的桶<code>bucket</code></li>
-<li>在桶中找到<code>key</code>值相等的map的<code>value</code>。判断相等需调用<code>key</code>类型的<code>equal</code>方法</li>
+<li>在桶中找到<code>key</code>值相等的map的<code>value</code>。判断相等需调用<code>key</code>类型的<code>equal</code>方法</li>
 </ol>
 
 <p>到现在我们也就有了初步了解，map中的<code>key</code>访问时同时需要使用该类型的<code>hash func</code>与 <code>equal func</code>，只要<code>key</code>值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：</p>
@@ -546,7 +558,7 @@ if v, ok := m[_key{}];ok {
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.25.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
@@ -597,5 +609,6 @@ if v, ok := m[_key{}];ok {
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
 
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
 </body>
 </html>

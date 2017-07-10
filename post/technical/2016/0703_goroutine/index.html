@@ -100,7 +100,19 @@
           </a>
         </li>
       
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
     </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
 </nav>
 
  </div>
@@ -154,7 +166,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1797 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1796 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -353,7 +365,7 @@ func (acc *ConcurrentAccount) listen() {
 }
 </code></pre>
 
-<p>上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。</p>
+<p>上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。</p>
     </div>
     <footer class="post-footer">
      
@@ -519,7 +531,7 @@ func (acc *ConcurrentAccount) listen() {
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.25.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
@@ -570,5 +582,6 @@ func (acc *ConcurrentAccount) listen() {
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
 
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
 </body>
 </html>
