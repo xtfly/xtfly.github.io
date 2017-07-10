@@ -95,7 +95,7 @@ Go在GC时会引发stop the world，即整个情况暂停。虽1.7版本已大�
 
 goroutine虽轻量，但对于高并发的轻量任务处理，频繁来创建goroutine来执行，执行效率并不会太高效：
 
- - 过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；
+ - 过多的goroutine创建，会影响go runtime对goroutine调度，以及GC消耗；
  - 高并时若出现调用异常阻塞积压，大量的goroutine短时间积压可能导致程序崩溃。
 
 ### 避免高并发调用同步系统接口

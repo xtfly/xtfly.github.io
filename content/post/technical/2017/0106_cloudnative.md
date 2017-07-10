@@ -28,7 +28,7 @@ toc: true
 
 CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。
 
-在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对[CloudNative新的定义](https://www.infoq.com/presentations/migration-cloud-microservices)：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：
+在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对[CloudNative新的定义](https://www.infoq.com/presentations/migration-cloud-microservices)：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：
 
  - 目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率
  - 原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织

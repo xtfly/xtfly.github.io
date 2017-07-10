@@ -207,4 +207,4 @@ func (acc *ConcurrentAccount) listen() {
   }()
 }
 ```
-上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。
+上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。

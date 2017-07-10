@@ -211,7 +211,7 @@ mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序�
 
 1. 调用`key`类型的`hash`方法，计算出`key`的`hash`值
 2. 根据`hash`值找到对应的桶`bucket`
-3. 在桶中找到`key`值相等的map的`value`。判断相等需调用`key`类型的`equal`方法
+3. 在桶中找到`key`值相等的map的`value`。判断相等需调用`key`类型的`equal`方法
 
 到现在我们也就有了初步了解，map中的`key`访问时同时需要使用该类型的`hash func`与 `equal func`，只要`key`值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：
 

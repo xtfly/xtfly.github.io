@@ -20,7 +20,7 @@ toc: true
 
 ## context包
 
-Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。`Context`介绍请参考[Go Concurrency Patterns: Context](http://blog.golang.org/context)，[golang.org/x/net/context](http://godoc.org/golang.org/x/net/context)包就是这种机制的实现。
+Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。`Context`介绍请参考[Go Concurrency Patterns: Context](http://blog.golang.org/context)，[golang.org/x/net/context](http://godoc.org/golang.org/x/net/context)包就是这种机制的实现。
 
 `context`包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用之间传递`Context`，以及判断其状态，就能解决此问题，这是为什么gRPC的接口中带上`ctx context.Context`参数的原因之一。
 
