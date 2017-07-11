@@ -4,16 +4,12 @@
         <title>{{ .Title }}</title>
         <url>{{ .Permalink }}</url>
         <categories>
-          {{ range .Params.categories }}
-            <category>{{ . }}</category>
-          {{ end }}
+          {{ range .Params.categories }}<category>{{ . }}</category>{{ end }}
         </categories>
         <tags>
-          {{ range .Params.tags }}
-            <tag>{{ . }}</tag>
-          {{ end }}
+          {{ range .Params.tags }}<tag>{{ . }}</tag>{{ end }}
         </tags>
-        <content type="html"> {{ .Content |html }}</content>
+        <content type="html"> {{ .Content | plainify }}</content>
     </entry>
     {{ end }}
 </search>
