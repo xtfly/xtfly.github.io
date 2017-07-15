@@ -6,10 +6,28 @@
     <description>Recent content in 笔记 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 03 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Jul 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>云设计模式</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0715_cloud_design_pattern/</link>
+      <pubDate>Sat, 15 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0715_cloud_design_pattern/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/azure.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在云环境下，如何构建出可靠，弹性，安全的应用？有哪些挑战？面对这些挑战如何解决，微软Azure总结一序列的设计模式。本文是翻译&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/&#34;&gt;Azure架构中心&lt;/a&gt;在线资料中的&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/patterns/&#34;&gt;云设计模式&lt;/a&gt;，仅个人的笔记，借翻译学习一下，英文好的可以直接阅读原文。&lt;/p&gt;
+
+&lt;h2 id=&#34;挑战&#34;&gt;挑战&lt;/h2&gt;
+
+&lt;h3 id=&#34;可用性&#34;&gt;可用性&lt;/h3&gt;
+
+&lt;p&gt;可用性是指系统功能可用的时间所占整体比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Install MySQL on MacOS</title>
