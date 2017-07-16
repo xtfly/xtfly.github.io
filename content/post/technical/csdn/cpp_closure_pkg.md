@@ -25,6 +25,7 @@ add8 = addx(8)
 print add8(100)
 ```  
 用Python写就没有那么好看。
+<!--more-->
 
 闭包（Closure）是词法闭包（Lexical Closure）的简称。对闭包的具体定义有很多种说法，这些说法大体可以分为两类：
 

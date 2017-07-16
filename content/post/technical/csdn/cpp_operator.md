@@ -9,6 +9,7 @@ tags:
 ---
 
 这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得`operator`比较好玩。C++有时它的确是个耐玩的东东。`operator`它有两种用法，一种是`operator overloading`（操作符重载），一种是`operator casting`（操作隐式转换）。
+<!--more-->
 
 ## operator overloading
 

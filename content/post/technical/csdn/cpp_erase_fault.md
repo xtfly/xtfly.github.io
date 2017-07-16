@@ -18,6 +18,7 @@ TStrMapIter iter = strmap.find("somekey");
 strmap.erase(iter);
 ```  
 这样使用`erase`方法没有任何问题，删除一个单结节之后，`stl`中的`iterator`都是与其中的数据元素关联的，关联的元素删除之后，`ite`r已就失效，`iter`理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
+<!--more-->
 
 但有时我们一不注意，却会这样使用，这是错误的:
 ```

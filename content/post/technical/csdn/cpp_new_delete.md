@@ -16,6 +16,7 @@ C++中的new与delete可以认为是C中的malloc与free的升级版本。new包
 delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。
 
 new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。
+<!--more-->
 
 下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
 
