@@ -42,26 +42,6 @@ DefaultContentLanguage = "zh"
   URL = "/"
   Weight = 1
 [[Menu.Main]]
-  Name = "技术"
-  Pre = "code"
-  URL = "/categories/技术/"
-  Weight = 2
-[[Menu.Main]]
-  Name = "感想"
-  Pre = "tint"
-  URL = "/categories/感想/"
-  Weight = 3
-[[Menu.Main]]
-  Name = "笔记"
-  Pre = "book"
-  URL = "/categories/笔记/"
-  Weight = 4
-[[Menu.Main]]
-  Name = "杂记"
-  Pre = "leaf"
-  URL = "/categories/杂记/"
-  Weight = 5
-[[Menu.Main]]
   Name = "归档"
   Pre = "archive"
   URL = "/post/"
