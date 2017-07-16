@@ -169,12 +169,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">549 字 ~2分钟</span>
+<span class="leancloud-visitors-count">553 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。 顺序存
+    <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -228,12 +229,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">930 字 ~2分钟</span>
+<span class="leancloud-visitors-count">939 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，
+    <p>断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -292,7 +294,16 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。 宏的展开是一行，所以宏中的注释不能使用//，只能使用/*
+    <ol>
+<li><p>宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。</p></li>
+
+<li><p>宏的展开是一行，所以宏中的注释不能使用<code>//</code>，只能使用<code>/* */</code>。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。</p></li>
+
+<li><p>宏的参数一般情况下使用时要用()括起来，如:
+<code>#define MAX(a, b) a /2 &gt; b ? a /2  : b</code>
+MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
+应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code>
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -346,12 +357,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">673 字 ~2分钟</span>
+<span class="leancloud-visitors-count">681 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。
+    <p>还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -405,12 +417,22 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">992 字 ~2分钟</span>
+<span class="leancloud-visitors-count">998 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分: 第一部分是与malloc功能相同，是从堆上
+    <p>C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:</p>
+
+<ul>
+<li>第一部分是与malloc功能相同，是从堆上面申请内存块</li>
+<li>第二部是调用类的构造方法来初始化刚申请的内存。</li>
+</ul>
+
+<p>delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。</p>
+
+<p>new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -464,12 +486,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1031 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1143 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常
+    <p>前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。
+</p>
     </div>
     
     <div class="post-more-link text-center">

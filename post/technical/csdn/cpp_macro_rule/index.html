@@ -179,7 +179,8 @@
 <li><p>宏的参数一般情况下使用时要用()括起来，如:
 <code>#define MAX(a, b) a /2 &gt; b ? a /2  : b</code>
 MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code></p></li>
+应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code>
+</p></li>
 
 <li><p>宏的连接符分为<code>#</code>与<code>##</code>
 <code>#</code>表示一个符号直接转换为字符串，如
@@ -221,7 +222,6 @@ LOG( &quot;%s %d&quot;, str, count );
 
 <li><p>当宏的逻辑比较多时，可以考虑宏中使用模板方法来代替宏的逻辑实现。</p></li>
 </ol>
-
     </div>
     <footer class="post-footer">
      

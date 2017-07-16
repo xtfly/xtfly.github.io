@@ -295,12 +295,30 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">964 字 ~2分钟</span>
+<span class="leancloud-visitors-count">1011 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    C开发人员会经常使用#define即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了na
+    <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
+
+<pre><code>namespace outspname  
+{   
+   const int CVAR1 = 1;  
+   const char* const CVAR2 = &quot;33333&quot;;  
+   void test();  
+
+   namespace inspname  
+   {  
+      enum { A, B, C};  
+      class Klass  
+      {  
+      };  
+   }  
+}
+</code></pre>
+
+<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -438,7 +456,17 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    STL中的容器都有erase方法，容器的存储分为顺序存储(如vector)与链式存储(如list,map)。先以map为例: typedef std::map&lt;std::string, std::string&gt; TStrMap; typedef TStrMap::iterator TStrMapIter; TStrMap
+    <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
+
+<pre><code>typedef std::map&lt;std::string, std::string&gt; TStrMap;  
+typedef TStrMap::iterator TStrMapIter;  
+TStrMap strmap;  
+TStrMapIter iter = strmap.find(&quot;somekey&quot;);  
+strmap.erase(iter);
+</code></pre>
+
+<p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -492,12 +520,30 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">801 字 ~2分钟</span>
+<span class="leancloud-visitors-count">804 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    什么是闭包，我们先来用ruby看个例子： sum = 0 10.times{|n| sum += n} print sum 其中{}就是闭包的内容，代码看起来是不是很清爽与简单。 我们还来看看Python写的
+    <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
+
+<pre><code>sum = 0  
+10.times{|n| sum += n}   
+print sum
+</code></pre>
+
+<p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
+
+<p>我们还来看看<code>Python</code>写的闭包：</p>
+
+<pre><code>def addx(x):      
+    return lambda y: x + y  
+add8 = addx(8)  
+print add8(100)
+</code></pre>
+
+<p>用Python写就没有那么好看。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -551,12 +597,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">926 字 ~2分钟</span>
+<span class="leancloud-visitors-count">941 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一
+    <p>栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
+</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -610,12 +657,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">372 字 ~1分钟</span>
+<span class="leancloud-visitors-count">418 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得operator比
+    <p>这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得<code>operator</code>比较好玩。C++有时它的确是个耐玩的东东。<code>operator</code>它有两种用法，一种是<code>operator overloading</code>（操作符重载），一种是<code>operator casting</code>（操作隐式转换）。
+</p>
     </div>
     
     <div class="post-more-link text-center">

@@ -171,9 +171,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    
-
-<p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
+    <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
 
 <pre><code>typedef std::map&lt;std::string, std::string&gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
@@ -182,7 +180,8 @@ TStrMapIter iter = strmap.find(&quot;somekey&quot;);
 strmap.erase(iter);
 </code></pre>
 
-<p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
+<p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
+</p>
 
 <p>但有时我们一不注意，却会这样使用，这是错误的:</p>
 
@@ -262,7 +261,6 @@ strmap.erase(iter);
 </code></pre>
 
 <p>它输出的结果却是未知的，我的测试环境为<code>&quot;1，2，4，4&quot;</code>。你可能发现原因，当删除<code>2</code>元素时，<code>3</code>往前移了，而<code>iter++</code>不是指到<code>3</code>，还是指到<code>4</code>了。当你使用<code>STL</code>容器中<code>erase</code>方法，那是一定要小心再小心，我也是被它戏弄了一下之后，才明白其中容易被忽视的这些细节。</p>
-
     </div>
     <footer class="post-footer">
      
