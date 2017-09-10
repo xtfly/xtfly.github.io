@@ -106,6 +106,68 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/" itemprop="url">
+        虚拟与现实
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-12-31">
+    2015-12-31
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">杂记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1112 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG" alt="Debian" /></p>
+
+<p>万万没想到，在即将迎来2016年时，微信，科技新闻中都在传<a href="http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009">“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”</a>。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
+</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/1227_bj_archsummit/" itemprop="url">
         参加ArchSummit北京站感受
         </a>
@@ -577,84 +639,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" itemprop="url">
-        架构重构
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-05-12">
-    2015-05-12
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1840 字 ~4分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。</p>
-
-<h2 id="什么是重构">什么是重构</h2>
-
-<blockquote>
-<p>重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。</p>
-</blockquote>
-
-<p>这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：</p>
-
-<ul>
-<li>局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。</li>
-<li>模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。</li>
-<li>架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。
-</li>
-</ul>
-
-<h2 id="重构风险">重构风险</h2>
-
-<p>无论何种层次的重构，都必须要有一个可靠的测试环境，即自动化测试环境。因为频繁的代码修改可能会引入更多的缺陷，只有执行自动化测试并回归所有用例，才能保证及时发现这些缺陷，最大限度地降低重构的风险。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -670,6 +654,9 @@
 
 
 
+  
+  
+
 
 
 <nav class="pagination">
@@ -679,10 +666,6 @@
     
         
     
-        
-        
-          <a class="page-number" href="http://lanlingzi.cn/p/3/">3</a>
-        
         
     
         
@@ -733,6 +716,8 @@
         
         
     
+        
+    
     <a class="extend next" rel="next" href="http://lanlingzi.cn/p/8/"><i class="fa fa-angle-right"></i></a>
 </nav>
 
@@ -763,7 +748,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-count">90</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

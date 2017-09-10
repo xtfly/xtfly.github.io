@@ -6,10 +6,30 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 03 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>开源DNS Server</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/</link>
+      <pubDate>Sun, 10 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;DNS是互联网的基础设备，开源的DNS也有不少，下面列出主要的主种几种供参考：&lt;/p&gt;
+
+&lt;h2 id=&#34;bind9&#34;&gt;Bind9&lt;/h2&gt;
+
+&lt;p&gt;ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自&lt;code&gt;Berkeley Internet Name Domain&lt;/code&gt;。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。&lt;/p&gt;
+
+&lt;p&gt;Bind9可以作为权威与递归DNS。主要特性如下：&lt;/p&gt;
+
+&lt;p&gt;作为权威DNS时：
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>[转]DNS扫盲系列</title>
