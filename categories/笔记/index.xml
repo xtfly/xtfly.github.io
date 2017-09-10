@@ -6,10 +6,28 @@
     <description>Recent content in 笔记 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 30 Jul 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>[转]DNS扫盲系列</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0903_dns/</link>
+      <pubDate>Sun, 03 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0903_dns/</guid>
+      <description>&lt;p&gt;致谢：转自 &lt;a href=&#34;http://bbs.chinaunix.net/thread-1573358-1-1.html&#34;&gt;http://bbs.chinaunix.net/thread-1573358-1-1.html&lt;/a&gt;  ，由 &lt;a href=&#34;http://bbs.chinaunix.net/space-uid-71828.html&#34;&gt;llzqq&lt;/a&gt; 发表。&lt;/p&gt;
+
+&lt;h2 id=&#34;有关公网dns&#34;&gt;有关公网DNS&lt;/h2&gt;
+
+&lt;p&gt;公网DNS服务器是直接服务于广大上网用户的，负责域名（域名记录）到IP地址之间的翻译工作。公网DNS通常是各个网络运营商按照自己的网络分布规划DNS的分布，一般做法是按行政区域放置，如按省份放置。每个省份内也有细分在各地区放置的情况。&lt;/p&gt;
+
+&lt;p&gt;近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;
+&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>4A技术概览</title>
