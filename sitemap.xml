@@ -10,7 +10,7 @@
         <tags>
           <tag>DNS</tag>
         </tags>
-        <content type="html"> DNS是互联网的基础设备，开源的DNS也有不少，下面列出主要的主种几种供参考：
+        <content type="html"> DNS是互联网的基础设备，开源的DNS也有不少，下面列出主要的几种供参考：
 Bind9 ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自Berkeley Internet Name Domain。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。
 Bind9可以作为权威与递归DNS。主要特性如下：
 作为权威DNS时：  Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击 Dynamically-Loadable Zones (DLZ)：支持从外部数据库获取Zone数据，但不建议使用在高性的权威DNS。 Minimum Re-load Time：支持配置文件动态加载。 HSM Support：支持通过原生的 PKCS#11接口或OpenSSL PKCS#11的接口的HSM（ Hardware Security Modules）。 DNSSEC with In-line Signing：支持NSEC与NSEC3的安全协议的签名。 Catalog Zones：支持多Zone的目录管理。 Scalable Master/Slave Hierarchy：支持Master&#43;多Slave组网，Slave从Master同步Zone配置。  作为递归DNS时：
