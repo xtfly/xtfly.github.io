@@ -3,6 +3,7 @@ title: "软件的困境"
 date: "2017-09-25"
 categories:
  - "感想"
+ - "技术"
 tags:
  - "软件架构"
 toc: true
