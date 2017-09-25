@@ -19,7 +19,7 @@
       <guid>http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;DNS是互联网的基础设备，开源的DNS也有不少，下面列出主要的几种供参考：&lt;/p&gt;
+&lt;p&gt;DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：&lt;/p&gt;
 
 &lt;h2 id=&#34;bind9&#34;&gt;Bind9&lt;/h2&gt;
 

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>虚拟与现实 - 蘭陵N散記</title>
+    <title>软件的困境 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="虚拟与现实">
+    <meta property="og:title" content="软件的困境">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="虚拟与现实 - 蘭陵N散記" />
+    <meta name="title" content="软件的困境 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/" itemprop="url">
-        虚拟与现实
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2017/0915_soft_dilemma/" itemprop="url">
+        软件的困境
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-12-31">
-    2015-12-31
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-09-25">
+    2017-09-25
 </time>
 </span> 
       
@@ -127,8 +127,8 @@
   <span class="post-meta-item-text">分类：</span>
   
     <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">杂记</span>
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
       </a>
       &nbsp; 
     </span>
@@ -142,48 +142,48 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1112 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1744 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG" alt="Debian" /></p>
+    <p><img src="http://lanlingzi.cn/images/y17/soft_rm_.jpg" alt="" /></p>
 
-<p>万万没想到，在即将迎来2016年时，微信，科技新闻中都在传<a href="http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009">“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”</a>。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
-</p>
+<p>最近我司的软件产品线面临其史上最大的因境，今天晚上坐班车时，与一位曾经共过事的同事，聊起现在的软件，感慨颇多。大家都认为我们镨过太多的机会点，现在面对互联网软件的直面冲击，以及运营商本身经营上的乏力，运营商这个领域的软件已经无力回天了。另外之前与其它的同事也聊过，我司本质是一家硬件公司，没有做软件的基因。凭着做硬件的套路，做了这么多年的软件产品，也实属于不容易了。做软件产品与做软件服务是完全不同的套路，软件产品是需要卖给不同的客户，交付形态存在多样化，定制不可避免。而卖服务给不同的客户，客户关注是的服务体验，并不太关心软件的本身，只要软件能搞定客户的问题就行，就不会像卖产品那样面临不同的交付形态问题。而目前我们最大的因境就是软件产品不具有可复制性，不能像硬件那样形成规模效应。</p>
 
-<p>30日Debian社区正式发表了悼念声明如下：</p>
+<p>
+今天我们再来只谈谈做软件的不容易。基于传统的软件技术，传统的软件思维，做软件产品，我们会遇到如下三个矛盾，是非常难以有所突破的。</p>
 
-<blockquote>
-<p>我们怀着沉重地心情哀悼刚刚离我们而去的 Ian Murdock，开源软件的坚定支持者，父亲，儿子，和 Debian 中的 &ldquo;ian&rdquo;。</p>
+<h2 id="架构无法持续演进-反复重建">架构无法持续演进，反复重建</h2>
 
-<p>Ian 从 1993 年8 月开始启动 Debian 项目，并在同一年的稍晚时间正式发布了它的第一个版本，Debian 还会一直坚定不移地继续努力，成为流行世界、亿万人受惠的通用操作系统，不管是嵌入式设备还是太空站，都能看到它的身影。</p>
+<p>我们很容易想到我们国家的城市建设，是一个不断反复重建的过程，建筑的生命力非常的短暂。一个城市的规划师很重要，但再强大的规划师也是难以预见一个城市的发展未来，尤其是一个快速上升，充满经济活力的城市。</p>
 
-<p>Ian 一直非常关注在创建一个发行版和开源社区文化的过程中做正取的事情，不管是技术上，还是道德上。每一次准备好的系统发布，都包含着对自由软件和自由精神立场的坚定支持。</p>
+<p>同样，面对软件的架构，上世纪60年代就有人提出“软件没有银弹”，再牛逼的架构师，设计出来软件产品，5到10年也必然面临着被推倒重来。原因很简单，软件是为业务服务的，业务在不同的时期，对软件的诉求也是完全不同的。业务的初期，大家对问题的本质往往看不清楚，考虑不全面，而此时很难做出具有非常前瞻性的软件架构，能够持续地与业务发展而演进。</p>
 
-<p>Ian 对开源的忠诚奉献一直引导着他的工作，不管是在 Debian 还是在后来的年月里，一直伴随他朝着最好的未来。Ian 的梦想一直都在发扬和纪旭，Debian 社区仍然非常活跃，成千上万的开发者们用数不清的工作时间带给世界一个安全可靠的操作系统。</p>
+<p>软件技术可以借鉴，但软件本质是具有业务属性，一个软件产品不可能脱离了业务场景而纯技术的存在。就像建房子，中国建造方式与中东可能就不一样，因为他们面临的环境不同，使用人群的文化不同。纯技术的照搬，可能并不能解决实际的痛点，可能造就的是一个被人吐槽的烂软件。</p>
 
-<p>这段特殊时期，Debian 社区的精神会一直陪伴着 Ian 的家庭，会陪伴一起共度难关。</p>
+<p>同样，再拿房子做比较，房子一旦主体结构建成，接来来几年，想再来做水平或垂直扩展，很难实现，为了支持更广的使用场景，可能10到15年之后，又被彻底推倒重来。软件产品也是如些，看似年年卖的是房子，之前的老房子再怎么装修也难以拿出手来卖了。</p>
 
-<p>他的家庭同时也请求大家在这个艰难的时刻留给他们一些隐私空间，我们对此非常尊重，同时也号召大家尊重 Ian 家人的愿望，来自 Debian 社区和开源社区的关心他的人们的慰问，可以发送到这个专属邮箱，Debian 社区会保存这份善意，并存档。</p>
-</blockquote>
+<h2 id="金无足赤-软件无法完美支撑业务">金无足赤，软件无法完美支撑业务</h2>
 
-<p>Debian的诞生本来就是一件很浪费的事，理想主义，追求纯粹，不包含非自由软件，充满激情，同也是非常的沉稳。Debian也是目前Linux发行版本中，最为彻底，最为忠实，践行开源精神的版本。它曾经是一个符号，一面旗帜。</p>
+<p>业务本质是什么，不同的业务专家有不同的见解，我们往往被业务的表面特征所迷惑，这也导致我们的难以对业务进行抽象建模分析。虽然业界在一方面有一些方法论的探索，像领域驱动设计。但业务人员与软件开发技术人员之间往往存在鸿沟，他们之间的通用语言是什么，大家是否理解一致。双方参与的深度，也决定了软件产品的可用性。而做软件产品，恰恰最懂业务的却离软件开发很远。精通业务的人，不懂软件开发；而精通软件开发的，却不懂业务，隔行如隔山。</p>
 
-<p>Debian的名称也据说来源一个美丽的爱情故事（Deb来自于前女友Debra，Ian来自他自己的名字），Ian长期担任Linux基金会的首席技术官，他的成就在自由软件，开源社区是一个了不起的传说。</p>
+<p>所以，软件产品通常功能大致满足客户诉求，但似乎又差了一点点，并不是客户心中其实期望的。软件即使三头六臂，也无法完美支撑业务。而一方面，软件不好用，是由于存在”数据孤岛“问题，为了不至于把软件做得庞大无比，必然会对软件进行边界的划分。一旦完成了边界设定，也是形成了一个”数据孤岛“。各个系统（数据孤岛）之间对接集成，都是非常复杂而棘手的问题。需要对接的系统越多，其复杂度是指数级的增长。</p>
 
-<p>逝者已往，愿Ian安息，这位把自己的浪漫书写在了Debian和OpenSource的传奇人物，一路走好，我们会永远记住您！</p>
+<h2 id="资源有限-无法满足需求的无限">资源有限，无法满足需求的无限</h2>
 
-<p>他能在软件开源这个虚拟世界中，一呼百应呼风唤雨，但在现实世界也是一个普通人。作为一名程序员，或许不经意的创作，能改变世界科技的发展。开源摧动了技术的发展，使得知识更容易获取，使得技术更容易创新。但他们却可能不是这个过程中最大的获利者。在虚拟的技术世界中，我们敬奉他们为大神，而在现实世界中，很少有人能获得像政要，企业家的社会地位，甚至不如某国一名歌坛明星。即使面对一名小警察，或许只能通过自杀来表达诉求或无奈。</p>
+<p>业务的需求是多样化的，并且是随时间变化的，这是需求的无限性，但软件要解决的问题总是有限的。同时，面对不同的客户群，众口难调，业务客户对软件的差异化是客观存在的，期望用一套标准，一套软件产品来解决所有问题，永远是一个美好的梦想。在这种情况下，要么无法满足大量的个性化的需求；要么成本巨大，导致软件产品无法承受。</p>
+
+<p>而在传统的软件开发模式下，软件开发周期长，我们通常的做法，是收集所有的需求合并整理，形成一个功能繁多的超级大版本，看似你需要的功能都有。但对于某些个体使用者来说，众多的功能导致易用性下降，复杂度上升；而需要使用到的功能，却没有做到极致。</p>
+
+<p>通常一个功能众多的软件，对物理资源的诉求也是巨大的，为了能按特性交付给不同的客户，我们又不得不对软件在架构层面进行划分。不管是纵向的切分而是模向的切分，都会导致软件的内部的复杂度，而因为切割带来的的复杂度是业务使用者不愿意看到的。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/linux" rel="tag" title="Linux">#Linux#</a>
-    
-    <a href="http://lanlingzi.cn/tags/debian" rel="tag" title="Debian">#Debian#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" rel="tag" title="软件架构">#软件架构#</a>
     
 </div>
 
@@ -192,17 +192,13 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2015/1227_bj_archsummit/" rel="next" title="参加ArchSummit北京站感受">
-        <i class="fa fa-chevron-left"></i> 参加ArchSummit北京站感受
+        <a href="http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/" rel="next" title="开源DNS Server">
+        <i class="fa fa-chevron-left"></i> 开源DNS Server
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
-    
-        <a href="http://lanlingzi.cn/post/stories/2016/0101_new_year/" rel="prev" title="新年新目标">
-        新年新目标 <i class="fa fa-chevron-right"></i>
-        </a>
     
     </div>
 </div>
@@ -215,7 +211,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：虚拟与现实
+            标题：软件的困境
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（蘭陵N散記）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -247,7 +243,16 @@
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -304,6 +309,21 @@
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#架构无法持续演进-反复重建">架构无法持续演进，反复重建</a></li>
+<li><a href="#金无足赤-软件无法完美支撑业务">金无足赤，软件无法完美支撑业务</a></li>
+<li><a href="#资源有限-无法满足需求的无限">资源有限，无法满足需求的无限</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 

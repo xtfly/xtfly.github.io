@@ -6,10 +6,21 @@
     <description>Recent content on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 10 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>软件的困境</title>
+      <link>http://lanlingzi.cn/post/thoughts/2017/0915_soft_dilemma/</link>
+      <pubDate>Mon, 25 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2017/0915_soft_dilemma/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/soft_rm_.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最近我司的软件产品线面临其史上最大的因境，今天晚上坐班车时，与一位曾经共过事的同事，聊起现在的软件，感慨颇多。大家都认为我们镨过太多的机会点，现在面对互联网软件的直面冲击，以及运营商本身经营上的乏力，运营商这个领域的软件已经无力回天了。另外之前与其它的同事也聊过，我司本质是一家硬件公司，没有做软件的基因。凭着做硬件的套路，做了这么多年的软件产品，也实属于不容易了。做软件产品与做软件服务是完全不同的套路，软件产品是需要卖给不同的客户，交付形态存在多样化，定制不可避免。而卖服务给不同的客户，客户关注是的服务体验，并不太关心软件的本身，只要软件能搞定客户的问题就行，就不会像卖产品那样面临不同的交付形态问题。而目前我们最大的因境就是软件产品不具有可复制性，不能像硬件那样形成规模效应。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>开源DNS Server</title>
@@ -19,7 +30,7 @@
       <guid>http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;DNS是互联网的基础设备，开源的DNS也有不少，下面列出主要的几种供参考：&lt;/p&gt;
+&lt;p&gt;DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：&lt;/p&gt;
 
 &lt;h2 id=&#34;bind9&#34;&gt;Bind9&lt;/h2&gt;
 
