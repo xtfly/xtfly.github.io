@@ -152,16 +152,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2876 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2895 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="rxjava">RxJava</h2>
 
-<p>最早接触响应式编程，是为了分析Netflix的架构。Netflix系统中大量使用了<a href="https://github.com/ReactiveX/RxJava">RxJava(Reactive Extension for Java)</a>。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的<a href="http://Rx.Net">Rx.Net</a>的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有<a href="http://projectreactor.io/">Project Reactor</a>, <a href="https://akka.io/">Akka</a>和<a href="https://github.com/google/agera">Agera</a>等等。</p>
+<p>最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了<a href="https://github.com/ReactiveX/RxJava">RxJava(Reactive Extension for Java)</a>。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的<a href="http://Rx.Net">Rx.Net</a>的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有<a href="http://projectreactor.io/">Project Reactor</a>, <a href="https://akka.io/">Akka</a>和<a href="https://github.com/google/agera">Agera</a>等等。</p>
 
-<p>传统编程模式下，我们通常是同步实现，同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的<code>Callback Hell</code>。JavaScript在ES5引入Promise机制，在ES6引入async关键字，就是想语言原生层面来解决<code>Callback Hell</code>。而Go语言则更进一步，通过Runtime机制，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。</p>
+<p>传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的<code>Callback Hell</code>。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决<code>Callback Hell</code>。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。</p>
 
 <p></p>
     </div>
