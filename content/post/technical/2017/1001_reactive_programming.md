@@ -12,27 +12,28 @@ toc: true
 
 ## RxJava
 
-最早接触响应式编程，是为了分析Netflix的架构。Netflix系统中大量使用了[RxJava(Reactive Extension for Java)](https://github.com/ReactiveX/RxJava)。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的[Rx.Net](http://Rx.Net)的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有[Project Reactor](http://projectreactor.io/), [Akka](https://akka.io/)和[Agera](https://github.com/google/agera)等等。
+最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了[RxJava(Reactive Extension for Java)](https://github.com/ReactiveX/RxJava)。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的[Rx.Net](http://Rx.Net)的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有[Project Reactor](http://projectreactor.io/), [Akka](https://akka.io/)和[Agera](https://github.com/google/agera)等等。
 
-传统编程模式下，我们通常是同步实现，同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的`Callback Hell`。JavaScript在ES5引入Promise机制，在ES6引入async关键字，就是想语言原生层面来解决`Callback Hell`。而Go语言则更进一步，通过Runtime机制，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。
+传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的`Callback Hell`。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决`Callback Hell`。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。
 
 <!--more-->
 
-再拿RxJava来说，其最基础原理是引入了`Observable`，一种观察者模式与Reactor模式的增强，但又与传统的观察者模式又不完全相同。传统的观察者模式是涉及到两个对象观察者（Observer ）和被观察者（Observable ）。观察者通过将被观察 的对象加到自己的观察队列中，当被观察者发生改变时，就会通知观察者东西已经改变。而RxJava中涉及到4个概念：
+再拿RxJava来说，其最基础的原理是引入了`Observable`概念，一种观察者模式与Reactor模式的增强，但又与传统的观察者模式又不完全相同。传统的观察者模式只涉及到两个对象：观察者（Observer）和被观察者（Observable）。观察者通过将被观察的对象加到自己的观察队列中，当被观察者发生改变时，就会通知观察者东西已经改变。而RxJava中涉及到4个概念：
 
  - Observable：可观察者，即被观察者
  - Observer：观察者
  - Subscribe：订阅
  - Event：事件
  
- `Observable`和`Observer`通过`subscribe()`方法实现订阅关系，从而`Observable`可以在需要的时候发出事件来通知 `Observer`数据刷新。而上游只管同过`Observable`发送数据，或是异步或是同步。下游只管处理，也无须关心上游数据到底怎么生成。如果这样的话，其实和`CallBack`也差不多啊。但`Observable`通过`Observable Contract`，使得所有`CallBack`都可以走上同一个管道。这就引出Stream的概念，也是Java 8中最主要的特性。Stream是Java弥补函数式编程的缺陷，解决集合类型函数式与链式操作，它看起来像一个管道的不断地`Iterable`流。回到RxJava，它使得`CallBack`都到一个`Stream`管道流了，而可以与Java 8的函数式编程完美结合，从而避免了`Callback Hell`。
+ `Observable`和`Observer`通过`subscribe()`方法实现订阅关系，从而`Observable`可以在需要的时候发出事件来通知 `Observer`数据刷新。而上游只管同过`Observable`发送数据，或是异步或是同步。下游只管处理，也无须关心上游数据到底怎么生成。
+ 
+ 如果这样的话，其实和`CallBack`也差不多啊。但`Observable`通过`Observable Contract`，使得所有`CallBack`都可以走上同一个管道。这就引出Stream的概念，也是Java 8中最主要的特性。Stream是Java弥补函数式编程的缺陷，解决集合类型函数式与链式操作，它看起来像一个管道的不断地`Iterable`流。回到RxJava，它使得`CallBack`都到一个`Stream`管道流了，而可以与Java 8的函数式编程完美结合，从而避免了`Callback Hell`。
 
 ## 响应式编程
 
-回到正题，什么是响应式编程，如下是来自Wiki的定义：
+回到正题，什么是响应式编程，如下是来自[Reactive programming - Wikipedia](https://en.wikipedia.org/wiki/Reactive_programming)的定义：
 
 > In computing, reactive programming is an asynchronous programming paradigm concerned with data streams and the propagation of change.
-> - [Reactive programming - Wikipedia](https://en.wikipedia.org/wiki/Reactive_programming)
 
 响应式编程(简称RP)是一种异步编程范式，包含两个重要的关键词：
 
@@ -53,7 +54,7 @@ toc: true
  - 优势：
   - 适用于高并发、带延迟操作
  - 劣势：
-  - 无线程隔离：由于是线程复用，若线程存在卡死，可能导致整个应用被拖垮而不可用。
+  - 线程无法细粒度隔离：由于是线程复用，若线程存在卡死，可能导致整个应用被拖垮而不可用。
   - 调试定位因难：采用Stream的链式表达式，一旦出错，你将很难定位到具体是哪个环节出了问题。
 
 ## 响应式宣言
@@ -75,7 +76,7 @@ toc: true
 
 ## Spring 5 WebFlux
 
-让我还在留在Java开发，还是因为Spring社区。Spring一直是Java编程领域的急先峰，如最早的IOC，后面AOP，当前微服务框架SpringCloud， SprintBoot，以及刚发布的Spring 5中最主要的WebFlux，它积极吸引业界优秀的实践，带入Java世界，给暮色沉沉的Java带来一些新意。
+让我还在留在Java开发，还是因为Spring社区。Spring一直是Java编程领域的急先峰，如最早的IOC，后面AOP，当前微服务框架SpringCloud， SprintBoot，以及刚发布的Spring 5中最主要的WebFlux。它积极吸引业界优秀的实践，带入Java世界，给暮色沉沉的Java带来一些新意。
 
 Spring 5最大的亮点是提供了提供了完整的端到端响应式编程的支持，也是Java世界首个响应式Web框架。
 
