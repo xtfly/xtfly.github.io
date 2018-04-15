@@ -1,5 +1,5 @@
 ---
-title: "从Archlinux以Manjaro+i3 WM"
+title: "从Archlinux到Manjaro+i3 WM"
 date: "2018-04-15"
 categories:
  - "笔记"
@@ -62,8 +62,8 @@ pacman -S `cat manjaro_i3_packages.txt`
  - 终端模拟器：urxvt
  - 终端下的菜单：bmenu
  - 中文输入：fcitx
- - 浏览器：google-chrome-stable:
- - 编辑器：visual-studio-code:
+ - 浏览器：google-chrome-stable
+ - 编辑器：visual-studio-code与VIM
  - 文件管理：PcManFM
  - 视频：VLC
  - 视频：PulseAudio与pavucontrol（配置界面）
