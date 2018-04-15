@@ -6,7 +6,7 @@
     <description>Recent content in Tags on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 30 Oct 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Archlinux</title>
       <link>http://lanlingzi.cn/tags/archlinux/</link>
-      <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/archlinux/</guid>
       <description></description>
@@ -143,6 +143,15 @@
       <pubDate>Sat, 03 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/macos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Manjaro</title>
+      <link>http://lanlingzi.cn/tags/manjaro/</link>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/manjaro/</guid>
       <description></description>
     </item>
     

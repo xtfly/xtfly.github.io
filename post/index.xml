@@ -6,10 +6,24 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 01 Oct 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从Archlinux以Manjaro&#43;i3 WM</title>
+      <link>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</link>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</guid>
+      <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，桌面管理采用i3-wm，先上图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>响应式编程</title>
