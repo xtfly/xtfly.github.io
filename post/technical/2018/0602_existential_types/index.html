@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1651 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1566 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -153,11 +153,11 @@
 <p>impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&gt; impl Iterator<Item=u8> or fn open(path: impl AsRef<Path>).</p>
 </blockquote>
 
-<p></p>
-
 <h2 id="既存类型">既存类型</h2>
 
 <p><code>impl Trait</code>是对<a href="https://en.wikipedia.org/wiki/Type_system#Existential_types"><code>既存类型(Existential types)</code></a>的支持，那什么是既存类型?</p>
+
+<p></p>
 
 <blockquote>
 <p>Existential types are frequently used in connection with record types to represent modules and abstract data types, due to their ability to separate implementation from interface. For example, the type &ldquo;T = ∃X { a: X; f: (X → int); }&rdquo; describes a module interface that has a data member named a of type X and a function named f that takes a parameter of the same type X and returns an integer. This could be implemented in different ways; for example:</p>
@@ -169,11 +169,10 @@ floatT = { a: float; f: (float → int); }</p>
 
 <p>In general it&rsquo;s impossible for the typechecker to infer which existential type a given module belongs to. In the above example intT { a: int; f: (int → int); } could also have the type ∃X { a: X; f: (int → int); }. The simplest solution is to annotate every module with its intended type, e.g.:</p>
 
-<p>intT = { a: int; f: (int → int); } as ∃X { a: X; f: (X → int); }<br />
-Although abstract data types and modules had been implemented in programming languages for quite some time, it wasn&rsquo;t until 1988 that John C. Mitchell and Gordon Plotkin established the formal theory under the slogan: &ldquo;Abstract [data] types have existential type&rdquo;.[24] The theory is a second-order typed lambda calculus similar to System F, but with existential instead of universal quantification.</p>
+<p>intT = { a: int; f: (int → int); } as ∃X { a: X; f: (X → int); }</p>
 </blockquote>
 
-<p>从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一个为模块(module)与抽象类型(ADT) 的一种类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，就是Java中interface或GO的Interface。</p>
+<p>从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一种抽象类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，有点像Java中interface或GO的Interface。</p>
 
 <p>在Rust中，我们可以采用<code>impl Trait</code>指定函数的返回类型，而不必指出具体是哪一种类型。例如：</p>
 
@@ -186,10 +185,6 @@ Although abstract data types and modules had been implemented in programming lan
 
 <pre><code>fn foo() -&gt; Trait {
     // ...
-}
-
-// 或者
-fn  foo2&lt;T : Trait &gt;() -&gt; T  {
 }
 </code></pre>
 
@@ -213,11 +208,11 @@ impl&lt;T: Sized&gt; Trait for T {
 }
 
 fn new_foo1() -&gt; impl Trait {
-    5  // 我们可以仅返回一个i32类型的值
+    5  // 返回一个i32类型的值
 }
 
 fn new_foo2() -&gt; impl Trait {
-    5.0f32  // 我们可以仅返回一个f32类型的值
+    5.0f32  // 返回一个f32类型的值
 }
 </code></pre>
 
@@ -237,7 +232,7 @@ fn foo&lt;T: Trait&gt;(x: T) {
 fn foo(x: impl Trait) {
 </code></pre>
 
-<p>从上面来看，<code>impl Trait</code>其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，简单问题复杂化了。</p>
+<p>从上面来看，<code>impl Trait</code>其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，函数不支持返回抽象类型，简单问题复杂化了。</p>
 
 <h2 id="具体应用">具体应用</h2>
 
@@ -311,6 +306,9 @@ impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
 }
 
 </code></pre>
+
+<p>参考：<br />
+[1] <a href="https://www.infoq.com/news/2018/05/rust-1.26-existential-types">https://www.infoq.com/news/2018/05/rust-1.26-existential-types</a></p>
     </div>
     <footer class="post-footer">
      
