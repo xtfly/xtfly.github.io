@@ -13,11 +13,12 @@ toc: true
 
 > impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -> impl Iterator<Item=u8> or fn open(path: impl AsRef<Path>).
 
-<!--more-->
 
 ## 既存类型
 
 `impl Trait`是对[`既存类型(Existential types)`](https://en.wikipedia.org/wiki/Type_system#Existential_types)的支持，那什么是既存类型?
+
+<!--more-->
 
 > Existential types are frequently used in connection with record types to represent modules and abstract data types, due to their ability to separate implementation from interface. For example, the type "T = ∃X { a: X; f: (X → int); }" describes a module interface that has a data member named a of type X and a function named f that takes a parameter of the same type X and returns an integer. This could be implemented in different ways; for example:
 > 
@@ -29,10 +30,10 @@ toc: true
 > In general it's impossible for the typechecker to infer which existential type a given module belongs to. In the above example intT { a: int; f: (int → int); } could also have the type ∃X { a: X; f: (int → int); }. The simplest solution is to annotate every module with its intended type, e.g.:
 > 
 > intT = { a: int; f: (int → int); } as ∃X { a: X; f: (X → int); }  
-> Although abstract data types and modules had been implemented in programming languages for quite some time, it wasn't until 1988 that John C. Mitchell and Gordon Plotkin established the formal theory under the slogan: "Abstract [data] types have existential type".[24] The theory is a second-order typed lambda calculus similar to System F, but with existential instead of universal quantification.
+> 
 
 
-从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一个为模块(module)与抽象类型(ADT) 的一种类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，就是Java中interface或GO的Interface。
+从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一种抽象类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，有点像Java中interface或GO的Interface。
 
 在Rust中，我们可以采用`impl Trait`指定函数的返回类型，而不必指出具体是哪一种类型。例如：
 
@@ -47,10 +48,6 @@ fn foo() -> impl Trait {
 ```
 fn foo() -> Trait {
     // ...
-}
-
-// 或者
-fn  foo2<T : Trait >() -> T  {
 }
 ```
 
@@ -76,11 +73,11 @@ impl<T: Sized> Trait for T {
 }
 
 fn new_foo1() -> impl Trait {
-    5  // 我们可以仅返回一个i32类型的值
+    5  // 返回一个i32类型的值
 }
 
 fn new_foo2() -> impl Trait {
-    5.0f32  // 我们可以仅返回一个f32类型的值
+    5.0f32  // 返回一个f32类型的值
 }
 ```
 
@@ -102,7 +99,7 @@ fn foo<T: Trait>(x: T) {
 fn foo(x: impl Trait) {
 ```
 
-从上面来看，`impl Trait`其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，简单问题复杂化了。
+从上面来看，`impl Trait`其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，函数不支持返回抽象类型，简单问题复杂化了。
 
 
 ## 具体应用
@@ -181,3 +178,6 @@ impl<T> From<T> for AsyncResult<T> {
 }
 
 ```
+
+参考：    
+[1] https://www.infoq.com/news/2018/05/rust-1.26-existential-types    
