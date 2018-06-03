@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.38.1" />
+	<meta name="generator" content="Hugo 0.40.3" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -102,6 +102,71 @@
             
     
  <section id="posts" class="posts-expand">
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0602_existential_types/" itemprop="url">
+        Rust支持既存类型的理解
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-06-02">
+    2018-06-02
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1651 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近利用周末时间来学习Rust编程，发现新发布的1.26版本，带来了<a href="https://github.com/rust-lang/rust/pull/49255"><code>impl Trait</code></a>，一时对它的写法难以理解，今天又找点资料再温习一下。</p>
+
+<blockquote>
+<p>impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&gt; impl Iterator<Item=u8> or fn open(path: impl AsRef<Path>).</p>
+</blockquote>
+
+<p></p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0602_existential_types/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -617,74 +682,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0708_ops_pattern/" itemprop="url">
-        运维模式
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-07-08">
-    2017-07-08
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1815 字 ~4分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/y17/ops_pattern.jpg" alt="" /></p>
-
-<h2 id="背景">背景</h2>
-
-<p>最近一段时间由于工作内容重心变化，从PaaS系统的设计到运维系统的设计。运维系统的设计对我来说，还是一项全新的领域，需要学习的理念与技术很多。全司虽有大量的产品涉及到软件系统，但本质还是一个硬件盒子，运维的对象还是偏硬件。</p>
-
-<p>熟悉电信IT系统的人或许听说过：OSS(Operation Support System)，运营支撑系统，它是运营商IT系统中三大支柱系统之一。其它两大系统是：BSS(Bussiness Support System), MSS(Management Support System)。</p>
-
-<p>OSS是面向资源的后台支撑系统。资源主要包括网络，电信设备，计算系统等。系统的主要功能是包括专业网络管理，综合网络管理，资源管理，业务开通，服务保障等。但公司的产品线众多，产品形态也是千差万别，公司的OSS产品也一直在探索与发展。产品开发部门也是分分合合，一直是想打造一套统一的运营支撑平台。
-</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0708_ops_pattern/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -797,7 +794,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">93</span>
+        <span class="site-state-item-count">94</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -810,7 +807,7 @@
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
-        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-count">55</span>
         <span class="site-state-item-name">标签</span>
         </a>
     </div>
@@ -864,7 +861,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.38.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.40.3</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -2,6 +2,41 @@
 <search>
     
      <entry>
+        <title>Rust支持既存类型的理解</title>
+        <url>http://lanlingzi.cn/post/technical/2018/0602_existential_types/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>Rust</tag>
+        </tags>
+        <content type="html"> 最近利用周末时间来学习Rust编程，发现新发布的1.26版本，带来了impl Trait，一时对它的写法难以理解，今天又找点资料再温习一下。
+ impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&amp;gt; impl Iterator or fn open(path: impl AsRef).
+ 
+既存类型 impl Trait是对既存类型(Existential types)的支持，那什么是既存类型?
+ Existential types are frequently used in connection with record types to represent modules and abstract data types, due to their ability to separate implementation from interface. For example, the type &amp;ldquo;T = ∃X { a: X; f: (X → int); }&amp;rdquo; describes a module interface that has a data member named a of type X and a function named f that takes a parameter of the same type X and returns an integer. This could be implemented in different ways; for example:
+intT = { a: int; f: (int → int); }
+floatT = { a: float; f: (float → int); }
+These types are both subtypes of the more general existential type T and correspond to concrete implementation types, so any value of one of these types is a value of type T. Given a value &amp;ldquo;t&amp;rdquo; of type &amp;ldquo;T&amp;rdquo;, we know that &amp;ldquo;t.f(t.a)&amp;rdquo; is well-typed, regardless of what the abstract type X is. This gives flexibility for choosing types suited to a particular implementation while clients that use only values of the interface type—the existential type—are isolated from these choices.
+In general it&amp;rsquo;s impossible for the typechecker to infer which existential type a given module belongs to. In the above example intT { a: int; f: (int → int); } could also have the type ∃X { a: X; f: (int → int); }. The simplest solution is to annotate every module with its intended type, e.g.:
+intT = { a: int; f: (int → int); } as ∃X { a: X; f: (X → int); }
+Although abstract data types and modules had been implemented in programming languages for quite some time, it wasn&amp;rsquo;t until 1988 that John C. Mitchell and Gordon Plotkin established the formal theory under the slogan: &amp;ldquo;Abstract [data] types have existential type&amp;rdquo;.[24] The theory is a second-order typed lambda calculus similar to System F, but with existential instead of universal quantification.
+ 从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一个为模块(module)与抽象类型(ADT) 的一种类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，就是Java中interface或GO的Interface。
+在Rust中，我们可以采用impl Trait指定函数的返回类型，而不必指出具体是哪一种类型。例如：
+fn foo() -&amp;gt; impl Trait { // ... }  如果是这样，为什么Rust不直接设计为如下，Trait像Java8中interface或GO的Interface，函数返回interface：
+fn foo() -&amp;gt; Trait { // ... } // 或者 fn foo2&amp;lt;T : Trait &amp;gt;() -&amp;gt; T { }  遗憾地是，上面的写法在Rust都不可能编译通过，因为在Rust变量lifetime之说，返回值的lifetime不能悬空，那只能变成这种写法
+fn foo3() -&amp;gt; Box&amp;lt;Trait&amp;gt; { Box::new(5) as Box&amp;lt;Trait&amp;gt; }  这样写是不是很繁琐，不过，使用Box意味着动态分配，我们并非总是希望或需要这样，而impl Trait确保了静态分配。这种方法使foo仅能返回同样的类型。
+trait Trait { fn method(&amp;amp;self); } // 表示类型T实现了Trait impl&amp;lt;T: Sized&amp;gt; Trait for T { fn method(&amp;amp;self) { } } fn new_foo1() -&amp;gt; impl Trait { 5 // 我们可以仅返回一个i32类型的值 } fn new_foo2() -&amp;gt; impl Trait { 5.0f32 // 我们可以仅返回一个f32类型的值 }  在定义返回闭包的函数时，新的impl Trait语法也可以如下使用，闭包函数实现了特性Fn：
+fn foo() -&amp;gt; impl Fn(i32) -&amp;gt; i32 { |x| x &#43; 1 }  另外，impl Trait语法还可以用于替代泛型类型的声明，如下例所示，虽然在这种情况下，它定义了一个通用类型，而不是存在类型：
+// 之前 fn foo&amp;lt;T: Trait&amp;gt;(x: T) { // 之后 fn foo(x: impl Trait) {  从上面来看，impl Trait其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，简单问题复杂化了。
+具体应用 actix是rust实现的一个web框架，它很快就使用到impl Trait，如下所示：
+[derive(Serialize)] struct Measurement { temperature: f32, } fn hello_world() -&amp;gt; impl Responder { &amp;quot;Hello World!&amp;quot; } fn greet(req: HttpRequest) -&amp;gt; impl Responder { let to = req.match_info().get(&amp;quot;name&amp;quot;).unwrap_or(&amp;quot;World&amp;quot;); format!(&amp;quot;Hello {}!&amp;quot;, to) } fn current_temperature(_req: HttpRequest) -&amp;gt; impl Responder { Json(Measurement { temperature: 42.3 }) }  其中Responder是一个Trait，它定义如下：
+// https://github.com/actix/actix-web/blob/master/src/handler.rs#L24 pub trait Responder { /// The associated item which can be returned. type Item: Into&amp;lt;AsyncResult&amp;lt;HttpResponse&amp;gt;&amp;gt;; /// The associated error which can be returned. type Error: Into&amp;lt;Error&amp;gt;; /// Convert itself to `AsyncResult` or `Error`. fn respond_to&amp;lt;S: &#39;static&amp;gt;( self, req: &amp;amp;HttpRequest&amp;lt;S&amp;gt;, ) -&amp;gt; Result&amp;lt;Self::Item, Self::Error&amp;gt;;  Json是一个struct，它的实现在json.rs文件，也是实现了Responder Trait，在respond_to方法中对T进行了序列化，并生成Result对象
+// https://github.com/actix/actix-web/blob/master/src/json.rs#L119 impl&amp;lt;T: Serialize&amp;gt; Responder for Json&amp;lt;T&amp;gt; { type Item = HttpResponse; type Error = Error; fn respond_to&amp;lt;S&amp;gt;(self, req: &amp;amp;HttpRequest&amp;lt;S&amp;gt;) -&amp;gt; Result&amp;lt;HttpResponse, Error&amp;gt; { let body = serde_json::to_string(&amp;amp;self.0)?; Ok(req .build_response(StatusCode::OK) .content_type(&amp;quot;application/json&amp;quot;) .body(body)) } }  为什么直接返回&amp;rdquo;Hello World!&amp;ldquo;与format!(&amp;ldquo;Hello {}!&amp;rdquo;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。
+https://github.com/actix/actix-web/blob/master/src/handler.rs#L292 impl&amp;lt;T&amp;gt; From&amp;lt;T&amp;gt; for AsyncResult&amp;lt;T&amp;gt; { #[inline] fn from(resp: T) -&amp;gt; AsyncResult&amp;lt;T&amp;gt; { AsyncResult(Some(AsyncResultItem::Ok(resp))) } } </content>
+    </entry>
+    
+     <entry>
         <title>从Archlinux到Manjaro&#43;i3 WM</title>
         <url>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</url>
         <categories>
