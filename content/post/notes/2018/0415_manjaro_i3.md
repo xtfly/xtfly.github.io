@@ -9,7 +9,7 @@ tags:
 
 ---
 
-这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，桌面管理采用i3-wm，先上图：
+这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：
 
 ![](/images/screenshot/manjaro/1.png)
 ![](/images/screenshot/manjaro/2.png)
