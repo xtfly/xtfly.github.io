@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -176,10 +177,7 @@
 <h2 id="安装">安装</h2>
 
 <p>在Mac环境下，先安装<a href="http://brew.sh/">Brew</a>，使用Brew安装tmux命令如下：</p>
-
-<pre><code>brew install tmux
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">brew install tmux</pre></div>
 <h2 id="使用">使用</h2>
 
 <p>安装完成之后，在终端中直接敲入<code>tmux</code>就可启动一个 tmux 的会话。退出会话敲入 <code>exit</code> 即可退出当前会话Pane。可以使用 <code>tmux detach</code> 命令断开已有的会话。也可以使用快捷键 <code>Ctrl-b d</code> 断开会话</p>
@@ -246,11 +244,8 @@
 </ul>
 
 <p>如配置激活快捷键：</p>
-
-<pre><code>set -g prefix ^k
-unbind ^b
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">set -g prefix ^k
+unbind ^b</pre></div>
 <p>默认的tmux风格比较朴素甚至有些丑陋。如果希望做一些美化和个性化配置的话，建议使用<a href="https://github.com/gpakosz/.tmux">gpakosz</a> 的tmux配置。它的本质是一个tmux配置文件，实现了以下功能：</p>
 
 <ul>
@@ -452,6 +447,7 @@ unbind ^b
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

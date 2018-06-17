@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -160,25 +161,18 @@
 </p>
 
 <p>下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc</p>
-
-<pre><code>void* operator new(std::size_t) throw (std::bad_alloc);
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void* operator new(std::size_t) throw (std::bad_alloc);
 void* operator new[](std::size_t) throw (std::bad_alloc);
 void operator delete(void*) throw();
-void operator delete[](void*) throw();
-</code></pre>
-
+void operator delete[](void*) throw();</pre></div>
 <p>使用举例:</p>
-
-<pre><code>int* p1 = new int();
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">int* p1 = new int();
 delete p2;
 
 int* p2 = new int[5];
-delete [] p2;
-</code></pre>
-
+delete [] p2;</pre></div>
 <p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
-
-<pre><code>/**
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">/**
  * A simulation of c++ new T() &amp; new T(param) operation
  */  
 struct NewObj
@@ -267,12 +261,9 @@ struct DeleteObjArray
         free ((void *) ((long *) pObj - 1));  
         pObj = NULL;  
     }  
-};  
-</code></pre>
-
+};  </pre></div>
 <p>测试代码:</p>
-
-<pre><code>struct TestClass  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">struct TestClass  
 {  
     TestClass() : mem1(0), mem2(0)  {}  
 
@@ -286,23 +277,21 @@ void test_new_delete()
 {  
     TestClass* p1 = NULL;  
     NewObj()(p1);  
-    printf(&quot;%p/n&quot;, p1);  
+    printf(&#34;%p/n&#34;, p1);  
     DeleteObj()(p1);  
 
     //  
     TestClass* p2 = NULL;  
     NewObj()(p2, 0);  
-    printf(&quot;%p/n&quot;, p2);  
+    printf(&#34;%p/n&#34;, p2);  
     DeleteObj()(p2);  
 
     //  
     TestClass* p3 = NULL;  
     NewObjArray()(p3, 5);  
-    printf(&quot;%p/n&quot;, p3);  
+    printf(&#34;%p/n&#34;, p3);  
     DeleteObjArray()(p3);  
-}  
-</code></pre>
-
+}  </pre></div>
 <hr />
 
 <blockquote>
@@ -463,6 +452,7 @@ void test_new_delete()
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

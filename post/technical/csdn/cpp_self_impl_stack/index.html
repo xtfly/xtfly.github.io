@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -151,8 +152,7 @@
 </p>
 
 <p>公用的宏与异常类:</p>
-
-<pre><code>#define NEW(var, T) do { /  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#define NEW(var, T) do { /  
    try {                 /  
        var = new T;      /  
    }catch(...) {         /  
@@ -171,16 +171,13 @@
 template&lt;typename T&gt;  
 struct Error  
 {  
-   Error(const char* pszInfo = &quot;Overflow&quot;)  
+   Error(const char* pszInfo = &#34;Overflow&#34;)  
    {  
-     printf(&quot;/nThrow a error, Info :%s/n&quot;, pszInfo);  
+     printf(&#34;/nThrow a error, Info :%s/n&#34;, pszInfo);  
    }  
-};
-</code></pre>
-
+};</pre></div>
 <p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
-
-<pre><code>template&lt;typename T, size_t SIZE&gt;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, size_t SIZE&gt;  
 class Stack  
 {  
 public:  
@@ -208,7 +205,7 @@ public:
     {  
         if (0 == m_size)  
         {  
-            throw Error&lt;T&gt; (&quot;Overflow&quot;);  
+            throw Error&lt;T&gt; (&#34;Overflow&#34;);  
         }  
         else  
         {  
@@ -250,12 +247,9 @@ public:
 private:  
     T m_data[SIZE];  
     size_t m_size;  
-};  
-</code></pre>
-
+};  </pre></div>
 <p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
-
-<pre><code>template&lt;typename T&gt;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;  
 struct SNode  
 {  
     T m_data;  
@@ -343,7 +337,7 @@ public:
         TNode* pTemp = m_pTop-&gt;m_pNext;  
         if (NULL == pTemp)  
         {  
-            throw Error&lt;T&gt; (&quot;Overflow&quot;);  
+            throw Error&lt;T&gt; (&#34;Overflow&#34;);  
         }  
 
         T t = pTemp-&gt;m_data;  
@@ -371,19 +365,16 @@ public:
 private:  
     TNode* m_pTop;  
     size_t m_size;  
-};
-</code></pre>
-
+};</pre></div>
 <p>测试代码：</p>
-
-<pre><code>void print_stack(int&amp; a)  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print_stack(int&amp; a)  
 {  
-    printf(&quot;%d/t&quot;, a);  
+    printf(&#34;%d/t&#34;, a);  
 }  
 
 void test_stack()  
 {  
-    printf(&quot;stack test /n&quot;);  
+    printf(&#34;stack test /n&#34;);  
     //Stack&lt;int, 4&gt; stack;  
     LStack&lt;int&gt; stack;  
 
@@ -397,26 +388,25 @@ void test_stack()
     stack.push(2);  
     stack.push(3);  
 
-    printf(&quot;/n1 : size: %d /n&quot;, stack.size());  
+    printf(&#34;/n1 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
 
     stack.pop();  
-    printf(&quot;/n2 : size: %d /n&quot;, stack.size());  
+    printf(&#34;/n2 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
 
     stack.push(4);  
-    printf(&quot;/n3 : size: %d /n&quot;, stack.size());  
+    printf(&#34;/n3 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
 
     stack.pop();  
-    printf(&quot;/n4 : size: %d /n&quot;, stack.size());  
+    printf(&#34;/n4 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
 
     stack.clear();  
-    printf(&quot;/n5 : size: %d /n&quot;, stack.size());  
+    printf(&#34;/n5 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
-}  
-</code></pre>
+}  </pre></div>
     </div>
     <footer class="post-footer">
      
@@ -572,6 +562,7 @@ void test_stack()
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

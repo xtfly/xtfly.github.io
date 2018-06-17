@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -154,25 +155,19 @@
 <p>做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。</p>
 
 <p>建议：小对象合并成结构体一次分配，示意如下：</p>
-
-<pre><code>for k, v := range m {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">for k, v := range m {
     k, v := k, v // copy for capturing by the goroutine
     go func() {
         // using k &amp; v
     }()
-}
-</code></pre>
-
+}</pre></div>
 <p>替换为：</p>
-
-<pre><code>for k, v := range m {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">for k, v := range m {
     x := struct {k , v string} {k, v} // copy for capturing by the goroutine
     go func() {
         // using x.k &amp; x.v
     }()
-}
-</code></pre>
-
+}</pre></div>
 <p></p>
 
 <h3 id="缓存区内容一次分配足够大小空间-并适当复用">缓存区内容一次分配足够大小空间，并适当复用</h3>
@@ -200,11 +195,8 @@
 </ul>
 
 <p>建议：初始化时预估大小指定容量</p>
-
-<pre><code>m := make(map[string]string, 100)
-s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是初始大小，第三个参数才是容量
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">m := make(map[string]string, 100)
+s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是初始大小，第三个参数才是容量</pre></div>
 <h3 id="长调用栈避免申请较多的临时对象">长调用栈避免申请较多的临时对象</h3>
 
 <p>goroutine的调用栈默认大小是4K（1.7修改为2K），它采用连续栈机制，当栈空间不够时，Go runtime会不动扩容：</p>
@@ -288,12 +280,9 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
 <p>GO里面的string类型是一个不可变类型，不像c++中std:string，可以直接char*取值转化，指向同一地址内容；而GO中[]byte与string底层两个不同的结构，他们之间的转换存在实实在在的值对象拷贝，所以尽量减少这种不必要的转化</p>
 
 <p>建议：存在字符串拼接等处理，尽量采用[]byte，例如：</p>
-
-<pre><code>func Prefix(b []byte) []byte {
-    return append([]byte(&quot;hello&quot;, b...))
-}
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func Prefix(b []byte) []byte {
+    return append([]byte(&#34;hello&#34;, b...))
+}</pre></div>
 <h3 id="字符串的拼接优先考虑bytes-buffer">字符串的拼接优先考虑bytes.Buffer</h3>
 
 <p>由于string类型是一个不可变类型，但拼接会创建新的string。GO中字符串拼接常见有如下几种方式：</p>
@@ -510,6 +499,7 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

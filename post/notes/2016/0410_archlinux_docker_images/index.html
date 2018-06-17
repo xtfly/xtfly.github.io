@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -172,28 +173,20 @@
 
 <ul>
 <li><p>前提Archlinux中也安装了docker引擎</p>
-
-<pre><code># pacman -S docker
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman -S docker
 # systemctl enable docker
-# systemctl start docker
-</code></pre></li>
+# systemctl start docker</pre></div></li>
 
 <li><p>以root用户执行mkimage.sh脚本</p>
-
-<pre><code># ./mkimage.sh
-</code></pre></li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># ./mkimage.sh</pre></div></li>
 
 <li><p>制作完成之后，使用<code>docker images</code>查看，生成一个名为<code>archlinux</code>的images</p>
-
-<pre><code># docker images
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
-</code></pre></li>
+archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB</pre></div></li>
 
 <li><p>使用如下命令生成一个container，容器名为<code>arch1</code></p>
-
-<pre><code># docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
-</code></pre></li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># docker run -d --name -arch1 -p 2222:22 archlinux /run.sh</pre></div></li>
 
 <li><p>使用ssh登陆验证，<code>ssh -p &lt;port&gt; root@127.0.0.1</code>，默认密码是<code>123456</code>。</p></li>
 
@@ -356,6 +349,7 @@ archlinux           latest              dc54036acaa4        About an hour ago   
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

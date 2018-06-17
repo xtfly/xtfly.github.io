@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -168,8 +169,7 @@
 <ul>
 <li>有的Tracker结构</li>
 </ul>
-
-<pre><code>		[WebServer]
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">		[WebServer]
 		  |
 		  | torrent file
 		  |
@@ -179,14 +179,11 @@
 	      Download&amp;Upload(TCP)
 	       \
 	        \
-	       [ OtherPeer ]
-</code></pre>
-
+	       [ OtherPeer ]</pre></div>
 <ul>
 <li>Trackerless的DHT结构</li>
 </ul>
-
-<pre><code>		[WebServer]
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">		[WebServer]
 		  |
 		  | torrent file
 		  |
@@ -196,9 +193,7 @@
 	      Download&amp;Upload(TCP)
 	       \
 	        \
-	       [ OtherPeer ]
-</code></pre>
-
+	       [ OtherPeer ]</pre></div>
 <p>Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。</p>
 
 <p>每个节点都有一个全局唯一的标识符，称为节点ID。距离度量用来比较两个节点或者节点与infohash之间的远近程度。节点必须维护一个含有少量其他节点联系信息的路由表。ID越靠近自身ID时，路由表越详细。节点知道很多离它很近的节点，只知道少量离它很远地节点。</p>
@@ -230,8 +225,7 @@
 <p>首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为<code>Taipei Torrent</code>。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。</p>
 
 <h3 id="代码结构">代码结构</h3>
-
-<pre><code>Taipei-Torrent git:(master) tree
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Taipei-Torrent git:(master) tree
 ├── main.go
 ├── queryTracker.bash
 ├── resolveBindIP.go
@@ -255,23 +249,18 @@
 │   └── uri_test.go
 └── tracker
     ├── tracker.go
-    └── tracker_test.go
-</code></pre>
-
+    └── tracker_test.go</pre></div>
 <h3 id="源码分析">源码分析</h3>
 
 <p>花了一个下午走读它的代码，代码简洁易懂，主要功能都在<code>torrent</code>目录下。每个Peer对一个torrent文件会产生一个会话，在我的笔记本记，使用Docker搭建了6个节点，发布下载77M的go的安装包，是秒级速度。如下所示：</p>
-
-<pre><code>2016/01/17 12:13:13 Starting.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">2016/01/17 12:13:13 Starting.
 2016/01/17 12:13:13 Listening for peers on port: 7777
 2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Tracker: [], Comment: , InfoHash: 556871e1ada306c2da5033e8fe0d4f077edbe6f7, Encoding: , Private: 0
 2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Computed missing pieces (0.35 seconds)
 2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Good pieces: 0 Bad pieces: 1223 Bytes left: 80147269
 2016/01/17 12:13:13 Created torrent session for go1.5.3.linux-amd64.tar.gz
 2016/01/17 12:13:13 Starting torrent session for go1.5.3.linux-amd64.tar.gz
-2016/01/17 12:13:14 [ go1.5.3.linux-amd64.tar.gz ] Peers: 0 downloaded: 0 (0.00 B/s) uploaded: 0 ratio: 0.000000 pieces: 0/1223
-</code></pre>
-
+2016/01/17 12:13:14 [ go1.5.3.linux-amd64.tar.gz ] Peers: 0 downloaded: 0 (0.00 B/s) uploaded: 0 ratio: 0.000000 pieces: 0/1223</pre></div>
 <p>作为Peer Client，主要代码逻辑在<code>torrent\torrentLoop.go</code>的RunTorrents方法中，它充分利用了Go的channel机制。实现步骤如下：</p>
 
 <ol>
@@ -301,10 +290,7 @@
 </ol>
 
 <p>还一个重要的<code>torrent\torren.go</code>的DoMessage方法，它用于是产生协议的消息，与一个peer建立TCP连接后，首先向peer发送握手消息，peer收到握手消息后回应一个握手消息。握手消息是一个长度固定为68字节的消息。消息的格式如下：</p>
-
-<pre><code>[pstrlen][pstr][reserved][info_hash][peer_id]
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">[pstrlen][pstr][reserved][info_hash][peer_id]</pre></div>
 <table>
 <thead>
 <tr>
@@ -337,10 +323,7 @@
 </table>
 
 <p>对于除握手消息之外的其他所有消息，其一般的格式为：</p>
-
-<pre><code>[length prefix][message ID][payload]
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">[length prefix][message ID][payload]</pre></div>
 <p>length prefix（长度前缀）占4个字节，指明message ID和payload的长度和。message ID（消息编号）占一字节，是一个10进制的整数，指明消息的编号。payload（负载），长度未定，是消息的内容。</p>
 
 <ul>
@@ -584,6 +567,7 @@ port消息的长度固定，为7字节，其中listen-port占两个字节。该�
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

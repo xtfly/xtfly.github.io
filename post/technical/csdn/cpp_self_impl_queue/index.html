@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -151,8 +152,7 @@
 </p>
 
 <h2 id="顺序存储实现">顺序存储实现：</h2>
-
-<pre><code>template&lt;typename T, size_t SIZE&gt;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, size_t SIZE&gt;  
 class Queue  
 {  
 public:  
@@ -179,10 +179,10 @@ public:
     bool push(const T&amp; t)  
     {  
         int pos = (m_rear + 1) % (int)SIZE;  
-        //printf(&quot;/n m_rear = %d&quot;, pos);  
+        //printf(&#34;/n m_rear = %d&#34;, pos);  
         if (pos == m_front)  
         {  
-            return false;// it's full  
+            return false;// it&#39;s full  
         }  
         m_rear = pos;  
         m_data[m_rear] = t;  
@@ -192,10 +192,10 @@ public:
     {  
         if (empty())  
         {  
-            throw Error&lt;T&gt;(&quot;Overflow&quot;);  
+            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
         }  
         m_front = (m_front + 1) % (int)SIZE;  
-        //printf(&quot;/n m_front = %d&quot;, m_front);  
+        //printf(&#34;/n m_front = %d&#34;, m_front);  
         return m_data[m_front];  
     }  
     T&amp; getfront()  
@@ -212,7 +212,7 @@ public:
             {  
                 idx %= (int)SIZE;  
             }  
-            //printf(&quot;/n idx = %d&quot;, idx);  
+            //printf(&#34;/n idx = %d&#34;, idx);  
             func(m_data[idx]);  
         }  
     }  
@@ -220,12 +220,9 @@ private:
     T m_data[SIZE];  
     int m_front;  
     int m_rear;  
-};  
-</code></pre>
-
+};  </pre></div>
 <h2 id="链表存储实现">链表存储实现：</h2>
-
-<pre><code>template&lt;typename T&gt;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;  
 struct QNode  
 {  
     QNode() : m_pNext(NULL)  
@@ -284,7 +281,7 @@ public:
     {  
         if (empty())  
         {  
-            throw Error&lt;T&gt;(&quot;Overflow&quot;);  
+            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
         }  
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
         T t = pTemp-&gt;m_data;  
@@ -301,7 +298,7 @@ public:
     {  
         if (empty())  
         {  
-            throw Error&lt;T&gt;(&quot;Overflow&quot;);  
+            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
         }  
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
         T t = pTemp-&gt;m_data;  
@@ -322,14 +319,11 @@ private:
     TQNode* m_pFront;  
     TQNode* m_pRear;  
     int m_size;  
-};  
-</code></pre>
-
+};  </pre></div>
 <h2 id="测试代码">测试代码：</h2>
-
-<pre><code>void print_queue(int&amp; a)  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print_queue(int&amp; a)  
 {  
-    printf(&quot;%d/t&quot;, a);  
+    printf(&#34;%d/t&#34;, a);  
 }  
 void test_queue()  
 {  
@@ -344,19 +338,18 @@ void test_queue()
     queue.push(1);  
     queue.push(2);  
     queue.push(3);  
-    printf(&quot;/n1 : size: %d /n&quot;, queue.size() );  
+    printf(&#34;/n1 : size: %d /n&#34;, queue.size() );  
     queue.traverse(print_queue);  
     queue.pop();  
-    printf(&quot;/n2 : size: %d /n&quot;, queue.size() );  
+    printf(&#34;/n2 : size: %d /n&#34;, queue.size() );  
     queue.traverse(print_queue);  
     queue.push(4);  
-    printf(&quot;/n3 : size: %d /n&quot;, queue.size() );  
+    printf(&#34;/n3 : size: %d /n&#34;, queue.size() );  
     queue.traverse(print_queue);  
     queue.clear();  
-    printf(&quot;/n4 : size: %d /n&quot;, queue.size() );  
+    printf(&#34;/n4 : size: %d /n&#34;, queue.size() );  
     queue.traverse(print_queue);  
-}  
-</code></pre>
+}  </pre></div>
     </div>
     <footer class="post-footer">
      
@@ -512,6 +505,7 @@ void test_queue()
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

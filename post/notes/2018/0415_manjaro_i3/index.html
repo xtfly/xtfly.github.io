@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -147,7 +148,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，桌面管理采用i3-wm，先上图：</p>
+    <p>这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：</p>
 
 <p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="" />
 <img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt="" /></p>
@@ -161,32 +162,23 @@
 <h2 id="安装manjaro">安装Manjaro</h2>
 
 <p>修改/etc/pacman.d/mirrorlist</p>
-
-<pre><code>Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch</pre></div>
 <p>修改/etc/pacman.conf，由于在Archlinux上安装Manjaro，签名key变化，先配置为对安装包不做签名检查，SigLevel配置为Optional TrustAll，等所有软件安装完成之后再恢复 。</p>
 
 <p>并配置archlinuxcn，用于下载一些国人已打包的软件，如yaourt, vscode等。</p>
-
-<pre><code>SigLevel    = Optional TrustAll  #Required DatabaseOptional
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">SigLevel    = Optional TrustAll  #Required DatabaseOptional
 LocalFileSigLevel = Optional TrustAll  #Optional
 
 ......
 
 [archlinuxcn]  
 SigLevel = Optional TrustAll  
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  
-</code></pre>
-
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  </pre></div>
 <p>个人目前系统的安装包列表： <a href="https://github.com/xtfly/mydots/blob/master/manjaro_i3_packages.txt">mydots/files/manjaro_i3_packages.txt</a>。</p>
 
 <p>根据安装包列来安装所有包，大约有1000个包共1G的下载量，请耐心等待。</p>
-
-<pre><code>pacman -Syu
-pacman -S `cat manjaro_i3_packages.txt` 
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">pacman -Syu
+pacman -S `cat manjaro_i3_packages.txt` </pre></div>
 <h2 id="主要使用软件">主要使用软件</h2>
 
 <p>下面这些软件已包含在manjaro_i3_packages.txt，部分介绍：</p>
@@ -213,17 +205,11 @@ pacman -S `cat manjaro_i3_packages.txt`
 <p>i3pystatus是采用python写的i3stauts，它比原生的i3stauts有更多的插件，配置也更丰富</p>
 
 <p>配置python pip，在root目录下，打开<code>.pip/pip.conf</code>，修改为国内源</p>
-
-<pre><code>[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ 
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ </pre></div>
 <p>执行安装，i3pystatus若显示网卡流量，需要安装netifaces等</p>
-
-<pre><code>sudo pip install git+https://github.com/enkore/i3pystatus.git
-sudo pip install netifaces colour pypi
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sudo pip install git+https://github.com/enkore/i3pystatus.git
+sudo pip install netifaces colour pypi</pre></div>
 <h2 id="配置">配置</h2>
 
 <p>本人参考了网上多个配置，形成自己的配置，已经上传到个人GitHub: <a href="https://github.com/xtfly/mydots">xtfly/mydots</a> ，供大家参考：</p>
@@ -392,6 +378,7 @@ sudo pip install netifaces colour pypi
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

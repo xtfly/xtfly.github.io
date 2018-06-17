@@ -20,7 +20,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -296,16 +297,13 @@
 <li><p>测试源码可以修改package名，带上<code>_test</code>结尾</p>
 
 <p>修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的<code>bytes</code>中的测试代码，方便使用被测试的元素，可以采用<code>.</code>来import测试的package：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">bytes_test</span>
 
-<pre><code>package bytes_test
-
-import (
-    . &quot;bytes&quot;
-    &quot;io&quot;
-    ...
-)
-</code></pre>
-
+<span style="color:#f92672">import</span> (
+    . <span style="color:#e6db74">&#34;bytes&#34;</span>
+    <span style="color:#e6db74">&#34;io&#34;</span>
+    <span style="color:#f92672">...</span>
+)</pre></div>
 <p></p>
     </div>
     
@@ -853,6 +851,7 @@ import (
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

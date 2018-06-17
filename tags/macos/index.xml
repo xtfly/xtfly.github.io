@@ -22,14 +22,11 @@
 &lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;安装：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;➜  ~ brew info mysql
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql
-&lt;/code&gt;&lt;/pre&gt;
-
+➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     

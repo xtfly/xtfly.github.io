@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -153,8 +154,7 @@
 <h2 id="operator-overloading">operator overloading</h2>
 
 <p>C++可以通过operator 重载操作符，格式如下：类型<code>T operator 操作符 ()</code>，如比重载<code>+</code>，如下所示</p>
-
-<pre><code>template&lt;typename T&gt; class A  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt; class A  
 {  
 public:  
     const T operator + (const T&amp; rhs)  
@@ -163,22 +163,16 @@ public:
     }  
 private:  
     T m_;  
-};
-</code></pre>
-
+};</pre></div>
 <p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
-
-<pre><code>template&lt;typename T&gt; struct A  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt; struct A  
 {  
    T operator()(const T&amp; lhs, const T&amp; rhs){ return lhs-rhs;}  
-};  
-</code></pre>
-
+};  </pre></div>
 <h2 id="operator-casting">operator casting</h2>
 
 <p>C++可以通过operator 重载隐式转换，格式如下： <code>operator</code> 类型<code>T ()</code>，如下所示</p>
-
-<pre><code>class A  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">class A  
 {  
 public:  
    operator B* () { return this-&gt;b_;}   
@@ -188,9 +182,7 @@ public:
 
 private:  
    B* b_;  
-};  
-</code></pre>
-
+};  </pre></div>
 <p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
     </div>
     <footer class="post-footer">
@@ -347,6 +339,7 @@ private:
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

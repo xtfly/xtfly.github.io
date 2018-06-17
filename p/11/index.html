@@ -20,7 +20,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -215,11 +216,10 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-
-<pre><code>namespace outspname  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace outspname  
 {   
    const int CVAR1 = 1;  
-   const char* const CVAR2 = &quot;33333&quot;;  
+   const char* const CVAR2 = &#34;33333&#34;;  
    void test();  
 
    namespace inspname  
@@ -229,9 +229,7 @@
       {  
       };  
    }  
-}
-</code></pre>
-
+}</pre></div>
 <p></p>
     </div>
     
@@ -371,14 +369,11 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
-
-<pre><code>typedef std::map&lt;std::string, std::string&gt; TStrMap;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">typedef std::map&lt;std::string, std::string&gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
-TStrMapIter iter = strmap.find(&quot;somekey&quot;);  
-strmap.erase(iter);
-</code></pre>
-
+TStrMapIter iter = strmap.find(&#34;somekey&#34;);  
+strmap.erase(iter);</pre></div>
 <p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
 </p>
     </div>
@@ -440,22 +435,16 @@ strmap.erase(iter);
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-
-<pre><code>sum = 0  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sum = 0  
 10.times{|n| sum += n}   
-print sum
-</code></pre>
-
+print sum</pre></div>
 <p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 
 <p>我们还来看看<code>Python</code>写的闭包：</p>
-
-<pre><code>def addx(x):      
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)
-</code></pre>
-
+print add8(100)</pre></div>
 <p>用Python写就没有那么好看。
 </p>
     </div>
@@ -827,6 +816,7 @@ print add8(100)
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

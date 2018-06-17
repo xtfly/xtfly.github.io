@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -153,29 +154,22 @@
 </p>
 
 <p>我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。</p>
-
-<pre><code># grub-install --target=i386-pc --recheck /dev/sda
-# grub-mkconfig -o /boot/grub/grub.cfg
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># grub-install --target=i386-pc --recheck /dev/sda
+# grub-mkconfig -o /boot/grub/grub.cfg</pre></div>
 <p>采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在<code>30_os-prober</code>文件，说明os-prober是安装的（<code>pacman -S grub</code>会自动安装）。</p>
 
 <p>我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。</p>
-
-<pre><code># mount /dev/sda1 /mnt
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># mount /dev/sda1 /mnt
 # grub-probe --target=fs_uuid /mnt/bootmgr
 70B235F6749E84AE
 # grub-probe --target=hints_string /mnt/bootmgr
---hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1
-</code></pre>
-
+--hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1</pre></div>
 <p>接着，将下面的代码添加到<code>/boot/grub/grub.cfg</code>中，注意替换其中的<code>fs_uuid</code>，即<code>70B235F6749E84AE</code>。保存<code>grub.cfg</code>文件，重启系统，在gurb菜单就可以看到<code>Windows 10 (loader) (on /dev/sda1)</code>项了。选择，成功进入win10。</p>
-
-<pre><code>### BEGIN /etc/grub.d/30_os-prober ###
-menuentry 'Windows 10 (loader) (on /dev/sda1)' --class windows --class os $menuentry_id_option 'osprober-chain-70B235F6749E84AE' {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### BEGIN /etc/grub.d/30_os-prober ###
+menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class os $menuentry_id_option &#39;osprober-chain-70B235F6749E84AE&#39; {
     insmod part_msdos
     insmod ntfs
-    set root='hd0,msdos1'
+    set root=&#39;hd0,msdos1&#39;
     if [ x$feature_platform_search_hint = xy ]; then
       search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1  70B235F6749E84AE
     else
@@ -186,17 +180,12 @@ menuentry 'Windows 10 (loader) (on /dev/sda1)' --class windows --class os $menue
     chainloader +1
 }
 set timeout_style=menu
-if [ &quot;${timeout}&quot; = 0 ]; then
+if [ &#34;${timeout}&#34; = 0 ]; then
   set timeout=10
 fi
-### END /etc/grub.d/30_os-prober ###
-</code></pre>
-
+### END /etc/grub.d/30_os-prober ###</pre></div>
 <p>注：后经验证，grub-mkconfig无法扫描到win10，是由于少安装了os-prober。</p>
-
-<pre><code># pacman -S os-prober
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman -S os-prober</pre></div>
 <p>参考：<a href="https://wiki.archlinux.org/index.php/GRUB_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">GRUB_(简体中文)</a></p>
     </div>
     <footer class="post-footer">
@@ -357,6 +346,7 @@ fi
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

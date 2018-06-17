@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -148,22 +149,16 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-
-<pre><code>sum = 0  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sum = 0  
 10.times{|n| sum += n}   
-print sum
-</code></pre>
-
+print sum</pre></div>
 <p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 
 <p>我们还来看看<code>Python</code>写的闭包：</p>
-
-<pre><code>def addx(x):      
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)
-</code></pre>
-
+print add8(100)</pre></div>
 <p>用Python写就没有那么好看。
 </p>
 
@@ -177,8 +172,7 @@ print add8(100)
 <p>这两种定义在某种意义上是对立的，一个认为闭包是函数，另一个认为闭包是函数和引用环境组成的整体。虽然有些咬文嚼字，但可以肯定第二种说法更确切。闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。</p>
 
 <p>什么是仿函数，我们先用C++来写个例子：</p>
-
-<pre><code>struct comparer {  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">struct comparer {  
   bool operator()(int a, int b) const {  
      return a &gt; b;  
   }  
@@ -189,9 +183,7 @@ int main(int, char**)
    std::vector&lt;int&gt; vec;  
    std::sort(vec.begin(), vec.end(), comparer());  
    return 0;  
-}
-</code></pre>
-
+}</pre></div>
 <p>函数(functor)之所以称为仿函数，是因为这是一种利用某些类对象支持<code>operator()</code>的特性，来达到模拟函数调用效果的技术。从上面你也可以看出来，仿函数实现的内容其实就像动态语言闭包实现的方式差不多，形式不一样，效果是一样的。至于语言本质是什么，就让语言学家去争论吧。</p>
     </div>
     <footer class="post-footer">
@@ -348,6 +340,7 @@ int main(int, char**)
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

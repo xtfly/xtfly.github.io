@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -148,11 +149,10 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-
-<pre><code>namespace outspname  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace outspname  
 {   
    const int CVAR1 = 1;  
-   const char* const CVAR2 = &quot;33333&quot;;  
+   const char* const CVAR2 = &#34;33333&#34;;  
    void test();  
 
    namespace inspname  
@@ -162,32 +162,24 @@
       {  
       };  
    }  
-}
-</code></pre>
-
+}</pre></div>
 <p></p>
 
 <p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
 
 <ul>
 <li><p>当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:</p>
-
-<pre><code>const int  local  = outspname::inspname::A
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">const int  local  = outspname::inspname::A</pre></div>
 <p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
-
-<pre><code>{  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">{  
    using outspname::inspname::A;  
    const int local = A;  
-}
-</code></pre></li>
+}</pre></div></li>
 
 <li><p>通过一个使用指令把该名字空间下所有的名字变成可用。</p>
 
 <p>如下所示，与第一点的用法区别，是<code>using</code> 后面有个<code>namespace</code>。同样只在转换时，或者在一个小的局部作用域内使用<code>using namesapce</code>，否则也会带来名字的污染。</p>
-
-<pre><code>{  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">{  
   using namespace outspname;  
   const int local2 = CVAR1;  
   const int local2 = inspname::B;  
@@ -195,68 +187,46 @@
      using namespace inspname;  
      Klass* p = new Klass();  
   }    
-}
-</code></pre>
-
+}</pre></div>
 <p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
-
-<pre><code>namespace testname  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace testname  
 {  
    void test(int param);  
-}
-</code></pre>
-
+}</pre></div>
 <p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。</p>
-
-<pre><code>using testname;  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">using testname;  
 void test(int param)  
 {  
-}
-</code></pre>
-
+}</pre></div>
 <p>正确的使用方式是:</p>
-
-<pre><code>namespace testname  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace testname  
 {  
    void test(int param)  
    {  
    }  
-}  
-</code></pre>
-
+}  </pre></div>
 <p>或者是</p>
-
-<pre><code>void testname::test(int param)  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void testname::test(int param)  
 {  
-}  
-</code></pre></li>
+}  </pre></div></li>
 
 <li><p>名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：</p>
-
-<pre><code>namespace oin = outspname::inspname;  
-</code></pre></li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace oin = outspname::inspname;  </pre></div></li>
 
 <li><p>无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：</p>
-
-<pre><code>namespace   
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace   
 {  
   const int CVAR1 = 1;  
   void test();  
-}  
-</code></pre>
-
+}  </pre></div>
 <p>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:</p>
-
-<pre><code>namespace $$$  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace $$$  
 {  
   const int CVAR1 = 1;  
   void test();  
 }
 
-using namespace $$$;
-
-</code></pre>
-
+using namespace $$$;</pre></div>
 <p>其中<code>$$$</code>在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，<code>usingnamesapce  $$$</code>只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。</p></li>
 
 <li><p>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</p></li>
@@ -416,6 +386,7 @@ using namespace $$$;
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

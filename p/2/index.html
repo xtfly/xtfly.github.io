@@ -20,7 +20,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -300,14 +301,11 @@
 <p>最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：<a href="https://brew.sh/index_zh-cn.html">brew官网</a></p>
 
 <p>安装：</p>
-
-<pre><code>➜  ~ brew info mysql
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql
-</code></pre>
-
+➜  ~ brew install mysql</pre></div>
 <p></p>
     </div>
     
@@ -659,25 +657,19 @@ Open source relational database management system
 <p>做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。</p>
 
 <p>建议：小对象合并成结构体一次分配，示意如下：</p>
-
-<pre><code>for k, v := range m {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">for k, v := range m {
     k, v := k, v // copy for capturing by the goroutine
     go func() {
         // using k &amp; v
     }()
-}
-</code></pre>
-
+}</pre></div>
 <p>替换为：</p>
-
-<pre><code>for k, v := range m {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">for k, v := range m {
     x := struct {k , v string} {k, v} // copy for capturing by the goroutine
     go func() {
         // using x.k &amp; x.v
     }()
-}
-</code></pre>
-
+}</pre></div>
 <p></p>
     </div>
     
@@ -878,6 +870,7 @@ Open source relational database management system
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -142,7 +143,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1551 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1537 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -161,13 +162,9 @@
 <h3 id="安装">安装</h3>
 
 <p>个人PC使用的Macbook，所以安装比较简单：</p>
-
-<pre><code>$ brew install pandoc
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ brew install pandoc</pre></div>
 <h3 id="检验">检验</h3>
-
-<pre><code>$ pandoc --version
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ pandoc --version
 pandoc 1.17.1
 Compiled with texmath 0.8.6.3, highlighting-kate 0.6.2.
 Syntax highlighting is supported for the following languages:
@@ -184,46 +181,37 @@ Syntax highlighting is supported for the following languages:
     relaxng, relaxngcompact, rest, rhtml, roff, ruby, rust, scala, scheme, sci,
     sed, sgml, sql, sqlmysql, sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl,
     xml, xorg, xslt, xul, yacc, yaml, zsh
-......
-</code></pre>
-
+......</pre></div>
 <p>可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。</p>
 
 <h3 id="样例">样例</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">% Markdown + Pandoc<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>% lanlingzi<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>% 2016-07-16<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e">##</span> Web-based slideshow
 
-<pre><code class="language-markdown">% Markdown + Pandoc
-% lanlingzi
-% 2016-07-16
+<span style="color:#66d9ef">-</span> is a slide show which can be played (viewed or presented) using a web browser<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> is typically generated to or authored in HTML, JavaScript and CSS code (files)<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> are generated from presentation software<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> offer templates allowing the slide show to be easily edited and changed.<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e">##</span> Features
 
-## Web-based slideshow
-
-- is a slide show which can be played (viewed or presented) using a web browser
-- is typically generated to or authored in HTML, JavaScript and CSS code (files)
-- are generated from presentation software
-- offer templates allowing the slide show to be easily edited and changed.
-
-## Features
-
-- Keyboard navigation
-- Slide transitions and animations
-- Auto-play/timed transitions
-- Displays a table of contents
-- Nested slides
-- Separate slide notes for the speaker
-- Full screen support, with automatic text and images resizing to fit full screen
-- .....
-
-</code></pre>
-
+<span style="color:#66d9ef">-</span> Keyboard navigation<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Slide transitions and animations<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Auto-play/timed transitions<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Displays a table of contents<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Nested slides<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Separate slide notes for the speaker<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Full screen support, with automatic text and images resizing to fit full screen<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>- .....</code></pre></div>
 <p>Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。</p>
 
 <p>默认情况下每个二级标题是一张独立的幻灯片，所以，注意把每个二级标题下的内容控制在适当的长度。列表的显示效果可以人为设定，例如在幻灯片演示的时候逐条渐入。也可以直接在文本中嵌入HTML，用于显示Markdown等标记语言不支持的表格，或控制字体大小，以及进行其他更加复杂的排版。当然，如果用到的HTML标签过多，这不是Markdown这些轻量级标记语言的错，也许是做幻灯片的方式出了问题。因为演示本身要传达的是内容，复杂的排版没有任何意义。</p>
 
 <h3 id="命令">命令</h3>
-
-<pre><code>$ pandoc -s -i -t slidy demo.md -o demo.html
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ pandoc -s -i -t slidy demo.md -o demo.html</pre></div>
 <p>其中<code>-t slidy</code>是生成Slide采用样式框架，目前Pandoc包含了对五种HTML Slide框架的支持:</p>
 
 <ul>
@@ -426,6 +414,7 @@ Syntax highlighting is supported for the following languages:
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

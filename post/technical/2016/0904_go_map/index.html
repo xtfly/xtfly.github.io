@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -178,77 +179,74 @@
 <h2 id="比较相等">比较相等</h2>
 
 <p>我们先看一下样例代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code>package main
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
 
-import &quot;fmt&quot;
-
-type _key struct {
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">_key</span> <span style="color:#66d9ef">struct</span> {
 }
 
-type point struct {
-	x int
-	y int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">point</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
 }
 
-type pair struct {
-	x int
-	y int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">pair</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
 }
 
-type Sumer interface {
-	Sum() int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Sumer</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span>
 }
 
-type Suber interface {
-	Sub() int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Suber</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span>
 }
 
-func (p *pair) Sum() int {
-	return p.x + p.y
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pair</span>) <span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
 }
 
-func (p *point) Sum() int {
-	return p.x + p.y
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">point</span>) <span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
 }
 
-func (p pair) Sub() int {
-	return p.x - p.y
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">pair</span>) <span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
 }
 
-func (p point) Sub() int {
-	return p.x - p.y
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">point</span>) <span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
 }
 
-func main() {
-	fmt.Println(&quot;_key{} == _key{}: &quot;, _key{} == _key{}) // output: true
-
-	fmt.Println(&quot;point{} == point{}: &quot;, point{x: 1, y: 2} == point{x: 1, y: 2})     // output: true
-	fmt.Println(&quot;&amp;point{} == &amp;point{}: &quot;, &amp;point{x: 1, y: 2} == &amp;point{x: 1, y: 2}) // output: false
-
-	fmt.Println(&quot;[2]point{} == [2]point{}: &quot;, 
-	  [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true
-
-	var a Sumer = &amp;pair{x: 1, y: 2}
-	var a1 Sumer = &amp;pair{x: 1, y: 2}
-	var b Sumer = &amp;point{x: 1, y: 2}
-	fmt.Println(&quot;Sumer.byptr == Sumer.byptr: &quot;, a == b)        // output: false
-	fmt.Println(&quot;Sumer.sametype == Sumer.sametype: &quot;, a == a1) // output: false
-
-	var c Suber = pair{x: 1, y: 2}
-	var d Suber = point{x: 1, y: 2}
-	var d1 point = point{x: 1, y: 2}
-	fmt.Println(&quot;Suber.byvalue == Suber.byvalue: &quot;, c == d)  // output: false
-	fmt.Println(&quot;Suber.byvalue == point.byvalue: &quot;, d == d1) // output: true
-
-	ci1 := make(chan int, 1)
-	ci2 := ci1
-	ci3 := make(chan int, 1)
-	fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci2) // output: true
-	fmt.Println(&quot;chan int == chan int: &quot;, ci1 == ci3) // output: false
-}
-</code></pre>
-
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;_key{} == _key{}: &#34;</span>, <span style="color:#a6e22e">_key</span>{} <span style="color:#f92672">==</span> <span style="color:#a6e22e">_key</span>{}) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;point{} == point{}: &#34;</span>, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>} <span style="color:#f92672">==</span> <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>})     <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&amp;point{} == &amp;point{}: &#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>} <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;[2]point{} == [2]point{}: &#34;</span>, 
+	  [<span style="color:#ae81ff">2</span>]<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">3</span>}} <span style="color:#f92672">==</span> [<span style="color:#ae81ff">2</span>]<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">3</span>}}) <span style="color:#75715e">//output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a1</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Sumer.byptr == Sumer.byptr: &#34;</span>, <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">b</span>)        <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Sumer.sametype == Sumer.sametype: &#34;</span>, <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">a1</span>) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Suber</span> = <span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Suber</span> = <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d1</span> <span style="color:#a6e22e">point</span> = <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Suber.byvalue == Suber.byvalue: &#34;</span>, <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">d</span>)  <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Suber.byvalue == point.byvalue: &#34;</span>, <span style="color:#a6e22e">d</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">d1</span>) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">ci1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">ci2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ci1</span>
+	<span style="color:#a6e22e">ci3</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;chan int == chan int: &#34;</span>, <span style="color:#a6e22e">ci1</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">ci2</span>) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;chan int == chan int: &#34;</span>, <span style="color:#a6e22e">ci1</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">ci3</span>) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>}</pre></div>
 <p>上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：</p>
 
 <ul>
@@ -265,8 +263,7 @@ func main() {
 <h2 id="类型判断">类型判断</h2>
 
 <p>判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，<code>_type</code>结构是描述最为基础的类型（<code>runtime/type.go</code>），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。</p>
-
-<pre><code>type _type struct {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type _type struct {
 	size       uintptr
 	ptrdata    uintptr 
 	hash       uint32
@@ -290,36 +287,27 @@ type slicetype struct {
 	typ  _type
 	elem *_type
 }
-...
-</code></pre>
-
+...</pre></div>
 <p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
-
-<pre><code>type typeAlg struct {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type typeAlg struct {
 	// function for hashing objects of this type
 	// (ptr to object, seed) -&gt; hash
 	hash func(unsafe.Pointer, uintptr) uintptr
 	// function for comparing objects of this type
 	// (ptr to object A, ptr to object B) -&gt; ==?
 	equal func(unsafe.Pointer, unsafe.Pointer) bool
-}
-</code></pre>
-
+}</pre></div>
 <p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
-
-<pre><code>func strhash(a unsafe.Pointer, h uintptr) uintptr {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func strhash(a unsafe.Pointer, h uintptr) uintptr {
 	x := (*stringStruct)(a)
 	return memhash(x.str, h, uintptr(x.len))
 }
 
 func strequal(p, q unsafe.Pointer) bool {
 	return *(*string)(p) == *(*string)(q)
-}
-</code></pre>
-
+}</pre></div>
 <p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
-
-<pre><code>func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
 	...
 	alg := t.key.alg
 	hash := alg.hash(key, uintptr(h.hash0)) // 1
@@ -342,10 +330,7 @@ func strequal(p, q unsafe.Pointer) bool {
 		}
 	...
 	}
-}
-
-</code></pre>
-
+}</pre></div>
 <p>mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：</p>
 
 <ol>
@@ -355,14 +340,11 @@ func strequal(p, q unsafe.Pointer) bool {
 </ol>
 
 <p>到现在我们也就有了初步了解，map中的<code>key</code>访问时同时需要使用该类型的<code>hash func</code>与 <code>equal func</code>，只要<code>key</code>值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：</p>
-
-<pre><code>m := make(map[interface{}]interface{})
-m[_key{}] = &quot;value&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">m := make(map[interface{}]interface{})
+m[_key{}] = &#34;value&#34;
 if v, ok := m[_key{}];ok {
-	fmt.Println(&quot;%v&quot;, v) // output: value
-}
-</code></pre>
-
+	fmt.Println(&#34;%v&#34;, v) // output: value
+}</pre></div>
 <hr />
 
 <p>参考：<br />
@@ -547,6 +529,7 @@ if v, ok := m[_key{}];ok {
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

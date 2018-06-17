@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -150,14 +151,11 @@
     <h2 id="classloader">ClassLoader</h2>
 
 <p>JVM类加载器层次结构：</p>
-
-<pre><code>   Bootstrap ClassLoader
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">   Bootstrap ClassLoader
             |
    Extension ClassLoader
             |
-   System ClassLoader
-</code></pre>
-
+   System ClassLoader</pre></div>
 <p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
 </p>
 
@@ -228,10 +226,7 @@
 <li><p>一种方案重载Web容器的WebApp Context自定义ClassLoader.defineClass方法，这要求Web容器支持插件方式替换已有WebApp Context ClassLoader。</p></li>
 
 <li><p>另一种方案是采用JVM的Instrumentation功能。在JVM级别，以插件的方法动态AOP切入JVM或JRE类中已有的实现。正好Instrumentation提供一种机制切入到每个ClassLoader.defineClass方法之前。应用只需要实现接口java.lang.instrument.ClassFileTransformer。在transform方法实现对类字符码的转换。此方法的原型为</p>
-
-<pre><code>  byte[] transform(ClassLoader loader,  String className,  Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  byte[] transform(ClassLoader loader,  String className,  Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException</pre></div>
 <p>转换器ClassFileTransformer利用Instrumentation.addTransformer注册之后，在定义每个新类和重定义每个类时都将调用该转换器。对新的类定义的请求通过ClassLoader.defineClass进行。对类重定义的请求通过Instrumentation.redefineClasses方法进行。转换器是在验证或应用class文件字节之前的处理请求过程中进行调用的。</p>
 
 <p>如果实现的方法确定不需要进行字节码转换，则将返回null。否则它将刨建一个新的byte[]数组。将输入classfileBuffer连同所有需要的转换复制到其中，并返回新数组。</p></li>
@@ -266,10 +261,8 @@
 </ul>
 
 <p>新的代码类似如下：</p>
-
-<pre><code>//插入抛NoClassDefFoundError代码，调用一个类的静态方法
-//原代码
-</code></pre></li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">//插入抛NoClassDefFoundError代码，调用一个类的静态方法
+//原代码</pre></div></li>
 
 <li><p>WebApp可能创建的自己实现的ClassLoader。第二遍扫描类的所有方法字节码，判断Visit到类的类型是否URLclassLoader，SecureClassLoader，ClassLoader其中的一个，或者是否继承自他们。则插入记录这些ClassLoader名的代码。自己实现的ClassLoader满足如下条件：</p>
 
@@ -291,13 +284,11 @@
 </ul>
 
 <p>当满足上面条件时，修改原有这些方法调用，则在原有方法中插入检查反射的target对象的类型是否不在白名单列表中。新的代码类似如下</p>
-
-<pre><code>void setBoolean (Field f, Object a, final boolean value) {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void setBoolean (Field f, Object a, final boolean value) {
 ／／插入检查obj是否有访问权限（配合Securtiy访问控制）
 ／／插入检查obj是否在黑名单列表中
 ／／再加上原有的f.setBoolean(obj，value)；
-}
-</code></pre></li>
+}</pre></div></li>
 </ol></li>
 </ul></li>
 </ol>
@@ -482,6 +473,7 @@
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

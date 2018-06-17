@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -169,28 +170,20 @@ const char * pszStr = CAT(Second);</code> str的内容就是&rdquo;First Second 
 <li><p>宏中如有存在if等语句产生的分支，要使用do{}while(0)包起来，如
 <code>#define TEST(a ) if ( 0 == a ) dosomething()</code>
 如果在下面使用是会存在问题</p>
-
-<pre><code>if ( 1 == b)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">if ( 1 == b)
 TEST(a ):
 else
 {
  dootherthing();
-}
-</code></pre>
-
+}</pre></div>
 <p>那当代码展开之后，宏中的if与外面的else是一起匹配，而不是else与if ( 1 == b)匹配。
 所以上述宏要修改为</p>
-
-<pre><code>#define TEST(a )  do {/
-if ( 0 == a )  { dosomething(); }  }while(0)
-</code></pre></li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#define TEST(a )  do {/
+if ( 0 == a )  { dosomething(); }  }while(0)</pre></div></li>
 
 <li><p>对于可变参宏，可以使用<strong>VA_ARGS</strong>，GCC支持它，但并非所有的编译器支持，如果你的代码要跨平台，慎用。</p>
-
-<pre><code>#define LOG( format, ... ) printf( format, __VA_ARGS__ )
-LOG( &quot;%s %d&quot;, str, count );
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#define LOG( format, ... ) printf( format, __VA_ARGS__ )
+LOG( &#34;%s %d&#34;, str, count );</pre></div>
 <p><code>__VA_ARGS__</code>被自动替换为参数列表。</p></li>
 
 <li><p>宏不能嵌套使用，如:
@@ -353,6 +346,7 @@ LOG( &quot;%s %d&quot;, str, count );
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

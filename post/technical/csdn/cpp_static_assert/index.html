@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -153,11 +154,8 @@
 <h2 id="动态断言">动态断言：</h2>
 
 <p>assert宏的原型定义在<assert.h>中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：</p>
-
-<pre><code>#include &lt;assert.h&gt;  
-void assert( int expression );
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#include &lt;assert.h&gt;  
+void assert( int expression );</pre></div>
 <p><code>assert</code>的作用是先计算表达式<code>expression</code> ，如果其值为假（即为0），那么它先向<code>stderr</code>打印一条出错信息，然后通过调用<code>abort</code> 来终止程序运行。</p>
 
 <p>大家要注意是，其中的表达式为假时，会终止程序运行，包括我在内经常会写错代码，断言一个指针是否为空，往往写成了
@@ -172,25 +170,19 @@ void assert( int expression );
 <p>使用静态断言，我们可以在程序的编译时期检测一些条件是否成立。但这个关键字太新了，没有几个编译器是支持的(好像VC2008支持，我用VC很少，主要是在linux下C++编程)。</p>
 
 <p>于是可以使用C++现有的模板特性来实现静态断言的功能。<code>boost</code>中也已有<code>BOOST_STATIC_ASSERT</code>宏的实现，有兴趣的同学可以down下来仔细研究一下，它的断言信息更丰富，下面为我的简单实现：</p>
-
-<pre><code>// declare a tempalte class StaticAssert.  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">// declare a tempalte class StaticAssert.  
 template &lt;bool assertion&gt; struct StaticAssert;  
 
-// only partial specializate parameter's value is true.  
+// only partial specializate parameter&#39;s value is true.  
 template &lt;&gt; struct StaticAssert&lt;true&gt;   
 {  
   enum { VALUE = 1 };  
 };
 
-#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  
-</code></pre>
-
+#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  </pre></div>
 <p>原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到<code>StaticAssert&lt;false&gt;::VALUE</code>类型。举例如下：</p>
-
-<pre><code>STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK  
-STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK  
+STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节</pre></div>
 <p>静态断言在编译时进行处理，不会产生任何运行时刻空间和时间上的开销，这就使得它比assert宏具有更好的效率。另外比较重要的一个特性是如果断言失败，它会产生有意义且充分的诊断信息，帮助程序员快速解决问题。</p>
     </div>
     <footer class="post-footer">
@@ -347,6 +339,7 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

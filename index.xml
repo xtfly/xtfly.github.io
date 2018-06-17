@@ -36,7 +36,7 @@
       <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</guid>
-      <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，桌面管理采用i3-wm，先上图：&lt;/p&gt;
+      <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34; /&gt;
 &lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
@@ -201,14 +201,11 @@
 &lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;安装：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;➜  ~ brew info mysql
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql
-&lt;/code&gt;&lt;/pre&gt;
-
+➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -310,25 +307,19 @@ Open source relational database management system
 &lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
 
 &lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;for k, v := range m {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
     k, v := k, v // copy for capturing by the goroutine
     go func() {
         // using k &amp;amp; v
     }()
-}
-&lt;/code&gt;&lt;/pre&gt;
-
+}&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;替换为：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;for k, v := range m {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
     x := struct {k , v string} {k, v} // copy for capturing by the goroutine
     go func() {
         // using x.k &amp;amp; x.v
     }()
-}
-&lt;/code&gt;&lt;/pre&gt;
-
+}&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -518,16 +509,13 @@ Open source relational database management system
 &lt;li&gt;&lt;p&gt;测试源码可以修改package名，带上&lt;code&gt;_test&lt;/code&gt;结尾&lt;/p&gt;
 
 &lt;p&gt;修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的&lt;code&gt;bytes&lt;/code&gt;中的测试代码，方便使用被测试的元素，可以采用&lt;code&gt;.&lt;/code&gt;来import测试的package：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bytes_test&lt;/span&gt;
 
-&lt;pre&gt;&lt;code&gt;package bytes_test
-
-import (
-    . &amp;quot;bytes&amp;quot;
-    &amp;quot;io&amp;quot;
-    ...
-)
-&lt;/code&gt;&lt;/pre&gt;
-
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
+    . &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bytes&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;io&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+)&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -1231,14 +1219,11 @@ import (
       <description>&lt;h2 id=&#34;classloader&#34;&gt;ClassLoader&lt;/h2&gt;
 
 &lt;p&gt;JVM类加载器层次结构：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;   Bootstrap ClassLoader
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;   Bootstrap ClassLoader
             |
    Extension ClassLoader
             |
-   System ClassLoader
-&lt;/code&gt;&lt;/pre&gt;
-
+   System ClassLoader&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
 &lt;/p&gt;</description>
     </item>
@@ -1382,11 +1367,10 @@ import (
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;namespace outspname  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;namespace outspname  
 {   
    const int CVAR1 = 1;  
-   const char* const CVAR2 = &amp;quot;33333&amp;quot;;  
+   const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
    void test();  
 
    namespace inspname  
@@ -1396,9 +1380,7 @@ import (
       {  
       };  
    }  
-}
-&lt;/code&gt;&lt;/pre&gt;
-
+}&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
     
@@ -1438,14 +1420,11 @@ import (
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
       <description>&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
-TStrMapIter iter = strmap.find(&amp;quot;somekey&amp;quot;);  
-strmap.erase(iter);
-&lt;/code&gt;&lt;/pre&gt;
-
+TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
+strmap.erase(iter);&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
 &lt;/p&gt;</description>
     </item>
@@ -1457,22 +1436,16 @@ strmap.erase(iter);
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
       <description>&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sum = 0  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;sum = 0  
 10.times{|n| sum += n}   
-print sum
-&lt;/code&gt;&lt;/pre&gt;
-
+print sum&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
 
 &lt;p&gt;我们还来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;def addx(x):      
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)
-&lt;/code&gt;&lt;/pre&gt;
-
+print add8(100)&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;用Python写就没有那么好看。
 &lt;/p&gt;</description>
     </item>
@@ -1580,7 +1553,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <pubDate>Mon, 01 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/about/</guid>
-      <description>关于我 我网名叫兰陵昕云，也叫兰陵子。兰陵(蘭陵)来源于我的姓氏蕭，蕭姓起源于山东兰陵，所以也称为兰陵氏。但某机关因简化字的原因登记身份证蕭几</description>
+      <description>关于我 我的网名叫兰陵昕云，也叫兰陵子。兰陵(蘭陵)来源于我的姓氏蕭，蕭姓起源于山东兰陵，所以也称为兰陵氏。但某机关因简化字的原因登记身份证蕭</description>
     </item>
     
   </channel>

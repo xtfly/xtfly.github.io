@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -177,11 +178,8 @@
 <p>由于需要下载Ubuntu需要从应用商店下载，在天朝的网络，可能会比较慢，甚至会连接不上，我就折腾好久。并且它居然没有断点续传，好几次下载到70%多，就断开了，真让人受不了。</p>
 
 <p>由于后续把Ubuntu替换成Archlinux，需要使用到Archlinux的roofs。squashfs-tools工具是用于解压sfs文件的，所以先把Ubuntu的更新源替换成国内的，比如<a href="http://mirrors.163.com/.help/ubuntu.html">mirrors.163.com/ubuntu</a>或<a href="http://mirrors.aliyun.com/help/ubuntu">mirrors.aliyun.com/ubuntu</a>。</p>
-
-<pre><code>$ sudo apt-get update
-$ sudo apt-get install squashfs-tools
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ sudo apt-get update
+$ sudo apt-get install squashfs-tools</pre></div>
 <h2 id="archlinux-on-wsl">Archlinux on WSL</h2>
 
 <p>首先从<a href="http://mirrors.aliyun.com/archlinux/iso/latest/">http://mirrors.aliyun.com/archlinux/iso/latest/</a>下载最新的ArchISO。</p>
@@ -189,10 +187,7 @@ $ sudo apt-get install squashfs-tools
 <p>从ArchISO中提取出/arch/x86_64/airoot.sfs文件放在Bash on Ubuntu on Windows 能读取的目录下。WSL系统会把Windows的磁盘挂载到/mnt目录下，如D盘则是/mnt/d。</p>
 
 <p>在Ubuntu中把airoot.sfs解压，建议在当前Ubuntu的用户Home目录下执行：</p>
-
-<pre><code>$ sudo unsquashfs airoot.sfs
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ sudo unsquashfs airoot.sfs</pre></div>
 <p>然后把Bash窗口关掉，通过Windows的文件资源管理器进行到<code>C:\Users\&lt;用户名&gt;\AppData\Local\Lxss</code>文件夹。由于AppData与Lxss都是隐藏目录，可以在地址栏上直接输入路径就可以直接进入，否则需要在文件夹选项 中把“隐藏受保护的操作系统文件”选项取消才能看到。</p>
 
 <p>其中的<code>rootfs</code>文件夹就是Linux中的<code>/</code>，先把原有的<code>rootfs</code>修改其它名称备份，还把之前<code>airoot.sfs</code>解压的<code>squashfs-root</code>直接剪切到Lxss，重命名为<code>rootfs</code>。<strong>注意</strong>，<code>squashfs-root</code>不能在Windows下拷贝到<code>Lxss\rootfs</code>，由于在WSL与Windows对文件读写操作还是有区别，Windows下拷贝可能存在丢失文件。</p>
@@ -210,20 +205,14 @@ $ sudo apt-get install squashfs-tools
 <ul>
 <li>Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:</li>
 </ul>
-
-<pre><code># pacman-key --init
-# pacman-key --populate
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman-key --init
+# pacman-key --populate</pre></div>
 <ul>
 <li>locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：</li>
 </ul>
-
-<pre><code># cd /usr/share/i18n/charmaps
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># cd /usr/share/i18n/charmaps
 # tar zxvf UTF-8.gz
-# locale-gen
-</code></pre>
-
+# locale-gen</pre></div>
 <ul>
 <li>编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：</li>
 </ul>
@@ -428,6 +417,7 @@ $ sudo apt-get install squashfs-tools
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

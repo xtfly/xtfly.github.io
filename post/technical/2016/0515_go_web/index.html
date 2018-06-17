@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -157,8 +158,7 @@
 
 <p>封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
 </p>
-
-<pre><code>  type Request struct {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  type Request struct {
       Method string
       URL *url.URL
       Proto      string
@@ -178,14 +178,11 @@
       RequestURI string
       TLS *tls.ConnectionState
       Cancel &lt;-chan struct{}
-  }
-</code></pre>
-
+  }</pre></div>
 <h3 id="response结构体">Response结构体</h3>
 
 <p>封装HTTP的响应消息，其结构如下，Response会关联Request。</p>
-
-<pre><code>  type Response struct {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  type Response struct {
     Status     string
     StatusCode int
     Proto      string
@@ -199,35 +196,26 @@
     Trailer Header
     Request *Request
     TLS *tls.ConnectionState
- }
-</code></pre>
-
+ }</pre></div>
 <h3 id="handler接口">Handler接口</h3>
 
 <p>用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。</p>
-
-<pre><code> type Handler interface {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> type Handler interface {
     ServeHTTP(ResponseWriter, *Request)
- }
-</code></pre>
-
+ }</pre></div>
 <h3 id="responsewriter接口">ResponseWriter接口</h3>
 
 <p>即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了<code>io.Writer</code>接口，可以写入响应的Body，<code>WriteHeader</code>方法用于向HTTP响应信息写入状态码，但必须先于<code>Writer</code>方法调用。若不调用<code>WriteHeader</code>，使用<code>Write</code>方法会自动写入状态码<code>http.StatusOK</code>。</p>
-
-<pre><code> type ResponseWriter interface {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> type ResponseWriter interface {
     Header() Header
     Write([]byte) (int, error)
     WriteHeader(int)
- }
-</code></pre>
-
+ }</pre></div>
 <h3 id="listenandserve函数">ListenAndServe函数</h3>
 
 <p>启动HTTP服务，需要构建Server对象，并调用该Server的<code>ListenAndServe</code>方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。</p>
-
-<pre><code>type Server struct {
-    Addr           string        // TCP address to listen on, &quot;:http&quot; if empty
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type Server struct {
+    Addr           string        // TCP address to listen on, &#34;:http&#34; if empty
     Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
     ReadTimeout    time.Duration // maximum duration before timing out read of the request
     WriteTimeout   time.Duration // maximum duration before timing out write of the response
@@ -239,34 +227,23 @@
     disableKeepAlives int32     // accessed atomically.
     nextProtoOnce     sync.Once // guards initialization of TLSNextProto in Serve
     nextProtoErr      error
-}
-</code></pre>
-
+}</pre></div>
 <p>Server需要关注如下几个方法，从方法名就可能知道它的用途。</p>
-
-<pre><code>func (srv *Server) ListenAndServe() error
-func (srv *Server) Serve(l net.Listener) error
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func (srv *Server) ListenAndServe() error
+func (srv *Server) Serve(l net.Listener) error</pre></div>
 <h3 id="servemux结构体">ServeMux结构体</h3>
 
 <p>用于HTTP路由配置，其结构体定义如下：</p>
-
-<pre><code>type ServeMux struct {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type ServeMux struct {
     mu    sync.RWMutex
     m     map[string]muxEntry
     hosts bool // whether any patterns contain hostnames
-}
-</code></pre>
-
+}</pre></div>
 <p>ServeMux有如下几个方法，用于配置HTTP与URL的映射关系。其实ServeMux也是实现<code>ServeHTTP</code>接口，其ServeHTTP方法完成了ServeMux的主要功能，即根据HTTP请求找出最佳匹配的<code>Handler</code>并执行之，它本身就是一个多<code>Handler</code>封装器，是各个<code>Handler</code>执行的总入口。</p>
-
-<pre><code>func (mux *ServeMux) Handle(pattern string, handler Handler)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func (mux *ServeMux) Handle(pattern string, handler Handler)
 func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string)
-func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
-</code></pre>
-
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)</pre></div>
 <p>ServeMux的路由功能是非常简单的，其只支持路径匹配，且匹配能力不强，也不支持对Method的匹配。<code>net/http</code>包已经为我们定义了一个可导出的ServeMux类型的变量<code>DefaultServeMux</code>。<code>net/http</code>包也提供了注册<code>Handler</code>的方法，它其实也是操作<code>DefaultServeMux</code>：</p>
 
 <ul>
@@ -510,6 +487,7 @@ func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 

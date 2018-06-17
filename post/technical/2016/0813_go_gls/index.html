@@ -19,7 +19,8 @@
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" id="hexo.configuration">
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Pisces',
@@ -157,13 +158,10 @@
 </p>
 
 <p>ThreadLocal的API提供了如下的4个方法：</p>
-
-<pre><code>public T get()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">public T get()
 protected  T initialValue()
 public void remove()
-public void set(T value)
-</code></pre>
-
+public void set(T value)</pre></div>
 <ul>
 <li><code>T get()</code>:返回此线程局部变量的当前线程副本中的值，如果这是线程第一次调用该方法，则创建并初始化此副本。</li>
 <li><code>protected  T initialValue()</code>: 返回此线程局部变量的当前线程的初始值。最多在每次访问线程来获得每个线程局部变量时调用此方法一次，即线程第一次使用<code>get()</code>方法访问变量的时候。如果线程先于<code>get</code>方法调用<code>set(T)</code>方法，则不会在线程中再调用<code>initialValue</code>方法。</li>
@@ -172,8 +170,7 @@ public void set(T value)
 </ul>
 
 <p>在Go语言中，而Google提供的解决方法是采用<a href="https://blog.golang.org/context"><code>golang.org/x/net/context</code></a>包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：<a href="http://lanlingzi.cn/post/technical/2016/0802_go_context/">理解Go Context机制</a>。<code>Context</code>也是能存储Goroutine一些数据达到共享，但它提供的接口是<code>WithValue</code>函数来创建一个新的<code>Context</code>对象。</p>
-
-<pre><code>func WithValue(parent Context, key interface{}, val interface{}) Context {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func WithValue(parent Context, key interface{}, val interface{}) Context {
 	return &amp;valueCtx{parent, key, val}
 }
 
@@ -187,9 +184,7 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 		return c.val
 	}
 	return c.Context.Value(key)
-}
-</code></pre>
-
+}</pre></div>
 <p>从上面代码中可以看出，<code>Context</code>设置一次Value，就会产生一个<code>Context</code>对象，获取Value是先找当前<code>Context</code>存储的值，若没有再向父一级查找。获取<code>Value</code>可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine<strong>一次</strong>设置<code>Key/Value</code>，其它多Goroutine只能读取<code>Key</code>的<code>Value</code>。</p>
 
 <h2 id="为什么无获取goid接口">为什么无获取GoId接口</h2>
@@ -232,19 +227,16 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 <li><p>修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容</p>
 
 <p>在标准库的<code>runtime/proc.go</code>（Go 1.6.3）中的<code>newextram</code>函数，会产生个GoId：</p>
-
-<pre><code>mp.lockedg = gp
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">mp.lockedg = gp
 gp.lockedm = mp
-gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
-</code></pre></li>
+gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))</pre></div></li>
 
 <li><p>通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p>
 
 <p>在标准库的<code>runtime/mprof.go</code>（Go 1.6.3）中，<code>runtime.Stack</code>会获取gp对象(包含GoId)并输出整个Stack信息：</p>
-
-<pre><code>func Stack(buf []byte, all bool) int {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func Stack(buf []byte, all bool) int {
     if all {
-        stopTheWorld(&quot;stack trace&quot;)
+        stopTheWorld(&#34;stack trace&#34;)
     }
 
     n := 0
@@ -271,9 +263,7 @@ gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
         startTheWorld()
     }
     return n
-}
-</code></pre>
-
+}</pre></div>
 <p>从文件名就可以看出，<code>runtime/mprof.go</code>是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack信息也会导致无法正常获取GoId。</p></li>
 
 <li><p>通用<code>runtime.Callers</code>来给调用Stack来打标签</p>
@@ -283,14 +273,12 @@ gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
 <li><p>通过内联c或者内联汇编</p>
 
 <p>go版本1.5，x86_64arc下汇编，估计也不通用</p>
-
-<pre><code>// func GoID() int64
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">// func GoID() int64
 TEXT s3lib GoID(SB),NOSPLIT,$0-8
 MOVQ TLS, CX
 MOVQ 0(CX)(TLS*1), AX
 MOVQ AX, ret+0(FP)
-RET
-</code></pre></li>
+RET</pre></div></li>
 </ul>
 
 <h2 id="开源goroutine-local-storage实现">开源goroutine local storage实现</h2>
@@ -524,6 +512,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 
     <div class="back-to-top">
       <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
     </div>
   </div>
 
