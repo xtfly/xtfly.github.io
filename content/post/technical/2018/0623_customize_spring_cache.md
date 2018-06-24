@@ -172,6 +172,6 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
 
 ![Snip20180623_3.png](/images/2018/Snip20180623_3.png)
 
-从Debug的调用栈来看，在Spring框架中，当调用Bean是接口动态代理对象方法时，会生成JdkDynamicAopProxy，此对象会设置所有advisors。只要我们写的advisor以Bean方式注入到Spring框架，它会就生效，流程总结如下：
+从Debug调用栈来看，在Spring框架中，当调用是接口动态代理对象方法时，会生成JdkDynamicAopProxy，此对象会设置所有advisors。只要我们写的advisor以Bean方式注入到Spring框架，它会就生效，流程总结如下：
 
 `声明advisor->Pointcut.matches->MethodInterceptor.invoke`
