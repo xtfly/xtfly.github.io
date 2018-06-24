@@ -107,7 +107,7 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache/" itemprop="url">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" itemprop="url">
         Cache设计
         </a>
       </h1>
@@ -146,7 +146,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1452 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1464 字 ~3分钟</span>
 </span>
       </div>
     </header>
@@ -157,7 +157,7 @@
 <li>针对消息对象缓存，每个消息都非常小，要高效地使用内存</li>
 <li>存在定时消息，当定时到了，需要回到业务系统中去调度</li>
 <li>消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等）</li>
-<li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相于多级缓存，本地文件存储要求高效索引）</li>
+<li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）</li>
 </ul>
 
 <p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理。</p>
@@ -168,7 +168,7 @@
     </div>
     
     <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0624_cache/" rel="contents">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -179,7 +179,7 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/" itemprop="url">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/" itemprop="url">
         自定义扩展Spring Cache注解
         </a>
       </h1>
@@ -218,7 +218,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2176 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2171 字 ~5分钟</span>
 </span>
       </div>
     </header>
@@ -235,7 +235,7 @@
     </div>
     
     <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/" rel="contents">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>

@@ -13,17 +13,17 @@
     
     <item>
       <title>Cache设计</title>
-      <link>http://lanlingzi.cn/post/technical/2018/0624_cache/</link>
+      <link>http://lanlingzi.cn/post/technical/2018/0624_cache_design/</link>
       <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2018/0624_cache/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2018/0624_cache_design/</guid>
       <description>&lt;p&gt;一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;针对消息对象缓存，每个消息都非常小，要高效地使用内存&lt;/li&gt;
 &lt;li&gt;存在定时消息，当定时到了，需要回到业务系统中去调度&lt;/li&gt;
 &lt;li&gt;消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等）&lt;/li&gt;
-&lt;li&gt;消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相于多级缓存，本地文件存储要求高效索引）&lt;/li&gt;
+&lt;li&gt;消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理。&lt;/p&gt;
@@ -35,10 +35,10 @@
     
     <item>
       <title>自定义扩展Spring Cache注解</title>
-      <link>http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/</link>
+      <link>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</link>
       <pubDate>Sat, 23 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</guid>
       <description>&lt;p&gt;昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。&lt;/p&gt;
 
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;

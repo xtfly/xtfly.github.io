@@ -13,10 +13,10 @@
     
     <item>
       <title>自定义扩展Spring Cache注解</title>
-      <link>http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/</link>
+      <link>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</link>
       <pubDate>Sat, 23 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</guid>
       <description>&lt;p&gt;昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。&lt;/p&gt;
 
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
