@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Mesos与K8S的区别 - 蘭陵N散記</title>
+    <title>Cache设计 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Mesos与K8S的区别">
+    <meta property="og:title" content="Cache设计">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Mesos与K8S的区别 - 蘭陵N散記" />
+    <meta name="title" content="Cache设计 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
@@ -104,8 +104,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/" itemprop="url">
-        Mesos与K8S的区别
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache/" itemprop="url">
+        Cache设计
         </a>
       </h1>
       <div class="post-meta">
@@ -114,8 +114,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-10-20">
-    2015-10-20
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-06-24">
+    2018-06-24
 </time>
 </span> 
       
@@ -143,70 +143,74 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2006 字 ~5分钟</span>
+<span class="leancloud-visitors-count">1452 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg" alt="pets vs cattle" /></p>
-
-<p>最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
-</p>
-
-<h2 id="mesos">Mesos</h2>
-
-<p>Mesos是倾向于是IaaS层上的 <strong>资源管理器</strong>。Mesos不要求计算计算是物理服务器还是虚拟机，只要是Linux操作系统计算资源就可以，Mesos可以理解成一个分布式的Kernel。所以讲师强调DCOS一个OS(阿里云栖讲师的分享)，而不是一个调度器。Mesos只分配集群计算资源，不负责任务调度。基于Mesos之上可以运行不同的分布式平台，如Spark，Storm，Hadoop，Marathon，Chronos等。</p>
-
-<p>Mesos中的核心是DFS，即资源管理策略 Dominant Resource Fairness。Mesos能够保证集群内的所有用户有平等的机会使用集群内的资源，这些资源包括 CPU，内存，磁盘等等。Mesos只做一件事，就是分布式集群资源分配，不管任务调度。Mesos只要你给出CPU、Memory参数就能分配资源，用于你的计算。</p>
-
-<p>Mesos 是一个双层调度器。 <strong>在第一层中</strong>，Mesos 将一定的资源提供（以容器的形式）给对应的框架或应用程序。<strong>在第二层中</strong> ，应用程序将收到的资源进一步分配给内部的任务。但是资源分配器智能化程度不同，mesos是基于resource offer的调度机制，包含非常少的调度语义，他只是简单的将资源推给各个应用程序，由应用程序选择是否接受资源，而mesos本身并不知道各个应用程序资源需求。</p>
-
-<p>Mesos是Apache的开源项目，起源于UC Berkeley的一个研究项目。而背后的商业运作公司是Mesosphere，主要产品是基于Mesos构建的DCOS(datacenter operation system)。Mesos的商用程度很高，在国外的Airbnb, Apple, Uber, Twitter在使用，其中Apple的语音助手 siri是基于DCOS部署，有6000+节点。而国内有携程，爱奇艺在使用。</p>
-
-<h3 id="mesos与docker">Mesos与Docker</h3>
-
-<p>没有Dokcer之前，物理机，虚拟机都可以作为Mesos的集群节点，引入Docker之后，对资源的管理与分配粒度更细，更能提高对资源的利用率。但Mesos只负责资源的分配，对Docker的调度需要上层的调度器，而马拉松Marathon框架就是解决这个问题。当前Mesos + Marathon 基本上是现在最成熟的分布式运行框架。</p>
-
-<h2 id="k8s">K8S</h2>
-
-<p>与Mesos最大的不同就是，Kubernetes(K8S)一开始设计是 <strong>面向应用的</strong>，而Mesos是 <strong>面向资源的</strong> 。Kubernetes是应用的集群管理工具。它是构建Docker技术（也可支持其它的容器技术，如Rocket）之上，为容器化的应用提供资源调度、部署运行、服务发现、扩容缩容等整一套功能，本质上可看作是基于容器技术的mini-PaaS平台。</p>
-
-<p>Kubernetes重新实现了Google在构建集群应用时积累的经验。这些概念包括如下内容：</p>
+    <p>一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：</p>
 
 <ul>
-<li>Pods：一种将容器组织在一起的方法</li>
-<li>Replication Controllers：一种控制容器生命周期的方法（Replication Controller确保任何时候Kubernetes集群中有指定数量的pod副本(replicas)在运行）</li>
-<li>Labels：一种可以找到和查询容器的方法</li>
-<li>Services：一个用于实现某一特定功能的容器组</li>
+<li>针对消息对象缓存，每个消息都非常小，要高效地使用内存</li>
+<li>存在定时消息，当定时到了，需要回到业务系统中去调度</li>
+<li>消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等）</li>
+<li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相于多级缓存，本地文件存储要求高效索引）</li>
 </ul>
 
-<p>K8S和Borg系出同门，基本是Borg的开源改进版本，吸收了包括Omega在内的容器管理器的经验和教训，label, annotaion等功能的加入让容器分类检索信息标记管理更加便捷。目的就是将Borg最精华的部分提取出来，使现在的开发者能够更简单、直接地应用。K8S是在Google内部积累发展10年的容器及集群管理专家经验基础上开源实现，有其自身的独特优势来构建容器应用部署、可伸缩可扩展，多平台兼容的容器集群管理体系。可以说，K8S的出现，也是为容器而生。</p>
+<p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理。</p>
 
-<p>使用K8S你就能够简单并快速的启动、移植并扩展集群。在这种情况下，集群就像是类似虚拟机一样灵活的资源，它是一个逻辑运算单元。打开它，使用它，调整它的大小，然后关闭它。</p>
+<p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层的复杂与缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
 
-<h3 id="mesos与k8s">Mesos与K8S</h3>
+<p></p>
 
-<p>Mesos与K8S都起源于Borg，Mesos和K8S的愿景差不多，但是它们在不同的生命周期中各有不同的优势。Mesos 虽更多的是侧重在资源管理上。而Mesos+Marathon与K8S存在竞争关系，他们在容器调度编排上有些交叉，后续如何发展，还需要看社区的走向。目前K8S是可以运行在Mesos上。</p>
+<h3 id="缓存穿透">缓存穿透</h3>
 
-<h2 id="如何选型">如何选型</h2>
+<p>缓存系统一般都是按照key去缓存查询，如果不存在对应的value，就应该去后端系统查找（比如DB）。如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会对后端系统造成很大的压力。这就叫做缓存穿透。</p>
+
+<p>解决办法：</p>
 
 <ul>
-<li>Mesos更适合做跨DC的资源管理，对于大数据领域，大量存在短任务，可以采用Mesos+上层调度器来解决大数据的资源池化调度问题。</li>
-<li>K8S更适合当应用的集群管理，它解决大规模应用部署的问题，而它的集群的热升级，动态伸缩，负载均衡，服务发现等特性可以让你的应用的更可靠。</li>
+<li>对空结果缓存，缓存时间设置较短，当该key对应的数据有抛入时更新</li>
+<li>对Key进行过滤，设计Key有一定的规范，当Key满足规范时才去后端查找。</li>
+<li>布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉</li>
 </ul>
+
+<h3 id="缓存雪崩">缓存雪崩</h3>
+
+<p>当缓存服务器重启或者大量缓存集中在某一个时间段失效，这样在失效的时候，也会给后端系统(比如DB)带来很大压力。</p>
+
+<p>解决办法：</p>
+
+<ul>
+<li>在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。</li>
+<li>不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀。</li>
+<li>做二级缓存，A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期（此点为补充）</li>
+</ul>
+
+<h3 id="缓存击穿">缓存击穿</h3>
+
+<p>对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据。这个时候，需要考虑一个问题：缓存被“击穿”的问题，导致大并发的请求可能会瞬间把后端DB压垮。这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。</p>
+
+<p>解决办法：</p>
+
+<ul>
+<li>使用互斥锁(mutex key)：如使用Redis的SETNX（SET if Not eXists，只有不存在的时候才设置，可以利用它来实现锁的效果）</li>
+<li>&ldquo;提前&rdquo;使用互斥锁(mutex key)：在value内部设置1个超时值(timeout1), timeout1比实际的cache timeout(timeout2)小。当从cache读取到timeout1发现它已经过期时候，马上延长timeout1并重新设置到cache。</li>
+<li>&ldquo;永远不过期&rdquo;：对于热点数据的Key，快过期时预先加载，难点在于热点数据如何统计。</li>
+<li>应用层的过载保护，比如API调用降级。</li>
+</ul>
+
+<p>参考：<br />
+1. <a href="https://blog.csdn.net/qq_30242609/article/details/71024458">基于Redis的布隆过滤器的实现</a><br />
+2. <a href="https://www.jianshu.com/p/55e245bad12a">如何应对缓存穿透</a><br />
+3. <a href="http://carlosfu.iteye.com/blog/2269678">缓存使用与设计系列文章&ndash;目录</a></p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/docker" rel="tag" title="Docker">#Docker#</a>
-    
-    <a href="http://lanlingzi.cn/tags/%e5%ae%b9%e5%99%a8" rel="tag" title="容器">#容器#</a>
-    
-    <a href="http://lanlingzi.cn/tags/k8s" rel="tag" title="k8s">#k8s#</a>
-    
-    <a href="http://lanlingzi.cn/tags/mesos" rel="tag" title="mesos">#mesos#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e8%ae%be%e8%ae%a1" rel="tag" title="软件设计">#软件设计#</a>
     
 </div>
 
@@ -215,17 +219,13 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/stories/2015/0926_chengdu/" rel="next" title="成都映象记">
-        <i class="fa fa-chevron-left"></i> 成都映象记
+        <a href="http://lanlingzi.cn/post/technical/2018/0623_aspectj_not_work_on_intf/" rel="next" title="自定义扩展Spring Cache注解">
+        <i class="fa fa-chevron-left"></i> 自定义扩展Spring Cache注解
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
-    
-        <a href="http://lanlingzi.cn/post/technical/2015/1113_why_love_go/" rel="prev" title="我为什么喜欢GoLang">
-        我为什么喜欢GoLang <i class="fa fa-chevron-right"></i>
-        </a>
     
     </div>
 </div>
@@ -238,7 +238,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Mesos与K8S的区别
+            标题：Cache设计
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（蘭陵N散記）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -342,15 +342,12 @@
 <ul>
 <li>
 <ul>
-<li><a href="#mesos">Mesos</a>
+<li>
 <ul>
-<li><a href="#mesos与docker">Mesos与Docker</a></li>
+<li><a href="#缓存穿透">缓存穿透</a></li>
+<li><a href="#缓存雪崩">缓存雪崩</a></li>
+<li><a href="#缓存击穿">缓存击穿</a></li>
 </ul></li>
-<li><a href="#k8s">K8S</a>
-<ul>
-<li><a href="#mesos与k8s">Mesos与K8S</a></li>
-</ul></li>
-<li><a href="#如何选型">如何选型</a></li>
 </ul></li>
 </ul>
 </nav></div>
