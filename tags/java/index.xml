@@ -85,7 +85,7 @@
       <pubDate>Wed, 24 Apr 2013 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/</guid>
-      <description>&lt;p&gt;最近Review团队内一些的代码，发现不少使用线程池，但使用的比较乱，针对问题建议如下：&lt;/p&gt;
+      <description>&lt;p&gt;最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
@@ -100,7 +100,7 @@
       <pubDate>Sat, 12 Mar 2011 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/</guid>
-      <description>&lt;p&gt;在JRE类白名单能控制类的使用权限（&lt;a href=&#34;http://lanlingzi.cn/post/technical/110311_java_sandbox_cl&#34;&gt;请点击&lt;/a&gt;），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。&lt;/p&gt;
+      <description>&lt;p&gt;在JRE类白名单能控制类的使用权限（&lt;a href=&#34;http://lanlingzi.cn/post/technical/0311_java_sandbox_cl&#34;&gt;请点击&lt;/a&gt;），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。&lt;/p&gt;
 
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
 

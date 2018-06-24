@@ -514,12 +514,12 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1343 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1345 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>最近Review团队内一些的代码，发现不少使用线程池，但使用的比较乱，针对问题建议如下：</p>
+    <p>最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：</p>
 
 <ol>
 <li><p>线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。</p></li>
@@ -584,7 +584,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/110311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
+    <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/0311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
 
 <h2 id="security-manager">Security Manager</h2>
 
