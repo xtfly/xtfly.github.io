@@ -107,6 +107,102 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" itemprop="url">
+        Scala中的符号
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-07-21">
+    2018-07-21
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3723 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。</p>
+
+<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。</em></p>
+
+<h2 id="泛型">泛型</h2>
+
+<h3 id="toc_1"><code>:</code></h3>
+
+<p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
+
+<ul>
+<li><code>:</code> 表示上下文界定，如<code>A：B</code> 表示 B 可以进行隐式转化的A类型</li>
+</ul>
+
+<p>示例：</p>
+
+<ul>
+<li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
+</ul>
+
+<h3 id="与"><code>&lt;:</code> 与 <code>:&gt;</code></h3>
+
+<ul>
+<li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
+<li><code>&gt;:</code> 表示只限定子类，如 <code>T &gt;: A</code> 表示T必须为A的父类</li>
+</ul>
+
+<p><code>&lt;:</code> 与 <code>:&gt;</code> 相当于java范型编程中的extends，super对泛型变量的限定。</p>
+
+<p>示例：</p>
+
+<ul>
+<li><code>T &lt;: A with B</code> 表示A和B为T上界</li>
+<li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
+<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。<br /></li>
+</ul>
+
+<p></p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" itemprop="url">
         Cache设计
         </a>
@@ -146,7 +242,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1464 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1474 字 ~3分钟</span>
 </span>
       </div>
     </header>
@@ -160,9 +256,9 @@
 <li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）</li>
 </ul>
 
-<p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理。</p>
+<p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。</p>
 
-<p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层的复杂与缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
+<p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
 
 <p></p>
     </div>
@@ -593,81 +689,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0903_dns/" itemprop="url">
-        [转]DNS扫盲系列
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-09-03">
-    2017-09-03
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">8614 字 ~18分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>致谢：转自 <a href="http://bbs.chinaunix.net/thread-1573358-1-1.html">http://bbs.chinaunix.net/thread-1573358-1-1.html</a>  ，由 <a href="http://bbs.chinaunix.net/space-uid-71828.html">llzqq</a> 发表。</p>
-
-<h2 id="有关公网dns">有关公网DNS</h2>
-
-<p>公网DNS服务器是直接服务于广大上网用户的，负责域名（域名记录）到IP地址之间的翻译工作。公网DNS通常是各个网络运营商按照自己的网络分布规划DNS的分布，一般做法是按行政区域放置，如按省份放置。每个省份内也有细分在各地区放置的情况。</p>
-
-<p>近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。</p>
-
-<p><img src="http://lanlingzi.cn/images/y17/dns_1_arch.jpg" alt="" />
-</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0903_dns/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -780,7 +801,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">96</span>
+        <span class="site-state-item-count">97</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -793,7 +814,7 @@
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
-        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span>
         </a>
     </div>

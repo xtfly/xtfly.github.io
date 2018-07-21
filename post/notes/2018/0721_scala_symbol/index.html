@@ -1,0 +1,804 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Scala中的符号 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Scala中的符号">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Scala中的符号 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" itemprop="url">
+        Scala中的符号
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-07-21">
+    2018-07-21
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3723 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。</p>
+
+<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。</em></p>
+
+<h2 id="泛型">泛型</h2>
+
+<h3 id="toc_1"><code>:</code></h3>
+
+<p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
+
+<ul>
+<li><code>:</code> 表示上下文界定，如<code>A：B</code> 表示 B 可以进行隐式转化的A类型</li>
+</ul>
+
+<p>示例：</p>
+
+<ul>
+<li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
+</ul>
+
+<h3 id="与"><code>&lt;:</code> 与 <code>:&gt;</code></h3>
+
+<ul>
+<li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
+<li><code>&gt;:</code> 表示只限定子类，如 <code>T &gt;: A</code> 表示T必须为A的父类</li>
+</ul>
+
+<p><code>&lt;:</code> 与 <code>:&gt;</code> 相当于java范型编程中的extends，super对泛型变量的限定。</p>
+
+<p>示例：</p>
+
+<ul>
+<li><code>T &lt;: A with B</code> 表示A和B为T上界</li>
+<li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
+<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。<br /></li>
+</ul>
+
+<p></p>
+
+<h3 id="toc_3"><code>&lt;%</code></h3>
+
+<p><code>&lt;%</code> 表示“view bounds”(视界)，比 <code>&lt;:</code> 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。</p>
+
+<p>示例：</p>
+
+<ul>
+<li><code>T &lt;% A &lt;% B</code> 表示：同时能够满足隐式转换的A和隐式转换的B</li>
+</ul>
+
+<h3 id="与-1"><code>=：=</code> , <code>&lt;:&lt;</code> 与 <code>&lt;%&lt;</code></h3>
+
+<p>这些被称为广义的类型约束。他们允许你从一个类型参数化的class或trait，进一步约束其类型参数之一。</p>
+
+<ul>
+<li><code>=：=</code> 表示必须是这种类型，如 <code>A =:= B</code> 表示 A 必须是 B 类型</li>
+<li><code>&lt;:&lt;</code> 表示必须是子类型，如 <code>A &lt;:&lt; B</code> 表示 A 必须是B的子类型 (类似于简单类型约束 <code>&lt;:</code> )</li>
+<li><code>&lt;%&lt;</code> 表示必须是可视化类型，<code>A &lt;%&lt; B</code> 表示 A 必须是可视化为 B类型, 可能通过隐式转换 (类似与简单类型约束<code>&lt;%</code> )</li>
+</ul>
+
+<h3 id="t-与-t"><code>[+T]</code> 与 <code>[-T]</code></h3>
+
+<p>在泛型中，需要描述泛型的类型之间<code>继承</code>关系可以转化的关系。</p>
+
+<ul>
+<li><code>[+T]</code> 表示“协变“，是指能够使用与原始指定的派生类型相比，派生程度更大的类型。如：String =&gt; AnyRef</li>
+<li><code>[-T]</code> 表示“逆变”，是指能够使用派生程度更小的类型。如： AnyRef =&gt; String</li>
+</ul>
+
+<h4 id="t"><code>[+T]</code></h4>
+
+<p>A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需在定义Container的时候加上“[+T]”就好了；但是注意，如果只加了“[+T]”，只可以实例化从父类到子类的引用。</p>
+
+<p>假定，Bird extends Animal extends Earth</p>
+
+<p>当有<code>Space[+T]</code>定义时，</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    var a = new Space[Animal]
+    a = new Space[Bird]</pre></div>
+<p>但不能是</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    var a = new Space[Animal]
+    a = new Space[Earth]</pre></div>
+<h4 id="t-1"><code>[-T]</code></h4>
+
+<p>面向对象编程中，子类也可以指向父类的引用，在正常情况下，通过强制类型转换，是可以实现。但是在有集合类的情况下如何实现呢？这就是“协变”<code>[-T]</code>了，只需在定义集合类的时候在集合类上加上“[-T]”即可。</p>
+
+<p>假定，Bird extends Animal extends Earth</p>
+
+<p>当有<code>Space[-T]</code>类定义时，</p>
+
+<p>则如下是OK的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    var a = new Space[Animal]
+    a = new Space[Earth]</pre></div>
+<h2 id="列表操作符">列表操作符</h2>
+
+<h3 id="与-2"><code>::</code> 与 <code>++</code></h3>
+
+<p><code>::</code> 表示普通元素与List的连接操作，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    val a = 1
+    val b = List(3, 4)
+    val c = 1 :: b</pre></div>
+<p><code>++</code> 表示用于连接两个集合， 示例</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    val a = List(1, 2)
+    val b = List(3, 4)
+    val c = a ++ b</pre></div>
+<p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
+
+<p><code>++=</code> 表示连接两个集合，并赋值，示例</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    var a = List(1, 2)
+    a ++= List(3, 4)</pre></div>
+<h3 id="toc_10"><code>:::</code></h3>
+
+<p><code>:::</code> 表示只能List的连接操作，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    val a = List(1, 2)
+    val b = List(3, 4)
+    val c = a ::: b</pre></div>
+<p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
+
+<h3 id="与-3"><code>:+</code> 与 <code>+:</code></h3>
+
+<ul>
+<li><code>:+</code> 用于List在尾部追加元素</li>
+<li><code>+:</code> 用于List在头部追加元素</li>
+</ul>
+
+<p>示例：</p>
+
+<ul>
+<li><code>&quot;A&quot;+:&quot;B&quot;+:Nil</code> 结果为 List(A, B)</li>
+<li><code>Nil:+&quot;A&quot;:+&quot;B&quot;</code> 结果为 List(A, B)</li>
+</ul>
+
+<p>则c的结果是List(1,3,4)，需要注意的是，<code>1 :: b</code> 操作，<code>::</code> 是右侧对象的方法，即它是b对象的方法，而<code>::</code>左侧的运算数是 <code>::</code> 方法的参数，所以 <code>1::b</code> 的含义是 <code>b.::(1)</code></p>
+
+<h2 id="成对的符号">成对的符号</h2>
+
+<h3 id="与-4"><code>-&gt;</code> 与 <code>&lt;-</code></h3>
+
+<ul>
+<li><code>-&gt;</code> 是所有Scala对象都有的方法，生成元组，如 <code>A-&gt;B</code> 结果是返回一个二元的元组(A,B)</li>
+<li><code>&lt;-</code> 用于for循环中，<code>&lt;-</code> 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var</li>
+</ul>
+
+<h3 id="与-5"><code>&lt;=</code> 与 <code>=&gt;</code></h3>
+
+<ul>
+<li><code>&lt;=</code> 只表示 小于等于号</li>
+<li><code>=&gt;</code> 使用场景相当地多</li>
+</ul>
+
+<h4 id="用法"><code>=&gt;</code>用法</h4>
+
+<h5 id="call-by-name">Call by name</h5>
+
+<p><code>传名调用</code>(Call by name)<code>，在</code>传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。</p>
+
+<p>传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。</p>
+
+<p><code>传需求调用(Call by need)</code>，<code>传需求调用</code> 是 <code>传名调用</code> 的记忆化版本，如果 “函数的实际参数被求值了”，这个值被存储起来已备后续使用。在“纯”(无副作用)设置下，这产生同传名调用一样的结果；当函数实际参数被使用两次或更多次的时候，传需求调用总是更快。</p>
+
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    object TargetTest2 extends Application {
+        def loop(body: =&gt; Unit): LoopUnlessCond =
+            new LoopUnlessCond(body)
+
+        protected class LoopUnlessCond(body: =&gt; Unit) {
+            def unless(cond: =&gt; Boolean) {
+            body
+            if (!cond) unless(cond)
+            }
+        }
+
+        var i = 10
+        loop {
+            println(&#34;i = &#34; + i)
+            i -= 1
+        } unless (i == 0)
+    }</pre></div>
+<p>上面的程序运行结果是</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    i = 10
+    i = 9
+    i = 8
+    i = 7
+    i = 6
+    i = 5
+    i = 4
+    i = 3
+    i = 2
+    i = 1</pre></div>
+<h5 id="函数定义">函数定义</h5>
+
+<p>使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    List(1,2,3).map { (x: Int) =&gt; x * 2 }</pre></div>
+<p>使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&gt; T, (A,B) =&gt; T, (A,B,C) =&gt; T, etc.) it&rsquo;s sugar（syntactic sugar语法糖） for Function<n>[A[,B,&hellip;],T], that is, a function that takes parameters of type A[,B&hellip;], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。</p>
+
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val f: Function1[Int,String] = myInt =&gt; &#34;my int: &#34;+myInt.toString
+    f: (Int) =&gt; String = &lt;function1&gt;
+
+    scala&gt; f(0)
+    res0: String = my int: 0
+
+    scala&gt; val f2: Int =&gt; String = myInt =&gt; &#34;my int v2: &#34;+myInt.toString
+    f2: (Int) =&gt; String = &lt;function1&gt;
+
+    scala&gt; f2(1)
+    res1: String = my int v2: 1
+
+    scala&gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+    f2: (Int, Int) =&gt; String = &lt;function2&gt;
+
+    scala&gt; f2(1,2)
+    res6: String = This is my function to transfer 1 and 2 as a string component.
+
+    scala&gt; val f22:(Int,Int)=&gt;String = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+    f22: (Int, Int) =&gt; String = &lt;function2&gt;
+    scala&gt; f22(2,4)
+    res7: String = This is my function to transfer 2 and 4 as a string component.
+
+    Here myInt is binded to the argument value passed to f and f2.
+    () =&gt; T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
+    scala&gt; val f: () =&gt; Unit = () =&gt; { println(&#34;x&#34;)}
+    f: () =&gt; Unit = &lt;function0&gt;
+
+    scala&gt; f()
+    x</pre></div>
+<p>使用方式三：Empty parens on the left hand side (e.g. () =&gt; T) indicate that the function takes no parameters (also sometimes called a &ldquo;thunk&rdquo;);</p>
+
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    object TimerAnonymous {
+        def oncePerSecond(callback: () =&gt; Unit) {
+            while (true) { callback(); Thread sleep 1000 }
+        }
+        
+        def main(args: Array[String]) {
+            oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
+        }
+    }</pre></div>
+<h5 id="模式匹配">模式匹配</h5>
+
+<p>这个比较容易理解，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    object MatchTest extends App {
+        def matchTest(x: Int): String = x match {
+            case 1 =&gt; &#34;one&#34;
+            case 2 =&gt; &#34;two&#34;
+            case _ =&gt; &#34;many&#34;
+        }
+        println(matchTest(3))
+    }</pre></div>
+<h5 id="自身类型-self-type">自身类型（self type）</h5>
+
+<p>When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
+When a trait starts out with
+this: Type =&gt;
+then it can only be mixed into a subclass of the given type.</p>
+
+<p>示例</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; trait LoggedException {
+        |   this: Exception =&gt;
+        |   def log(): Unit = {
+        |     println(&#34;Please check errors.&#34;)
+        |   }
+        | }
+    defined trait LoggedException
+
+    scala&gt; import java.io.File
+    import java.io.File
+
+    scala&gt; val file = new File(&#34;/user&#34;) with LoggedException
+    &lt;console&gt;:13: error: illegal inheritance;
+    self-type java.io.File with LoggedException does not conform to LoggedException&#39;s selftype LoggedException with Exception
+        val file = new File(&#34;/user&#34;) with LoggedException</pre></div>
+<p>在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。</p>
+
+<h2 id="下划线">下划线 <code>_</code></h2>
+
+<h3 id="作为标识符">作为标识符</h3>
+
+<p>例如定义一个变量 <code>val _num = 123</code></p>
+
+<h3 id="作为通配符">作为通配符</h3>
+
+<h4 id="import语句">import语句</h4>
+
+<p>例如 <code>import scala.math._</code></p>
+
+<h4 id="case语句">case语句</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    object MatchTest extends App {
+        def matchTest(x: Int): String = x match {
+            case 1 =&gt; &#34;one&#34;
+            case 2 =&gt; &#34;two&#34;
+            case _ =&gt; &#34;many&#34;
+        }
+        println(matchTest(3))
+    }</pre></div>
+<h4 id="元组-tuple-访问">元组（tuple）访问</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
+    t: (Int, Double, String) = (1,3.14,Fred)
+    //可以用_1，_2，_3访问这个元组
+    scala&gt; t._1
+    res3: Int = 1
+
+    scala&gt; t._2
+    res4: Double = 3.14
+
+    scala&gt; t._3
+    res5: String = Fred</pre></div>
+<p>可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
+    t: (Int, Double, String) = (1,3.14,Fred)
+
+    scala&gt; val (first, second, _) = t
+    first: Int = 1
+    second: Double = 3.14
+
+    scala&gt; val (first, _, _) = t
+    first: Int = 1</pre></div>
+<h3 id="将方法转换为函数">将方法转换为函数</h3>
+
+<p>请参见 <a href="https://www.jianshu.com/p/d5ce4c683703">Scala中Method方法和Function函数的区别</a></p>
+
+<h3 id="作为函数的参数">作为函数的参数</h3>
+
+<p>一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
+    compute: (f: Double =&gt; Double)Double
+
+    //传递一个匿名函数作为compute的参数
+    scala&gt; compute((x: Double) =&gt; 2 * x)
+    res1: Double = 6.0</pre></div>
+<p>如果参数x在=&gt;右侧只出现一次，可以用_替代这个参数，简写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; compute(2 * _)
+    res2: Double = 6.0</pre></div>
+<p>更常见的使用方式为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; (1 to 9).filter(_ % 2 == 0)
+    res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
+
+    scala&gt; (1 to 3).map(_ * 3)
+    res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)</pre></div>
+<p>以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 <code>_</code> 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为<code>T</code>，可以用 <code>_</code> 分别表示二元函数中的参数 <code>x</code> 和 <code>y</code> 。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
+    res0: List[Int] = List(1, 5, 7, 8, 10)</pre></div>
+<h3 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h3>
+
+<h4 id="下划线与等号">下划线与等号 <code>_=</code></h4>
+
+<p>自定义setter方法，请参见 <a href="https://www.jianshu.com/p/4a3362ec22de">Overriding def with var in Scala</a></p>
+
+<h4 id="下划线与星号">下划线与星号 <code>_*</code></h4>
+
+<h5 id="变长参数">变长参数</h5>
+
+<p>例如定义一个变长参数的方法sum，然后计算 <code>1-5</code> 的和，可以写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; def sum(args: Int*) = {
+        | var result = 0
+        | for (arg &lt;- args) result += arg
+        | result
+        | }
+    sum: (args: Int*)Int
+
+    scala&gt; val s = sum(1,2,3,4,5)
+    s: Int = 15</pre></div>
+<p>但是如果使用这种方式就会报错</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val s = sum(1 to 5)
+    &lt;console&gt;:12: error: type mismatch;
+    found   : scala.collection.immutable.Range.Inclusive
+    required: Int
+        val s = sum(1 to 5)
+                        ^</pre></div>
+<p>这种情况必须在后面写上: <code>_*</code> 将<code>1 to 5</code> 转化为参数序列</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val s = sum(1 to 5: _*)
+    s: Int = 15</pre></div>
+<h5 id="变量声明中的模式">变量声明中的模式</h5>
+
+<p>例如，下面代码分别将arr中的第一个和第二个值赋给first和second</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; val arr = Array(1, 2, 3, 4, 5)
+    arr: Array[Int] = Array(1, 2, 3, 4, 5)
+
+    scala&gt; val Array(1, 2, _*) = arr
+
+    scala&gt; val Array(first, second, _*) = arr
+    first: Int = 1
+    second: Int = 2</pre></div>
+<hr />
+
+<p>参考：<br />
+1. <a href="https://blog.csdn.net/bon_mot/article/details/52397933">scala =&gt;符号含义总结</a><br />
+2. <a href="https://www.jianshu.com/p/0497583ec538">Scala中_(下划线)的常见用法</a><br />
+3. <a href="https://blog.csdn.net/bobozhengsir/article/details/13023023">Scala中那些令人头痛的符号</a></p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/scala" rel="tag" title="Scala">#Scala#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" rel="next" title="Cache设计">
+        <i class="fa fa-chevron-left"></i> Cache设计
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Scala中的符号
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（蘭陵N散記）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">       
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#泛型">泛型</a>
+<ul>
+<li><a href="#toc_1"><code>:</code></a></li>
+<li><a href="#与"><code>&lt;:</code> 与 <code>:&gt;</code></a></li>
+<li><a href="#toc_3"><code>&lt;%</code></a></li>
+<li><a href="#与-1"><code>=：=</code> , <code>&lt;:&lt;</code> 与 <code>&lt;%&lt;</code></a></li>
+<li><a href="#t-与-t"><code>[+T]</code> 与 <code>[-T]</code></a>
+<ul>
+<li><a href="#t"><code>[+T]</code></a></li>
+<li><a href="#t-1"><code>[-T]</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#列表操作符">列表操作符</a>
+<ul>
+<li><a href="#与-2"><code>::</code> 与 <code>++</code></a></li>
+<li><a href="#toc_10"><code>:::</code></a></li>
+<li><a href="#与-3"><code>:+</code> 与 <code>+:</code></a></li>
+</ul></li>
+<li><a href="#成对的符号">成对的符号</a>
+<ul>
+<li><a href="#与-4"><code>-&gt;</code> 与 <code>&lt;-</code></a></li>
+<li><a href="#与-5"><code>&lt;=</code> 与 <code>=&gt;</code></a>
+<ul>
+<li><a href="#用法"><code>=&gt;</code>用法</a>
+<ul>
+<li><a href="#call-by-name">Call by name</a></li>
+<li><a href="#函数定义">函数定义</a></li>
+<li><a href="#模式匹配">模式匹配</a></li>
+<li><a href="#自身类型-self-type">自身类型（self type）</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#下划线">下划线 <code>_</code></a>
+<ul>
+<li><a href="#作为标识符">作为标识符</a></li>
+<li><a href="#作为通配符">作为通配符</a>
+<ul>
+<li><a href="#import语句">import语句</a></li>
+<li><a href="#case语句">case语句</a></li>
+<li><a href="#元组-tuple-访问">元组（tuple）访问</a></li>
+</ul></li>
+<li><a href="#将方法转换为函数">将方法转换为函数</a></li>
+<li><a href="#作为函数的参数">作为函数的参数</a></li>
+<li><a href="#下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</a>
+<ul>
+<li><a href="#下划线与等号">下划线与等号 <code>_=</code></a></li>
+<li><a href="#下划线与星号">下划线与星号 <code>_*</code></a>
+<ul>
+<li><a href="#变长参数">变长参数</a></li>
+<li><a href="#变量声明中的模式">变量声明中的模式</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2018</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

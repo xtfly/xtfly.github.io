@@ -2,6 +2,77 @@
 <search>
     
      <entry>
+        <title>Scala中的符号</title>
+        <url>http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/</url>
+        <categories>
+          <category>笔记</category>
+        </categories>
+        <tags>
+          <tag>Scala</tag>
+        </tags>
+        <content type="html"> Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。
+说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。
+泛型 : scala中泛型使用[]指定泛型的类型参数，上下文界定是隐式参数的语法糖
+ : 表示上下文界定，如A：B 表示 B 可以进行隐式转化的A类型  示例：
+ T:A:B 表示即同时满足AT这种隐式值和BT这种隐式值  &amp;lt;: 与 :&amp;gt;  &amp;lt;: 表示只限定子类，如 T &amp;lt;: A 表示T必须为A的子类 &amp;gt;: 表示只限定子类，如 T &amp;gt;: A 表示T必须为A的父类  &amp;lt;: 与 :&amp;gt; 相当于java范型编程中的extends，super对泛型变量的限定。
+示例：
+ T &amp;lt;: A with B 表示A和B为T上界 T &amp;gt;: A with B 表示A和B为T下界 T &amp;gt;: A &amp;lt;: B 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。
+  
+&amp;lt;% &amp;lt;% 表示“view bounds”(视界)，比 &amp;lt;: 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。
+示例：
+ T &amp;lt;% A &amp;lt;% B 表示：同时能够满足隐式转换的A和隐式转换的B  =：= , &amp;lt;:&amp;lt; 与 &amp;lt;%&amp;lt; 这些被称为广义的类型约束。他们允许你从一个类型参数化的class或trait，进一步约束其类型参数之一。
+ =：= 表示必须是这种类型，如 A =:= B 表示 A 必须是 B 类型 &amp;lt;:&amp;lt; 表示必须是子类型，如 A &amp;lt;:&amp;lt; B 表示 A 必须是B的子类型 (类似于简单类型约束 &amp;lt;: ) &amp;lt;%&amp;lt; 表示必须是可视化类型，A &amp;lt;%&amp;lt; B 表示 A 必须是可视化为 B类型, 可能通过隐式转换 (类似与简单类型约束&amp;lt;% )  [&#43;T] 与 [-T] 在泛型中，需要描述泛型的类型之间继承关系可以转化的关系。
+ [&#43;T] 表示“协变“，是指能够使用与原始指定的派生类型相比，派生程度更大的类型。如：String =&amp;gt; AnyRef [-T] 表示“逆变”，是指能够使用派生程度更小的类型。如： AnyRef =&amp;gt; String  [&#43;T] A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需在定义Container的时候加上“[&#43;T]”就好了；但是注意，如果只加了“[&#43;T]”，只可以实例化从父类到子类的引用。
+假定，Bird extends Animal extends Earth
+当有Space[&#43;T]定义时，
+var a = new Space[Animal] a = new Space[Bird] 但不能是
+var a = new Space[Animal] a = new Space[Earth] [-T] 面向对象编程中，子类也可以指向父类的引用，在正常情况下，通过强制类型转换，是可以实现。但是在有集合类的情况下如何实现呢？这就是“协变”[-T]了，只需在定义集合类的时候在集合类上加上“[-T]”即可。
+假定，Bird extends Animal extends Earth
+当有Space[-T]类定义时，
+则如下是OK的：
+var a = new Space[Animal] a = new Space[Earth] 列表操作符 :: 与 &#43;&#43; :: 表示普通元素与List的连接操作，示例：
+val a = 1 val b = List(3, 4) val c = 1 :: b &#43;&#43; 表示用于连接两个集合， 示例
+val a = List(1, 2) val b = List(3, 4) val c = a &#43;&#43; b 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
+&#43;&#43;= 表示连接两个集合，并赋值，示例
+var a = List(1, 2) a &#43;&#43;= List(3, 4) ::: ::: 表示只能List的连接操作，示例：
+val a = List(1, 2) val b = List(3, 4) val c = a ::: b 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
+:&#43; 与 &#43;:  :&#43; 用于List在尾部追加元素 &#43;: 用于List在头部追加元素  示例：
+ &amp;quot;A&amp;quot;&#43;:&amp;quot;B&amp;quot;&#43;:Nil 结果为 List(A, B) Nil:&#43;&amp;quot;A&amp;quot;:&#43;&amp;quot;B&amp;quot; 结果为 List(A, B)  则c的结果是List(1,3,4)，需要注意的是，1 :: b 操作，:: 是右侧对象的方法，即它是b对象的方法，而::左侧的运算数是 :: 方法的参数，所以 1::b 的含义是 b.::(1)
+成对的符号 -&amp;gt; 与 &amp;lt;-  -&amp;gt; 是所有Scala对象都有的方法，生成元组，如 A-&amp;gt;B 结果是返回一个二元的元组(A,B) &amp;lt;- 用于for循环中，&amp;lt;- 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var  &amp;lt;= 与 =&amp;gt;  &amp;lt;= 只表示 小于等于号 =&amp;gt; 使用场景相当地多  =&amp;gt;用法 Call by name 传名调用(Call by name)，在传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
+传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。
+传需求调用(Call by need)，传需求调用 是 传名调用 的记忆化版本，如果 “函数的实际参数被求值了”，这个值被存储起来已备后续使用。在“纯”(无副作用)设置下，这产生同传名调用一样的结果；当函数实际参数被使用两次或更多次的时候，传需求调用总是更快。
+示例：
+object TargetTest2 extends Application { def loop(body: =&amp;gt; Unit): LoopUnlessCond = new LoopUnlessCond(body) protected class LoopUnlessCond(body: =&amp;gt; Unit) { def unless(cond: =&amp;gt; Boolean) { body if (!cond) unless(cond) } } var i = 10 loop { println(&amp;#34;i = &amp;#34; &#43; i) i -= 1 } unless (i == 0) } 上面的程序运行结果是
+i = 10 i = 9 i = 8 i = 7 i = 6 i = 5 i = 4 i = 3 i = 2 i = 1 函数定义 使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：
+List(1,2,3).map { (x: Int) =&amp;gt; x * 2 } 使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&amp;gt; T, (A,B) =&amp;gt; T, (A,B,C) =&amp;gt; T, etc.) it&amp;rsquo;s sugar（syntactic sugar语法糖） for Function[A[,B,&amp;hellip;],T], that is, a function that takes parameters of type A[,B&amp;hellip;], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&amp;gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。
+示例：
+scala&amp;gt; val f: Function1[Int,String] = myInt =&amp;gt; &amp;#34;my int: &amp;#34;&#43;myInt.toString f: (Int) =&amp;gt; String = &amp;lt;function1&amp;gt; scala&amp;gt; f(0) res0: String = my int: 0 scala&amp;gt; val f2: Int =&amp;gt; String = myInt =&amp;gt; &amp;#34;my int v2: &amp;#34;&#43;myInt.toString f2: (Int) =&amp;gt; String = &amp;lt;function1&amp;gt; scala&amp;gt; f2(1) res1: String = my int v2: 1 scala&amp;gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&amp;gt; &amp;#34;This is my function to transfer &amp;#34; &#43; myInt1 &#43; &amp;#34; and &amp;#34; &#43; myInt2 &#43; &amp;#34; as a string component.&amp;#34; f2: (Int, Int) =&amp;gt; String = &amp;lt;function2&amp;gt; scala&amp;gt; f2(1,2) res6: String = This is my function to transfer 1 and 2 as a string component. scala&amp;gt; val f22:(Int,Int)=&amp;gt;String = (myInt1,myInt2) =&amp;gt; &amp;#34;This is my function to transfer &amp;#34; &#43; myInt1 &#43; &amp;#34; and &amp;#34; &#43; myInt2 &#43; &amp;#34; as a string component.&amp;#34; f22: (Int, Int) =&amp;gt; String = &amp;lt;function2&amp;gt; scala&amp;gt; f22(2,4) res7: String = This is my function to transfer 2 and 4 as a string component. Here myInt is binded to the argument value passed to f and f2. () =&amp;gt; T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe. scala&amp;gt; val f: () =&amp;gt; Unit = () =&amp;gt; { println(&amp;#34;x&amp;#34;)} f: () =&amp;gt; Unit = &amp;lt;function0&amp;gt; scala&amp;gt; f() x 使用方式三：Empty parens on the left hand side (e.g. () =&amp;gt; T) indicate that the function takes no parameters (also sometimes called a &amp;ldquo;thunk&amp;rdquo;);
+示例：
+object TimerAnonymous { def oncePerSecond(callback: () =&amp;gt; Unit) { while (true) { callback(); Thread sleep 1000 } } def main(args: Array[String]) { oncePerSecond(() =&amp;gt; println(&amp;#34;time flies like an arrow...&amp;#34;)) } } 模式匹配 这个比较容易理解，示例：
+object MatchTest extends App { def matchTest(x: Int): String = x match { case 1 =&amp;gt; &amp;#34;one&amp;#34; case 2 =&amp;gt; &amp;#34;two&amp;#34; case _ =&amp;gt; &amp;#34;many&amp;#34; } println(matchTest(3)) } 自身类型（self type） When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types. When a trait starts out with this: Type =&amp;gt; then it can only be mixed into a subclass of the given type.
+示例
+scala&amp;gt; trait LoggedException { | this: Exception =&amp;gt; | def log(): Unit = { | println(&amp;#34;Please check errors.&amp;#34;) | } | } defined trait LoggedException scala&amp;gt; import java.io.File import java.io.File scala&amp;gt; val file = new File(&amp;#34;/user&amp;#34;) with LoggedException &amp;lt;console&amp;gt;:13: error: illegal inheritance; self-type java.io.File with LoggedException does not conform to LoggedException&amp;#39;s selftype LoggedException with Exception val file = new File(&amp;#34;/user&amp;#34;) with LoggedException 在定义LoggedException使用了this: Exception =&amp;gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。
+下划线 _ 作为标识符 例如定义一个变量 val _num = 123
+作为通配符 import语句 例如 import scala.math._
+case语句 object MatchTest extends App { def matchTest(x: Int): String = x match { case 1 =&amp;gt; &amp;#34;one&amp;#34; case 2 =&amp;gt; &amp;#34;two&amp;#34; case _ =&amp;gt; &amp;#34;many&amp;#34; } println(matchTest(3)) } 元组（tuple）访问 scala&amp;gt; val t = (1, 3.14, &amp;#34;Fred&amp;#34;) t: (Int, Double, String) = (1,3.14,Fred) //可以用_1，_2，_3访问这个元组 scala&amp;gt; t._1 res3: Int = 1 scala&amp;gt; t._2 res4: Double = 3.14 scala&amp;gt; t._3 res5: String = Fred 可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：
+scala&amp;gt; val t = (1, 3.14, &amp;#34;Fred&amp;#34;) t: (Int, Double, String) = (1,3.14,Fred) scala&amp;gt; val (first, second, _) = t first: Int = 1 second: Double = 3.14 scala&amp;gt; val (first, _, _) = t first: Int = 1 将方法转换为函数 请参见 Scala中Method方法和Function函数的区别
+作为函数的参数 一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：
+scala&amp;gt; def compute(f: (Double)=&amp;gt;Double) = f(3) compute: (f: Double =&amp;gt; Double)Double //传递一个匿名函数作为compute的参数 scala&amp;gt; compute((x: Double) =&amp;gt; 2 * x) res1: Double = 6.0 如果参数x在=&amp;gt;右侧只出现一次，可以用_替代这个参数，简写为：
+scala&amp;gt; compute(2 * _) res2: Double = 6.0 更常见的使用方式为：
+scala&amp;gt; (1 to 9).filter(_ % 2 == 0) res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8) scala&amp;gt; (1 to 3).map(_ * 3) res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9) 以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 _ 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为T，可以用 _ 分别表示二元函数中的参数 x 和 y 。例如：
+scala&amp;gt; List(10, 5, 8, 1, 7).sortWith(_ &amp;lt; _) res0: List[Int] = List(1, 5, 7, 8, 10) 下划线和其他符号组合的使用方式 下划线与等号 _= 自定义setter方法，请参见 Overriding def with var in Scala
+下划线与星号 _* 变长参数 例如定义一个变长参数的方法sum，然后计算 1-5 的和，可以写为：
+scala&amp;gt; def sum(args: Int*) = { | var result = 0 | for (arg &amp;lt;- args) result &#43;= arg | result | } sum: (args: Int*)Int scala&amp;gt; val s = sum(1,2,3,4,5) s: Int = 15 但是如果使用这种方式就会报错
+scala&amp;gt; val s = sum(1 to 5) &amp;lt;console&amp;gt;:12: error: type mismatch; found : scala.collection.immutable.Range.Inclusive required: Int val s = sum(1 to 5) ^ 这种情况必须在后面写上: _* 将1 to 5 转化为参数序列
+scala&amp;gt; val s = sum(1 to 5: _*) s: Int = 15 变量声明中的模式 例如，下面代码分别将arr中的第一个和第二个值赋给first和second
+scala&amp;gt; val arr = Array(1, 2, 3, 4, 5) arr: Array[Int] = Array(1, 2, 3, 4, 5) scala&amp;gt; val Array(1, 2, _*) = arr scala&amp;gt; val Array(first, second, _*) = arr first: Int = 1 second: Int = 2 参考：
+1. scala =&amp;gt;符号含义总结
+2. Scala中_(下划线)的常见用法
+3. Scala中那些令人头痛的符号
+</content>
+    </entry>
+    
+     <entry>
         <title>Cache设计</title>
         <url>http://lanlingzi.cn/post/technical/2018/0624_cache_design/</url>
         <categories>
@@ -11,8 +82,8 @@
           <tag>软件设计</tag>
         </tags>
         <content type="html"> 一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：
- 针对消息对象缓存，每个消息都非常小，要高效地使用内存 存在定时消息，当定时到了，需要回到业务系统中去调度 消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等） 消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）  从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理。
-今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层的复杂与缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。
+ 针对消息对象缓存，每个消息都非常小，要高效地使用内存 存在定时消息，当定时到了，需要回到业务系统中去调度 消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等） 消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）  从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。
+今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。
 
 缓存穿透 缓存系统一般都是按照key去缓存查询，如果不存在对应的value，就应该去后端系统（如DB）查找。如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会对后端系统造成很大的压力。这就叫做缓存穿透。
 解决办法：
