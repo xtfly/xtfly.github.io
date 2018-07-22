@@ -8,7 +8,13 @@ tags:
 toc: true
 ---
 
-Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。
+Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。
+
+```
+    (map1 /: map2 ) { case (map, (k,v)) => map + ( k -> (v + map.getOrElse(k, 0)) ) }
+```
+
+上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。
 
 _说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。_ 
 
@@ -582,6 +588,55 @@ def calcType(calc: Calculator) = calc match {
 }
 ```
 
+## `/:` 与 `:\`
+
+了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：
+
+ - fold：遍历的顺序没有特殊的次序
+ - foldLeft：是从左开始计算，然后往右遍历
+ - foldRight：是从右开始算，然后往左遍历
+
+他们定义如下：
+
+```
+    def fold[A1 >: A](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
+    def foldLeft[B](z: B)(op: (B, A) => B): B = {
+       var result = z
+       this.seq foreach (x => result = op(result, x))
+       result
+    }
+
+    def foldRight[B](z: B)(op: (A, B) => B): B = reversed.foldLeft(z)((x, y) => op(y, x))
+```
+
+foldLeft和foldRight函数还有两个缩写的函数：
+
+```
+    def /:[B](z: B)(op: (B, A) => B): B = foldLeft(z)(op)
+    def :\[B](z: B)(op: (A, B) => B): B = foldRight(z)(op)
+```
+
+`/:` 是foldLeft的简写， 示例：
+
+```
+scala> (0/:(1 to 100))(_+_)
+res32: Int = 5050
+```
+
+等价于
+
+```
+scala> (1 to 100).foldLeft(0)(_+_)
+res33: Int = 5050
+```
+
+`:\` 是foldRight的简写， 示例：
+
+```
+scala> ((1 to 5):\100)((i,sum)=> sum-i)
+res51: Int = 85
+```
+
 ## `%` 与 `%%`
 
 使用SBT时，在build.st文件中，通常会看到
@@ -610,4 +665,6 @@ org.scala-tools" %% "scala-stm" % "0.3"
 1. [FAQ HOW DO I FIND WHAT SOME SYMBOL MEANS OR DOES?](https://docs.scala-lang.org/tutorials/FAQ/finding-symbols.html)  
 2. [scala =>符号含义总结](https://blog.csdn.net/bon_mot/article/details/52397933)  
 3. [Scala中_(下划线)的常见用法](https://www.jianshu.com/p/0497583ec538)  
-4. [Scala中那些令人头痛的符号](https://blog.csdn.net/bobozhengsir/article/details/13023023) 
+4. [Scala中那些令人头痛的符号](https://blog.csdn.net/bobozhengsir/article/details/13023023)  
+5. [Scala的foldLeft和foldRight](https://blog.csdn.net/oopsoom/article/details/23447317)   
+6. [scala - 从合并两个Map说开去 - foldLeft 和 foldRight 还有模式匹配](https://www.cnblogs.com/tugeler/p/5134862.html) 
