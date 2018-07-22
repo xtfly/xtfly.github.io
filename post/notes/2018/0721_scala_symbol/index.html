@@ -143,12 +143,14 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4372 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4778 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。</p>
+    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    (map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }</pre></div>
+<p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
 
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
 
@@ -605,7 +607,38 @@ IMF</pre></div>
   case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
   case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
 }</pre></div>
-<h2 id="与-6"><code>%</code> 与 <code>%%</code></h2>
+<h2 id="与-6"><code>/:</code> 与 <code>:\</code></h2>
+
+<p>了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：</p>
+
+<ul>
+<li>fold：遍历的顺序没有特殊的次序</li>
+<li>foldLeft：是从左开始计算，然后往右遍历</li>
+<li>foldRight：是从右开始算，然后往左遍历</li>
+</ul>
+
+<p>他们定义如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    def fold[A1 &gt;: A](z: A1)(op: (A1, A1) =&gt; A1): A1 = foldLeft(z)(op)
+    def foldLeft[B](z: B)(op: (B, A) =&gt; B): B = {
+       var result = z
+       this.seq foreach (x =&gt; result = op(result, x))
+       result
+    }
+
+    def foldRight[B](z: B)(op: (A, B) =&gt; B): B = reversed.foldLeft(z)((x, y) =&gt; op(y, x))</pre></div>
+<p>foldLeft和foldRight函数还有两个缩写的函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    def /:[B](z: B)(op: (B, A) =&gt; B): B = foldLeft(z)(op)
+    def :\[B](z: B)(op: (A, B) =&gt; B): B = foldRight(z)(op)</pre></div>
+<p><code>/:</code> 是foldLeft的简写， 示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; (0/:(1 to 100))(_+_)
+res32: Int = 5050</pre></div>
+<p>等价于</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; (1 to 100).foldLeft(0)(_+_)
+res33: Int = 5050</pre></div>
+<p><code>:\</code> 是foldRight的简写， 示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
+res51: Int = 85</pre></div>
+<h2 id="与-7"><code>%</code> 与 <code>%%</code></h2>
 
 <p>使用SBT时，在build.st文件中，通常会看到</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
@@ -622,7 +655,9 @@ IMF</pre></div>
 1. <a href="https://docs.scala-lang.org/tutorials/FAQ/finding-symbols.html">FAQ HOW DO I FIND WHAT SOME SYMBOL MEANS OR DOES?</a><br />
 2. <a href="https://blog.csdn.net/bon_mot/article/details/52397933">scala =&gt;符号含义总结</a><br />
 3. <a href="https://www.jianshu.com/p/0497583ec538">Scala中_(下划线)的常见用法</a><br />
-4. <a href="https://blog.csdn.net/bobozhengsir/article/details/13023023">Scala中那些令人头痛的符号</a></p>
+4. <a href="https://blog.csdn.net/bobozhengsir/article/details/13023023">Scala中那些令人头痛的符号</a><br />
+5. <a href="https://blog.csdn.net/oopsoom/article/details/23447317">Scala的foldLeft和foldRight</a><br />
+6. <a href="https://www.cnblogs.com/tugeler/p/5134862.html">scala - 从合并两个Map说开去 - foldLeft 和 foldRight 还有模式匹配</a></p>
     </div>
     <footer class="post-footer">
      
@@ -820,7 +855,8 @@ IMF</pre></div>
 <li><a href="#赋值检测">赋值检测</a></li>
 <li><a href="#值匹配重命名">值匹配重命名</a></li>
 </ul></li>
-<li><a href="#与-6"><code>%</code> 与 <code>%%</code></a></li>
+<li><a href="#与-6"><code>/:</code> 与 <code>:\</code></a></li>
+<li><a href="#与-7"><code>%</code> 与 <code>%%</code></a></li>
 </ul></li>
 </ul>
 </nav></div>

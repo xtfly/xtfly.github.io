@@ -10,7 +10,8 @@
         <tags>
           <tag>Scala</tag>
         </tags>
-        <content type="html"> Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。
+        <content type="html"> Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。
+(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map &#43; ( k -&amp;gt; (v &#43; map.getOrElse(k, 0)) ) } 上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。
 说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。
 泛型 : scala中泛型使用[]指定泛型的类型参数，上下文界定是隐式参数的语法糖
  : 表示上下文界定，如A：B 表示 B 可以进行隐式转化的A类型  示例：
@@ -75,7 +76,13 @@ scala&amp;gt; val s = sum(1 to 5: _*) s: Int = 15 变量声明中的模式 例�
 scala&amp;gt; val arr = Array(1, 2, 3, 4, 5) arr: Array[Int] = Array(1, 2, 3, 4, 5) scala&amp;gt; val Array(1, 2, _*) = arr scala&amp;gt; val Array(first, second, _*) = arr first: Int = 1 second: Int = 2 At符 @ 标识注解 在方法，类，属性上标识一个注解， 如:
 @deprecated(&amp;#34;the delayedInit mechanism will disappear&amp;#34;, &amp;#34;2.11.0&amp;#34;) override def delayedInit(body: =&amp;gt; Unit) { initCode &#43;= (() =&amp;gt; body) } 赋值检测 object test { def main(args: Array[String]) { val b=Some(2) val a@Some(1) = Some(1) println(b) println(a) val bb= 2 val aa@&amp;#34;IMF&amp;#34; = &amp;#34;IMF&amp;#34; println(bb) println(aa) } } 输出结果如下，@ 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常
 Some(2) Some(1) 2 IMF 值匹配重命名 使用在match case场景，可以将匹配的值重新命名，示例：
-def calcType(calc: Calculator) = calc match { case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;20B&amp;#34;) =&amp;gt; &amp;#34;financial&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;48G&amp;#34;) =&amp;gt; &amp;#34;scientific&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;30B&amp;#34;) =&amp;gt; &amp;#34;business&amp;#34; case c@Calculator(_, _) =&amp;gt; &amp;#34;Calculator: %s of unknown type&amp;#34;.format(c) } % 与 %% 使用SBT时，在build.st文件中，通常会看到
+def calcType(calc: Calculator) = calc match { case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;20B&amp;#34;) =&amp;gt; &amp;#34;financial&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;48G&amp;#34;) =&amp;gt; &amp;#34;scientific&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;30B&amp;#34;) =&amp;gt; &amp;#34;business&amp;#34; case c@Calculator(_, _) =&amp;gt; &amp;#34;Calculator: %s of unknown type&amp;#34;.format(c) } /: 与 :\ 了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：
+ fold：遍历的顺序没有特殊的次序 foldLeft：是从左开始计算，然后往右遍历 foldRight：是从右开始算，然后往左遍历  他们定义如下：
+def fold[A1 &amp;gt;: A](z: A1)(op: (A1, A1) =&amp;gt; A1): A1 = foldLeft(z)(op) def foldLeft[B](z: B)(op: (B, A) =&amp;gt; B): B = { var result = z this.seq foreach (x =&amp;gt; result = op(result, x)) result } def foldRight[B](z: B)(op: (A, B) =&amp;gt; B): B = reversed.foldLeft(z)((x, y) =&amp;gt; op(y, x)) foldLeft和foldRight函数还有两个缩写的函数：
+def /:[B](z: B)(op: (B, A) =&amp;gt; B): B = foldLeft(z)(op) def :\[B](z: B)(op: (A, B) =&amp;gt; B): B = foldRight(z)(op) /: 是foldLeft的简写， 示例：
+scala&amp;gt; (0/:(1 to 100))(_&#43;_) res32: Int = 5050 等价于
+scala&amp;gt; (1 to 100).foldLeft(0)(_&#43;_) res33: Int = 5050 :\ 是foldRight的简写， 示例：
+scala&amp;gt; ((1 to 5):\100)((i,sum)=&amp;gt; sum-i) res51: Int = 85 % 与 %% 使用SBT时，在build.st文件中，通常会看到
 &amp;#34;org.hibernate&amp;#34; % &amp;#34;hibernate-entitymanager&amp;#34; % &amp;#34;4.1.0.Final&amp;#34;, &amp;#34;com.typesafe&amp;#34; %% &amp;#34;play-plugins-mailer&amp;#34; % &amp;#34;2.1&amp;#34; groupID %% artifactID % revision 来代替 groupID % artifactID % revision
 %% 表示SBT会增加工程的Scala版本到 artifact name 结尾，示例：
 org.scala-tools&amp;#34; % &amp;#34;scala-stm_2.9.1&amp;#34; % &amp;#34;0.3&amp;#34; 假定工程的Scala版本为2.9.1，则上面可以简写为
@@ -84,6 +91,8 @@ org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 
 2. scala =&amp;gt;符号含义总结
 3. Scala中_(下划线)的常见用法
 4. Scala中那些令人头痛的符号
+5. Scala的foldLeft和foldRight
+6. scala - 从合并两个Map说开去 - foldLeft 和 foldRight 还有模式匹配
 </content>
     </entry>
     
