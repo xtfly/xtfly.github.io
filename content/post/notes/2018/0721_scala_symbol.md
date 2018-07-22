@@ -607,6 +607,7 @@ org.scala-tools" %% "scala-stm" % "0.3"
 
 ----- 
 参考：  
-1. [scala =>符号含义总结](https://blog.csdn.net/bon_mot/article/details/52397933)  
-2. [Scala中_(下划线)的常见用法](https://www.jianshu.com/p/0497583ec538)  
-3. [Scala中那些令人头痛的符号](https://blog.csdn.net/bobozhengsir/article/details/13023023) 
+1. [FAQ HOW DO I FIND WHAT SOME SYMBOL MEANS OR DOES?](https://docs.scala-lang.org/tutorials/FAQ/finding-symbols.html)  
+2. [scala =>符号含义总结](https://blog.csdn.net/bon_mot/article/details/52397933)  
+3. [Scala中_(下划线)的常见用法](https://www.jianshu.com/p/0497583ec538)  
+4. [Scala中那些令人头痛的符号](https://blog.csdn.net/bobozhengsir/article/details/13023023) 
