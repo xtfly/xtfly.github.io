@@ -8,9 +8,9 @@ tags:
 toc: true
 ---
 
-Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。
+Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。
 
-_说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。_ 
+_说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。_ 
 
 ## 泛型
 
@@ -154,7 +154,7 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 ### `->` 与 `<-`
 
  - `->` 是所有Scala对象都有的方法，生成元组，如 `A->B` 结果是返回一个二元的元组(A,B)
- - `->` 用于map构建，表示Key -> vlue， 如 `Map(1 -> "one", 2 -> "two")`
+ - `->` 用于map构建，表示Key -> Value， 如 `Map(1 -> "one", 2 -> "two")`
  - `<-` 用于for循环中，`<-` 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var
 
 ### `<=` 与 `=>`
@@ -593,9 +593,7 @@ def calcType(calc: Calculator) = calc match {
 
 `groupID %% artifactID % revision` 来代替 `groupID % artifactID % revision`
 
-`%%` 表示SBT会增加工程的Scala版本以 `artifact name`
-
-示例：
+`%%` 表示SBT会增加工程的Scala版本到 `artifact name` 结尾，示例：
 
 ```
 org.scala-tools" % "scala-stm_2.9.1" % "0.3"
