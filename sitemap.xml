@@ -80,9 +80,10 @@ def calcType(calc: Calculator) = calc match { case Calculator(&amp;#34;HP&amp;#3
 %% 表示SBT会增加工程的Scala版本到 artifact name 结尾，示例：
 org.scala-tools&amp;#34; % &amp;#34;scala-stm_2.9.1&amp;#34; % &amp;#34;0.3&amp;#34; 假定工程的Scala版本为2.9.1，则上面可以简写为
 org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 参考：
-1. scala =&amp;gt;符号含义总结
-2. Scala中_(下划线)的常见用法
-3. Scala中那些令人头痛的符号
+1. FAQ HOW DO I FIND WHAT SOME SYMBOL MEANS OR DOES?
+2. scala =&amp;gt;符号含义总结
+3. Scala中_(下划线)的常见用法
+4. Scala中那些令人头痛的符号
 </content>
     </entry>
     
