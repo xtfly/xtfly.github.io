@@ -154,6 +154,7 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 ### `->` 与 `<-`
 
  - `->` 是所有Scala对象都有的方法，生成元组，如 `A->B` 结果是返回一个二元的元组(A,B)
+ - `->` 用于map构建，表示Key -> vlue， 如 `Map(1 -> "one", 2 -> "two")`
  - `<-` 用于for循环中，`<-` 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var
 
 ### `<=` 与 `=>`
@@ -314,6 +315,8 @@ then it can only be mixed into a subclass of the given type.
 
 ## 下划线 `_`
 
+`_` 在Scala上通常代表是通配符，占位符。
+
 ### 作为标识符
 
 例如定义一个变量 `val _num = 123`
@@ -409,6 +412,66 @@ then it can only be mixed into a subclass of the given type.
     res0: List[Int] = List(1, 5, 7, 8, 10)
 ```
 
+函数组合的参数
+
+```
+scala> def f(s: String) = "f(" + s + ")"
+f: (String)java.lang.String
+
+scala> def g(s: String) = "g(" + s + ")"
+g: (String)java.lang.String
+```
+
+compose 组合其他函数形成一个新的函数 f(g(x))
+
+```
+scala> val fComposeG = f _ compose g _
+fComposeG: (String) => java.lang.String = <function>
+
+scala> fComposeG("yay")
+res0: java.lang.String = f(g(yay))
+```
+
+有时候，你并不关心是否能够命名一个类型变量，例如：
+
+```
+scala> def count[A](l: List[A]) = l.size
+count: [A](List[A])Int
+```
+
+这时你可以使用“通配符”取而代之：
+
+```
+scala> def count(l: List[_]) = l.size
+count: (List[_])Int
+```
+
+这相当于是下面代码的简写：
+
+```
+scala> def count(l: List[T forSome { type T }]) = l.size
+count: (List[T forSome { type T }])Int
+```
+
+你也可以为通配符类型变量应用边界：
+
+```
+scala> def hashcodes(l: Seq[_ <: AnyRef]) = l map (_.hashCode)
+hashcodes: (Seq[_ <: AnyRef])Seq[Int]
+
+scala> hashcodes(Seq(1,2,3))
+<console>:7: error: type mismatch;
+ found   : Int(1)
+ required: AnyRef
+Note: primitive types are not implicitly converted to AnyRef.
+You can safely force boxing by casting x.asInstanceOf[AnyRef].
+       hashcodes(Seq(1,2,3))
+                     ^
+
+scala> hashcodes(Seq("one", "two", "three"))
+res1: Seq[Int] = List(110182, 115276, 110339486)
+```
+
 ### 下划线和其他符号组合的使用方式
 
 #### 下划线与等号 `_=`
@@ -464,6 +527,84 @@ then it can only be mixed into a subclass of the given type.
     scala> val Array(first, second, _*) = arr
     first: Int = 1
     second: Int = 2
+```
+
+## At符 `@`
+
+### 标识注解
+
+在方法，类，属性上标识一个注解， 如:
+
+```
+    @deprecated("the delayedInit mechanism will disappear", "2.11.0")
+    override def delayedInit(body: => Unit) {
+        initCode += (() => body)
+    }
+```
+
+### 赋值检测
+
+```
+object test {
+  def main(args: Array[String]) {
+    val b=Some(2)
+    val a@Some(1)  =  Some(1)
+    println(b)
+    println(a)
+
+    val bb= 2
+    val aa@"IMF" = "IMF"
+    println(bb)
+    println(aa)
+  }
+}
+```
+
+输出结果如下，`@` 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常
+
+```
+Some(2)
+Some(1)
+2
+IMF
+```
+
+### 值匹配重命名
+
+使用在match case场景，可以将匹配的值重新命名，示例：
+
+```
+def calcType(calc: Calculator) = calc match {
+  case Calculator("HP", "20B") => "financial"
+  case Calculator("HP", "48G") => "scientific"
+  case Calculator("HP", "30B") => "business"
+  case c@Calculator(_, _) => "Calculator: %s of unknown type".format(c)
+}
+```
+
+## `%` 与 `%%`
+
+使用SBT时，在build.st文件中，通常会看到
+
+```
+"org.hibernate" % "hibernate-entitymanager" % "4.1.0.Final",
+"com.typesafe" %% "play-plugins-mailer" % "2.1"
+```
+
+`groupID %% artifactID % revision` 来代替 `groupID % artifactID % revision`
+
+`%%` 表示SBT会增加工程的Scala版本以 `artifact name`
+
+示例：
+
+```
+org.scala-tools" % "scala-stm_2.9.1" % "0.3"
+```
+
+假定工程的Scala版本为2.9.1，则上面可以简写为
+
+```
+org.scala-tools" %% "scala-stm" % "0.3"
 ```
 
 ----- 
