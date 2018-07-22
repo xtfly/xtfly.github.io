@@ -38,7 +38,7 @@ var a = List(1, 2) a &#43;&#43;= List(3, 4) ::: ::: 表示只能List的连接操
 val a = List(1, 2) val b = List(3, 4) val c = a ::: b 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
 :&#43; 与 &#43;:  :&#43; 用于List在尾部追加元素 &#43;: 用于List在头部追加元素  示例：
  &amp;quot;A&amp;quot;&#43;:&amp;quot;B&amp;quot;&#43;:Nil 结果为 List(A, B) Nil:&#43;&amp;quot;A&amp;quot;:&#43;&amp;quot;B&amp;quot; 结果为 List(A, B)  则c的结果是List(1,3,4)，需要注意的是，1 :: b 操作，:: 是右侧对象的方法，即它是b对象的方法，而::左侧的运算数是 :: 方法的参数，所以 1::b 的含义是 b.::(1)
-成对的符号 -&amp;gt; 与 &amp;lt;-  -&amp;gt; 是所有Scala对象都有的方法，生成元组，如 A-&amp;gt;B 结果是返回一个二元的元组(A,B) &amp;lt;- 用于for循环中，&amp;lt;- 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var  &amp;lt;= 与 =&amp;gt;  &amp;lt;= 只表示 小于等于号 =&amp;gt; 使用场景相当地多  =&amp;gt;用法 Call by name 传名调用(Call by name)，在传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
+成对的符号 -&amp;gt; 与 &amp;lt;-  -&amp;gt; 是所有Scala对象都有的方法，生成元组，如 A-&amp;gt;B 结果是返回一个二元的元组(A,B) -&amp;gt; 用于map构建，表示Key -&amp;gt; vlue， 如 Map(1 -&amp;gt; &amp;quot;one&amp;quot;, 2 -&amp;gt; &amp;quot;two&amp;quot;) &amp;lt;- 用于for循环中，&amp;lt;- 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var  &amp;lt;= 与 =&amp;gt;  &amp;lt;= 只表示 小于等于号 =&amp;gt; 使用场景相当地多  =&amp;gt;用法 Call by name 传名调用(Call by name)，在传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
 传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。
 传需求调用(Call by need)，传需求调用 是 传名调用 的记忆化版本，如果 “函数的实际参数被求值了”，这个值被存储起来已备后续使用。在“纯”(无副作用)设置下，这产生同传名调用一样的结果；当函数实际参数被使用两次或更多次的时候，传需求调用总是更快。
 示例：
@@ -52,7 +52,8 @@ object TimerAnonymous { def oncePerSecond(callback: () =&amp;gt; Unit) { while (
 object MatchTest extends App { def matchTest(x: Int): String = x match { case 1 =&amp;gt; &amp;#34;one&amp;#34; case 2 =&amp;gt; &amp;#34;two&amp;#34; case _ =&amp;gt; &amp;#34;many&amp;#34; } println(matchTest(3)) } 自身类型（self type） When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types. When a trait starts out with this: Type =&amp;gt; then it can only be mixed into a subclass of the given type.
 示例
 scala&amp;gt; trait LoggedException { | this: Exception =&amp;gt; | def log(): Unit = { | println(&amp;#34;Please check errors.&amp;#34;) | } | } defined trait LoggedException scala&amp;gt; import java.io.File import java.io.File scala&amp;gt; val file = new File(&amp;#34;/user&amp;#34;) with LoggedException &amp;lt;console&amp;gt;:13: error: illegal inheritance; self-type java.io.File with LoggedException does not conform to LoggedException&amp;#39;s selftype LoggedException with Exception val file = new File(&amp;#34;/user&amp;#34;) with LoggedException 在定义LoggedException使用了this: Exception =&amp;gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。
-下划线 _ 作为标识符 例如定义一个变量 val _num = 123
+下划线 _ _ 在Scala上通常代表是通配符，占位符。
+作为标识符 例如定义一个变量 val _num = 123
 作为通配符 import语句 例如 import scala.math._
 case语句 object MatchTest extends App { def matchTest(x: Int): String = x match { case 1 =&amp;gt; &amp;#34;one&amp;#34; case 2 =&amp;gt; &amp;#34;two&amp;#34; case _ =&amp;gt; &amp;#34;many&amp;#34; } println(matchTest(3)) } 元组（tuple）访问 scala&amp;gt; val t = (1, 3.14, &amp;#34;Fred&amp;#34;) t: (Int, Double, String) = (1,3.14,Fred) //可以用_1，_2，_3访问这个元组 scala&amp;gt; t._1 res3: Int = 1 scala&amp;gt; t._2 res4: Double = 3.14 scala&amp;gt; t._3 res5: String = Fred 可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：
 scala&amp;gt; val t = (1, 3.14, &amp;#34;Fred&amp;#34;) t: (Int, Double, String) = (1,3.14,Fred) scala&amp;gt; val (first, second, _) = t first: Int = 1 second: Double = 3.14 scala&amp;gt; val (first, _, _) = t first: Int = 1 将方法转换为函数 请参见 Scala中Method方法和Function函数的区别
@@ -60,12 +61,26 @@ scala&amp;gt; val t = (1, 3.14, &amp;#34;Fred&amp;#34;) t: (Int, Double, String)
 scala&amp;gt; def compute(f: (Double)=&amp;gt;Double) = f(3) compute: (f: Double =&amp;gt; Double)Double //传递一个匿名函数作为compute的参数 scala&amp;gt; compute((x: Double) =&amp;gt; 2 * x) res1: Double = 6.0 如果参数x在=&amp;gt;右侧只出现一次，可以用_替代这个参数，简写为：
 scala&amp;gt; compute(2 * _) res2: Double = 6.0 更常见的使用方式为：
 scala&amp;gt; (1 to 9).filter(_ % 2 == 0) res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8) scala&amp;gt; (1 to 3).map(_ * 3) res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9) 以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 _ 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为T，可以用 _ 分别表示二元函数中的参数 x 和 y 。例如：
-scala&amp;gt; List(10, 5, 8, 1, 7).sortWith(_ &amp;lt; _) res0: List[Int] = List(1, 5, 7, 8, 10) 下划线和其他符号组合的使用方式 下划线与等号 _= 自定义setter方法，请参见 Overriding def with var in Scala
+scala&amp;gt; List(10, 5, 8, 1, 7).sortWith(_ &amp;lt; _) res0: List[Int] = List(1, 5, 7, 8, 10) 函数组合的参数
+scala&amp;gt; def f(s: String) = &amp;#34;f(&amp;#34; &#43; s &#43; &amp;#34;)&amp;#34; f: (String)java.lang.String scala&amp;gt; def g(s: String) = &amp;#34;g(&amp;#34; &#43; s &#43; &amp;#34;)&amp;#34; g: (String)java.lang.String compose 组合其他函数形成一个新的函数 f(g(x))
+scala&amp;gt; val fComposeG = f _ compose g _ fComposeG: (String) =&amp;gt; java.lang.String = &amp;lt;function&amp;gt; scala&amp;gt; fComposeG(&amp;#34;yay&amp;#34;) res0: java.lang.String = f(g(yay)) 有时候，你并不关心是否能够命名一个类型变量，例如：
+scala&amp;gt; def count[A](l: List[A]) = l.size count: [A](List[A])Int 这时你可以使用“通配符”取而代之：
+scala&amp;gt; def count(l: List[_]) = l.size count: (List[_])Int 这相当于是下面代码的简写：
+scala&amp;gt; def count(l: List[T forSome { type T }]) = l.size count: (List[T forSome { type T }])Int 你也可以为通配符类型变量应用边界：
+scala&amp;gt; def hashcodes(l: Seq[_ &amp;lt;: AnyRef]) = l map (_.hashCode) hashcodes: (Seq[_ &amp;lt;: AnyRef])Seq[Int] scala&amp;gt; hashcodes(Seq(1,2,3)) &amp;lt;console&amp;gt;:7: error: type mismatch; found : Int(1) required: AnyRef Note: primitive types are not implicitly converted to AnyRef. You can safely force boxing by casting x.asInstanceOf[AnyRef]. hashcodes(Seq(1,2,3)) ^ scala&amp;gt; hashcodes(Seq(&amp;#34;one&amp;#34;, &amp;#34;two&amp;#34;, &amp;#34;three&amp;#34;)) res1: Seq[Int] = List(110182, 115276, 110339486) 下划线和其他符号组合的使用方式 下划线与等号 _= 自定义setter方法，请参见 Overriding def with var in Scala
 下划线与星号 _* 变长参数 例如定义一个变长参数的方法sum，然后计算 1-5 的和，可以写为：
 scala&amp;gt; def sum(args: Int*) = { | var result = 0 | for (arg &amp;lt;- args) result &#43;= arg | result | } sum: (args: Int*)Int scala&amp;gt; val s = sum(1,2,3,4,5) s: Int = 15 但是如果使用这种方式就会报错
 scala&amp;gt; val s = sum(1 to 5) &amp;lt;console&amp;gt;:12: error: type mismatch; found : scala.collection.immutable.Range.Inclusive required: Int val s = sum(1 to 5) ^ 这种情况必须在后面写上: _* 将1 to 5 转化为参数序列
 scala&amp;gt; val s = sum(1 to 5: _*) s: Int = 15 变量声明中的模式 例如，下面代码分别将arr中的第一个和第二个值赋给first和second
-scala&amp;gt; val arr = Array(1, 2, 3, 4, 5) arr: Array[Int] = Array(1, 2, 3, 4, 5) scala&amp;gt; val Array(1, 2, _*) = arr scala&amp;gt; val Array(first, second, _*) = arr first: Int = 1 second: Int = 2 参考：
+scala&amp;gt; val arr = Array(1, 2, 3, 4, 5) arr: Array[Int] = Array(1, 2, 3, 4, 5) scala&amp;gt; val Array(1, 2, _*) = arr scala&amp;gt; val Array(first, second, _*) = arr first: Int = 1 second: Int = 2 At符 @ 标识注解 在方法，类，属性上标识一个注解， 如:
+@deprecated(&amp;#34;the delayedInit mechanism will disappear&amp;#34;, &amp;#34;2.11.0&amp;#34;) override def delayedInit(body: =&amp;gt; Unit) { initCode &#43;= (() =&amp;gt; body) } 赋值检测 object test { def main(args: Array[String]) { val b=Some(2) val a@Some(1) = Some(1) println(b) println(a) val bb= 2 val aa@&amp;#34;IMF&amp;#34; = &amp;#34;IMF&amp;#34; println(bb) println(aa) } } 输出结果如下，@ 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常
+Some(2) Some(1) 2 IMF 值匹配重命名 使用在match case场景，可以将匹配的值重新命名，示例：
+def calcType(calc: Calculator) = calc match { case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;20B&amp;#34;) =&amp;gt; &amp;#34;financial&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;48G&amp;#34;) =&amp;gt; &amp;#34;scientific&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;30B&amp;#34;) =&amp;gt; &amp;#34;business&amp;#34; case c@Calculator(_, _) =&amp;gt; &amp;#34;Calculator: %s of unknown type&amp;#34;.format(c) } % 与 %% 使用SBT时，在build.st文件中，通常会看到
+&amp;#34;org.hibernate&amp;#34; % &amp;#34;hibernate-entitymanager&amp;#34; % &amp;#34;4.1.0.Final&amp;#34;, &amp;#34;com.typesafe&amp;#34; %% &amp;#34;play-plugins-mailer&amp;#34; % &amp;#34;2.1&amp;#34; groupID %% artifactID % revision 来代替 groupID % artifactID % revision
+%% 表示SBT会增加工程的Scala版本以 artifact name
+示例：
+org.scala-tools&amp;#34; % &amp;#34;scala-stm_2.9.1&amp;#34; % &amp;#34;0.3&amp;#34; 假定工程的Scala版本为2.9.1，则上面可以简写为
+org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 参考：
 1. scala =&amp;gt;符号含义总结
 2. Scala中_(下划线)的常见用法
 3. Scala中那些令人头痛的符号

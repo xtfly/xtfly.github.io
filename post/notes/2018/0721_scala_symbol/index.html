@@ -143,7 +143,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3723 字 ~8分钟</span>
+<span class="leancloud-visitors-count">4334 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -286,6 +286,7 @@
 
 <ul>
 <li><code>-&gt;</code> 是所有Scala对象都有的方法，生成元组，如 <code>A-&gt;B</code> 结果是返回一个二元的元组(A,B)</li>
+<li><code>-&gt;</code> 用于map构建，表示Key -&gt; vlue， 如 <code>Map(1 -&gt; &quot;one&quot;, 2 -&gt; &quot;two&quot;)</code></li>
 <li><code>&lt;-</code> 用于for循环中，<code>&lt;-</code> 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var</li>
 </ul>
 
@@ -422,6 +423,8 @@ then it can only be mixed into a subclass of the given type.</p>
 
 <h2 id="下划线">下划线 <code>_</code></h2>
 
+<p><code>_</code> 在Scala上通常代表是通配符，占位符。</p>
+
 <h3 id="作为标识符">作为标识符</h3>
 
 <p>例如定义一个变量 <code>val _num = 123</code></p>
@@ -488,6 +491,42 @@ then it can only be mixed into a subclass of the given type.</p>
 <p>以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 <code>_</code> 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为<code>T</code>，可以用 <code>_</code> 分别表示二元函数中的参数 <code>x</code> 和 <code>y</code> 。例如：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
     res0: List[Int] = List(1, 5, 7, 8, 10)</pre></div>
+<p>函数组合的参数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def f(s: String) = &#34;f(&#34; + s + &#34;)&#34;
+f: (String)java.lang.String
+
+scala&gt; def g(s: String) = &#34;g(&#34; + s + &#34;)&#34;
+g: (String)java.lang.String</pre></div>
+<p>compose 组合其他函数形成一个新的函数 f(g(x))</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val fComposeG = f _ compose g _
+fComposeG: (String) =&gt; java.lang.String = &lt;function&gt;
+
+scala&gt; fComposeG(&#34;yay&#34;)
+res0: java.lang.String = f(g(yay))</pre></div>
+<p>有时候，你并不关心是否能够命名一个类型变量，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count[A](l: List[A]) = l.size
+count: [A](List[A])Int</pre></div>
+<p>这时你可以使用“通配符”取而代之：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count(l: List[_]) = l.size
+count: (List[_])Int</pre></div>
+<p>这相当于是下面代码的简写：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count(l: List[T forSome { type T }]) = l.size
+count: (List[T forSome { type T }])Int</pre></div>
+<p>你也可以为通配符类型变量应用边界：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def hashcodes(l: Seq[_ &lt;: AnyRef]) = l map (_.hashCode)
+hashcodes: (Seq[_ &lt;: AnyRef])Seq[Int]
+
+scala&gt; hashcodes(Seq(1,2,3))
+&lt;console&gt;:7: error: type mismatch;
+ found   : Int(1)
+ required: AnyRef
+Note: primitive types are not implicitly converted to AnyRef.
+You can safely force boxing by casting x.asInstanceOf[AnyRef].
+       hashcodes(Seq(1,2,3))
+                     ^
+
+scala&gt; hashcodes(Seq(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;))
+res1: Seq[Int] = List(110182, 115276, 110339486)</pre></div>
 <h3 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h3>
 
 <h4 id="下划线与等号">下划线与等号 <code>_=</code></h4>
@@ -529,6 +568,56 @@ then it can only be mixed into a subclass of the given type.</p>
     scala&gt; val Array(first, second, _*) = arr
     first: Int = 1
     second: Int = 2</pre></div>
+<h2 id="at符">At符 <code>@</code></h2>
+
+<h3 id="标识注解">标识注解</h3>
+
+<p>在方法，类，属性上标识一个注解， 如:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    @deprecated(&#34;the delayedInit mechanism will disappear&#34;, &#34;2.11.0&#34;)
+    override def delayedInit(body: =&gt; Unit) {
+        initCode += (() =&gt; body)
+    }</pre></div>
+<h3 id="赋值检测">赋值检测</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object test {
+  def main(args: Array[String]) {
+    val b=Some(2)
+    val a@Some(1)  =  Some(1)
+    println(b)
+    println(a)
+
+    val bb= 2
+    val aa@&#34;IMF&#34; = &#34;IMF&#34;
+    println(bb)
+    println(aa)
+  }
+}</pre></div>
+<p>输出结果如下，<code>@</code> 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Some(2)
+Some(1)
+2
+IMF</pre></div>
+<h3 id="值匹配重命名">值匹配重命名</h3>
+
+<p>使用在match case场景，可以将匹配的值重新命名，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def calcType(calc: Calculator) = calc match {
+  case Calculator(&#34;HP&#34;, &#34;20B&#34;) =&gt; &#34;financial&#34;
+  case Calculator(&#34;HP&#34;, &#34;48G&#34;) =&gt; &#34;scientific&#34;
+  case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
+  case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
+}</pre></div>
+<h2 id="与-6"><code>%</code> 与 <code>%%</code></h2>
+
+<p>使用SBT时，在build.st文件中，通常会看到</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
+&#34;com.typesafe&#34; %% &#34;play-plugins-mailer&#34; % &#34;2.1&#34;</pre></div>
+<p><code>groupID %% artifactID % revision</code> 来代替 <code>groupID % artifactID % revision</code></p>
+
+<p><code>%%</code> 表示SBT会增加工程的Scala版本以 <code>artifact name</code></p>
+
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; % &#34;scala-stm_2.9.1&#34; % &#34;0.3&#34;</pre></div>
+<p>假定工程的Scala版本为2.9.1，则上面可以简写为</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; %% &#34;scala-stm&#34; % &#34;0.3&#34;</pre></div>
 <hr />
 
 <p>参考：<br />
@@ -726,6 +815,13 @@ then it can only be mixed into a subclass of the given type.</p>
 </ul></li>
 </ul></li>
 </ul></li>
+<li><a href="#at符">At符 <code>@</code></a>
+<ul>
+<li><a href="#标识注解">标识注解</a></li>
+<li><a href="#赋值检测">赋值检测</a></li>
+<li><a href="#值匹配重命名">值匹配重命名</a></li>
+</ul></li>
+<li><a href="#与-6"><code>%</code> 与 <code>%%</code></a></li>
 </ul></li>
 </ul>
 </nav></div>
