@@ -17,9 +17,9 @@
       <pubDate>Sat, 21 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/</guid>
-      <description>&lt;p&gt;Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。&lt;/p&gt;
+      <description>&lt;p&gt;Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;泛型&#34;&gt;泛型&lt;/h2&gt;
 

@@ -143,14 +143,14 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4334 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4360 字 ~9分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。</p>
+    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。</p>
 
-<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。</em></p>
+<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
 
 <h2 id="泛型">泛型</h2>
 
@@ -286,7 +286,7 @@
 
 <ul>
 <li><code>-&gt;</code> 是所有Scala对象都有的方法，生成元组，如 <code>A-&gt;B</code> 结果是返回一个二元的元组(A,B)</li>
-<li><code>-&gt;</code> 用于map构建，表示Key -&gt; vlue， 如 <code>Map(1 -&gt; &quot;one&quot;, 2 -&gt; &quot;two&quot;)</code></li>
+<li><code>-&gt;</code> 用于map构建，表示Key -&gt; Value， 如 <code>Map(1 -&gt; &quot;one&quot;, 2 -&gt; &quot;two&quot;)</code></li>
 <li><code>&lt;-</code> 用于for循环中，<code>&lt;-</code> 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var</li>
 </ul>
 
@@ -612,9 +612,7 @@ IMF</pre></div>
 &#34;com.typesafe&#34; %% &#34;play-plugins-mailer&#34; % &#34;2.1&#34;</pre></div>
 <p><code>groupID %% artifactID % revision</code> 来代替 <code>groupID % artifactID % revision</code></p>
 
-<p><code>%%</code> 表示SBT会增加工程的Scala版本以 <code>artifact name</code></p>
-
-<p>示例：</p>
+<p><code>%%</code> 表示SBT会增加工程的Scala版本到 <code>artifact name</code> 结尾，示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; % &#34;scala-stm_2.9.1&#34; % &#34;0.3&#34;</pre></div>
 <p>假定工程的Scala版本为2.9.1，则上面可以简写为</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; %% &#34;scala-stm&#34; % &#34;0.3&#34;</pre></div>

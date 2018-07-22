@@ -10,8 +10,8 @@
         <tags>
           <tag>Scala</tag>
         </tags>
-        <content type="html"> Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，不少用法只能用 “惊为天书” 来形容啊。
-说明：本文为学习笔记，下面内容多数来源于网上多篇文档的汇总，在此感谢原作者们。
+        <content type="html"> Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。甚至不少用法只能用 “惊为天书” 来形容啊。
+说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。
 泛型 : scala中泛型使用[]指定泛型的类型参数，上下文界定是隐式参数的语法糖
  : 表示上下文界定，如A：B 表示 B 可以进行隐式转化的A类型  示例：
  T:A:B 表示即同时满足AT这种隐式值和BT这种隐式值  &amp;lt;: 与 :&amp;gt;  &amp;lt;: 表示只限定子类，如 T &amp;lt;: A 表示T必须为A的子类 &amp;gt;: 表示只限定子类，如 T &amp;gt;: A 表示T必须为A的父类  &amp;lt;: 与 :&amp;gt; 相当于java范型编程中的extends，super对泛型变量的限定。
@@ -38,7 +38,7 @@ var a = List(1, 2) a &#43;&#43;= List(3, 4) ::: ::: 表示只能List的连接操
 val a = List(1, 2) val b = List(3, 4) val c = a ::: b 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
 :&#43; 与 &#43;:  :&#43; 用于List在尾部追加元素 &#43;: 用于List在头部追加元素  示例：
  &amp;quot;A&amp;quot;&#43;:&amp;quot;B&amp;quot;&#43;:Nil 结果为 List(A, B) Nil:&#43;&amp;quot;A&amp;quot;:&#43;&amp;quot;B&amp;quot; 结果为 List(A, B)  则c的结果是List(1,3,4)，需要注意的是，1 :: b 操作，:: 是右侧对象的方法，即它是b对象的方法，而::左侧的运算数是 :: 方法的参数，所以 1::b 的含义是 b.::(1)
-成对的符号 -&amp;gt; 与 &amp;lt;-  -&amp;gt; 是所有Scala对象都有的方法，生成元组，如 A-&amp;gt;B 结果是返回一个二元的元组(A,B) -&amp;gt; 用于map构建，表示Key -&amp;gt; vlue， 如 Map(1 -&amp;gt; &amp;quot;one&amp;quot;, 2 -&amp;gt; &amp;quot;two&amp;quot;) &amp;lt;- 用于for循环中，&amp;lt;- 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var  &amp;lt;= 与 =&amp;gt;  &amp;lt;= 只表示 小于等于号 =&amp;gt; 使用场景相当地多  =&amp;gt;用法 Call by name 传名调用(Call by name)，在传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
+成对的符号 -&amp;gt; 与 &amp;lt;-  -&amp;gt; 是所有Scala对象都有的方法，生成元组，如 A-&amp;gt;B 结果是返回一个二元的元组(A,B) -&amp;gt; 用于map构建，表示Key -&amp;gt; Value， 如 Map(1 -&amp;gt; &amp;quot;one&amp;quot;, 2 -&amp;gt; &amp;quot;two&amp;quot;) &amp;lt;- 用于for循环中，&amp;lt;- 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var  &amp;lt;= 与 =&amp;gt;  &amp;lt;= 只表示 小于等于号 =&amp;gt; 使用场景相当地多  =&amp;gt;用法 Call by name 传名调用(Call by name)，在传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
 传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。
 传需求调用(Call by need)，传需求调用 是 传名调用 的记忆化版本，如果 “函数的实际参数被求值了”，这个值被存储起来已备后续使用。在“纯”(无副作用)设置下，这产生同传名调用一样的结果；当函数实际参数被使用两次或更多次的时候，传需求调用总是更快。
 示例：
@@ -77,8 +77,7 @@ scala&amp;gt; val arr = Array(1, 2, 3, 4, 5) arr: Array[Int] = Array(1, 2, 3, 4,
 Some(2) Some(1) 2 IMF 值匹配重命名 使用在match case场景，可以将匹配的值重新命名，示例：
 def calcType(calc: Calculator) = calc match { case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;20B&amp;#34;) =&amp;gt; &amp;#34;financial&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;48G&amp;#34;) =&amp;gt; &amp;#34;scientific&amp;#34; case Calculator(&amp;#34;HP&amp;#34;, &amp;#34;30B&amp;#34;) =&amp;gt; &amp;#34;business&amp;#34; case c@Calculator(_, _) =&amp;gt; &amp;#34;Calculator: %s of unknown type&amp;#34;.format(c) } % 与 %% 使用SBT时，在build.st文件中，通常会看到
 &amp;#34;org.hibernate&amp;#34; % &amp;#34;hibernate-entitymanager&amp;#34; % &amp;#34;4.1.0.Final&amp;#34;, &amp;#34;com.typesafe&amp;#34; %% &amp;#34;play-plugins-mailer&amp;#34; % &amp;#34;2.1&amp;#34; groupID %% artifactID % revision 来代替 groupID % artifactID % revision
-%% 表示SBT会增加工程的Scala版本以 artifact name
-示例：
+%% 表示SBT会增加工程的Scala版本到 artifact name 结尾，示例：
 org.scala-tools&amp;#34; % &amp;#34;scala-stm_2.9.1&amp;#34; % &amp;#34;0.3&amp;#34; 假定工程的Scala版本为2.9.1，则上面可以简写为
 org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 参考：
 1. scala =&amp;gt;符号含义总结
