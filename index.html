@@ -146,13 +146,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4778 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4777 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">    (map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }</pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }</pre></div>
 <p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
 
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
