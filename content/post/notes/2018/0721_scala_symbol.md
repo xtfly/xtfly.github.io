@@ -185,7 +185,7 @@ object Add {
   def addByName(a: Int, b: => Int) = a + b 
   def addByValue(a: Int, b: Int) = a + b 
 }
-``
+```
 
 addByName是传名调用，addByValue是传值调用。语法上可以看出，使用传名调用时，在参数名称和参数类型中间有一个 `=>` 符号。
 
