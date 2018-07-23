@@ -143,7 +143,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">5052 字 ~11分钟</span>
+<span class="leancloud-visitors-count">4989 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -311,23 +311,21 @@ val c = a ::: b</pre></div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object Add {
   def addByName(a: Int, b: =&gt; Int) = a + b 
   def addByValue(a: Int, b: Int) = a + b 
-}
-``
-
-addByName是传名调用，addByValue是传值调用。语法上可以看出，使用传名调用时，在参数名称和参数类型中间有一个 `=&gt;` 符号。</pre></div>
-<p>addByName(2, 2 + 2)
+}</pre></div>
+<p>addByName是传名调用，addByValue是传值调用。语法上可以看出，使用传名调用时，在参数名称和参数类型中间有一个 <code>=&gt;</code> 符号。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  addByName(2, 2 + 2)
 -&gt;2 + (2 + 2)
 -&gt;2 + 4
--&gt;6</p>
-
-<p>addByValue(2, 2 + 2)
+-&gt;6
+ 
+  addByValue(2, 2 + 2)
 -&gt;addByValue(2, 4)
 -&gt;2 + 4
--&gt;6</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">可以看出，在进入函数内部前，传值调用方式就已经将参数表达式的值计算完毕，而传名调用是在函数内部进行参数表达式的值计算的。这就造成了一种现象，每次使用传名调用时，解释器都会计算一次表达式的值。对于有副作用(side-effect)的参数来说，这无疑造成了两种调用方式结果的不同。
+-&gt;6</pre></div>
+<p>可以看出，在进入函数内部前，传值调用方式就已经将参数表达式的值计算完毕，而传名调用是在函数内部进行参数表达式的值计算的。这就造成了一种现象，每次使用传名调用时，解释器都会计算一次表达式的值。对于有副作用(side-effect)的参数来说，这无疑造成了两种调用方式结果的不同。</p>
 
-复杂示例：</pre></div>
-<p>object TargetTest extends App {
+<p>复杂示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object TargetTest extends App {
     def loop(body: =&gt; Unit): LoopUnlessCond =
         new LoopUnlessCond(body)
     protected class LoopUnlessCond(body: =&gt; Unit) {
@@ -338,109 +336,110 @@ addByName是传名调用，addByValue是传值调用。语法上可以看出，�
     }
     var i = 10
     loop {
-        println(&ldquo;i = &rdquo; + i)
+        println(&#34;i = &#34; + i)
         i -= 1
     } unless (i == 0)
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">##### 函数定义
+}</pre></div>
+<h5 id="函数定义">函数定义</h5>
 
-使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：</pre></div>
-<p>List(1,2,3).map { (x: Int) =&gt; x * 2 }</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&gt; T, (A,B) =&gt; T, (A,B,C) =&gt; T, etc.) it&#39;s sugar（syntactic sugar语法糖） for Function&lt;n&gt;[A[,B,...],T], that is, a function that takes parameters of type A[,B...], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。
+<p>使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">List(1,2,3).map { (x: Int) =&gt; x * 2 }</pre></div>
+<p>使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&gt; T, (A,B) =&gt; T, (A,B,C) =&gt; T, etc.) it&rsquo;s sugar（syntactic sugar语法糖） for Function<n>[A[,B,&hellip;],T], that is, a function that takes parameters of type A[,B&hellip;], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。</p>
 
-示例：</pre></div>
-<p>scala&gt; val f: Function1[Int,String] = myInt =&gt; &ldquo;my int: &ldquo;+myInt.toString
-f: (Int) =&gt; String = <function1>
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val f: Function1[Int,String] = myInt =&gt; &#34;my int: &#34;+myInt.toString
+f: (Int) =&gt; String = &lt;function1&gt;
 scala&gt; f(0)
 res0: String = my int: 0
-scala&gt; val f2: Int =&gt; String = myInt =&gt; &ldquo;my int v2: &ldquo;+myInt.toString
-f2: (Int) =&gt; String = <function1>
+scala&gt; val f2: Int =&gt; String = myInt =&gt; &#34;my int v2: &#34;+myInt.toString
+f2: (Int) =&gt; String = &lt;function1&gt;
 scala&gt; f2(1)
 res1: String = my int v2: 1
-scala&gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&gt; &ldquo;This is my function to transfer &rdquo; + myInt1 + &ldquo; and &rdquo; + myInt2 + &ldquo; as a string component.&rdquo;
-f2: (Int, Int) =&gt; String = <function2>
+scala&gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+f2: (Int, Int) =&gt; String = &lt;function2&gt;
 scala&gt; f2(1,2)
 res6: String = This is my function to transfer 1 and 2 as a string component.
-scala&gt; val f22:(Int,Int)=&gt;String = (myInt1,myInt2) =&gt; &ldquo;This is my function to transfer &rdquo; + myInt1 + &ldquo; and &rdquo; + myInt2 + &ldquo; as a string component.&rdquo;
-f22: (Int, Int) =&gt; String = <function2>
+scala&gt; val f22:(Int,Int)=&gt;String = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+f22: (Int, Int) =&gt; String = &lt;function2&gt;
 scala&gt; f22(2,4)
 res7: String = This is my function to transfer 2 and 4 as a string component.
 Here myInt is binded to the argument value passed to f and f2.
 () =&gt; T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
-scala&gt; val f: () =&gt; Unit = () =&gt; { println(&ldquo;x&rdquo;)}
-f: () =&gt; Unit = <function0>
+scala&gt; val f: () =&gt; Unit = () =&gt; { println(&#34;x&#34;)}
+f: () =&gt; Unit = &lt;function0&gt;
 scala&gt; f()
-x</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">使用方式三：Empty parens on the left hand side (e.g. () =&gt; T) indicate that the function takes no parameters (also sometimes called a &#34;thunk&#34;);
+x</pre></div>
+<p>使用方式三：Empty parens on the left hand side (e.g. () =&gt; T) indicate that the function takes no parameters (also sometimes called a &ldquo;thunk&rdquo;);</p>
 
-示例：</pre></div>
-<p>object TimerAnonymous {
+<p>示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object TimerAnonymous {
     def oncePerSecond(callback: () =&gt; Unit) {
         while (true) { callback(); Thread sleep 1000 }
-    }</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def main(args: Array[String]) {
-    oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
+    }
+    
+    def main(args: Array[String]) {
+        oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
+    }
 }</pre></div>
-<p>}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">##### 模式匹配
+<h5 id="模式匹配">模式匹配</h5>
 
-这个比较容易理解，示例：</pre></div>
-<p>object MatchTest extends App {
+<p>这个比较容易理解，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object MatchTest extends App {
     def matchTest(x: Int): String = x match {
-        case 1 =&gt; &ldquo;one&rdquo;
-        case 2 =&gt; &ldquo;two&rdquo;
-        case _ =&gt; &ldquo;many&rdquo;
+        case 1 =&gt; &#34;one&#34;
+        case 2 =&gt; &#34;two&#34;
+        case _ =&gt; &#34;many&#34;
     }
     println(matchTest(3))
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">##### 自身类型（self type）
+}</pre></div>
+<h5 id="自身类型-self-type">自身类型（self type）</h5>
 
-When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
+<p>When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
 When a trait starts out with
 this: Type =&gt;
-then it can only be mixed into a subclass of the given type.
+then it can only be mixed into a subclass of the given type.</p>
 
-示例</pre></div>
-<p>scala&gt; trait LoggedException {
+<p>示例</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; trait LoggedException {
     |   this: Exception =&gt;
     |   def log(): Unit = {
-    |     println(&ldquo;Please check errors.&rdquo;)
+    |     println(&#34;Please check errors.&#34;)
     |   }
     | }
     defined trait LoggedException
 scala&gt; import java.io.File
 import java.io.File
-scala&gt; val file = new File(&ldquo;/user&rdquo;) with LoggedException
-<console>:13: error: illegal inheritance;
-self-type java.io.File with LoggedException does not conform to LoggedException&rsquo;s selftype LoggedException with Exception
-    val file = new File(&ldquo;/user&rdquo;) with LoggedException</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。
+scala&gt; val file = new File(&#34;/user&#34;) with LoggedException
+&lt;console&gt;:13: error: illegal inheritance;
+self-type java.io.File with LoggedException does not conform to LoggedException&#39;s selftype LoggedException with Exception
+    val file = new File(&#34;/user&#34;) with LoggedException</pre></div>
+<p>在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。</p>
 
-## 下划线 `_`
+<h2 id="下划线">下划线 <code>_</code></h2>
 
-`_` 在Scala上通常代表是通配符，占位符。
+<p><code>_</code> 在Scala上通常代表是通配符，占位符。</p>
 
-### 作为标识符
+<h3 id="作为标识符">作为标识符</h3>
 
-例如定义一个变量 `val _num = 123`
+<p>例如定义一个变量 <code>val _num = 123</code></p>
 
-### 作为通配符
+<h3 id="作为通配符">作为通配符</h3>
 
-#### import语句
+<h4 id="import语句">import语句</h4>
 
-例如 `import scala.math._`
+<p>例如 <code>import scala.math._</code></p>
 
-#### case语句</pre></div>
-<p>object MatchTest extends App {
+<h4 id="case语句">case语句</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object MatchTest extends App {
     def matchTest(x: Int): String = x match {
-        case 1 =&gt; &ldquo;one&rdquo;
-        case 2 =&gt; &ldquo;two&rdquo;
-        case _ =&gt; &ldquo;many&rdquo;
+        case 1 =&gt; &#34;one&#34;
+        case 2 =&gt; &#34;two&#34;
+        case _ =&gt; &#34;many&#34;
     }
     println(matchTest(3))
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#### 元组（tuple）访问</pre></div>
-<p>scala&gt; val t = (1, 3.14, &ldquo;Fred&rdquo;)
+}</pre></div>
+<h4 id="元组-tuple-访问">元组（tuple）访问</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
 t: (Int, Double, String) = (1,3.14,Fred)
 //可以用_1，_2，_3访问这个元组
 scala&gt; t._1
@@ -448,193 +447,194 @@ res3: Int = 1
 scala&gt; t._2
 res4: Double = 3.14
 scala&gt; t._3
-res5: String = Fred</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：</pre></div>
-<p>scala&gt; val t = (1, 3.14, &ldquo;Fred&rdquo;)
+res5: String = Fred</pre></div>
+<p>可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
 t: (Int, Double, String) = (1,3.14,Fred)
 scala&gt; val (first, second, _) = t
 first: Int = 1
 second: Double = 3.14
 scala&gt; val (first, _, _) = t
-first: Int = 1</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### 将方法转换为函数
+first: Int = 1</pre></div>
+<h3 id="将方法转换为函数">将方法转换为函数</h3>
 
-请参见 [Scala中Method方法和Function函数的区别](https://www.jianshu.com/p/d5ce4c683703)
+<p>请参见 <a href="https://www.jianshu.com/p/d5ce4c683703">Scala中Method方法和Function函数的区别</a></p>
 
-### 作为函数的参数
+<h3 id="作为函数的参数">作为函数的参数</h3>
 
-一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：</pre></div>
-<p>scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
+<p>一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
 compute: (f: Double =&gt; Double)Double
 //传递一个匿名函数作为compute的参数
 scala&gt; compute((x: Double) =&gt; 2 * x)
-res1: Double = 6.0</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">如果参数x在=&gt;右侧只出现一次，可以用_替代这个参数，简写为：</pre></div>
-<p>scala&gt; compute(2 * _)
-res2: Double = 6.0</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">更常见的使用方式为：</pre></div>
-<p>scala&gt; (1 to 9).filter(_ % 2 == 0)
+res1: Double = 6.0</pre></div>
+<p>如果参数x在=&gt;右侧只出现一次，可以用_替代这个参数，简写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; compute(2 * _)
+res2: Double = 6.0</pre></div>
+<p>更常见的使用方式为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; (1 to 9).filter(_ % 2 == 0)
 res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
 scala&gt; (1 to 3).map(_ * 3)
-res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 `_` 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为`T`，可以用 `_` 分别表示二元函数中的参数 `x` 和 `y` 。例如：</pre></div>
-<p>scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
-res0: List[Int] = List(1, 5, 7, 8, 10)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">函数组合的参数</pre></div>
-<p>scala&gt; def f(s: String) = &ldquo;f(&rdquo; + s + &ldquo;)&rdquo;
-f: (String)java.lang.String</p>
+res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)</pre></div>
+<p>以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 <code>_</code> 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为<code>T</code>，可以用 <code>_</code> 分别表示二元函数中的参数 <code>x</code> 和 <code>y</code> 。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
+res0: List[Int] = List(1, 5, 7, 8, 10)</pre></div>
+<p>函数组合的参数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def f(s: String) = &#34;f(&#34; + s + &#34;)&#34;
+f: (String)java.lang.String
 
-<p>scala&gt; def g(s: String) = &ldquo;g(&rdquo; + s + &ldquo;)&rdquo;
-g: (String)java.lang.String</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">compose 组合其他函数形成一个新的函数 f(g(x))</pre></div>
-<p>scala&gt; val fComposeG = f _ compose g _
-fComposeG: (String) =&gt; java.lang.String = <function></p>
+scala&gt; def g(s: String) = &#34;g(&#34; + s + &#34;)&#34;
+g: (String)java.lang.String</pre></div>
+<p>compose 组合其他函数形成一个新的函数 f(g(x))</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val fComposeG = f _ compose g _
+fComposeG: (String) =&gt; java.lang.String = &lt;function&gt;
 
-<p>scala&gt; fComposeG(&ldquo;yay&rdquo;)
-res0: java.lang.String = f(g(yay))</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">有时候，你并不关心是否能够命名一个类型变量，例如：</pre></div>
-<p>scala&gt; def count<a href="l: List[A]">A</a> = l.size
-count: <a href="List[A]">A</a>Int</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">这时你可以使用“通配符”取而代之：</pre></div>
-<p>scala&gt; def count(l: List[<em>]) = l.size
-count: (List[</em>])Int</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">这相当于是下面代码的简写：</pre></div>
-<p>scala&gt; def count(l: List[T forSome { type T }]) = l.size
-count: (List[T forSome { type T }])Int</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">你也可以为通配符类型变量应用边界：</pre></div>
-<p>scala&gt; def hashcodes(l: Seq[_ &lt;: AnyRef]) = l map (<em>.hashCode)
-hashcodes: (Seq[</em> &lt;: AnyRef])Seq[Int]</p>
+scala&gt; fComposeG(&#34;yay&#34;)
+res0: java.lang.String = f(g(yay))</pre></div>
+<p>有时候，你并不关心是否能够命名一个类型变量，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count[A](l: List[A]) = l.size
+count: [A](List[A])Int</pre></div>
+<p>这时你可以使用“通配符”取而代之：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count(l: List[_]) = l.size
+count: (List[_])Int</pre></div>
+<p>这相当于是下面代码的简写：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def count(l: List[T forSome { type T }]) = l.size
+count: (List[T forSome { type T }])Int</pre></div>
+<p>你也可以为通配符类型变量应用边界：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def hashcodes(l: Seq[_ &lt;: AnyRef]) = l map (_.hashCode)
+hashcodes: (Seq[_ &lt;: AnyRef])Seq[Int]
 
-<p>scala&gt; hashcodes(Seq(1,2,3))
-<console>:7: error: type mismatch;
+scala&gt; hashcodes(Seq(1,2,3))
+&lt;console&gt;:7: error: type mismatch;
  found   : Int(1)
  required: AnyRef
 Note: primitive types are not implicitly converted to AnyRef.
 You can safely force boxing by casting x.asInstanceOf[AnyRef].
        hashcodes(Seq(1,2,3))
-                     ^</p>
+                     ^
 
-<p>scala&gt; hashcodes(Seq(&ldquo;one&rdquo;, &ldquo;two&rdquo;, &ldquo;three&rdquo;))
-res1: Seq[Int] = List(110182, 115276, 110339486)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### 下划线和其他符号组合的使用方式
+scala&gt; hashcodes(Seq(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;))
+res1: Seq[Int] = List(110182, 115276, 110339486)</pre></div>
+<h3 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h3>
 
-#### 下划线与等号 `_=`
+<h4 id="下划线与等号">下划线与等号 <code>_=</code></h4>
 
-自定义setter方法，请参见 [Overriding def with var in Scala](https://www.jianshu.com/p/4a3362ec22de)
+<p>自定义setter方法，请参见 <a href="https://www.jianshu.com/p/4a3362ec22de">Overriding def with var in Scala</a></p>
 
-#### 下划线与星号 `_*` 
+<h4 id="下划线与星号">下划线与星号 <code>_*</code></h4>
 
-##### 变长参数
+<h5 id="变长参数">变长参数</h5>
 
-例如定义一个变长参数的方法sum，然后计算 `1-5` 的和，可以写为：</pre></div>
-<p>scala&gt; def sum(args: Int<em>) = {
+<p>例如定义一个变长参数的方法sum，然后计算 <code>1-5</code> 的和，可以写为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def sum(args: Int*) = {
     | var result = 0
     | for (arg &lt;- args) result += arg
     | result
     | }
-sum: (args: Int</em>)Int</p>
+sum: (args: Int*)Int
 
-<p>scala&gt; val s = sum(1,2,3,4,5)
-s: Int = 15</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">但是如果使用这种方式就会报错</pre></div>
-<p>scala&gt; val s = sum(1 to 5)
-<console>:12: error: type mismatch;
+scala&gt; val s = sum(1,2,3,4,5)
+s: Int = 15</pre></div>
+<p>但是如果使用这种方式就会报错</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val s = sum(1 to 5)
+&lt;console&gt;:12: error: type mismatch;
 found   : scala.collection.immutable.Range.Inclusive
 required: Int
     val s = sum(1 to 5)
-                    ^</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">这种情况必须在后面写上: `_*` 将` 1 to 5` 转化为参数序列</pre></div>
-<p>scala&gt; val s = sum(1 to 5: _*)
-s: Int = 15</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">##### 变量声明中的模式
+                    ^</pre></div>
+<p>这种情况必须在后面写上: <code>_*</code> 将<code>1 to 5</code> 转化为参数序列</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val s = sum(1 to 5: _*)
+s: Int = 15</pre></div>
+<h5 id="变量声明中的模式">变量声明中的模式</h5>
 
-例如，下面代码分别将arr中的第一个和第二个值赋给first和second</pre></div>
-<p>scala&gt; val arr = Array(1, 2, 3, 4, 5)
-arr: Array[Int] = Array(1, 2, 3, 4, 5)</p>
+<p>例如，下面代码分别将arr中的第一个和第二个值赋给first和second</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val arr = Array(1, 2, 3, 4, 5)
+arr: Array[Int] = Array(1, 2, 3, 4, 5)
 
-<p>scala&gt; val Array(1, 2, _*) = arr</p>
+scala&gt; val Array(1, 2, _*) = arr
 
-<p>scala&gt; val Array(first, second, _*) = arr
+scala&gt; val Array(first, second, _*) = arr
 first: Int = 1
-second: Int = 2</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">## At符 `@`
+second: Int = 2</pre></div>
+<h2 id="at符">At符 <code>@</code></h2>
 
-### 标识注解
+<h3 id="标识注解">标识注解</h3>
 
-在方法，类，属性上标识一个注解， 如:</pre></div>
-<p>@deprecated(&ldquo;the delayedInit mechanism will disappear&rdquo;, &ldquo;2.11.0&rdquo;)
+<p>在方法，类，属性上标识一个注解， 如:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@deprecated(&#34;the delayedInit mechanism will disappear&#34;, &#34;2.11.0&#34;)
 override def delayedInit(body: =&gt; Unit) {
     initCode += (() =&gt; body)
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### 赋值检测</pre></div>
-<p>object test {
+}</pre></div>
+<h3 id="赋值检测">赋值检测</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object test {
   def main(args: Array[String]) {
     val b=Some(2)
     val a@Some(1)  =  Some(1)
     println(b)
-    println(a)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">val bb= 2
-val aa@&#34;IMF&#34; = &#34;IMF&#34;
-println(bb)
-println(aa)</pre></div>
-<p>}
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">输出结果如下，`@` 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常</pre></div>
-<p>Some(2)
+    println(a)
+
+    val bb= 2
+    val aa@&#34;IMF&#34; = &#34;IMF&#34;
+    println(bb)
+    println(aa)
+  }
+}</pre></div>
+<p>输出结果如下，<code>@</code> 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Some(2)
 Some(1)
 2
-IMF</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### 值匹配重命名
+IMF</pre></div>
+<h3 id="值匹配重命名">值匹配重命名</h3>
 
-使用在match case场景，可以将匹配的值重新命名，示例：</pre></div>
-<p>def calcType(calc: Calculator) = calc match {
-  case Calculator(&ldquo;HP&rdquo;, &ldquo;20B&rdquo;) =&gt; &ldquo;financial&rdquo;
-  case Calculator(&ldquo;HP&rdquo;, &ldquo;48G&rdquo;) =&gt; &ldquo;scientific&rdquo;
-  case Calculator(&ldquo;HP&rdquo;, &ldquo;30B&rdquo;) =&gt; &ldquo;business&rdquo;
-  case c@Calculator(_, _) =&gt; &ldquo;Calculator: %s of unknown type&rdquo;.format&copy;
-}</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">## `/:` 与 `:\`
+<p>使用在match case场景，可以将匹配的值重新命名，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def calcType(calc: Calculator) = calc match {
+  case Calculator(&#34;HP&#34;, &#34;20B&#34;) =&gt; &#34;financial&#34;
+  case Calculator(&#34;HP&#34;, &#34;48G&#34;) =&gt; &#34;scientific&#34;
+  case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
+  case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
+}</pre></div>
+<h2 id="与-6"><code>/:</code> 与 <code>:\</code></h2>
 
-了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：
+<p>了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：</p>
 
- - fold：遍历的顺序没有特殊的次序
- - foldLeft：是从左开始计算，然后往右遍历
- - foldRight：是从右开始算，然后往左遍历
+<ul>
+<li>fold：遍历的顺序没有特殊的次序</li>
+<li>foldLeft：是从左开始计算，然后往右遍历</li>
+<li>foldRight：是从右开始算，然后往左遍历</li>
+</ul>
 
-他们定义如下：</pre></div>
-<p>def fold<a href="z: A1">A1 &gt;: A</a>(op: (A1, A1) =&gt; A1): A1 = foldLeft(z)(op)
-def foldLeft<a href="z: B">B</a>(op: (B, A) =&gt; B): B = {
+<p>他们定义如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def fold[A1 &gt;: A](z: A1)(op: (A1, A1) =&gt; A1): A1 = foldLeft(z)(op)
+def foldLeft[B](z: B)(op: (B, A) =&gt; B): B = {
    var result = z
    this.seq foreach (x =&gt; result = op(result, x))
    result
-}</p>
+}
 
-<p>def foldRight<a href="z: B">B</a>(op: (A, B) =&gt; B): B = reversed.foldLeft(z)((x, y) =&gt; op(y, x))</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">foldLeft和foldRight函数还有两个缩写的函数：</pre></div>
-<p>def /:<a href="z: B">B</a>(op: (B, A) =&gt; B): B = foldLeft(z)(op)
-def :[B](z: B)(op: (A, B) =&gt; B): B = foldRight(z)(op)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">`/:` 是foldLeft的简写， 示例：</pre></div>
-<p>scala&gt; (0/:(1 to 100))(<em>+</em>)
-res32: Int = 5050</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">等价于</pre></div>
-<p>scala&gt; (1 to 100).foldLeft(0)(<em>+</em>)
-res33: Int = 5050</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">`:\` 是foldRight的简写， 示例：</pre></div>
-<p>scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
-res51: Int = 85</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">## `%` 与 `%%`
+def foldRight[B](z: B)(op: (A, B) =&gt; B): B = reversed.foldLeft(z)((x, y) =&gt; op(y, x))</pre></div>
+<p>foldLeft和foldRight函数还有两个缩写的函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def /:[B](z: B)(op: (B, A) =&gt; B): B = foldLeft(z)(op)
+def :\[B](z: B)(op: (A, B) =&gt; B): B = foldRight(z)(op)</pre></div>
+<p><code>/:</code> 是foldLeft的简写， 示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; (0/:(1 to 100))(_+_)
+res32: Int = 5050</pre></div>
+<p>等价于</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; (1 to 100).foldLeft(0)(_+_)
+res33: Int = 5050</pre></div>
+<p><code>:\</code> 是foldRight的简写， 示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
+res51: Int = 85</pre></div>
+<h2 id="与-7"><code>%</code> 与 <code>%%</code></h2>
 
-使用SBT时，在build.st文件中，通常会看到</pre></div>
-<p>&ldquo;org.hibernate&rdquo; % &ldquo;hibernate-entitymanager&rdquo; % &ldquo;4.1.0.Final&rdquo;,
-&ldquo;com.typesafe&rdquo; %% &ldquo;play-plugins-mailer&rdquo; % &ldquo;2.1&rdquo;</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">`groupID %% artifactID % revision` 来代替 `groupID % artifactID % revision`
+<p>使用SBT时，在build.st文件中，通常会看到</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
+&#34;com.typesafe&#34; %% &#34;play-plugins-mailer&#34; % &#34;2.1&#34;</pre></div>
+<p><code>groupID %% artifactID % revision</code> 来代替 <code>groupID % artifactID % revision</code></p>
 
-`%%` 表示SBT会增加工程的Scala版本到 `artifact name` 结尾，示例：</pre></div>
-<p>org.scala-tools&rdquo; % &ldquo;scala-stm_2.9.1&rdquo; % &ldquo;0.3&rdquo;</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">假定工程的Scala版本为2.9.1，则上面可以简写为</pre></div>
-<p>org.scala-tools&rdquo; %% &ldquo;scala-stm&rdquo; % &ldquo;0.3&rdquo;
-```</p>
-
+<p><code>%%</code> 表示SBT会增加工程的Scala版本到 <code>artifact name</code> 结尾，示例：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; % &#34;scala-stm_2.9.1&#34; % &#34;0.3&#34;</pre></div>
+<p>假定工程的Scala版本为2.9.1，则上面可以简写为</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">org.scala-tools&#34; %% &#34;scala-stm&#34; % &#34;0.3&#34;</pre></div>
 <hr />
 
 <p>参考：<br />
@@ -808,9 +808,41 @@ res51: Int = 85</p>
 <li><a href="#用法"><code>=&gt;</code>用法</a>
 <ul>
 <li><a href="#call-by-name">Call by name</a></li>
+<li><a href="#函数定义">函数定义</a></li>
+<li><a href="#模式匹配">模式匹配</a></li>
+<li><a href="#自身类型-self-type">自身类型（self type）</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
+<li><a href="#下划线">下划线 <code>_</code></a>
+<ul>
+<li><a href="#作为标识符">作为标识符</a></li>
+<li><a href="#作为通配符">作为通配符</a>
+<ul>
+<li><a href="#import语句">import语句</a></li>
+<li><a href="#case语句">case语句</a></li>
+<li><a href="#元组-tuple-访问">元组（tuple）访问</a></li>
+</ul></li>
+<li><a href="#将方法转换为函数">将方法转换为函数</a></li>
+<li><a href="#作为函数的参数">作为函数的参数</a></li>
+<li><a href="#下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</a>
+<ul>
+<li><a href="#下划线与等号">下划线与等号 <code>_=</code></a></li>
+<li><a href="#下划线与星号">下划线与星号 <code>_*</code></a>
+<ul>
+<li><a href="#变长参数">变长参数</a></li>
+<li><a href="#变量声明中的模式">变量声明中的模式</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#at符">At符 <code>@</code></a>
+<ul>
+<li><a href="#标识注解">标识注解</a></li>
+<li><a href="#赋值检测">赋值检测</a></li>
+<li><a href="#值匹配重命名">值匹配重命名</a></li>
+</ul></li>
+<li><a href="#与-6"><code>/:</code> 与 <code>:\</code></a></li>
+<li><a href="#与-7"><code>%</code> 与 <code>%%</code></a></li>
 </ul></li>
 </ul>
 </nav></div>
