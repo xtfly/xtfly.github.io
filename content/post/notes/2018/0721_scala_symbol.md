@@ -240,24 +240,33 @@ List(1,2,3).map { (x: Int) => x * 2 }
 ```
 scala> val f: Function1[Int,String] = myInt => "my int: "+myInt.toString
 f: (Int) => String = <function1>
+
 scala> f(0)
 res0: String = my int: 0
+
 scala> val f2: Int => String = myInt => "my int v2: "+myInt.toString
 f2: (Int) => String = <function1>
+
 scala> f2(1)
 res1: String = my int v2: 1
+
 scala> val f2: Function2[Int,Int,String] = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
 f2: (Int, Int) => String = <function2>
+
 scala> f2(1,2)
 res6: String = This is my function to transfer 1 and 2 as a string component.
+
 scala> val f22:(Int,Int)=>String = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
 f22: (Int, Int) => String = <function2>
+
 scala> f22(2,4)
 res7: String = This is my function to transfer 2 and 4 as a string component.
 Here myInt is binded to the argument value passed to f and f2.
 () => T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
+
 scala> val f: () => Unit = () => { println("x")}
 f: () => Unit = <function0>
+
 scala> f()
 x
 ```
@@ -296,8 +305,8 @@ object MatchTest extends App {
 ##### 自身类型（self type）
 
 When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
-When a trait starts out with
-this: Type =>
+When a trait starts out with  
+`this: Type =>`  
 then it can only be mixed into a subclass of the given type.
 
 示例
@@ -311,6 +320,7 @@ scala> trait LoggedException {
     defined trait LoggedException
 scala> import java.io.File
 import java.io.File
+
 scala> val file = new File("/user") with LoggedException
 <console>:13: error: illegal inheritance;
 self-type java.io.File with LoggedException does not conform to LoggedException's selftype LoggedException with Exception
@@ -352,10 +362,13 @@ object MatchTest extends App {
 scala> val t = (1, 3.14, "Fred")
 t: (Int, Double, String) = (1,3.14,Fred)
 //可以用_1，_2，_3访问这个元组
+
 scala> t._1
 res3: Int = 1
+
 scala> t._2
 res4: Double = 3.14
+
 scala> t._3
 res5: String = Fred
 ```
@@ -365,9 +378,11 @@ res5: String = Fred
 ```
 scala> val t = (1, 3.14, "Fred")
 t: (Int, Double, String) = (1,3.14,Fred)
+
 scala> val (first, second, _) = t
 first: Int = 1
 second: Double = 3.14
+
 scala> val (first, _, _) = t
 first: Int = 1
 ```
@@ -384,6 +399,7 @@ first: Int = 1
 scala> def compute(f: (Double)=>Double) = f(3)
 compute: (f: Double => Double)Double
 //传递一个匿名函数作为compute的参数
+
 scala> compute((x: Double) => 2 * x)
 res1: Double = 6.0
 ```
@@ -400,6 +416,7 @@ res2: Double = 6.0
 ```
 scala> (1 to 9).filter(_ % 2 == 0)
 res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
+
 scala> (1 to 3).map(_ * 3)
 res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)
 ```
