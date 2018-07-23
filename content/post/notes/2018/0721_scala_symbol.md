@@ -11,7 +11,7 @@ toc: true
 Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。
 
 ```
-    (map1 /: map2 ) { case (map, (k,v)) => map + ( k -> (v + map.getOrElse(k, 0)) ) }
+(map1 /: map2 ) { case (map, (k,v)) => map + ( k -> (v + map.getOrElse(k, 0)) ) }
 ```
 
 上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。
@@ -76,15 +76,15 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 当有`Space[+T]`定义时，
 
 ```
-    var a = new Space[Animal]
-    a = new Space[Bird]
+var a = new Space[Animal]
+a = new Space[Bird]
 ```
 
 但不能是
 
 ```
-    var a = new Space[Animal]
-    a = new Space[Earth]
+var a = new Space[Animal]
+a = new Space[Earth]
 ```
 
 #### `[-T]`
@@ -98,8 +98,8 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 则如下是OK的：
 
 ```
-    var a = new Space[Animal]
-    a = new Space[Earth]
+var a = new Space[Animal]
+a = new Space[Earth]
 ```
 
 ## 列表操作符
@@ -109,17 +109,19 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 `::` 表示普通元素与List的连接操作，示例：
 
 ```
-    val a = 1
-    val b = List(3, 4)
-    val c = 1 :: b
+val a = 1
+val b = List(3, 4)
+val c = 1 :: b
 ```
+
+则c的结果是List(1,3,4)，需要注意的是，`1 :: b` 操作，`::` 是右侧对象的方法，即它是b对象的方法，而``::``左侧的运算数是 `::` 方法的参数，所以 `1::b` 的含义是 `b.::(1)`
 
 `++` 表示用于连接两个集合， 示例
 
 ```
-    val a = List(1, 2)
-    val b = List(3, 4)
-    val c = a ++ b
+val a = List(1, 2)
+val b = List(3, 4)
+val c = a ++ b
 ```
 
 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
@@ -127,8 +129,8 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 `++=` 表示连接两个集合，并赋值，示例
 
 ```
-    var a = List(1, 2)
-    a ++= List(3, 4)
+var a = List(1, 2)
+a ++= List(3, 4)
 ```
 
 ### `:::`
@@ -136,12 +138,13 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 `:::` 表示只能List的连接操作，示例：
 
 ```
-    val a = List(1, 2)
-    val b = List(3, 4)
-    val c = a ::: b
+val a = List(1, 2)
+val b = List(3, 4)
+val c = a ::: b
 ```
 
 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
+
 
 ### `:+` 与 `+:`
 
@@ -153,7 +156,6 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
  - `"A"+:"B"+:Nil` 结果为 List(A, B)
  - `Nil:+"A":+"B"` 结果为 List(A, B)
 
-则c的结果是List(1,3,4)，需要注意的是，`1 :: b` 操作，`::` 是右侧对象的方法，即它是b对象的方法，而``::``左侧的运算数是 `::` 方法的参数，所以 `1::b` 的含义是 `b.::(1)`
 
 ## 成对的符号
 
@@ -172,7 +174,7 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 
 ##### Call by name
 
-`传名调用`(Call by name)`，在 `传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
+`传名调用`(Call by name)，在 `传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
 
 传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。
 
@@ -181,38 +183,36 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 示例：
 
 ```
-    object TargetTest2 extends Application {
-        def loop(body: => Unit): LoopUnlessCond =
-            new LoopUnlessCond(body)
-
-        protected class LoopUnlessCond(body: => Unit) {
-            def unless(cond: => Boolean) {
-            body
-            if (!cond) unless(cond)
-            }
+object TargetTest extends App {
+    def loop(body: => Unit): LoopUnlessCond =
+        new LoopUnlessCond(body)
+    protected class LoopUnlessCond(body: => Unit) {
+        def unless(cond: => Boolean) {
+        body
+        if (!cond) unless(cond)
         }
-
-        var i = 10
-        loop {
-            println("i = " + i)
-            i -= 1
-        } unless (i == 0)
     }
+    var i = 10
+    loop {
+        println("i = " + i)
+        i -= 1
+    } unless (i == 0)
+}
 ```
 
 上面的程序运行结果是
 
 ```
-    i = 10
-    i = 9
-    i = 8
-    i = 7
-    i = 6
-    i = 5
-    i = 4
-    i = 3
-    i = 2
-    i = 1
+i = 10
+i = 9
+i = 8
+i = 7
+i = 6
+i = 5
+i = 4
+i = 3
+i = 2
+i = 1
 ```
 
 ##### 函数定义
@@ -220,7 +220,7 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：
 
 ```
-    List(1,2,3).map { (x: Int) => x * 2 }
+List(1,2,3).map { (x: Int) => x * 2 }
 ```
 
 使用方式二：in a type, with symbols on both sides of the arrow (e.g. A => T, (A,B) => T, (A,B,C) => T, etc.) it's sugar（syntactic sugar语法糖） for Function<n>[A[,B,...],T], that is, a function that takes parameters of type A[,B...], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=>T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。
@@ -228,36 +228,28 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 示例：
 
 ```
-    scala> val f: Function1[Int,String] = myInt => "my int: "+myInt.toString
-    f: (Int) => String = <function1>
-
-    scala> f(0)
-    res0: String = my int: 0
-
-    scala> val f2: Int => String = myInt => "my int v2: "+myInt.toString
-    f2: (Int) => String = <function1>
-
-    scala> f2(1)
-    res1: String = my int v2: 1
-
-    scala> val f2: Function2[Int,Int,String] = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
-    f2: (Int, Int) => String = <function2>
-
-    scala> f2(1,2)
-    res6: String = This is my function to transfer 1 and 2 as a string component.
-
-    scala> val f22:(Int,Int)=>String = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
-    f22: (Int, Int) => String = <function2>
-    scala> f22(2,4)
-    res7: String = This is my function to transfer 2 and 4 as a string component.
-
-    Here myInt is binded to the argument value passed to f and f2.
-    () => T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
-    scala> val f: () => Unit = () => { println("x")}
-    f: () => Unit = <function0>
-
-    scala> f()
-    x
+scala> val f: Function1[Int,String] = myInt => "my int: "+myInt.toString
+f: (Int) => String = <function1>
+scala> f(0)
+res0: String = my int: 0
+scala> val f2: Int => String = myInt => "my int v2: "+myInt.toString
+f2: (Int) => String = <function1>
+scala> f2(1)
+res1: String = my int v2: 1
+scala> val f2: Function2[Int,Int,String] = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
+f2: (Int, Int) => String = <function2>
+scala> f2(1,2)
+res6: String = This is my function to transfer 1 and 2 as a string component.
+scala> val f22:(Int,Int)=>String = (myInt1,myInt2) => "This is my function to transfer " + myInt1 + " and " + myInt2 + " as a string component."
+f22: (Int, Int) => String = <function2>
+scala> f22(2,4)
+res7: String = This is my function to transfer 2 and 4 as a string component.
+Here myInt is binded to the argument value passed to f and f2.
+() => T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
+scala> val f: () => Unit = () => { println("x")}
+f: () => Unit = <function0>
+scala> f()
+x
 ```
 
 使用方式三：Empty parens on the left hand side (e.g. () => T) indicate that the function takes no parameters (also sometimes called a "thunk");
@@ -265,15 +257,15 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 示例：
 
 ```
-    object TimerAnonymous {
-        def oncePerSecond(callback: () => Unit) {
-            while (true) { callback(); Thread sleep 1000 }
-        }
-        
-        def main(args: Array[String]) {
-            oncePerSecond(() => println("time flies like an arrow..."))
-        }
+object TimerAnonymous {
+    def oncePerSecond(callback: () => Unit) {
+        while (true) { callback(); Thread sleep 1000 }
     }
+    
+    def main(args: Array[String]) {
+        oncePerSecond(() => println("time flies like an arrow..."))
+    }
+}
 ```
 
 ##### 模式匹配
@@ -281,14 +273,14 @@ A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需
 这个比较容易理解，示例：
 
 ```
-    object MatchTest extends App {
-        def matchTest(x: Int): String = x match {
-            case 1 => "one"
-            case 2 => "two"
-            case _ => "many"
-        }
-        println(matchTest(3))
+object MatchTest extends App {
+    def matchTest(x: Int): String = x match {
+        case 1 => "one"
+        case 2 => "two"
+        case _ => "many"
     }
+    println(matchTest(3))
+}
 ```
 
 ##### 自身类型（self type）
@@ -300,21 +292,19 @@ then it can only be mixed into a subclass of the given type.
 
 示例
 ```
-    scala> trait LoggedException {
-        |   this: Exception =>
-        |   def log(): Unit = {
-        |     println("Please check errors.")
-        |   }
-        | }
+scala> trait LoggedException {
+    |   this: Exception =>
+    |   def log(): Unit = {
+    |     println("Please check errors.")
+    |   }
+    | }
     defined trait LoggedException
-
-    scala> import java.io.File
-    import java.io.File
-
-    scala> val file = new File("/user") with LoggedException
-    <console>:13: error: illegal inheritance;
-    self-type java.io.File with LoggedException does not conform to LoggedException's selftype LoggedException with Exception
-        val file = new File("/user") with LoggedException
+scala> import java.io.File
+import java.io.File
+scala> val file = new File("/user") with LoggedException
+<console>:13: error: illegal inheritance;
+self-type java.io.File with LoggedException does not conform to LoggedException's selftype LoggedException with Exception
+    val file = new File("/user") with LoggedException
 ```
 
 在定义LoggedException使用了this: Exception =>那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。
@@ -336,45 +326,40 @@ then it can only be mixed into a subclass of the given type.
 #### case语句
 
 ```
-    object MatchTest extends App {
-        def matchTest(x: Int): String = x match {
-            case 1 => "one"
-            case 2 => "two"
-            case _ => "many"
-        }
-        println(matchTest(3))
+object MatchTest extends App {
+    def matchTest(x: Int): String = x match {
+        case 1 => "one"
+        case 2 => "two"
+        case _ => "many"
     }
+    println(matchTest(3))
+}
 ```
 
 #### 元组（tuple）访问
 
 ```
-    scala> val t = (1, 3.14, "Fred")
-    t: (Int, Double, String) = (1,3.14,Fred)
-    //可以用_1，_2，_3访问这个元组
-    scala> t._1
-    res3: Int = 1
-
-    scala> t._2
-    res4: Double = 3.14
-
-    scala> t._3
-    res5: String = Fred
+scala> val t = (1, 3.14, "Fred")
+t: (Int, Double, String) = (1,3.14,Fred)
+//可以用_1，_2，_3访问这个元组
+scala> t._1
+res3: Int = 1
+scala> t._2
+res4: Double = 3.14
+scala> t._3
+res5: String = Fred
 ```
 
 可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：
 
 ```
-    scala> val t = (1, 3.14, "Fred")
-    t: (Int, Double, String) = (1,3.14,Fred)
-
-    scala> val (first, second, _) = t
-    first: Int = 1
-    second: Double = 3.14
-
-    scala> val (first, _, _) = t
-    first: Int = 1
-
+scala> val t = (1, 3.14, "Fred")
+t: (Int, Double, String) = (1,3.14,Fred)
+scala> val (first, second, _) = t
+first: Int = 1
+second: Double = 3.14
+scala> val (first, _, _) = t
+first: Int = 1
 ```
 
 ### 将方法转换为函数
@@ -386,36 +371,34 @@ then it can only be mixed into a subclass of the given type.
 一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：
 
 ```
-    scala> def compute(f: (Double)=>Double) = f(3)
-    compute: (f: Double => Double)Double
-
-    //传递一个匿名函数作为compute的参数
-    scala> compute((x: Double) => 2 * x)
-    res1: Double = 6.0
+scala> def compute(f: (Double)=>Double) = f(3)
+compute: (f: Double => Double)Double
+//传递一个匿名函数作为compute的参数
+scala> compute((x: Double) => 2 * x)
+res1: Double = 6.0
 ```
 
 如果参数x在=>右侧只出现一次，可以用_替代这个参数，简写为：
 
 ```
-    scala> compute(2 * _)
-    res2: Double = 6.0
+scala> compute(2 * _)
+res2: Double = 6.0
 ```
 
 更常见的使用方式为：
 
 ```
-    scala> (1 to 9).filter(_ % 2 == 0)
-    res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
-
-    scala> (1 to 3).map(_ * 3)
-    res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)
+scala> (1 to 9).filter(_ % 2 == 0)
+res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
+scala> (1 to 3).map(_ * 3)
+res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)
 ```
 
 以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 `_` 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为`T`，可以用 `_` 分别表示二元函数中的参数 `x` 和 `y` 。例如：
 
 ```
-    scala> List(10, 5, 8, 1, 7).sortWith(_ < _)
-    res0: List[Int] = List(1, 5, 7, 8, 10)
+scala> List(10, 5, 8, 1, 7).sortWith(_ < _)
+res0: List[Int] = List(1, 5, 7, 8, 10)
 ```
 
 函数组合的参数
@@ -491,33 +474,33 @@ res1: Seq[Int] = List(110182, 115276, 110339486)
 例如定义一个变长参数的方法sum，然后计算 `1-5` 的和，可以写为：
 
 ```
-    scala> def sum(args: Int*) = {
-        | var result = 0
-        | for (arg <- args) result += arg
-        | result
-        | }
-    sum: (args: Int*)Int
+scala> def sum(args: Int*) = {
+    | var result = 0
+    | for (arg <- args) result += arg
+    | result
+    | }
+sum: (args: Int*)Int
 
-    scala> val s = sum(1,2,3,4,5)
-    s: Int = 15
+scala> val s = sum(1,2,3,4,5)
+s: Int = 15
 ```
 
 但是如果使用这种方式就会报错
 
 ```
-    scala> val s = sum(1 to 5)
-    <console>:12: error: type mismatch;
-    found   : scala.collection.immutable.Range.Inclusive
-    required: Int
-        val s = sum(1 to 5)
-                        ^
+scala> val s = sum(1 to 5)
+<console>:12: error: type mismatch;
+found   : scala.collection.immutable.Range.Inclusive
+required: Int
+    val s = sum(1 to 5)
+                    ^
 ```
 
 这种情况必须在后面写上: `_*` 将` 1 to 5` 转化为参数序列
 
 ```
-    scala> val s = sum(1 to 5: _*)
-    s: Int = 15
+scala> val s = sum(1 to 5: _*)
+s: Int = 15
 ```
 
 ##### 变量声明中的模式
@@ -525,14 +508,14 @@ res1: Seq[Int] = List(110182, 115276, 110339486)
 例如，下面代码分别将arr中的第一个和第二个值赋给first和second
 
 ```
-    scala> val arr = Array(1, 2, 3, 4, 5)
-    arr: Array[Int] = Array(1, 2, 3, 4, 5)
+scala> val arr = Array(1, 2, 3, 4, 5)
+arr: Array[Int] = Array(1, 2, 3, 4, 5)
 
-    scala> val Array(1, 2, _*) = arr
+scala> val Array(1, 2, _*) = arr
 
-    scala> val Array(first, second, _*) = arr
-    first: Int = 1
-    second: Int = 2
+scala> val Array(first, second, _*) = arr
+first: Int = 1
+second: Int = 2
 ```
 
 ## At符 `@`
@@ -542,10 +525,10 @@ res1: Seq[Int] = List(110182, 115276, 110339486)
 在方法，类，属性上标识一个注解， 如:
 
 ```
-    @deprecated("the delayedInit mechanism will disappear", "2.11.0")
-    override def delayedInit(body: => Unit) {
-        initCode += (() => body)
-    }
+@deprecated("the delayedInit mechanism will disappear", "2.11.0")
+override def delayedInit(body: => Unit) {
+    initCode += (() => body)
+}
 ```
 
 ### 赋值检测
@@ -599,21 +582,21 @@ def calcType(calc: Calculator) = calc match {
 他们定义如下：
 
 ```
-    def fold[A1 >: A](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
-    def foldLeft[B](z: B)(op: (B, A) => B): B = {
-       var result = z
-       this.seq foreach (x => result = op(result, x))
-       result
-    }
+def fold[A1 >: A](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
+def foldLeft[B](z: B)(op: (B, A) => B): B = {
+   var result = z
+   this.seq foreach (x => result = op(result, x))
+   result
+}
 
-    def foldRight[B](z: B)(op: (A, B) => B): B = reversed.foldLeft(z)((x, y) => op(y, x))
+def foldRight[B](z: B)(op: (A, B) => B): B = reversed.foldLeft(z)((x, y) => op(y, x))
 ```
 
 foldLeft和foldRight函数还有两个缩写的函数：
 
 ```
-    def /:[B](z: B)(op: (B, A) => B): B = foldLeft(z)(op)
-    def :\[B](z: B)(op: (A, B) => B): B = foldRight(z)(op)
+def /:[B](z: B)(op: (B, A) => B): B = foldLeft(z)(op)
+def :\[B](z: B)(op: (A, B) => B): B = foldRight(z)(op)
 ```
 
 `/:` 是foldLeft的简写， 示例：
