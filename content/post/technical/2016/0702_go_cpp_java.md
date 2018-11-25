@@ -3,6 +3,7 @@ title: "Go/Java/C++杂谈"
 date: "2016-07-02"
 categories:
  - "技术"
+draft: true
 tags:
  - "go"
  - "cpp"
