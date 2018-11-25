@@ -105,11 +105,11 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0813_go_gls/" itemprop="url">
-        Goroutine Local Storage
+          Goroutine Local Storage
         </a>
       </h1>
       <div class="post-meta">
-      <span class="post-time">
+        <span class="post-time">
 <span class="post-meta-item-icon">
     <i class="fa fa-calendar-o"></i>
 </span>
@@ -117,8 +117,8 @@
 <time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-08-13">
     2016-08-13
 </time>
-</span> 
-      
+</span>
+        
 
   <span class="post-category" >
   &nbsp; | &nbsp;
@@ -137,7 +137,7 @@
 </span>
 
 
-       <span>
+         <span>
 &nbsp; | &nbsp;
 <span class="post-meta-item-icon">
     <i class="fa fa-eye"></i>
@@ -148,7 +148,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h2 id="背景">背景</h2>
+      <h2 id="背景">背景</h2>
 
 <p>最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称<code>GoId</code>）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。</p>
 
@@ -332,7 +332,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 [5] <a href="http://www.zhihu.com/question/39863941/answer/83575802">在golang中如何优雅地获取goroutineID？</a></p>
     </div>
     <footer class="post-footer">
-     
+      
  
 <div class="post-tags">     
      
@@ -342,7 +342,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 
 
 
-     <div class="post-nav">
+      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
         <a href="http://lanlingzi.cn/post/technical/2016/0803_go_interface/" rel="next" title="理解Go Interface">
@@ -360,26 +360,9 @@ BenchmarkSetValues 500000 4050 ns/op</p>
     </div>
 </div>
       
-     <div class="post-nav">
-<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
-    <div style="float:left;margin-top:0px;">
-    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
-    <div style="text-align:center;">微信扫一扫交流</div>
-    </div>
-    <div>
-        <p style="margin-top:0px;">
-            标题：Goroutine Local Storage
-        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
-        <br />关注：lanlingthink（蘭陵N散記）
-        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
-        </p>
-    </div>
-</div>
-<div class="clear"></div>
-</div>
-     
-     
-     
+      
+      
+      
 
 
 

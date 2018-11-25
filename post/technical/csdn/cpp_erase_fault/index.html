@@ -105,11 +105,11 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" itemprop="url">
-        [C&#43;&#43;] STL容器中erase方法的不同陷阱
+          [C&#43;&#43;] STL容器中erase方法的不同陷阱
         </a>
       </h1>
       <div class="post-meta">
-      <span class="post-time">
+        <span class="post-time">
 <span class="post-meta-item-icon">
     <i class="fa fa-calendar-o"></i>
 </span>
@@ -117,8 +117,8 @@
 <time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-07-01">
     2009-07-01
 </time>
-</span> 
-      
+</span>
+        
 
   <span class="post-category" >
   &nbsp; | &nbsp;
@@ -137,7 +137,7 @@
 </span>
 
 
-       <span>
+         <span>
 &nbsp; | &nbsp;
 <span class="post-meta-item-icon">
     <i class="fa fa-eye"></i>
@@ -148,7 +148,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
+      <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">typedef std::map&lt;std::string, std::string&gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
@@ -224,7 +224,7 @@ strmap.erase(iter);</pre></div>
 <p>它输出的结果却是未知的，我的测试环境为<code>&quot;1，2，4，4&quot;</code>。你可能发现原因，当删除<code>2</code>元素时，<code>3</code>往前移了，而<code>iter++</code>不是指到<code>3</code>，还是指到<code>4</code>了。当你使用<code>STL</code>容器中<code>erase</code>方法，那是一定要小心再小心，我也是被它戏弄了一下之后，才明白其中容易被忽视的这些细节。</p>
     </div>
     <footer class="post-footer">
-     
+      
  
 <div class="post-tags">     
      
@@ -234,7 +234,7 @@ strmap.erase(iter);</pre></div>
 
 
 
-     <div class="post-nav">
+      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
         <a href="http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/" rel="next" title="C&#43;&#43;的仿函数与动态语言的闭包">
@@ -252,26 +252,9 @@ strmap.erase(iter);</pre></div>
     </div>
 </div>
       
-     <div class="post-nav">
-<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
-    <div style="float:left;margin-top:0px;">
-    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
-    <div style="text-align:center;">微信扫一扫交流</div>
-    </div>
-    <div>
-        <p style="margin-top:0px;">
-            标题：[C&#43;&#43;] STL容器中erase方法的不同陷阱
-        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
-        <br />关注：lanlingthink（蘭陵N散記）
-        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
-        </p>
-    </div>
-</div>
-<div class="clear"></div>
-</div>
-     
-     
-     
+      
+      
+      
 
 
 

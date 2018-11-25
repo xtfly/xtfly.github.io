@@ -105,11 +105,11 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0703_goroutine/" itemprop="url">
-        Goroutine陷阱
+          Goroutine陷阱
         </a>
       </h1>
       <div class="post-meta">
-      <span class="post-time">
+        <span class="post-time">
 <span class="post-meta-item-icon">
     <i class="fa fa-calendar-o"></i>
 </span>
@@ -117,8 +117,8 @@
 <time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-03">
     2016-07-03
 </time>
-</span> 
-      
+</span>
+        
 
   <span class="post-category" >
   &nbsp; | &nbsp;
@@ -137,7 +137,7 @@
 </span>
 
 
-       <span>
+         <span>
 &nbsp; | &nbsp;
 <span class="post-meta-item-icon">
     <i class="fa fa-eye"></i>
@@ -148,7 +148,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。</p>
+      <p>Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。</p>
 
 <h2 id="goroutine泄漏问题">Goroutine泄漏问题</h2>
 
@@ -324,7 +324,7 @@
 <p>上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。</p>
     </div>
     <footer class="post-footer">
-     
+      
  
 <div class="post-tags">     
      
@@ -334,7 +334,7 @@
 
 
 
-     <div class="post-nav">
+      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
         <a href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" rel="next" title="第八届中国云计算大会简纪">
@@ -352,26 +352,9 @@
     </div>
 </div>
       
-     <div class="post-nav">
-<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
-    <div style="float:left;margin-top:0px;">
-    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
-    <div style="text-align:center;">微信扫一扫交流</div>
-    </div>
-    <div>
-        <p style="margin-top:0px;">
-            标题：Goroutine陷阱
-        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
-        <br />关注：lanlingthink（蘭陵N散記）
-        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
-        </p>
-    </div>
-</div>
-<div class="clear"></div>
-</div>
-     
-     
-     
+      
+      
+      
 
 
 
