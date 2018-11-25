@@ -152,8 +152,8 @@
 
 <h2 id="goroutine泄漏问题">Goroutine泄漏问题</h2>
 
-<p>Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
-</p>
+<p>Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。</p>
+
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">First</span>(<span style="color:#a6e22e">query</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">replicas</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Search</span>) <span style="color:#a6e22e">Result</span> {  
     <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Result</span>)
     <span style="color:#a6e22e">searchReplica</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) { <span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">replicas</span>[<span style="color:#a6e22e">i</span>](<span style="color:#a6e22e">query</span>) }
@@ -337,8 +337,8 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/" rel="next" title="Go/Java/C&#43;&#43;杂谈">
-        <i class="fa fa-chevron-left"></i> Go/Java/C&#43;&#43;杂谈
+        <a href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" rel="next" title="第八届中国云计算大会简纪">
+        <i class="fa fa-chevron-left"></i> 第八届中国云计算大会简纪
         </a>
     
     </div>
@@ -413,7 +413,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -487,7 +487,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

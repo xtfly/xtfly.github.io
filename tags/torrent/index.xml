@@ -19,7 +19,18 @@
       <guid>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</guid>
       <description>&lt;p&gt;提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。&lt;/p&gt;
 
-&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;</description>
+&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;
+
+&lt;p&gt;一个BitTorrent的文件在网络传输过程，由以下几个部分组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;WEB服务器&lt;/li&gt;
+&lt;li&gt;文件元信息(metainfo)&lt;/li&gt;
+&lt;li&gt;BitTorrent Tracker&lt;/li&gt;
+&lt;li&gt;原始资源发布者&lt;/li&gt;
+&lt;li&gt;目的端用户浏览器&lt;/li&gt;
+&lt;li&gt;目的端用户下载者&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

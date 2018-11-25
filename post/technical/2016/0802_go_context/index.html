@@ -154,8 +154,7 @@
 
 <p><code>Context</code>通常被译作<code>上下文</code>，它是一个比较抽象的概念。在公司技术讨论时也经常会提到<code>上下文</code>。一般理解为程序单元的一个运行状态、现场、快照，而翻译中<code>上下</code>又很好地诠释了其本质，上下上下则是存在上下层的传递，<code>上</code>会把内容传递给<code>下</code>。在Go语言中，程序单元也就指的是Goroutine。</p>
 
-<p>每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个<code>Context</code>变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
-</p>
+<p>每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个<code>Context</code>变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。</p>
 
 <h2 id="context包">context包</h2>
 
@@ -347,7 +346,7 @@ func WithValue(parent Context, key interface{}, val interface{}) Context</pre></
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -426,7 +425,7 @@ func WithValue(parent Context, key interface{}, val interface{}) Context</pre></
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

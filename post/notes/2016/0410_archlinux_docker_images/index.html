@@ -150,13 +150,15 @@
     <div class="post-body" itemprop="articleBody">
     <p>想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。</p>
 
-<p>正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本<a href="https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh">mkimage-arch.sh</a>，于是把它做了些改造，制作过程记录一下：
-</p>
+<p>正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本<a href="https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh">mkimage-arch.sh</a>，于是把它做了些改造，制作过程记录一下：</p>
 
 <ul>
-<li>源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。</li>
+<li>源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。
+
+<ul>
 <li>默认安装<code>openssh</code>软件，可以通过ssh来连接Container。</li>
 <li>增加一个入口脚本<code>run.sh</code>，在此脚本主配置<code>sshd</code>，并启动<code>sshd</code>。</li>
+</ul></li>
 </ul>
 
 <p>这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用<code>sshd</code>上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：</p>
@@ -276,7 +278,7 @@ archlinux           latest              dc54036acaa4        About an hour ago   
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -336,7 +338,7 @@ archlinux           latest              dc54036acaa4        About an hour ago   
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

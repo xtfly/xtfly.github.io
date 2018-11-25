@@ -165,17 +165,19 @@
 
 <p>Bind9可以作为权威与递归DNS。主要特性如下：</p>
 
-<p>作为权威DNS时：
-</p>
+<p>作为权威DNS时：</p>
 
 <ul>
-<li>Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击</li>
+<li>Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击
+
+<ul>
 <li>Dynamically-Loadable Zones (DLZ)：支持从外部数据库获取Zone数据，但不建议使用在高性的权威DNS。</li>
 <li>Minimum Re-load Time：支持配置文件动态加载。</li>
 <li>HSM Support：支持通过原生的 PKCS#11接口或OpenSSL PKCS#11的接口的HSM（ Hardware Security Modules）。</li>
 <li>DNSSEC with In-line Signing：支持NSEC与NSEC3的安全协议的签名。</li>
 <li>Catalog Zones：支持多Zone的目录管理。</li>
 <li>Scalable Master/Slave Hierarchy：支持Master+多Slave组网，Slave从Master同步Zone配置。</li>
+</ul></li>
 </ul>
 
 <p>作为递归DNS时：</p>
@@ -478,7 +480,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -561,7 +563,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

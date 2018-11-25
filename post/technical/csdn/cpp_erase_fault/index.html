@@ -154,8 +154,7 @@ typedef TStrMap::iterator TStrMapIter;
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&#34;somekey&#34;);  
 strmap.erase(iter);</pre></div>
-<p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
-</p>
+<p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
 
 <p>但有时我们一不注意，却会这样使用，这是错误的:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();++iter)  
@@ -305,7 +304,7 @@ strmap.erase(iter);</pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -365,7 +364,7 @@ strmap.erase(iter);</pre></div>
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

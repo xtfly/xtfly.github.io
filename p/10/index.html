@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.41" />
+	<meta name="generator" content="Hugo 0.51" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -107,70 +107,6 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/" itemprop="url">
-        [WebApp沙箱]SecurityManager运用
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2011-03-12">
-    2011-03-12
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2638 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/0311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
-
-<h2 id="security-manager">Security Manager</h2>
-
-<p>Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（<code>SecurityManager</code>）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
-</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2011/0311_java_sandbox_cl/" itemprop="url">
         [WebApp沙箱]JRE类白名单运用
         </a>
@@ -223,8 +159,7 @@
    Extension ClassLoader
             |
    System ClassLoader</pre></div>
-<p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
-</p>
+<p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -283,8 +218,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。
-</p>
+    <p>今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -345,8 +279,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>到达德国的Frankfurt法兰克福大约是19号早晨的６点半左右。这边的天还没有亮，取得托运行李，再过完签证检查之后已是７点左右，天还是没有亮。这次还好，去年过境德国，被安检人员问了一堆的问题。这次可能我事先跟海关检查人员打了声招呼“Morning”，他居然什么都没有问，直接盖上大章就说“Pass”。出了Airport，外面非常的冷清，11月的德国已经开始很冷，有点冬的味道。</p>
 
-<p>我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。
-</p>
+<p>我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -407,8 +340,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>项目组由四地员工组成：深圳，南京，印度，土耳其。印度研究所设在班加罗尔（Bangalore），由于这次项目的重要性，把一堆的印度同事也拉到了深圳集中办公，也把部分的土耳其同事拉到了深圳。</p>
 
-<p>今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我<code>join us for dinner</code>。盛情难却，于是我说<code>I'm glad to go</code>，我就参加了他们的一次聚会。
-</p>
+<p>今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我<code>join us for dinner</code>。盛情难却，于是我说<code>I'm glad to go</code>，我就参加了他们的一次聚会。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -476,8 +408,8 @@
 
 <li><p>角色认知，系统化思考：</p>
 
-<p>你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。
-</p>
+<p>你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。</p></li>
+</ol>
     </div>
     
     <div class="post-more-link text-center">
@@ -556,8 +488,7 @@
 去了一趟欧洲，<br />
 去了一趟南京。<br />
 工作走到十字路口，<br />
-有更多的人生盲点。<br />
-</p>
+有更多的人生盲点。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -616,12 +547,77 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。
-</p>
+    <p>昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。</p>
     </div>
     
     <div class="post-more-link text-center">
     <a class="btn" href="http://lanlingzi.cn/post/stories/2009/1106_rule/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/stories/2009/1004_qingqing/" itemprop="url">
+        青青世界
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-10-04">
+    2009-10-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%9D%82%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">杂记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">443 字 ~1分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>少年时，一首青青世界的歌曲在春晚上唱红南北。歌里描绘的是一个梦幻世界，是我一直梦想的世界，一副有山有水的清净世界，歌词的作者天才乔羽现在是否还安好？听我们的老大们讲，乔老创造这首歌时，本来是我们公司请他来为公司写企业主题歌，就他住进了当时公司的培训与生活基地青青世界（那时青青世界刚开没有多久，资金运营上有困难，所以把酒店都包给公司）。精明的青青世界台湾老板自然是不会放过送上门来的文坛泰斗，于是就有了后来的青青世界这着歌，也让青青世界这个旅游景点火一把。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/stories/2009/1004_qingqing/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -731,7 +727,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -798,7 +794,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

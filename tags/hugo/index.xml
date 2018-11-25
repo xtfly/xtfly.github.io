@@ -25,8 +25,7 @@
 
 &lt;p&gt;这二个主题都是&lt;a href=&#34;http://blog.coderzh.com/&#34;&gt;coderzh&lt;/a&gt;最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。&lt;/p&gt;
 
-&lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
-&lt;/p&gt;</description>
+&lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。&lt;/p&gt;</description>
     </item>
     
   </channel>

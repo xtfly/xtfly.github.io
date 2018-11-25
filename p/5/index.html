@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.41" />
+	<meta name="generator" content="Hugo 0.51" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -157,8 +157,7 @@
 
 <p><code>Context</code>通常被译作<code>上下文</code>，它是一个比较抽象的概念。在公司技术讨论时也经常会提到<code>上下文</code>。一般理解为程序单元的一个运行状态、现场、快照，而翻译中<code>上下</code>又很好地诠释了其本质，上下上下则是存在上下层的传递，<code>上</code>会把内容传递给<code>下</code>。在Go语言中，程序单元也就指的是Goroutine。</p>
 
-<p>每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个<code>Context</code>变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
-</p>
+<p>每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个<code>Context</code>变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -297,11 +296,8 @@
 
 <ul>
 <li>公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；</li>
-<li>互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
-</li>
+<li>互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；</li>
 </ul>
-
-<p>采用Go语言的技术因素主要有：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -376,11 +372,8 @@
 <ul>
 <li>项目主页：<a href="http://github.com/golang-china/gopl-zh">http://github.com/golang-china/gopl-zh</a></li>
 <li>项目主页：<a href="http://bitbucket.org/golang-china/gopl-zh">http://bitbucket.org/golang-china/gopl-zh</a></li>
-<li>原版官网：<a href="http://gopl.io">http://gopl.io</a>
-</li>
+<li>原版官网：<a href="http://gopl.io">http://gopl.io</a></li>
 </ul>
-
-<p>在线阅读：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -443,8 +436,7 @@
 
 <p>在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。</p>
 
-<p>Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。
-</p>
+<p>Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -507,76 +499,11 @@
 
 <h2 id="goroutine泄漏问题">Goroutine泄漏问题</h2>
 
-<p>Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
-</p>
+<p>Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。</p>
     </div>
     
     <div class="post-more-link text-center">
     <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0703_goroutine/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/" itemprop="url">
-        Go/Java/C&#43;&#43;杂谈
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-02">
-    2016-07-02
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2884 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年+的C++开发经验，也有5年+的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。</p>
-
-<h2 id="go">Go</h2>
-
-<p>首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
-</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -640,15 +567,79 @@
 <ul>
 <li>云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整</li>
 <li>云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用</li>
-<li>云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛
-</li>
+<li>云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛</li>
 </ul>
-
-<p>云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:</p>
     </div>
     
     <div class="post-more-link text-center">
     <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0515_go_web/" itemprop="url">
+        Golang Web开发
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-05-15">
+    2016-05-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1958 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h2 id="标准库-net-http">标准库[net/http]</h2>
+
+<p>采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到<code>net/http</code>包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的<code>net/http</code>是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在<code>golang.org/x/net/http2</code>,后续可能会移到标准库。</p>
+
+<p><code>net/http</code>库中主要涉及到如下几个类型与接口：</p>
+
+<h3 id="request结构体">Request结构体</h3>
+
+<p>封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0515_go_web/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -757,7 +748,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -824,7 +815,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

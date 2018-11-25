@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.41" />
+	<meta name="generator" content="Hugo 0.51" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -189,8 +189,6 @@
 <li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
 <li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。<br /></li>
 </ul>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -261,8 +259,6 @@
 <p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。</p>
 
 <p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -328,8 +324,6 @@
 <p>Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。</p>
 
 <p>于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：</p>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -397,8 +391,6 @@
 <h2 id="既存类型">既存类型</h2>
 
 <p><code>impl Trait</code>是对<a href="https://en.wikipedia.org/wiki/Type_system#Existential_types"><code>既存类型(Existential types)</code></a>的支持，那什么是既存类型?</p>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -461,8 +453,6 @@
 
 <p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="" />
 <img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt="" /></p>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -533,8 +523,6 @@
 <p>最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了<a href="https://github.com/ReactiveX/RxJava">RxJava(Reactive Extension for Java)</a>。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的<a href="http://Rx.Net">Rx.Net</a>的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有<a href="http://projectreactor.io/">Project Reactor</a>, <a href="https://akka.io/">Akka</a>和<a href="https://github.com/google/agera">Agera</a>等等。</p>
 
 <p>传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的<code>Callback Hell</code>。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决<code>Callback Hell</code>。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。</p>
-
-<p></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -678,8 +666,7 @@
 
 <p>Bind9可以作为权威与递归DNS。主要特性如下：</p>
 
-<p>作为权威DNS时：
-</p>
+<p>作为权威DNS时：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -803,7 +790,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -870,7 +857,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

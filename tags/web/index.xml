@@ -25,8 +25,7 @@
 
 &lt;h3 id=&#34;request结构体&#34;&gt;Request结构体&lt;/h3&gt;
 
-&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
-&lt;/p&gt;</description>
+&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。&lt;/p&gt;</description>
     </item>
     
   </channel>

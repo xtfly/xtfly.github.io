@@ -29,8 +29,7 @@
 
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
 
-&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
-&lt;/p&gt;</description>
+&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
     </item>
     
   </channel>

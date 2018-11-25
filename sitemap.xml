@@ -18,8 +18,7 @@
  T:A:B 表示即同时满足AT这种隐式值和BT这种隐式值  &amp;lt;: 与 :&amp;gt;  &amp;lt;: 表示只限定子类，如 T &amp;lt;: A 表示T必须为A的子类 &amp;gt;: 表示只限定子类，如 T &amp;gt;: A 表示T必须为A的父类  &amp;lt;: 与 :&amp;gt; 相当于java范型编程中的extends，super对泛型变量的限定。
 示例：
  T &amp;lt;: A with B 表示A和B为T上界 T &amp;gt;: A with B 表示A和B为T下界 T &amp;gt;: A &amp;lt;: B 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。
-  
-&amp;lt;% &amp;lt;% 表示“view bounds”(视界)，比 &amp;lt;: 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。
+  &amp;lt;% &amp;lt;% 表示“view bounds”(视界)，比 &amp;lt;: 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。
 示例：
  T &amp;lt;% A &amp;lt;% B 表示：同时能够满足隐式转换的A和隐式转换的B  =：= , &amp;lt;:&amp;lt; 与 &amp;lt;%&amp;lt; 这些被称为广义的类型约束。他们允许你从一个类型参数化的class或trait，进一步约束其类型参数之一。
  =：= 表示必须是这种类型，如 A =:= B 表示 A 必须是 B 类型 &amp;lt;:&amp;lt; 表示必须是子类型，如 A &amp;lt;:&amp;lt; B 表示 A 必须是B的子类型 (类似于简单类型约束 &amp;lt;: ) &amp;lt;%&amp;lt; 表示必须是可视化类型，A &amp;lt;%&amp;lt; B 表示 A 必须是可视化为 B类型, 可能通过隐式转换 (类似与简单类型约束&amp;lt;% )  [&#43;T] 与 [-T] 在泛型中，需要描述泛型的类型之间继承关系可以转化的关系。
@@ -111,7 +110,6 @@ org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 
         <content type="html"> 一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：
  针对消息对象缓存，每个消息都非常小，要高效地使用内存 存在定时消息，当定时到了，需要回到业务系统中去调度 消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等） 消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）  从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。
 今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。
-
 缓存穿透 缓存系统一般都是按照key去缓存查询，如果不存在对应的value，就应该去后端系统（如DB）查找。如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会对后端系统造成很大的压力。这就叫做缓存穿透。
 解决办法：
  对空结果缓存，缓存时间设置较短，当该key对应的数据有抛入时更新 对Key进行过滤，设计Key有一定的规范，当Key满足规范时才去后端查找。 布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉  缓存雪崩 当缓存服务器重启或者大量缓存集中在某一个时间段失效，这样在失效的时候，也会给后端系统带来很大压力。
@@ -137,7 +135,6 @@ org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 
         <content type="html"> 昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。
 背景 Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。
 于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：
-
 @Data public class RoleAuthPO { String relId; // primary key String roleId; // cache key String authId; // roleId&amp;lt;-&amp;gt;authId: n&amp;lt;-&amp;gt;m } @Mapper @CacheConfig(cacheNames = &amp;#34;role-auth) public interface RoleAuthMapper { @UpdateProvider(type=RoleAuthSQLProvider.class, method=&amp;#34;batchUpdate&amp;#34;) @BatchCache(keyPrefix=&amp;#34;role-auth:role-id:&amp;#34;, keyFiled=&amp;#34;roleId&amp;#34;) void batchUpdate(List&amp;lt;RoleAuthPO&amp;gt; pos); @Select(&amp;#34;SELECT * FROM T_ROLE_AUTH WHERE ROLE_ID=#{roleId}&amp;#34;) @Cacheable(key=&amp;#34;`role-auth:role-id:`&#43;p0&amp;#34;) List&amp;lt;RoleAuthPO&amp;gt; queryByRoleId(@Param(&amp;#34;roleId&amp;#34;) String roleId); } @Target({ElementType.METHOD}) @Retention(RetentionPolicy.RUNTIME) @Documented public @interface BatchCache { String keyPrefix() default &amp;#34;&amp;#34;; String keyFiled() default &amp;#34;&amp;#34;; } @Aspect @Component public class BatchCacheAspect { @AfterReturing(&amp;#34;@annotation(BatchCache)&amp;#34;) public void doBatchCache(JoinPoint point) { System.out.println(&amp;#34;before batchCache&amp;#34;); } } 笔者的项目是使用Spring Boot 1.5.12，Debug跟踪都无法进入doBatchCache方法。而项目也有采用@Aspect来实现其它的注解，这些注解能正常切入，他们的区别是这些注解是标注在具体类的方法上，而不是接口方法。
 问题浮现 那为什么Spring Cache的注解可以切入？通过查看Cache的注解实现，它并没有采用@Aspect声明的切面，而是采用CacheOperationSourcePointcut。
 后又做了一个验证，把Spring Boot切换到2.X，奇迹发生了，居然是可以切入。那有一种可能就是这个问题就出在Spring Boot 1.5.X的@Aspect不支持对标识在接口方法的拦截。
@@ -162,7 +159,6 @@ org.scala-tools&amp;#34; %% &amp;#34;scala-stm&amp;#34; % &amp;#34;0.3&amp;#34; 
         <content type="html"> 最近利用周末时间来学习Rust编程，发现新发布的1.26版本，带来了impl Trait，一时对它的写法难以理解，今天又找点资料再温习一下。
  impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&amp;gt; impl Iterator or fn open(path: impl AsRef).
  既存类型 impl Trait是对既存类型(Existential types)的支持，那什么是既存类型?
-
  Existential types are frequently used in connection with record types to represent modules and abstract data types, due to their ability to separate implementation from interface. For example, the type &amp;ldquo;T = ∃X { a: X; f: (X → int); }&amp;rdquo; describes a module interface that has a data member named a of type X and a function named f that takes a parameter of the same type X and returns an integer. This could be implemented in different ways; for example:
 intT = { a: int; f: (int → int); }
 floatT = { a: float; f: (float → int); }
@@ -196,7 +192,6 @@ https://github.com/actix/actix-web/blob/master/src/handler.rs#L292 impl&amp;lt;T
           <tag>Archlinux</tag><tag>Manjaro</tag>
         </tags>
         <content type="html"> 这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：
-
 本文是折腾之后的记录备份，也适合于目前是Archlinux，想把系统转成Manjaro的同学们参考。
 Manjaro安装软件列表与配置已归档到GitHub: xtfly/mydots 。
 安装Manjaro 修改/etc/pacman.d/mirrorlist
@@ -224,7 +219,6 @@ sudo pip install git&#43;https://github.com/enkore/i3pystatus.git sudo pip insta
         </tags>
         <content type="html"> RxJava 最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了RxJava(Reactive Extension for Java)。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的Rx.Net的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有Project Reactor, Akka和Agera等等。
 传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的Callback Hell。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决Callback Hell。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。
-
 再拿RxJava来说，其最基础的原理是引入了Observable概念，一种观察者模式与Reactor模式的增强，但又与传统的观察者模式又不完全相同。传统的观察者模式只涉及到两个对象：观察者（Observer）和被观察者（Observable）。观察者通过将被观察的对象加到自己的观察队列中，当被观察者发生改变时，就会通知观察者东西已经改变。而RxJava中涉及到4个概念：
  Observable：可观察者，即被观察者 Observer：观察者 Subscribe：订阅 Event：事件  Observable和Observer通过subscribe()方法实现订阅关系，从而Observable可以在需要的时候发出事件来通知 Observer数据刷新。而上游只管同过Observable发送数据，或是异步或是同步。下游只管处理，也无须关心上游数据到底怎么生成。
 如果这样的话，其实和CallBack也差不多啊。但Observable通过Observable Contract，使得所有CallBack都可以走上同一个管道。这就引出Stream的概念，也是Java 8中最主要的特性。Stream是Java弥补函数式编程的缺陷，解决集合类型函数式与链式操作，它看起来像一个管道的不断地Iterable流。回到RxJava，它使得CallBack都到一个Stream管道流了，而可以与Java 8的函数式编程完美结合，从而避免了Callback Hell。
@@ -264,7 +258,7 @@ Spring 5最大的亮点是提供了提供了完整的端到端响应式编程的
           <tag>软件架构</tag>
         </tags>
         <content type="html"> 最近我司的软件产品线面临其史上最大的因境，今天晚上坐班车时，与一位曾经共过事的同事，聊起现在的软件，感慨颇多。大家都认为我们镨过太多的机会点，现在面对互联网软件的直面冲击，以及运营商本身经营上的乏力，运营商这个领域的软件已经无力回天了。另外之前与其它的同事也聊过，我司本质是一家硬件公司，没有做软件的基因。凭着做硬件的套路，做了这么多年的软件产品，也实属于不容易了。做软件产品与做软件服务是完全不同的套路，软件产品是需要卖给不同的客户，交付形态存在多样化，定制不可避免。而卖服务给不同的客户，客户关注是的服务体验，并不太关心软件的本身，只要软件能搞定客户的问题就行，就不会像卖产品那样面临不同的交付形态问题。而目前我们最大的因境就是软件产品不具有可复制性，不能像硬件那样形成规模效应。
- 今天我们再来只谈谈做软件的不容易。基于传统的软件技术，传统的软件思维，做软件产品，我们会遇到如下三个矛盾，是非常难以有所突破的。
+今天我们再来只谈谈做软件的不容易。基于传统的软件技术，传统的软件思维，做软件产品，我们会遇到如下三个矛盾，是非常难以有所突破的。
 反复重建,架构无法持续演进 我们很容易想到我们国家的城市建设，是一个不断反复重建的过程，建筑的生命力非常的短暂。一个城市的规划师很重要，但再强大的规划师也是难以预见一个城市的发展未来，尤其是一个快速上升，充满经济活力的城市。
 同样，面对软件的架构，上世纪60年代就有人提出“软件没有银弹”，再牛逼的架构师，设计出来软件产品，5到10年也必然面临着被推倒重来。原因很简单，软件是为业务服务的，业务在不同的时期，对软件的诉求也是完全不同的。业务的初期，大家对问题的本质往往看不清楚，考虑不全面，而此时很难做出具有非常前瞻性的软件架构，能够持续地与业务发展而演进。
 软件技术可以借鉴，但软件本质是具有业务属性，一个软件产品不可能脱离了业务场景而纯技术的存在。就像建房子，中国建造方式与中东可能就不一样，因为他们面临的环境不同，使用人群的文化不同。纯技术的照搬，可能并不能解决实际的痛点，可能造就的是一个被人吐槽的烂软件。
@@ -289,7 +283,8 @@ Spring 5最大的亮点是提供了提供了完整的端到端响应式编程的
         <content type="html"> DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：
 Bind9 ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自Berkeley Internet Name Domain。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。
 Bind9可以作为权威与递归DNS。主要特性如下：
-作为权威DNS时：  Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击 Dynamically-Loadable Zones (DLZ)：支持从外部数据库获取Zone数据，但不建议使用在高性的权威DNS。 Minimum Re-load Time：支持配置文件动态加载。 HSM Support：支持通过原生的 PKCS#11接口或OpenSSL PKCS#11的接口的HSM（ Hardware Security Modules）。 DNSSEC with In-line Signing：支持NSEC与NSEC3的安全协议的签名。 Catalog Zones：支持多Zone的目录管理。 Scalable Master/Slave Hierarchy：支持Master&#43;多Slave组网，Slave从Master同步Zone配置。  作为递归DNS时：
+作为权威DNS时：
+ Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击  Dynamically-Loadable Zones (DLZ)：支持从外部数据库获取Zone数据，但不建议使用在高性的权威DNS。 Minimum Re-load Time：支持配置文件动态加载。 HSM Support：支持通过原生的 PKCS#11接口或OpenSSL PKCS#11的接口的HSM（ Hardware Security Modules）。 DNSSEC with In-line Signing：支持NSEC与NSEC3的安全协议的签名。 Catalog Zones：支持多Zone的目录管理。 Scalable Master/Slave Hierarchy：支持Master&#43;多Slave组网，Slave从Master同步Zone配置。   作为递归DNS时：
  NXDOMAIN Redirect：当查询一个不存在域名时，转向一个Web页面，它依赖于DLZ特征。 Flexible Cache Controls：对于不正确或过期的域名记录，灵活的缓存控制。 Split DNS：通过配置不同的View，来保护部分私有信息。 Optimum Cache Hit Rate：通过 DNS pre-fetch 技术来优化缓存命中率。 Resolver rate-limiting：在受攻击下，对权威DNS查询限速，减轻对路径解析器的DDoS攻击影响。 DNSSEC Validation：支持对DNSSEC的检验。 GeoIP：支持基于来源不同的递归DNS的请求给出不同的响应。 Response Policy Zone（RPZ）：通过响应策略的Zone来减少对被认为是滥用或非法目的Zone的访问。  双License：ISC 与Mozilla Public 2.0。
 开发语言：C。
 官方网站：https://www.isc.org/
@@ -441,8 +436,7 @@ logging { channel warning { file &amp;#34;log/named.log&amp;#34; versions 3 size
         </tags>
         <content type="html"> 什么是4A 4A是指：账号Account、认证Authentication、授权Authorization、审计Audit，中文名称为统一安全管理平台解决方案。即将身份认证、授权、审计和账号(即不可否认性及数据完整性)定义为网络安全的四大组成部分，从而确立了身份认证在整个网络安全系统中的地位与作用。(来源百度百科)
 账号Account 为用户提供统一集中的帐号管理，包括：用户身份信息的集中存储与统一管理。参考AWS等系统，涉及到概念包括：
- 主账号：一般指管理资源的唯一身份标识，他为资源付费。也是自然人在4A中的唯一身份标识，一个用户只会有一个主账号，唯一标识了他的身份。 从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。 用户：实现操作资源的人员，对应物理存在的人，它由账号分配。 群组：一般对应企业的组织，把用户归属到一个群组里，用户可以自动获得这个群组所具有的权限。对于大型的企业，组织可能分为人员组织与业务组织。对于用户来说，群组也是为提供分级管理能力。  
-用户身份信息，主要包括名称与密码。对于不同的系统，其它信息各不相同，比如互联网中用户信息，一般包括昵称，邮箱，电话，爱好等信息。从账号身份信息，主要包括名称与密码。不同的资源形态身份也不相同，像AWS中，API访问还有AK/SK，虚拟机访问还有SSH证书。
+ 主账号：一般指管理资源的唯一身份标识，他为资源付费。也是自然人在4A中的唯一身份标识，一个用户只会有一个主账号，唯一标识了他的身份。 从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。 用户：实现操作资源的人员，对应物理存在的人，它由账号分配。 群组：一般对应企业的组织，把用户归属到一个群组里，用户可以自动获得这个群组所具有的权限。对于大型的企业，组织可能分为人员组织与业务组织。对于用户来说，群组也是为提供分级管理能力。  用户身份信息，主要包括名称与密码。对于不同的系统，其它信息各不相同，比如互联网中用户信息，一般包括昵称，邮箱，电话，爱好等信息。从账号身份信息，主要包括名称与密码。不同的资源形态身份也不相同，像AWS中，API访问还有AK/SK，虚拟机访问还有SSH证书。
 账号与用户的信息身份都是敏感信息，需要完整的安全控制。密码类一般采用密码策略管理，如密码长度，字符限定，过期时间等，密码存储一般采用不可逆加密保存。
 目前安全的不可逆加密算法有：PBKDF2，bcrypt。但在一些场景下，由于政策或法规原因，要求可以掌握用户密码，存储也需要加密，但它是可逆的。一般采用非对称加密，采用私钥/公钥对，公钥用于加密密码存储，私钥用于解密，私钥的存储在物理上与系统隔离，以防私钥泄漏。
 认证Authentication 根据用户应用的实际需要，为用户提供不同强度的认证方式。认证的方式一般有以下几种：
@@ -479,7 +473,8 @@ PKI发展的一个重要方面就是标准化问题，它也是建立互操作�
           <tag>cloud</tag><tag>软件架构</tag>
         </tags>
         <content type="html"> 在云环境下，如何构建出可靠，弹性，安全的应用？有哪些挑战？面对这些挑战如何解决，微软Azure总结一系列的设计模式。本文是翻译Azure架构中心在线资料中的云设计模式，仅个人的笔记，借翻译学习一下，英文好的可以直接阅读原文。
-挑战 可用性 可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。 数据管理 数据管理是云应用的关键要素，影响着大多数质量属性。由于性能、可伸缩性或可用性等原因，数据通常被存放在不同的位置和跨多个服务器上，这可能会带来一系列的挑战。例如，必须保持数据一致性，并且数据通常需要跨不同的位置同步。
+挑战 可用性 可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。
+数据管理 数据管理是云应用的关键要素，影响着大多数质量属性。由于性能、可伸缩性或可用性等原因，数据通常被存放在不同的位置和跨多个服务器上，这可能会带来一系列的挑战。例如，必须保持数据一致性，并且数据通常需要跨不同的位置同步。
 设计与实施 好的设计包括组件设计和部署的一致性和关联性、可简化管理和开发的可维护性，以及允许组件和子系统在其他应用和其他场景中的可重用性等因素。在设计和实施阶段作出的决定，对云托管应用和服务的质量和总成本产生巨大影响。
 消息 云应用的分布式属性需要一个消息交互基础设施，它将组件和服务连接起来，最好是以松耦合的方式，以最大限度地提高可伸缩性。异步消息的广泛使用，并提供了许多好处，但也带来了挑战，如消息的时序，消息的回环、幂等性等
 管理与监控 云应用运行在远程数据中心中，在那里你不能完全控制基础设施，有时也无法控制操作系统。这会使管理和监控比私有部署环境下更加困难。应用必须暴露出管理员和运维员可以使用管理和监控系统运行信息，以及支持在不断变化的业务需求和定制下，而不需要停止或重新部署应用。
@@ -500,7 +495,8 @@ PKI发展的一个重要方面就是标准化问题，它也是建立互操作�
         </tags>
         <content type="html"> 背景 最近一段时间由于工作内容重心变化，从PaaS系统的设计到运维系统的设计。运维系统的设计对我来说，还是一项全新的领域，需要学习的理念与技术很多。全司虽有大量的产品涉及到软件系统，但本质还是一个硬件盒子，运维的对象还是偏硬件。
 熟悉电信IT系统的人或许听说过：OSS(Operation Support System)，运营支撑系统，它是运营商IT系统中三大支柱系统之一。其它两大系统是：BSS(Bussiness Support System), MSS(Management Support System)。
-OSS是面向资源的后台支撑系统。资源主要包括网络，电信设备，计算系统等。系统的主要功能是包括专业网络管理，综合网络管理，资源管理，业务开通，服务保障等。但公司的产品线众多，产品形态也是千差万别，公司的OSS产品也一直在探索与发展。产品开发部门也是分分合合，一直是想打造一套统一的运营支撑平台。 我们所说的OSS，其实与互联网的业务运维系统主要功能也是相同的：
+OSS是面向资源的后台支撑系统。资源主要包括网络，电信设备，计算系统等。系统的主要功能是包括专业网络管理，综合网络管理，资源管理，业务开通，服务保障等。但公司的产品线众多，产品形态也是千差万别，公司的OSS产品也一直在探索与发展。产品开发部门也是分分合合，一直是想打造一套统一的运营支撑平台。
+我们所说的OSS，其实与互联网的业务运维系统主要功能也是相同的：
  对网络，设备，计算系统，业务系统的监控，维护 对监控数据的智能分析，结果用于支持业务运营决策  而我现在工作的范畴也是面向软件业务的运维系统构建，与一些业界（互联网公司）的同行交流，发现运维理念是在面向的业务特征与场景上有着显著的差异。总结起来是业务产品形态决定运维系统的模式, 大概分为两种运维模式：
 标准化运维 标准化运维是基于标准化的体系建设，对业务环境、配置、操作、流程等通过制定、发布和实施标准达到统一，以获得最佳秩序和效益。标准化的优势是显而易见的，标准是实现运维自动化地基础，是提高团队效率的重要方式，是梳理运维杂乱问题的重要依据。
 标准化运维模式是非常适合于自研业务的运维。自研的业务在行政政策下，标准规范可以统一规划，推广普及。所有的业务在服务器、操作系统、中间件，语言框架统一选型；制定统一的业务开发规范，如安装目录，配置标准，日志标准，发布包标准，CI/CD流程标准等。标准化制定由统一的委员会制定，委员会由各领域的专家组成，规范基于业界或自身一些最佳实践整理。
@@ -525,7 +521,8 @@ SaaS运维是一种新的模型，也是后续运维系统的主要发展模式�
           <tag>写作</tag>
         </tags>
         <content type="html"> 近一年来，写博客很少。总结起来有如下三点：
- 没有时间 没有素材 没有心情  我很佩服那种每天都能写上千字博文或公众号的人，因为坚持写作需要很强的毅力。我没有能够坚持下来，其实最重要还是没有心情，动力不足。那作为一位内心深处又想写点东西的人，如何破？ 没有时间 没有时间，是我们最常用的借口。但有一句名言：
+ 没有时间 没有素材 没有心情  我很佩服那种每天都能写上千字博文或公众号的人，因为坚持写作需要很强的毅力。我没有能够坚持下来，其实最重要还是没有心情，动力不足。那作为一位内心深处又想写点东西的人，如何破？
+没有时间 没有时间，是我们最常用的借口。但有一句名言：
  时间就如海绵里的水，去挤总是有的
  换作搞IT的术语来说，我们工作中的空闲时间就像内存使用产生的碎片。碎片化的时间我们用来做什么呢，刷刷朋友圈，看看新闻。如果没有一套行之有效的碎片整理机制，系统的性能就会越来越下降，工作效率也是如此，还谈何写作。有时我也想像Windows一样有个磁盘碎片整理工具。但这些都是事后整理，最有效地还是如何事先减少碎片的产生。
 减少碎片工作重要的做好等级划分，杂事集中在某一时间段处理。其实，重要的工作没有想像的那么多，紧急事情也不会像担心的地么紧急。不要搬石头砸自己的脚，否则格外的痛，而且没有地方埋怨。
@@ -556,8 +553,7 @@ SaaS运维是一种新的模型，也是后续运维系统的主要发展模式�
         </tags>
         <content type="html"> 最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：brew官网
 安装：
-➜ ~ brew info mysql mysql: stable 5.7.18 (bottled) Open source relational database management system ...... ➜ ~ brew install mysql 
-mysql的安装过程会显示，注，我安装的5.7.18，目录为/usr/local/Cellar/mysql/5.7.18_1：
+➜ ~ brew info mysql mysql: stable 5.7.18 (bottled) Open source relational database management system ...... ➜ ~ brew install mysql mysql的安装过程会显示，注，我安装的5.7.18，目录为/usr/local/Cellar/mysql/5.7.18_1：
 ==&amp;gt; /usr/local/Cellar/mysql/5.7.18_1/bin/mysqld –initialize-insecure –user=xiao –basedir=/usr/local/Cellar/mysql/5.7.18_1 –datadir=/usr/local/var/mysql –t ..... We’ve installed your MySQL database without a root password. To secure it run: mysql_secure_installation 这说明MySQL已安装成功，必需要使用mysql_secure_installation来初始化用户密码：
 ➜ ~ mysql.server start Starting MySQL SUCCESS! ➜ ~ mysql_secure_installation Securing the MySQL server deployment. Connecting to MySQL using a blank password. ...... 按英文提示一步步设置password validation policy与password等。
 测试，输入mysql_secure_installation设置过程的密码：
@@ -582,7 +578,6 @@ mysql&amp;gt;use mysql; mysql&amp;gt;GRANT ALL PRIVILEGES ON *.* TO &amp;#3
  IaaS ：基础构架即服务。这一层主要是对基础设施进行管理以给用户提供资源使用，如提供计算服务、安全备份、负载管理等。 PaaS ：平台即服务。这一层主要是基于IaaS之上，简化应用的部署、维护等，提供一些通用平台软件能力，如数据挖掘、系统管理、编程模型等。 SaaS ：软件即服务。这一层主要是面向终端客户，提供一站式的解决方案。如提供CRM、HRM、SCM等，是可以直接使用其服务。  个人一直从事PaaS的研发，而我们做的又是面向电信领域的PaaS。与外面的朋又交流发现，大家对PaaS的理解是不一样的，主要还是由于PaaS的本质是要解决的问题是：
  简化开发，打通DevOps，实现业务应用的敏捷与弹性。
  不同的业务领域，要面对是不同的传统应用架构如何通过PaaS平台迁移到云上，这就会导致各自对PaaS的需求或多或少有着不同的差异，理解不一样也是正常的。
-
 PaaS定义 NIST（National Institute Of Standards and Technoloy）曾对PaaS有过经典的定义：
  面向应用的核心平台，封装应用分布式复杂性，实现应用层自动化、高可用。
  从功能定义来看，主要包含三个方面：
@@ -612,8 +607,7 @@ PaaS构建新目标 应用敏捷性，集中式朝分布式架构演进，构建
         </tags>
         <content type="html"> 背景 故有的思维会影响创新，在传统的软件设计考虑高可靠性，主要方法论是”防“，处处保护，让系统的每一处能长时间运行，不中断地提供服务。事实上电信级高可用性（HA）也只能宣称达到5个9，这意味着一年也就只有5分半钟的中断时间。但每增加一个9却实施成本非常地高，有些是建立在硬件可靠基础之上，并且不少是实验数据或理论上支持。传统的思维认识，在泥沙上建房子不可靠的。但软件架构设计，即完全不一样，在不可靠的基础设施上构建上可靠的系统，那才是真正NB的。
 依稀记得云计算刚出来时，大家都是持怀疑态度：性能下降的虚拟化技术、安全不可控的网络、变化复杂的资源管理，在其上如何构建可靠稳定的软件系统？事实上，Netflix完全基于AWS云基础设施，认为都有可能发生任何的故障（Failure），更何况资源也不掌握在自己手上。Netflix基于Design for Failure理念却构建出用户无感知的高可用系统，支撑他的业务飞速发展。事实上，故障无所不在，尤其是在云计算环境中：
- 资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等 应用层次：资源泄露；软件Bug；系统处理能力不足等 数据层次：数据丢失；数据不一致等  
-概念解读 既然故障不可避免，何不让故障尽早的暴露，尽快的恢复。设计时针对故障场景而设计，一切假定在故障失效下如何处理，局部的失效不影响整体的可用性。这就是Design for Failure的核心理念。这个设计理念其实也跟人类社会很像：一个人的细胞代谢，只要有新的细胞补上就行；一个组织中，高度细分工作，几个人的离开，不影响整体的运转。Design for Failure不仅仅是高可用性设计，而是一种新的设计理念，有别于传统，通过单点的可靠性达到整体的高可用性。以Netflix公布的数据来看，每个EC2实例平均生命周期只有36个小时，每个单点不断地重生，才能达到整体的高可用性。其关键实施要点总结如下：
+ 资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等 应用层次：资源泄露；软件Bug；系统处理能力不足等 数据层次：数据丢失；数据不一致等  概念解读 既然故障不可避免，何不让故障尽早的暴露，尽快的恢复。设计时针对故障场景而设计，一切假定在故障失效下如何处理，局部的失效不影响整体的可用性。这就是Design for Failure的核心理念。这个设计理念其实也跟人类社会很像：一个人的细胞代谢，只要有新的细胞补上就行；一个组织中，高度细分工作，几个人的离开，不影响整体的运转。Design for Failure不仅仅是高可用性设计，而是一种新的设计理念，有别于传统，通过单点的可靠性达到整体的高可用性。以Netflix公布的数据来看，每个EC2实例平均生命周期只有36个小时，每个单点不断地重生，才能达到整体的高可用性。其关键实施要点总结如下：
  容错：当系统中出现了各种故障时，系统能够自动隔离故障而不影响系统对外的服务质量。 冗余：提供系统冗余配置，当系统发生故障时，冗余的快速介入并承担已发生故障的工作。  以一个运行在云环境中的应用为例，Design for Failure理念需要按如下步骤来考虑：
  每个应用程序组件必须部署在冗余的云组件/服务上，有很少或没有失败的共同点，即不存在单点故障； 每个应用组件必须对基础设施不作任何假设，它必须能够在不停机的情况下适应基础设施的变化； 每个应用程序组件应该是分区容忍，换句话说，它应该能够生存的网络延迟（或通信损失）的节点上； 借助于自动化工具，必须能编排应用程序，以便响应失败或其他基础设施的变化等等。  案例分析 一个单点的故障，我们可能针对性地很容易解决，这可能是头痛医头的做法。但一个系统软件往往没有那么简单，举例来说，一个汽车生产线，生产不同的汽车，需要使用不同的零件，如果某个零件因为种种原因无法使用，那么就会造成整台车无法装配，陷入等待零件的状态，直到零件到位，才能继续组装。 此时如果有很多个车型都需要这个零件，那么整个工厂都将陷入等待的状态，导致所有生产都陷入瘫痪。一个零件的波及范围不断扩大。这就是我们常说的雪崩效应。所以我们非常有必要分析系统中的各种依赖关系。不同的层次来Design for Failure，不同的技术组合来解决问题。
 以Netflix的系统架构来简单分析一下，看它是如何分层解决问题的：
@@ -641,7 +635,6 @@ Zuul Zuul负责七层分发，提供动态路由，监控，弹性，安全等�
         </tags>
         <content type="html"> 最近我司心声社区到处充斥着在40岁左右惯例的帖子，之前觉得这些觉得离自己很远。不经意发现自己今年也35岁了，惯例这一天迟早会来临，只是早晚而已，按目前现状，再为公司奋斗也不会有太多年了，你想奋斗关键公司不让你啊。最近也陆续听到之前曾经共事的同事，或由于身体原因，被沟通退休或离职；或由于绩效平平，合同到期不再续签；或由于种种原因，被进入战备预备队前途不明。公司主营业务已遇到瓶颈，整个行业暮色深沉，新的领域就开拓不足，公司高层也不断地发文要打粮食，熵减等等。总之：“山雨欲来风满楼”。
 35岁应该是一个年富力强的年龄，不应该发出“今年35，还能做技术吗？”这样的话题，其中透露出一丝不自信。话说三十而立，但目前这个年龄段，我是上有老，下有小，身上还背着几百万的房贷，说没有压力不是可能的。作一名软件工程师，在国内来说其职业生涯是相当短的。而我一直从事软件相关的工作，目前虽是做软件架构设计，但还是喜欢写写代码，一直没有找到自己明确的发展方向，一方面有我自身的性格原因，一方面能力的确有些偏科。
-
 我非常能理解公司最近一些HR政策，企业为了保持长期的活力，换血难免。不管这事是否有多么无情，站在企业的角度来说无疑是正确的，毕竟企业不是慈善机构。公司也不可能让一个上了年龄、有家室的人一直从事一线编码工作。公司注重的是流程管理，觉得编码也可以像产业工人一样批量地生产。而年轻人更能干得多，给予得少。即使最近提倡的工程师文化，也是很难真正地做到，越提倡说明越缺失。
 先简单说一说我为什么走上软件开发这一条路的经历吧：
 90年代还是读初中时，老爸单位就开始使用电脑记账，那时觉得电脑太神奇了。个人虽买不起电脑，而要求老爸买了学习机，当时按着说明书，用basic语言输出满屏幕的各种形状的图型，心中也被巨大的喜悦填满。目前我清楚地记得，我爷爷看到我能在学习机上打出全家的名字，觉得这个是怎么做到的而不可思议。
@@ -666,8 +659,7 @@ Zuul Zuul负责七层分发，提供动态路由，监控，弹性，安全等�
           <tag>软件架构</tag><tag>软件开发</tag><tag>微服务</tag>
         </tags>
         <content type="html"> Why 我司从15年开始学习互联网的微服务构架，到今16年的全云化战略，微服务已作为架构体系的重要工作。但微服务看似美好，在IT界应用非常的成熟与成功，但这个本质没有革命性的技术架构，在我司却非常地难以落地。主要原因：传统的CT应用太过厚重，面临着软件交付模式完全不一样，历史包袱改造面临短期看不到收益的成本投入：
- IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。 我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。  
-What 微服务架构转变当前遇到的各种问题，不是我们不实施微服务架构的理由。软件全云化，微服务这是趋势。再说说微服务对我们目前软件开发的核心价值吧：
+ IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。 我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。  What 微服务架构转变当前遇到的各种问题，不是我们不实施微服务架构的理由。软件全云化，微服务这是趋势。再说说微服务对我们目前软件开发的核心价值吧：
  设计：微服务架构下，设计上可以重用已有微服务，反哺微服务仓库，达到软件功能更好的复用；同时由于微服务具有9大特性，使架构师能更好的守护软件架构。 开发：相比原来组件化架构，每个开发人员负责的代码量减少，更能把事件做精；微服务架构下，一般会有像JDF或HSF的服务框架，使开发难度降低；业务功能的细分，基于服务化接口契约，使并行开发变成可能，工期缩短；细粒度快速验证，单个微服务的更容易稳定。 部署：基于微服务的功能组合，可以按不同的特性交付，特性独立上线，而不原有的通过License开关控制；容量上可以按小颗粒度，自动化地伸缩，系统拥有更好的弹性。 运行：可以小颗粒度，自动化地故障隔离，故障影响范围可控；按服务的滚动升级。  有上面的这些理由，难道我们还不选择微服务架构吗？架构上是OK的，但我司的矩阵性管理，有项目经理，有产品管理，有服务人员，有部门经理，有成本管理等，他们会看到，会认可吗？会有产品上收益来支撑吗？遗憾是目前没有，所以仅仅是研发体系上的隐性收益很难快速地推进。
 How 在我司，那如何地渐进式地推进微服务架构，从四个维度架构视图展开：
  逻辑视图：
@@ -690,8 +682,7 @@ How 在我司，那如何地渐进式地推进微服务架构，从四个维度�
         <content type="html"> 内存优化 小对象合并成结构体一次分配，减少内存分配次数 做过C/C&#43;&#43;的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。
 建议：小对象合并成结构体一次分配，示意如下：
 for k, v := range m { k, v := k, v // copy for capturing by the goroutine go func() { // using k &amp;amp; v }() } 替换为：
-for k, v := range m { x := struct {k , v string} {k, v} // copy for capturing by the goroutine go func() { // using x.k &amp;amp; x.v }() } 
-缓存区内容一次分配足够大小空间，并适当复用 在协议编解码时，需要频繁地操作[]byte，可以使用bytes.Buffer或其它byte缓存区对象。
+for k, v := range m { x := struct {k , v string} {k, v} // copy for capturing by the goroutine go func() { // using x.k &amp;amp; x.v }() } 缓存区内容一次分配足够大小空间，并适当复用 在协议编解码时，需要频繁地操作[]byte，可以使用bytes.Buffer或其它byte缓存区对象。
 建议：bytes.Buffert等通过预先分配足够大的内存，避免当Grow时动态申请内存，这样可以减少内存分配次数。同时对于byte缓存区对象考虑适当地复用。
 slice和map采make创建时，预估大小指定容量 slice和map与数组不一样，不存在固定空间大小，可以根据增加元素来动态扩容。
 slice初始会指定一个数组，当对slice进行append等操作时，当容量不够时，会自动扩容：
@@ -732,7 +723,8 @@ func Prefix(b []byte) []byte { return append([]byte(&amp;#34;hello&amp;#34;, b..
         </tags>
         <content type="html"> 随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考Cloud Native at Netflix）。那什么是CloudNative？
 概念 目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。
-早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出CloudNative，认为有如下几个关键特征：  Distributed/Dynamically wired，分布式/动态连接 Elastic，弹性；Scale down as well as up, based on load，基于系统负载的动态伸缩 Granularly metered and billed，粒度合适的计量计费；Pay per user，按使用量计费 Multi-tenant，多租户 Self service，自服务 Incrementally deployed and tested， 增量的部署与测试  CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。
+早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出CloudNative，认为有如下几个关键特征：
+ Distributed/Dynamically wired，分布式/动态连接  Elastic，弹性；Scale down as well as up, based on load，基于系统负载的动态伸缩 Granularly metered and billed，粒度合适的计量计费；Pay per user，按使用量计费 Multi-tenant，多租户 Self service，自服务 Incrementally deployed and tested， 增量的部署与测试   CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。
 在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对CloudNative新的定义：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：
  目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率 原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织 特点：Public Cloud，基于公有云； Mirco-services，微服务；De-normalized data，反范式化数据；Chaos Engines，混沌引擎；Continues Deployment，持续部署；DevOps等等  在2015年，Pivotal的产品经理Matt Stine又对CloudNative关键架构特征进行补充：
  Twelve Factor App，十二因子应用 Mirco-services，微服务 Self Service Agile Infrastructure，自服务敏捷的基础设施 API Based Clolaboration， 基于API的协作 Anti-Fragility，反脆弱性  总结 总结起来，要实施CloudNative，包括三个维度：
@@ -757,7 +749,8 @@ func Prefix(b []byte) []byte { return append([]byte(&amp;#34;hello&amp;#34;, b..
         <content type="html"> 无论何种语言，依赖管理都是一个比较复杂的问题。而Go语言中的依赖管理机制目前还是让人比较失望的。在1.6版本之前，官方只有把依赖放在GOPATH中，并没有多版本管理机制；1.6版本（1.5版本是experimental feature）引入vendor机制，是包依赖管理对一次重要尝试。他在Go生态系统中依然是一个热门的争论话题，还没有想到完美的解决方案。
 看其它 我们先来看看其它语言怎么解决，例举两种典型的管理方式：
 Java 开发态，可以通过maven和gradle工具编辑依赖清单列表/脚本，指定依赖库的位置/版本等信息，这些可以帮助你在合适的时间将项目固化到一个可随时随地重复编译发布的状态。这些工具对我来说已经足够优雅有效。但maven中也有不同依赖库的内部依赖版本冲突等令人心烦的问题。尤其是在大型项目中的依赖传递问题，若团队成员对maven机制没有足够了解下，依赖scope的滥用，会让整个项目工程的依赖树变得特别的巨大而每次编译效率低下。运行态，目前Java也没有很好的依赖管理机制，虽有classloader可以做一定的隔离，但像OSGi那种严格的版本管理，会让使用者陷入多版本相互冲突的泥潭。
-Node.js npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。 go get Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。并且它支持根据import package分析来递归拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Go这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。
+Node.js npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。
+go get Go对包管理一定有自己的理解。对于包的获取，就是用go get命令从远程代码库(GitHub, Bitbucket, Google Code, Launchpad)拉取。并且它支持根据import package分析来递归拉取。这样做的好处是，直接跳过了包管理中央库的的约束，让代码的拉取直接基于版本控制库，大家的协作管理都是基于这个版本依赖库来互动。细体会下，发现这种设计的好处是去掉冗余，直接复用最基本的代码基础设施。Go这么干很大程度上减轻了开发者对包管理的复杂概念的理解负担，设计的很巧妙。
 当然，go get命令，仍然过于简单。对于现实过程中的开发者来说，仍然有其痛苦的地方：
  缺乏明确显示的版本。团队开发不同的项目容易导入不一样的版本，每次都是get最新的代码。尤其像我司对开源软件管理非常严格，开源申请几乎是无法实施。 第三方包没有内容安全审计，获取最新的代码很容易引入代码新的Bug，后续运行时出了Bug需要解决，也无法版本跟踪管理。 依赖的完整性无法校验，基于域名的package名称，域名变化或子路径变化，都会导致无法正常下载依赖。我们在使用过程，发现还是有不少间接依赖包的名称已失效了（不存在，或又fork成新的项目，旧的已不存维护更新）。  而Go官方对于此类问题的建议是把外部依赖的代码复制到你的源码库中管理。把第三方代码引入自己的代码库仍然是一种折中的办法，对于像我司的软件开发流程来说，是不现实的：
  开源扫描会扫描出是相似的代码时，若License不是宽松的，则涉及到法律风险，若是宽松的，开源扫描认证确认工作也很繁琐。 如何升级版本，代码复制过来之后，源始的项目的代码可以变化很大了，无明显的版本校验，借助工具或脚本来升级也会带来工作量很大。 复制的那一份代码已经开始变成私有，第三方代码的Bug只能自己解决，难以贡献代码来修复Bug，或通过推动社区来解决。 普通的程序问题可能不是很大问题，最多就是编译时的依赖。但如果你写的是一个给其他人使用的lib库，引入这个库就会带来麻烦了。你这个库被多人引用，如何管理你这个库的代码依赖呢？  好在开源的力量就是大，Go官方没有想清楚的版本管理问题，社区就会有人来解决，我们已经可以找到许多不错的解决方案，不妨先参考下官方建议。
@@ -778,7 +771,7 @@ Import comments are ignored in vendored packages.
     </entry>
     
      <entry>
-        <title>要学会思维图形化</title>
+        <title>思维图形化</title>
         <url>http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/</url>
         <categories>
           <category>感想</category>
@@ -787,14 +780,11 @@ Import comments are ignored in vendored packages.
           <tag>软件架构</tag><tag>程序员</tag>
         </tags>
         <content type="html"> 曾经，我幼稚地认为：只有写好代码才能对产品最“大”的贡献。什么需求分析文档，架构设计文档，没有最终的代码落地，那就是一张张的空纸。那些职位高高在上的架构师们，就也是写写胶片，画画图，他们又不懂技术细节，天天开会讨论来，讨论去都是在空谈一切。没有我们这些屌丝写的代码，你让他们去实现，估计几年也搞不出来。我写代码的能力比他们顶上N个人；再看看人家老外，60/70岁了还在码代码。为什么我国到了30岁了，都不去写代码了，都去搞所谓的架构设计了。是他们写代码写不好才去干架构师活吗？
-经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：  数据不可靠，系统常出错 增加新需求困难，场景总是覆盖不全 系统之间集成各种问题难以轻易解决 交付不同局点，代码总是改来改去 每年代码量成倍增加，前辈的代码看不懂、改不动 &amp;hellip;  这其实是光写好代码是不能解决上述问题的。只有你经历过，感受到，才能认识到系统的架构是何其重要。作为曾经一名码农，这几年一直在设计部与架构部工作，总是羡慕那些高级别的架构师：
+经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：
+ 数据不可靠，系统常出错  增加新需求困难，场景总是覆盖不全 系统之间集成各种问题难以轻易解决 交付不同局点，代码总是改来改去 每年代码量成倍增加，前辈的代码看不懂、改不动 &amp;hellip;   这其实是光写好代码是不能解决上述问题的。只有你经历过，感受到，才能认识到系统的架构是何其重要。作为曾经一名码农，这几年一直在设计部与架构部工作，总是羡慕那些高级别的架构师：
  他们思考问题角度完全不同，总能高屋建瓴概括总结 他们思考问题比较全面，又能抽象提炼，让人快速抓住要要点 他们们输出的胶片、图画非常简洁，优美，明了，无二义 他们画出来图来指导解决集成问题，往往能一针见血地说明关键之处 &amp;hellip;  为什么他们的图能画得那么好，胶片写得那么牛，而我们似乎绞尽脑汁也难画出一张满意的图，难写出几张像样的胶片，是什么原因？是画得太少，写得太少，经验不足，方法不对，无灵感，还是天赋？
 看到采铜老师的文章才悄然大悟：原来，不仅是因为架构师需要丰富的实践经验、敏锐的分析能力，以及系统性的建模能力，更主要的是因为：
  日常我们通过文字/讲故事是线性叙述，是人和时间的结合；而画图，是人与空间结合，理有助于思维拓展
- 推荐阅读：
-[1] 思维运筹学导论（原理篇）
-[2] 思维运筹学导论（实践篇 · 图形化 · 上）
-[3] 思维运筹学导论（实践篇 · 图形化 · 下）
 </content>
     </entry>
     
@@ -807,7 +797,8 @@ Import comments are ignored in vendored packages.
         <tags>
           <tag>Archlinux</tag><tag>WSL</tag>
         </tags>
-        <content type="html"> 最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。 WSL Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：
+        <content type="html"> 最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
+WSL Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：
  用户模式会话管理器服务，处理Linux实例的生命周期； Pico（可编程输入输出）提供驱动程序（lxss.sys，lxcore.sys），通过转换的Linux系统调用模拟Linux内核； 承载未经修改的用户模式Linux的Pico进程，例如/bin/bash。  在用户模式Linux程序和Windows内核组件之间，通过将未修改Linux程序放入Pico进程，我们让Linux系统调用被引导至Windows内核。lxss.sys和lxcore.sys驱动转换Linux系统调用进入NT API并模拟Linux内核。
 Bash on Ubuntu on Windows就是WSL的具体应用。它是由微软与Canonical公司合作开发，目标是使纯正的 Ubuntu 14.04镜像能下载和解压到用户的本地计算机，并且镜像内的工具和实用工具能在此子系统上原生运行。在最近的14959更新中，Ubuntu已是默认为16.04。
 Bash on Ubuntu on Windows 作为一名ArchLinux忠实爱好者，自然想在WSL上运行ArchLinux。参考了一些网上的资料，我已把Win10升级到14955，首先还是先得安装Bash on Ubuntu on Windows：
@@ -841,7 +832,8 @@ WSL终端 windows下命令提示符（cmd），输入bash可以直接进入WSL�
           <tag>团队</tag><tag>软件开发</tag>
         </tags>
         <content type="html"> 最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。
-作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。 业务 虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：
+作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
+业务 虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：
  价值贡献 满意度  我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。
  面向业务：核心竞争力，价值识别与规划 面向业务&amp;amp;解决方案：领域级，变革项目级规划、运作 满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴 Top产品，问题的攻关  人 人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：
  选
@@ -862,7 +854,8 @@ WSL终端 windows下命令提示符（cmd），输入bash可以直接进入WSL�
           <tag>软件架构</tag><tag>软件设计</tag><tag>设计原则</tag>
         </tags>
         <content type="html"> 传统大型软件系统 ，多以功能需求驱动设计与开发。在体系结构上是一个单体应用，变更修改往往是牵一而发动全身；在系统生态上是一个封闭系统，系统集成是大量定制开发。单体封闭的系统在交付中面临着越来越多的挑战，提升系统的竞争力首先是在软件架构上先行。软件系统发展也需像硬件一样不断地更新换代，软件架构设计需要输入新的思维。只有在思想上彻底地变革，才能摆脱原有的束缚与局限性。
-体验为王 软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。 正如我们所见到的，iPhone的成功原因之一，就是注重用户的体验获得巨大的成功。今天，人们于弹指间操控丰富业务。无数应用，以碎片化的形式填满用户时间，连接起永远在线的数字生活。一个显见的事实是，“体验”正被尊奉为至高无上的法则，用户已重掌驱动行业发展的威权。
+体验为王 软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。
+正如我们所见到的，iPhone的成功原因之一，就是注重用户的体验获得巨大的成功。今天，人们于弹指间操控丰富业务。无数应用，以碎片化的形式填满用户时间，连接起永远在线的数字生活。一个显见的事实是，“体验”正被尊奉为至高无上的法则，用户已重掌驱动行业发展的威权。
 曾经一位领导说我们的软件系统发展应该先是“能用”，再是“好用”，最后是“易用”。这其实也是软件系统从功能为主朝用户至上，体验为王方向发展。套用阿里一句词：“让天下没有难用的软件”。
 那如何能做到“体验为王”的软件设计呢？
 作名一名架构师，首先要始终以用户和角色为中心，要从原有的我能为你提供什么功能，转变成用户最需要什么为出发点。首先要把自己当成用户，如果连自己都不去使用自己设计的系统，又如何把系统设计好呢。
@@ -897,7 +890,7 @@ WSL终端 windows下命令提示符（cmd），输入bash可以直接进入WSL�
         <content type="html"> 团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。
 map的key类型 map中的key可以是任何的类型，只要它的值能比较是否相等，Go的语言规范已精确定义，Key的类型可以是：
  布尔值 数字 字符串 指针 通道 接口类型 结构体 只包含上述类型的数组。  但不能是：
- slice map function   Key类型只要能支持==和!=操作符，即可以做为Key，当两个值==时，则认为是同一个Key。
+ slice map function  Key类型只要能支持==和!=操作符，即可以做为Key，当两个值==时，则认为是同一个Key。
 比较相等 我们先看一下样例代码：
 package main import &amp;#34;fmt&amp;#34; type _key struct { } type point struct { x int y int } type pair struct { x int y int } type Sumer interface { Sum() int } type Suber interface { Sub() int } func (p *pair) Sum() int { return p.x &#43; p.y } func (p *point) Sum() int { return p.x &#43; p.y } func (p pair) Sub() int { return p.x - p.y } func (p point) Sub() int { return p.x - p.y } func main() { fmt.Println(&amp;#34;_key{} == _key{}: &amp;#34;, _key{} == _key{}) // output: true  fmt.Println(&amp;#34;point{} == point{}: &amp;#34;, point{x: 1, y: 2} == point{x: 1, y: 2}) // output: true 	fmt.Println(&amp;#34;&amp;amp;point{} == &amp;amp;point{}: &amp;#34;, &amp;amp;point{x: 1, y: 2} == &amp;amp;point{x: 1, y: 2}) // output: false  fmt.Println(&amp;#34;[2]point{} == [2]point{}: &amp;#34;, [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}} == [2]point{point{x: 1, y: 2}, point{x: 2, y: 3}}) //output: true  var a Sumer = &amp;amp;pair{x: 1, y: 2} var a1 Sumer = &amp;amp;pair{x: 1, y: 2} var b Sumer = &amp;amp;point{x: 1, y: 2} fmt.Println(&amp;#34;Sumer.byptr == Sumer.byptr: &amp;#34;, a == b) // output: false 	fmt.Println(&amp;#34;Sumer.sametype == Sumer.sametype: &amp;#34;, a == a1) // output: false  var c Suber = pair{x: 1, y: 2} var d Suber = point{x: 1, y: 2} var d1 point = point{x: 1, y: 2} fmt.Println(&amp;#34;Suber.byvalue == Suber.byvalue: &amp;#34;, c == d) // output: false 	fmt.Println(&amp;#34;Suber.byvalue == point.byvalue: &amp;#34;, d == d1) // output: true  ci1 := make(chan int, 1) ci2 := ci1 ci3 := make(chan int, 1) fmt.Println(&amp;#34;chan int == chan int: &amp;#34;, ci1 == ci2) // output: true 	fmt.Println(&amp;#34;chan int == chan int: &amp;#34;, ci1 == ci3) // output: false } 上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：
  Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。 Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等 Interface values are comparable. Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil.从上面的例子我们可以看出，当接口有相同的动态类型并且有相同的动态值，或者值为都为nil时相等。要注意的是：参考理解Go Interface A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. They are equal if t&amp;rsquo;s dynamic type is identical to X and t&amp;rsquo;s dynamic value is equal to x.如果一个是非接口类型X的变量x，也实现了接口T，与另一个接口T的变量t，只t的动态类型也是类型X，并且他们的动态值相同，则他们相等。 Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal.结构体当所有字段的值相同，并且没有 相应的非空白字段时，则他们相等， Array values are comparable if values of the array element type are comparable. Two array values are equal if their corresponding elements are equal.两个数组只要他们包括的元素，每个元素的值相同，则他们相等。  注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行==操作的，例如slice，那么就不能作为map的key。
@@ -941,7 +934,8 @@ GitHub地址：https://github.com/xtfly/xvim
         </tags>
         <content type="html"> 时间真是过得太快，转眼儿子要上幼儿园了。昨天是第一次参加儿子的入园家长沟通会。
 上幼儿园的意义 上幼儿园是小孩步入社会第一步，是融入世界的起点。脱离原生家庭才能独立成长，幼儿园有孩子同龄的伙伴，可以让孩子收获不同的体验；幼儿园也有专业的老师，可以让孩子快乐自由的探索自己，认识朋友，体验世界。
-我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。 幼儿园与家长的关系 现在的媒体会经常报道一些幼儿园的老师是怎么不负责的，同时家长也不太可能放心让孩子在外面受丁点的苦。在幼儿园只要有些风吹草动，就会造成冲突。作为家长，先要信任，再及时沟通。
+我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。
+幼儿园与家长的关系 现在的媒体会经常报道一些幼儿园的老师是怎么不负责的，同时家长也不太可能放心让孩子在外面受丁点的苦。在幼儿园只要有些风吹草动，就会造成冲突。作为家长，先要信任，再及时沟通。
 诚然，当今的社会的幼儿园也是一个趋利机构，在知识学习上急功近利，拔苗助长。我个人是不太在乎小孩在幼儿园是否能学到多少知识，而是关心他过得快不快乐。非常反感把小学生的学习任务强加到幼儿园孩子身上的做法，孩子的天性就是玩，在玩的过程得到性格、情感、心智的成长才重要。
 爸爸妈妈永远是孩子最重要的人，哪怕这个世界真的有一所完美的幼儿园，也永远不要把所有责任都扔给幼儿园。毕竟，对爸爸妈妈来说，自己的孩子独一无二，对孩子来说，自己的爸爸妈妈也独一无二。
 孩子上幼儿园并不是不需要再管孩子，而是更需要花更多的时间去侧面了解孩子，关心孩子，教育孩子。幼儿园是一个小社会，不同的小朋友来自不同的家庭。不同的家庭，有不同的价值观，不同的思维，不同的生活习惯。这些都会影响孩子的性格成长，生活习性。所以也需要家长投入更多的精力来关注孩子的成长。
@@ -963,7 +957,8 @@ GitHub地址：https://github.com/xtfly/xvim
         <content type="html"> 概述 我应该是一个喜欢折腾的技术党。从采用Hugo建静态blog以来，算上今天移植的这个，一共使用了三个主题：
 第一个是修改自Hueman，它是一个Wordpress主题。第二个是修改自pacman，它是一个Hexo的主题。
 这二个主题都是coderzh最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。
-第三个则是从零开始，移植Github上人气最高的Hexo主题：NexT。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。 功能  支持分类、标签索引 支持归档列表索引 支持分页栏 支持RSS 支持文章大纲（TOC） 支持分享，采用多说的分享 支持统计分析（目前支持百度统计，与REVOLEERMAPS） 支持评论系统（多说） 支持菜单定制 支持社区链接定制 支持外部链接定制 全配置化  分享 这个NexT主题是使用Hugo的模板语法，从零开始，经过差不多一天的时间折腾才完工。目前也应用到了我现在的这个Blog上，看起来还行:)。若有需要的朋友尽管拿去使用，有问题欢迎反馈。
+第三个则是从零开始，移植Github上人气最高的Hexo主题：NexT。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
+功能  支持分类、标签索引 支持归档列表索引 支持分页栏 支持RSS 支持文章大纲（TOC） 支持分享，采用多说的分享 支持统计分析（目前支持百度统计，与REVOLEERMAPS） 支持评论系统（多说） 支持菜单定制 支持社区链接定制 支持外部链接定制 全配置化  分享 这个NexT主题是使用Hugo的模板语法，从零开始，经过差不多一天的时间折腾才完工。目前也应用到了我现在的这个Blog上，看起来还行:)。若有需要的朋友尽管拿去使用，有问题欢迎反馈。
 GitHub地址：https://github.com/xtfly/hugo-theme-next
 由于Hugo的模版引擎和Hexo有区别，部分Hexo的样式或功能暂时无法实现，它还没有像Hexo NexT那样能高度地配置定制。并且它也仅仅在自己的Blog简单测试过，可能并不一定完全适合您的定制，您可以根据需求调整。
 注意 由于Hugo的.Summary只有70个字符，对于中文文章来说，实在是太短了，你可以在文档中任一地方增加&amp;lt;!--more--&amp;gt;来分割。
@@ -984,11 +979,10 @@ GitHub地址：https://github.com/xtfly/hugo-theme-next
 位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。
  测试源码可以修改package名，带上_test结尾
 修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的bytes中的测试代码，方便使用被测试的元素，可以采用.来import测试的package：
-package bytes_test import ( . &amp;#34;bytes&amp;#34; &amp;#34;io&amp;#34; ... ) 
- 以Test开头的功能测试函数
+package bytes_test import ( . &amp;#34;bytes&amp;#34; &amp;#34;io&amp;#34; ... )   以Test开头的功能测试函数
  以Benchmark开头的性能测试函数
  以Example开头的样例代码
-func ExampleHello() { hl := hello() fmt.Println(hl) // Output: hello. } 示例函数无需接收参数，但需要使用注释的Output:标记说明示例函数的输出值，未指定Output:标记或输出值为空的示例函数不会被执行。go doc工具会解析示例函数的函数体作为对应包/函数/类型/类型方法的用法。
+  func ExampleHello() { hl := hello() fmt.Println(hl) // Output: hello. } 示例函数无需接收参数，但需要使用注释的Output:标记说明示例函数的输出值，未指定Output:标记或输出值为空的示例函数不会被执行。go doc工具会解析示例函数的函数体作为对应包/函数/类型/类型方法的用法。
 示例函数需要归属于某个包/函数/类型/类型的方法，具体命名规则如下：
 func Example() { ... } // 包的示例函数 func ExampleF() { ... } // 函数F的示例函数 func ExampleT() { ... } // 类型T的示例函数 func ExampleT_M() { ... } // 类型T的M方法的示例函数 // 多示例函数 需要跟下划线加小写字母开头的后缀 func Example_suffix() { ... } func ExampleF_suffix() { ... } func ExampleT_suffix() { ... } func ExampleT_M_suffix() { ... }  测试类型 功能测试 功能测试函数以*testing.T类型为单一参数t，testing.T类型用来管理测试状态和格式化测试日志。测试日志在测试执行过程中积累，完成后输出到标准错误输出。
 常用方法:
@@ -1028,7 +1022,8 @@ func CheckEqual(f, g interface{}, config *Config) (err error)  测试框架 stre
         </tags>
         <content type="html"> 背景 最近在设计调用链与日志跟踪的API，发现相比于Java与C&#43;&#43;，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称GoId）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。
 在Java与C&#43;&#43;中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。
-在Java中，JDK库提供Thread.CurrentThread()来获取当前线程对象，提供ThreadLocal来存储与获取线程局部变量。由于Java能通过Thread.CurrentThread()获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。 ThreadLocal的API提供了如下的4个方法：
+在Java中，JDK库提供Thread.CurrentThread()来获取当前线程对象，提供ThreadLocal来存储与获取线程局部变量。由于Java能通过Thread.CurrentThread()获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
+ThreadLocal的API提供了如下的4个方法：
 public T get() protected T initialValue() public void remove() public void set(T value)  T get():返回此线程局部变量的当前线程副本中的值，如果这是线程第一次调用该方法，则创建并初始化此副本。 protected T initialValue(): 返回此线程局部变量的当前线程的初始值。最多在每次访问线程来获得每个线程局部变量时调用此方法一次，即线程第一次使用get()方法访问变量的时候。如果线程先于get方法调用set(T)方法，则不会在线程中再调用initialValue方法。 void remove(): 移除此线程局部变量的值。这可能有助于减少线程局部变量的存储需求。如果再次访问此线程局部变量，那么在默认情况下它将拥有其 initialValue。 void set(T value)将此线程局部变量的当前线程副本中的值设置为指定值。许多应用程序不需要这项功能，它们只依赖于initialValue()方法来设置线程局部变量的值。  在Go语言中，而Google提供的解决方法是采用golang.org/x/net/context包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：理解Go Context机制。Context也是能存储Goroutine一些数据达到共享，但它提供的接口是WithValue函数来创建一个新的Context对象。
 func WithValue(parent Context, key interface{}, val interface{}) Context { return &amp;amp;valueCtx{parent, key, val} } type valueCtx struct { Context key, val interface{} } func (c *valueCtx) Value(key interface{}) interface{} { if c.key == key { return c.val } return c.Context.Value(key) } 从上面代码中可以看出，Context设置一次Value，就会产生一个Context对象，获取Value是先找当前Context存储的值，若没有再向父一级查找。获取Value可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine一次设置Key/Value，其它多Goroutine只能读取Key的Value。
 为什么无获取GoId接口  This, among other reasons, to prevent programmers for simulating thread local storage using the goroutine id as a key.
@@ -1085,7 +1080,8 @@ BenchmarkSetValues 500000 4050 ns/op
         </tags>
         <content type="html"> 概述 Go语言中的接口很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组方法的集合，要有方法为接口类型就被认为是该接口。从定义上来看，接口有两个特点:
  接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C&#43;&#43;/Java中的接口，后者仅用于声明方法签名。 接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。  接口是完全抽象的，因此不能将其实例化。然而，可以创建一个其类型为接口的变量，它可以被赋值为任何满足该接口类型的实际类型的值。接口的重要特性是：
- 只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。 作为1的推论，任何类型的值都可以赋值给空接口interface{}。  接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;Structural Typing&amp;ldquo;。 方法 Go语言中同时有函数和方法。一个方法就是一个包含了接受者的函数，接受者可以是命名类型或者结构体类型的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。
+ 只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。 作为1的推论，任何类型的值都可以赋值给空接口interface{}。  接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;Structural Typing&amp;ldquo;。
+方法 Go语言中同时有函数和方法。一个方法就是一个包含了接受者的函数，接受者可以是命名类型或者结构体类型的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。
 type User struct { Name string Email string } func (u User) Notify() error // User 类型的值可以调用接受者是值的方法 damon := User{&amp;#34;AriesDevil&amp;#34;, &amp;#34;ariesdevil@xxoo.com&amp;#34;} damon.Notify() // User 类型的指针同样可以调用接受者是值的方法 alimon := &amp;amp;User{&amp;#34;A-limon&amp;#34;, &amp;#34;alimon@ooxx.com&amp;#34;} alimon.Notify() User的结构体类型，定义了一个该类型的方法叫做Notify，该方法的接受者是一个User类型的值。要调用Notify方法我们需要一个 User类型的值或者指针。Go调用和解引用指针使得调用可以被执行。注意，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。
 我们可以修改Notify方法，让它的接受者使用指针类型：
 func (u *User) Notify() error 再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。
@@ -1129,7 +1125,8 @@ var x float64 = 3.4 v := reflect.ValueOf(x) // Interface 以 interface{} 返回 
         </tags>
         <content type="html"> 什么是Context 最近在公司分析gRPC源码，proto文件生成的代码，接口函数第一个参数统一是ctx context.Context接口，公司不少同事都不了解这样设计的出发点是什么，其实我也不了解其背后的原理。今天趁着妮妲台风妹子正面登陆深圳，全市停工、停课、停业，在家休息找了一些资料研究把玩一把。
 Context通常被译作上下文，它是一个比较抽象的概念。在公司技术讨论时也经常会提到上下文。一般理解为程序单元的一个运行状态、现场、快照，而翻译中上下又很好地诠释了其本质，上下上下则是存在上下层的传递，上会把内容传递给下。在Go语言中，程序单元也就指的是Goroutine。
-每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个Context变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。 context包 Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。Context介绍请参考Go Concurrency Patterns: Context，golang.org/x/net/context包就是这种机制的实现。
+每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个Context变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
+context包 Go的设计者早考虑多个Goroutine共享数据，以及多Goroutine管理机制。Context介绍请参考Go Concurrency Patterns: Context，golang.org/x/net/context包就是这种机制的实现。
 context包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用之间传递Context，以及判断其状态，就能解决此问题，这是为什么gRPC的接口中带上ctx context.Context参数的原因之一。
 Go1.7(当前是RC2版本)已将原来的golang.org/x/net/context包挪入了标准库中，放在$GOROOT/src/context下面。标准库中net、net/http、os/exec都用到了context。同时为了考虑兼容，在原golang.org/x/net/context包下存在两个文件，go17.go是调用标准库的context包，而pre_go17.go则是之前的默认实现，其介绍请参考go程序包源码解读。
 context包的核心就是Context接口，其定义如下：
@@ -1183,7 +1180,7 @@ WithValue函数，它返回parent的一个副本，调用该副本的Value(key)�
         </tags>
         <content type="html"> HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。
 背景 Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：
- 主要继承了C(func, struct，指针) 包管理吸取自Java（package, import） 多态吸取自Python与Ruby(duck type) 并发吸取自Limbo(CSP模型)。   同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：
+ 主要继承了C(func, struct，指针) 包管理吸取自Java（package, import） 多态吸取自Python与Ruby(duck type) 并发吸取自Limbo(CSP模型)。  同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：
  面向过程（if，switch，for&amp;hellip;) 面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type） 函数式（部分支持）：闭包，函数作为参数（入参，返回值）  Go语言打的组合拳:
  简单易用 vs Python 机器码性能 vs C/C&#43;&#43; 跨平台/标准库 vs Java 并发模型（goroutine/channel）vs Erlang 异步网络 vs Scala/Node.js 动态反射 vs Java 垃圾回收 vs Java  Go语言可能不是每一条都是No.1，但却是目前同时具备上述全部7点特性唯一语言，看似平衡中庸的组合拳往往威力强大。
 而我司主要开发语言是C/C&#43;&#43;，Java，Python，可以说是若应用Go语言具有广泛的群众基础，同时Go语言兼具他们各自的一些优点，在不同的场景下，能一定的范围内可以代替他们。并且我司的程序员大多较底级，Go语言的简洁与工程化能可能大大提升产品研发效率与降低维护成本。
@@ -1232,7 +1229,7 @@ Go语言是一个强类型静态语言，可以把代码编译为本地机器指
         <content type="html"> 最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。
 生态不成熟 一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100&#43;的App从Java转向Go。Google内部主要有三大语言（C&#43;&#43;、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。
 目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：
- 公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵； 互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；   采用Go语言的技术因素主要有：
+ 公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵； 互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；  采用Go语言的技术因素主要有：
  Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主； Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；  Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。
 动态扩展机制不成熟 对于编译型静态语言，需要有一种机制来支持动态扩展。C/C&#43;&#43;是通过动态库来扩展，Java是支持Class动态加载，或基于JVM平台的其它脚本语言互通。Go语言长期没有支持动态库，Go语言的创始人曾明确表态：
  动态库的存在是一个系统的设计Bug
@@ -1268,7 +1265,7 @@ Go语言是一个强类型静态语言，可以把代码编译为本地机器指
           <tag>go</tag>
         </tags>
         <content type="html"> Effective Go 在线阅读：
- http://www.hellogcc.org/effective_go.html  Go语言圣经 Go语言圣经，《The Go Programming Language》 中文版本  项目主页：http://github.com/golang-china/gopl-zh 项目主页：http://bitbucket.org/golang-china/gopl-zh 原版官网：http://gopl.io   在线阅读：
+ http://www.hellogcc.org/effective_go.html  Go语言圣经 Go语言圣经，《The Go Programming Language》 中文版本  项目主页：http://github.com/golang-china/gopl-zh 项目主页：http://bitbucket.org/golang-china/gopl-zh 原版官网：http://gopl.io  在线阅读：
  http://gopl-zh.b0.upaiyun.com/ http://docs.ruanjiadeng.com/gopl-zh/ http://shifei.me/gopl-zh/ http://2goo.info/media/html/gopl-zh-gh-pages/ http://docs.plhwin.com/gopl-zh/  Go Web 编程 Go Web 编程，《Build Web Application with Golang》国内首个讲解Go Web编程的在线书籍。 在线阅读：
  English 中文  雨痕学习笔记 在线下载：
  https://github.com/qyuhen/book  The way to Go 《The Way to Go》中文译本，中文正式名《Go入门指南》
@@ -1287,7 +1284,8 @@ Go语言是一个强类型静态语言，可以把代码编译为本地机器指
           <tag>Markdown</tag><tag>Slide</tag>
         </tags>
         <content type="html"> 背景 在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。
-Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML&#43;CSS&#43;JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。 Pandoc Pandoc 则是一款非常优秀的开源文本格式转化神器。Markdown转换为HTML Slide也自然不在话下。Pandoc是由Haskell开发，Pandoc作者John MacFarlane一位来自美国加州大学伯克利分校的哲学教授。Haskell是一种函数式编程语言。而文本格式转换，看似简单，其实非常麻烦。Haskell干这脏活、累活的最恰当选择，Pandoc也的确成功了，并已成功在短期内构建一个完整的生态链。
+Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML&#43;CSS&#43;JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。
+Pandoc Pandoc 则是一款非常优秀的开源文本格式转化神器。Markdown转换为HTML Slide也自然不在话下。Pandoc是由Haskell开发，Pandoc作者John MacFarlane一位来自美国加州大学伯克利分校的哲学教授。Haskell是一种函数式编程语言。而文本格式转换，看似简单，其实非常麻烦。Haskell干这脏活、累活的最恰当选择，Pandoc也的确成功了，并已成功在短期内构建一个完整的生态链。
 安装 个人PC使用的Macbook，所以安装比较简单：
 $ brew install pandoc 检验 $ pandoc --version pandoc 1.17.1 Compiled with texmath 0.8.6.3, highlighting-kate 0.6.2. Syntax highlighting is supported for the following languages: abc, actionscript, ada, agda, apache, asn1, asp, awk, bash, bibtex, boo, c, changelog, clojure, cmake, coffee, coldfusion, commonlisp, cpp, cs, css, curry, d, diff, djangotemplate, dockerfile, dot, doxygen, doxygenlua, dtd, eiffel, elixir, email, erlang, fasm, fortran, fsharp, gcc, glsl, gnuassembler, go, hamlet, haskell, haxe, html, idris, ini, isocpp, java, javadoc, javascript, json, jsp, julia, kotlin, latex, lex, lilypond, literatecurry, literatehaskell, llvm, lua, m4, makefile, mandoc, markdown, mathematica, matlab, maxima, mediawiki, metafont, mips, modelines, modula2, modula3, monobasic, nasm, noweb, objectivec, objectivecpp, ocaml, octave, opencl, pascal, perl, php, pike, postscript, prolog, pure, python, r, relaxng, relaxngcompact, rest, rhtml, roff, ruby, rust, scala, scheme, sci, sed, sgml, sql, sqlmysql, sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl, xml, xorg, xslt, xul, yacc, yaml, zsh ...... 可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。
 样例 % Markdown &#43; Pandoc% lanlingzi% 2016-07-16## Web-based slideshow - is a slide show which can be played (viewed or presented) using a web browser- is typically generated to or authored in HTML, JavaScript and CSS code (files)- are generated from presentation software- offer templates allowing the slide show to be easily edited and changed.## Features - Keyboard navigation- Slide transitions and animations- Auto-play/timed transitions- Displays a table of contents- Nested slides- Separate slide notes for the speaker- Full screen support, with automatic text and images resizing to fit full screen- ..... Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。
@@ -1308,7 +1306,8 @@ $ brew install pandoc 检验 $ pandoc --version pandoc 1.17.1 Compiled with texm
           <tag>go</tag>
         </tags>
         <content type="html"> Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。
-Goroutine泄漏问题 Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。 func First(query string, replicas ...Search) Result { c := make(chan Result) searchReplica := func(i int) { c &amp;lt;- replicas[i](query) } for i := range replicas { go searchReplica(i) } return &amp;lt;-c } 在First()函数中的结果channel是没缓存的。这意味着只有第一个goroutine返回。其他的goroutine会困在尝试发送结果的过程中，如果你有不止一个的重复时，每个调用将会泄露资源。为了避免泄露，你需要确保所有的goroutine退出。一个不错的方法是使用一个有足够保存所有缓存结果的channel。
+Goroutine泄漏问题 Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
+func First(query string, replicas ...Search) Result { c := make(chan Result) searchReplica := func(i int) { c &amp;lt;- replicas[i](query) } for i := range replicas { go searchReplica(i) } return &amp;lt;-c } 在First()函数中的结果channel是没缓存的。这意味着只有第一个goroutine返回。其他的goroutine会困在尝试发送结果的过程中，如果你有不止一个的重复时，每个调用将会泄露资源。为了避免泄露，你需要确保所有的goroutine退出。一个不错的方法是使用一个有足够保存所有缓存结果的channel。
 func First(query string, replicas ...Search) Result { c := make(chan Result,len(replicas)) searchReplica := func(i int) { c &amp;lt;- replicas[i](query) } for i := range replicas { go searchReplica(i) } return &amp;lt;-c } 另一个不错的解决方法是使用一个有default情况的select语句和一个保存一个缓存结果的channel。default情况保证了即使当结果channel无法收到消息的情况下，goroutine也不会堵塞。
 func First(query string, replicas ...Search) Result { c := make(chan Result,1) searchReplica := func(i int) { select { case c &amp;lt;- replicas[i](query): default: } } for i := range replicas { go searchReplica(i) } return &amp;lt;-c } 你也可以使用特殊的取消channel来终止workers。
 func First(query string, replicas ...Search) Result { c := make(chan Result) done := make(chan struct{}) defer close(done) searchReplica := func(i int) { select { case c &amp;lt;- replicas[i](query): case &amp;lt;- done: } } for i := range replicas { go searchReplica(i) } return &amp;lt;-c } 为何在演讲中会包含这些bug？Rob Pike仅仅是不想把演示复杂化。这么做是合理的，但对于Go新手而言，可能会直接使用类似代码，而不去思考它可能有问题。
@@ -1323,31 +1322,6 @@ type SimpleAccount struct{ balance int } func NewSimpleAccount(balance int) *Sim
     </entry>
     
      <entry>
-        <title>Go/Java/C&#43;&#43;杂谈</title>
-        <url>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</url>
-        <categories>
-          <category>技术</category>
-        </categories>
-        <tags>
-          <tag>go</tag><tag>cpp</tag><tag>java</tag>
-        </tags>
-        <content type="html"> 最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年&#43;的C&#43;&#43;开发经验，也有5年&#43;的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。
-Go 首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C&#43;&#43;在此方面笨拙，这就是动态语言为何让人着迷的地方。 这也是为什么Go语言一发布时就如此受人瞩目的关键原因，尤其是对于动态语言来说，这提供了动态语言所不具有的并发与性能优势。Go主创人员设计语言的目的是解决原来C/C&#43;&#43;大工程编译慢，维护困难的问题，作为其另外一个可选的角色。Pike 12年“大道至简”演讲稿中对此目标充满沮丧，引用其中一名话：
- Although we expected c&#43;&#43; programmers to see Go as an alternative, instead most Go programmers come from languages like Python and Ruby. Very few come from C&#43;&#43;.
- C&#43;&#43;的价值精髓在于：语言提供更加广泛的抽象，优雅和灵活的特性，而这些表达能力是硬件零成本的。而Go思考的方向显示不是零成本，至少不是零CPU成本，Go的主张更多考虑的是最小化程序员的工作量。
-一个是硬件零成本的极致追求，一个是最小程序员的工作量，谁都替换不了谁最最价值的部分。Go无法同时符合两个目标，选择了动态语法与GC，就注定了选择开发效率，会为开发效率牺牲硬件效率，所以它走向另外一个方向，也就是目前Java所擅长的应用方向，尤其是目前的网络与WEB应用方面，这就需要有良好的标准库和生态系统支持。在标准方面，Go已提供了处理tcp/http/json/crypto/image等方面的标准库，它对网络的核心协议HTTP高并发支持，已经开发在抢Java的地盘了。
-Go目前在分布系统，WEB应用，云计算云平台开始显示出优势，但是我们也必须看到它的不足，Go在创业公司与互联网企业应用越来眼越多，但在企业级还是未看到成功的案例。最重要的原因可能是其语言重要特性与工业工具还远未成熟，还有不少的断层或临时解决方案。但Go这两年来，在开源界发展速度，生态也会越来越成熟。在Go编译与Runtime也是在多个版本不断地优化与调整。Go于12年发布第一个版本，截止目前的1.7 beta版本发布，差不多是一年两个大版本，对于语言级，每年的版本发布可能会让大企业选择它犹豫再三，不敢应在极核心业务领域，担心它的不稳定带来商用风险不可控。
- Go已证明在动态语言需要性能，是作为Python与Ruby的理想候选者。在生产方面，其语言特性与生态系统还远没有像Python与Java成熟，目前阶段也是只在某些场景下的可选角色，从长期来看，在Google的战略支持下，肯定越来越蚕食Python与Java等带有GO与动态性的语言地盘。但在C/C&#43;&#43;擅长的领域，尤其是要求实时性，CPU密集计算的领域，短期Go还无法渗入。
- Java Java的成功，10年前靠Unix系统的SUN/IBM/Oracle的强国支撑让它在企业应用领域和WEB应用方面站稳了脚跟；而随后的10年，前半段是靠x86&#43;Linux带来的革命继续保持份额，后半段依托于Android的成功让其在步履蹒跚停止脚步后再一次登顶。二十多年，Java积累了最大的生态系统，可以说它是无说不包，已是一艘航空母舰，足已证明它的地址与成功。但是在其语言、库、框架与生态的复杂度，对技术的人员来说，Java已不太简单，已构成巨大的障碍。比如在Go擅长的并发，语言层面有synchronized机制，标准库的lock与notify，再到后来的concurrent库。基于JVM，Java又可以与其它语言具有良好的互操作性，如并发方面的Scala，可以选择Actor或Akka。
-Java的世界轮子太多，你需要重复造轮子，也是Java成功的关键之一，历史沉淀下来让Java选择太多，也显著增加成本。深入后Java的学习成功可以比C&#43;&#43;更高，技术人员需要非常精心地组织框架与设计，否则各种复用的结果就是堆砌出一个异常臃肿的程序，其运行时对资源的消耗有时候会让你感到恐惧，而这是太多的基于Java所开发的平台被广泛诟病的重要原因之一。复用是一把双刃剑，是要量体裁衣还是一锅端，拿捏的尺度对于开发人员要求无疑是高昂的。
- Java已是无所不包，近十年基本都是排名最好的语言，积累最强大的生态。但其众多的框架，库复杂度也远不是让一个普通程序员能轻易掌握的，拿捏不好也将是一场灾难。
- C/C&#43;&#43; C/C&#43;&#43;在嵌入式和系统编程方面，依然占据差牢固地位，但是在并发、网络和应用编程等方面，一直处于讳莫如深的黑暗时代，语言本身未提供任何支持，而太单薄的标准库也毫无此方面的野心，C/C&#43;&#43;的标准库的规模恐怕始终无法比拟Java/Go，因为C/C&#43;&#43;不受任何一家大型商业公司控制，而是完全片处于“放养“状态。标准库需要得到大型商业公司持续的投资，这就是为什么C&#43;&#43;98标准库在13年后才获得一次大的更新。C/C&#43;&#43;需要封装各种硬件平台的系统API，而linux&#43;x86大面积击败Unix之前，众多的Unix系统更加剧了跨平台编程的难度。2000年左右出现跨平台的ACE库，还有Win平台上MFC库，都是糟糕难用，所以也没有大规模地成功，反而成了当时程序员的救命草，显然，这些技术已被历史所丢弃。而同时期Java原生提供了多线程，网络的标准库，以及基于JVM技术的跨平台支持，把Java推向了主流语言。
-对于C/C&#43;&#43;程序员，有一个振奋人心的大事件，C&#43;&#43;11发布，相比C&#43;&#43;98，无论在语言和标准库上，都是一个极大飞跃。C&#43;&#43;之父说它是一门新语言，这不为过，同时如此多的顶尖C&#43;&#43;高手对boost库的贡献，它也是事实上的标准库，在网络、并发编程和一些基本应用方面，已经提供了性能优秀的库，极大地降低了此方面的开发难度。传统的C&#43;&#43;程序员，须尽快过渡到C&#43;&#43;11上，这需要编译环境的更新，而编译环境更新又会带来内存检测和性能分析方面最强力的工具。C/C&#43;&#43;曾经最广泛的内存越界与泄露总是，在GCC5.2版本与Intel最新CPU面前，内存飞踩可参被抓在第一现场，同时Intel提供的vtune性能分析工具，足也解决绝大多数的问题。
- 传统C&#43;&#43;程序员，须尽快拥抱C&#43;&#43;11，新的标准库，Boost库，这会极大提高开发与维护效率。
-</content>
-    </entry>
-    
-     <entry>
         <title>第八届中国云计算大会简纪</title>
         <url>http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/</url>
         <categories>
@@ -1358,7 +1332,7 @@ Java的世界轮子太多，你需要重复造轮子，也是Java成功的关键
         </tags>
         <content type="html"> 第一次参加由电子协会举办的云计算大会，这届是在北京国家会议中心举行，据说这一届参加的人数有1.4W人。主题为“技术融合 应用创新”。云计算走到今天，已不在是什么新概念，在中国已大规格地使用起来。作为一名技术从业者，有幸参加，虽可能得不到干货，但可听一听，看一看，启发思路。
 云计算是产业变革的推进器 第一场是来自工业和信息化部副部长怀（进鹏）部长致辞，领导果然是领导，带病撑着拐杖登台。整个过程是滔滔不绝地精彩分享，作一名学术官员，能脱稿是我发挥，说明他这个领域的真正专家。核心观点：
- 云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整 云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用 云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛   云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:
+ 云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整 云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用 云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛  云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:
  技术方面的问题：面向工业互联网仍然有大量未知问题，在大数据分析和处理能力仍然需要发展；可靠性、安全性、系统能力方面不断加强；核心技术面对新的挑战需要不断地进行优化和完成。 标准方面的问题：通过推动标准，推动各类云计算系统互联互通，共享创造为更多应用有效服务的应用内容。 产业变革的总是：建立有效的人才培养和产业发展的环境，来推动产业有序、健康和快速的增长以推动产业结构的调整，同时建立有效的安全环境和有效的机制，以保障信息的安全、个人隐私安全和云数据交换交流当中所提供的安全保护机制。  点评：传统产业正面临云计算的冲击，谁先拥抱云计算，对产业信息化调整，谁就有可能先抢占新的机会。工业云、智能制造、工业互联网和工业大数据将推动产业发展和技术进步。
 云计算挑战与机遇并存 第二场是IFIP主席Mike Hinchey致辞，英文不好，不太听懂。第三场是工信部信息化和软件服务业司司长谢少峰的演讲，全程都是念稿子，整个过程比较枯燥。开始是介绍我国云计算产业发展的现状，一堆的数字，没有太仔细听。后面是谈一下当前云计算发展面临的挑战：
  公有云的安全性和可靠性和可迁移性，行业对公有云的顾虑，政务、金融采购公有云服务的还面临着政策、标准等障碍。（PS：个人觉得不是什么问题，云计算也有细分市场，公有云，私有云，混合云都会发展） 产业规模小，技术产品服务仍需提高。（PS：这的确是一个总是，目前国内的云计算针对行业来说，没有形成成熟的解决方案，这也说明这一块的发展空间很大） 标准体系和认证测评体系不完备。（PS：中国的流氓公司太多，个人隐私数据保护法律法规有待健全啊）  云计算产业发展的未来趋势展望：
@@ -1396,7 +1370,8 @@ Java的世界轮子太多，你需要重复造轮子，也是Java成功的关键
         </tags>
         <content type="html"> 标准库[net/http] 采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到net/http包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的net/http是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在golang.org/x/net/http2,后续可能会移到标准库。
 net/http库中主要涉及到如下几个类型与接口：
-Request结构体 封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。 type Request struct { Method string URL *url.URL Proto string ProtoMajor int ProtoMinor int Header Header Body io.ReadCloser ContentLength int64 TransferEncoding []string Close bool Host string Form url.Values PostForm url.Values MultipartForm *multipart.Form Trailer Header RemoteAddr string RequestURI string TLS *tls.ConnectionState Cancel &amp;lt;-chan struct{} } Response结构体 封装HTTP的响应消息，其结构如下，Response会关联Request。
+Request结构体 封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
+type Request struct { Method string URL *url.URL Proto string ProtoMajor int ProtoMinor int Header Header Body io.ReadCloser ContentLength int64 TransferEncoding []string Close bool Host string Form url.Values PostForm url.Values MultipartForm *multipart.Form Trailer Header RemoteAddr string RequestURI string TLS *tls.ConnectionState Cancel &amp;lt;-chan struct{} } Response结构体 封装HTTP的响应消息，其结构如下，Response会关联Request。
 type Response struct { Status string StatusCode int Proto string ProtoMajor int ProtoMinor int Header Header Body io.ReadCloser ContentLength int64 TransferEncoding []string Close bool Trailer Header Request *Request TLS *tls.ConnectionState } Handler接口 用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。
 type Handler interface { ServeHTTP(ResponseWriter, *Request) } ResponseWriter接口 即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了io.Writer接口，可以写入响应的Body，WriteHeader方法用于向HTTP响应信息写入状态码，但必须先于Writer方法调用。若不调用WriteHeader，使用Write方法会自动写入状态码http.StatusOK。
 type ResponseWriter interface { Header() Header Write([]byte) (int, error) WriteHeader(int) } ListenAndServe函数 启动HTTP服务，需要构建Server对象，并调用该Server的ListenAndServe方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。
@@ -1419,7 +1394,8 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <tag>Oracle</tag><tag>Cloud</tag>
         </tags>
         <content type="html"> 今天有幸参加Oracle举办的cloud day。Oracle从开始对云计算不敏感，到后来的大力投入，并购与产品整合，目前Oracle在云计算领域已涵盖IaaS，PaaS，SaaS。Oracle正借助于云计算，把帮助企业把传统的应用产品搬迁到云计算上。Oracle应用产品发发展战略三个核心阶段：
- 无极限的应用产品支持：对所有目前使用Oracle OP部署方式的应用产品客户提供持续支持。 下一代“云”应用产品的开发以及战略并购：基于统一标准的PaaS平台，并购整合并开发下一代的，最优的基于云的产品。 切实可行的”云”之路：为客户提供各种服务和商务方案使客户以最小的投资风险采用Oracle云服务。  从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：  客户关系管理：销售管理（Sales），市场管理（Marketing），服务管理（Service），电子商务（Commerce），社交媒体（Social） 供应链管理：产品创意与研发，供应认证与寻源，采购管理，物流管理，销售管理，计划管理，生产管理 财务及人力资源：财务管理，差旅报销，财务报告与分析，见血预算管理，项目管理，人力资源管理  Oracle的云应用具有如下特点：
+ 无极限的应用产品支持：对所有目前使用Oracle OP部署方式的应用产品客户提供持续支持。 下一代“云”应用产品的开发以及战略并购：基于统一标准的PaaS平台，并购整合并开发下一代的，最优的基于云的产品。 切实可行的”云”之路：为客户提供各种服务和商务方案使客户以最小的投资风险采用Oracle云服务。  从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：
+ 客户关系管理：销售管理（Sales），市场管理（Marketing），服务管理（Service），电子商务（Commerce），社交媒体（Social）  供应链管理：产品创意与研发，供应认证与寻源，采购管理，物流管理，销售管理，计划管理，生产管理 财务及人力资源：财务管理，差旅报销，财务报告与分析，见血预算管理，项目管理，人力资源管理   Oracle的云应用具有如下特点：
  完整：一个云平台支持所有业务动作 一流：基于Oracle在企业领域的最佳实践 现代：数据驱动的业务执行与管理； 个性：个性化的“云”应用体验，提供SaaS（来ERP，HCM）来定制用户体验，提供PaaS来丰富与创建新的应用 集成：提供iPaas与集成能力来连接与协作已有资产 安全：大使级的安全性和兼容，支持传统的多租户的安全数据隔离，以及SaaS的便利  今天的cloud day也是从上述几个方面的展开的，我感兴趣的是他们的PaaS平台。确切地说，Oracle的PaaS是一个较泛的统称，今天主要介始的包括如下：
  应用开发云：提供代码配置库（git/svn）集成，支持直接从github同步代码，基于Maven等代码构建能力，有限地支持DevOps。 应用部署云：提供企业级的Java云服务，它是基于Weblogic的Java应用，每个WebLogic部署在一个虚拟机内。也提供支持其它JEE的应用环境，如scala, groovy, jypthon, jruby, 它们基于Docker容器部署。也支持对Node应用的部署。 数据库云：提供Oracle 11g与12c的数据库服务。 集成云：集成平台即服务(iPassS)，其中包括了Oracle集成云服务(ICS)、Oracle SOA云服务以及Oracle Cloud中的Oracle SOA套件与Oracle API Manager Cloud Service。 内容和协作云平台：个人感觉是就支持审批流程管理的文档管理云平台，像云盘一个共享文档，基于流程编排来文档审批。 移动云：提供统一的App开发MAF，针对多种平台，只需编写一个应用，可以运行在iOS、Android，支持本地或混合开发。  一天下来，感觉Oracle的垂直整合能力太强了，即使在PaaS领域，你也要什么，它就能给你什么。相比与我司的企业BG，在企业云整合能力与之相差太远了，不知要追赶多少年。可见预见，未来在云计算领域，公有云的领导者是AWS，私有云的领导者或许就是Oracle。IBM呢？Pure System与BlueMix在Oracle面前，感觉有点小打小闹了。
 </content>
@@ -1435,7 +1411,8 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <tag>Archlinux</tag><tag>Docker</tag>
         </tags>
         <content type="html"> 想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。
-正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本mkimage-arch.sh，于是把它做了些改造，制作过程记录一下：  源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。 默认安装openssh软件，可以通过ssh来连接Container。 增加一个入口脚本run.sh，在此脚本主配置sshd，并启动sshd。  这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用sshd上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：
+正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本mkimage-arch.sh，于是把它做了些改造，制作过程记录一下：
+ 源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。  默认安装openssh软件，可以通过ssh来连接Container。 增加一个入口脚本run.sh，在此脚本主配置sshd，并启动sshd。   这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用sshd上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：
  先是采用systemd来启动sshd，在run.sh使用systemctl enable sshd是OK的，但systemctl start sshd却无法启动报找不到文件。 是systemd的配置问题，也没有再去深究，放弃systemd，于是又直接使用/usr/bin/sshd -D来启动sshd，发现还启动失败报没有sshkey。 再使用ssh-keygen来生成系统的ssh_host_*_key。 终于sshd可以正常启动了，但使用ssh -p &amp;lt;port&amp;gt; root@&amp;lt;host&amp;gt;来连接Container，发现报无权限。 于是又得修改/etc/ssh/sshd_config，让root可以ssh登陆。  修改之后的脚本已提交到个人github上，可以在这里下载，使用方式如下：
  前提Archlinux中也安装了docker引擎
 # pacman -S docker # systemctl enable docker # systemctl start docker 以root用户执行mkimage.sh脚本
@@ -1457,12 +1434,14 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
         </tags>
         <content type="html"> 软件架构 软件系统架构不只是软件本身架构，它是一个全系统、全网络的架构，从层次上由低到高分为：
  程序架构 系统架构 产品架构 生态、商业模式的架构  任何一个架构师，都是需要重点解决某方面的尖锐问题，同时避免在不合适的场景下，一种技术、一类框架或一种架构模式被滥用。架构就需要对整体框定好范围与约束。
-架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。 架构演进 从互联网公司的角度来看，他们认为架构都是在实际应用过程中的生长，一开始就设计和实施面面俱到的架构是不符合互联网快速交付的方式的，不要过度设计，谁也不知道业务上线后业务量将会是一个什么量。
+架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。
+架构演进 从互联网公司的角度来看，他们认为架构都是在实际应用过程中的生长，一开始就设计和实施面面俱到的架构是不符合互联网快速交付的方式的，不要过度设计，谁也不知道业务上线后业务量将会是一个什么量。
 架构的演进过程基本是围绕着性能，可靠性，扩展性，安全性，容灾展开。而对于可靠性，他们认为故障是不可能避免的，失败可能是常态，核心是如何地减少故障对用户或系统产生的影响范围。要提供有损服务，在故障的情况下，保证核心服务，可能放弃一些其它的服务。
 相对于电信业务，互联网公司的业务更侧重于用户体验，极致的响应速度与简单易用的体验是第一个设计原则。而电信业务传统是更侧重于可靠性，甚至零无损。
 架构师素质 架构师要能充分理解用户需要，充分协调和利用资源，满足需求； 具备基本的方法论，敏锐的观察力，善于对事物的抽象，提炼，简化。同时由于架构涉及到范围广，需要能快速学习新知识，善于学习关键点，不能由于过多限于细节而影响精力分配。
 架构师很多时间是技术决策，需要能勇于应对变化，积极改变，敢于挑战。能够将方案落地，从解决系统的具体问题出发，能解决别人看不清的问题，也同时需要具有战略眼光，看得更远。
 架构是上层建筑，影响深远，所以架构师需要善于识别和消除高风险，要广泛地吸收不同的意见，头脑风暴，风险识别、评估。对于风险进行排序，对于高风险点进行原型验证，切不可纯理论的架构，做成空中楼阁。
+注：以上观点收集于公司内网某同事的输出，在此表示感谢。
 </content>
     </entry>
     
@@ -1476,7 +1455,8 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <tag>Archlinux</tag><tag>Win10</tag><tag>grub2</tag>
         </tags>
         <content type="html"> 个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。
-安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。 我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。
+安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
+我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。
 # grub-install --target=i386-pc --recheck /dev/sda # grub-mkconfig -o /boot/grub/grub.cfg 采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在30_os-prober文件，说明os-prober是安装的（pacman -S grub会自动安装）。
 我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。
 # mount /dev/sda1 /mnt # grub-probe --target=fs_uuid /mnt/bootmgr 70B235F6749E84AE # grub-probe --target=hints_string /mnt/bootmgr --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1 接着，将下面的代码添加到/boot/grub/grub.cfg中，注意替换其中的fs_uuid，即70B235F6749E84AE。保存grub.cfg文件，重启系统，在gurb菜单就可以看到Windows 10 (loader) (on /dev/sda1)项了。选择，成功进入win10。
@@ -1495,7 +1475,8 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <tag>软件设计</tag><tag>软件架构</tag><tag>设计原则</tag>
         </tags>
         <content type="html"> 软件也像人一样，具有生命力，从出生到死亡，会经历多种变化。软件架构设计也不是一蹴而就的，是不断地演进发展。但为了能较好的发展，在软件设计时需要考虑一些原则。
-清晰原则：使用简洁接口，简单部件组合  编程的本质就是要控制复杂度，后期维护会占用大部分的时间。 降低整体复杂度，用清晰的接口把若干简单模块组合成一个复杂的系统。 对外隐藏细节，“不要与陌生人说话”。 多数问题局限天一个局部，不要影响到全局。  小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。 清晰原则：清晰胜于机巧  代码直白易懂，代码是给人看的，不是给机器看的。 维护代码的人，其中也你包括你自己，善待代码，就是善待自己。 不要了一点性能提升而引入复杂的算法，不要为了炫耀技能而编写晦涩难懂的代码。 复杂晦涩的代码是Bugs的温床，高昂的维护成本将抵消可怜的性能提升。  小结：代码简洁晚懂，谨慎引入复杂度。
+清晰原则：使用简洁接口，简单部件组合  编程的本质就是要控制复杂度，后期维护会占用大部分的时间。 降低整体复杂度，用清晰的接口把若干简单模块组合成一个复杂的系统。 对外隐藏细节，“不要与陌生人说话”。 多数问题局限天一个局部，不要影响到全局。  小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。
+清晰原则：清晰胜于机巧  代码直白易懂，代码是给人看的，不是给机器看的。 维护代码的人，其中也你包括你自己，善待代码，就是善待自己。 不要了一点性能提升而引入复杂的算法，不要为了炫耀技能而编写晦涩难懂的代码。 复杂晦涩的代码是Bugs的温床，高昂的维护成本将抵消可怜的性能提升。  小结：代码简洁晚懂，谨慎引入复杂度。
 简洁原则：设计简洁，降低复杂  复杂问题简单化是一个设计者的能力体现，避免不必要的使用问题复杂化的因素。 在市场导向下，在不良的架构上很容易堆砌花哨无用的新特性，导致软件趋于复杂。 在进度压力下，不会做出各种折中的个性与不和谐的新特性开发。  小结：过滤排序需求，追求稳定简洁。
 组合原则：组合，接拼，编排  把复杂问题分解为一条程序处理链条。 程序之间可以通信，前者的输出是后者输入。 通信方式尽量采用简单协议，并且与语言无关。 组合程序之间无内部状态依赖，互相独立，处理链上下游不做假设，可替换。  小结：面向微服务的设计。
 透明原则：设计与实现分离可见  设计简单，包括流程、数据结构、接口，在代码级别容易理解。 支行时刻可通过输出信息或者接口查询运行状态，可控制程序是否正确运行。 执行调试链、健康状态可跟踪、可分析。  小结：简单设计，简明实现，状态监控。
@@ -1513,6 +1494,7 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
 扩展原则：设计时着眼未来，未来总比想象来得快  对于一个一次性的程序来讲，架构和设计只会带来成本上升，复杂度提高，与性能的下降。 当开发一个支持多种产品的软件平台，其生命周期可能是十年以上。用户的需求是不断地变化，硬件环境也是不断地变化。 只有适应变化，不能拒绝变化，可扩展性是软件非功能属性中，在大部分情况下排在可靠性，高性能之前  小结：不对外界进行假设，这些假设在时间面前都是脆弱的。
 扩展原则：给雪球寻找一个核心  雪球都有一个内核，尽管可能是一粒不起眼的小石头。 常说软件要内聚，内聚需要核心。 微内核，插件化机制。框架即核心，框架之上定制好插件，构建系统。 从问题知识域发现稳定部分进行抽象提升，成为系统的框架。  小结：从框架的角度来看系统，框架之间的有机组合构建系统，系统的演化就是在框架稳定情况下增加替换相关的插件。
 扩展原则：扩展就是少修改  软件可扩展性是有前提和应用场景的，不存在可以随意扩展的软件。 增加新功能做到不修改既有软件，代码无需修改，通过修改数据模型或者重新配置获得新特性。 修改集中在新增加的软件之上，也就是说在增加新特性时，对老代码封闭，对新代码新特性开放。  小结：系统开闭原则，修改对系统稳定不构成影响。
+注：以上内容参考了公司设计原则。
 </content>
     </entry>
     
@@ -1527,7 +1509,7 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
         </tags>
         <content type="html"> 什么是tmux tmux是一个支持多会话独立运行的优秀的终端复用软件。它类似GNU Screen，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。
 tmux的使用场景 Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？
- 与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。 提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。   tmux的基本概念 tmux的主要元素分为三层：
+ 与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。 提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。  tmux的基本概念 tmux的主要元素分为三层：
  Session会话： 一组窗口的集合，通常用来概括同一个任务。session可以有自己的名字便于任务之间的切换。 Window 窗口： 单个可见窗口。Windows有自己的编号，也可以认为和ITerm2中的Tab类似。 Pane 窗格： 被划分成小块的窗口，类似于Vim中 C-w &#43;v 后的效果。  安装 在Mac环境下，先安装Brew，使用Brew安装tmux命令如下：
 brew install tmux 使用 安装完成之后，在终端中直接敲入tmux就可启动一个 tmux 的会话。退出会话敲入 exit 即可退出当前会话Pane。可以使用 tmux detach 命令断开已有的会话。也可以使用快捷键 Ctrl-b d 断开会话
 tmux 默认使用 Ctrl-b 作为激活快捷键的开关,开关开启后就可以通过快捷键迅速调用大量的功能。快捷键参考如下：
@@ -1546,7 +1528,8 @@ set -g prefix ^k unbind ^b 默认的tmux风格比较朴素甚至有些丑陋。�
         <tags>
           <tag>软件架构</tag>
         </tags>
-        <content type="html"> 什么是软件架构设计 依稀记得公司的软件架构培训材料中说到软件架构=组件&#43;交互。最近读温昱的《软件架构设计》才知道这只是其中一大阵营的观点。而软件架构在定义上分为“组成派”和“决策派”两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。 “组成派”的两个明显的特点：
+        <content type="html"> 什么是软件架构设计 依稀记得公司的软件架构培训材料中说到软件架构=组件&#43;交互。最近读温昱的《软件架构设计》才知道这只是其中一大阵营的观点。而软件架构在定义上分为“组成派”和“决策派”两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。
+“组成派”的两个明显的特点：
  关注架构实践的客体——软件，以软件本身作为描述对象。 分析了软件的组成，说明软件不是一个‘原子’意义上的整体，而是有不同的部分经过特定的接口进行连接组成的一个整体，这对软件开发来说很重要。  “决策派”的两个明显的特点：
  关注软件架构中的实体——人，以人的决策为描述对象。 归纳了软件架构决策的类型，指出架构决策不仅包括关于软件系统的组织、元素、子系统和架构风格等几类决策，还包括关于众多非功能性需求的决策。  按照“组成派”的观点，软件架构关注的是软件整体的分割和交互，之所以分割，是因为不同的部分在逻辑或物理上相对独立，通过“分而治之”的原则进行分割可以更好的理解整个系统，把握用户的需求，但是虽然整个软件可以分割成多个模块或子系统，但是模块和子系统之间的通信和交互也是很重要的。按照这种观点，架构师的主要任务是将软件分割成不同的模块，并定义模块之间的接口。
 按照“决策派”的观点，软件是一个在很多限制下产生的产品，这些限制包括用户和技术两方面，用户方面包括功能需求、性能需求、硬件需求等，技术方面包括技术选择、可扩展性、可重用性、可维护性等。按照这中观点，架构师的主要任务就是作出上述个各种限制作出选择或决策，是一系列的有层次的决策。
@@ -1570,7 +1553,8 @@ set -g prefix ^k unbind ^b 默认的tmux风格比较朴素甚至有些丑陋。�
           <tag>软件开发</tag>
         </tags>
         <content type="html"> 最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。
-同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有知行合一啊。 知 ：一方面是我们对技能掌握，如程序语言知识，设计模式，框架类库等；另一面是我们对需求理解，如场景梳理，用例分析，关键指标等。 行 ：能根据掌握的知识技能，以及对需求的认识应用于项目中，能过代码转化为实际客户所需的产品。
+同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有知行合一啊。
+知 ：一方面是我们对技能掌握，如程序语言知识，设计模式，框架类库等；另一面是我们对需求理解，如场景梳理，用例分析，关键指标等。 行 ：能根据掌握的知识技能，以及对需求的认识应用于项目中，能过代码转化为实际客户所需的产品。
 结合按王阳明的学说，做为一名合理的软件工程师，则需要格物致知，知行合一，良知和致良知。
  格物致知 ：
  格需求。对需求不断地格，才能知道客户真正需要什么。因为客户的提出需求时，往往是感性的，非技术化的描述，也可能是模糊不清晰的。那就需要我们不断去交流与探讨，才能明白客户的痛点，进而知行合一，指导你编码，做出满足客户真正需要的东西。 格技术。软件开发会涉及到很多的知识，尤其是大型的项目。我们面对操作系统，各种框架程序，以及各种软件工程方法。我们需要不断地格，去深入探本究源，明白什么场景下，使用什么技术是最优的。  知行合一 ：
@@ -1588,7 +1572,8 @@ set -g prefix ^k unbind ^b 默认的tmux风格比较朴素甚至有些丑陋。�
           <tag>软件重构</tag><tag>软件开发</tag>
         </tags>
         <content type="html"> 上周在食堂吃饭，遇到同事聊起最近的系统重构，她说这一批的新员工不如13年的一批，就一个看似简单的问题也是折腾很久，重构的周期越拉越长。我作为这次的重构的特性SE，可以说也是硬着头皮上。我是越来越反感重构，尤其是涉及到多个模块的重构。在新年的聚餐上，我说我给你挖了坑，你来填坑，让我感到非常惭愧的，即又不得做这些事。
-在现阶段项目交付变得越来越难，一方面我们面对众多的需求，做还是不做并不是你能轻易决定的；而另一方面我们又想从架构上解决可以快速满足需求。但本质的是这几个月内，人的技能与意识没有根本性的变化。在大家没有主人翁的精神下，说来说去也是为了需求在垒代码。即使你想从代码结构上重新设计，让系统更松的耦合性，更好的扩展性。受于项目进度冲击，以及代码实现者的被动，最终也会变得让你不想回头多看一眼。 编程如果仅仅越考虑短期实现项目需求目的肯定是不好的，但想通过强制的管理手段，或重构手段来想延长它的生命周期也并一定能行得通。当同一份代码是多人开发与维护，并在领导眼中的谁有时间谁就上的话。本意可能是想通过多人的备份，或共同完成以期缩短工期。其实这种做法无疑更是加重了代码朝腐化之路上走的趋势。
+在现阶段项目交付变得越来越难，一方面我们面对众多的需求，做还是不做并不是你能轻易决定的；而另一方面我们又想从架构上解决可以快速满足需求。但本质的是这几个月内，人的技能与意识没有根本性的变化。在大家没有主人翁的精神下，说来说去也是为了需求在垒代码。即使你想从代码结构上重新设计，让系统更松的耦合性，更好的扩展性。受于项目进度冲击，以及代码实现者的被动，最终也会变得让你不想回头多看一眼。
+编程如果仅仅越考虑短期实现项目需求目的肯定是不好的，但想通过强制的管理手段，或重构手段来想延长它的生命周期也并一定能行得通。当同一份代码是多人开发与维护，并在领导眼中的谁有时间谁就上的话。本意可能是想通过多人的备份，或共同完成以期缩短工期。其实这种做法无疑更是加重了代码朝腐化之路上走的趋势。
 重构有很多的手法或方法理论，其核心都会有提到不改变软件的外部行为，是对软件内部结构进行修改与调整。这实际上是非常难以做到的，我们是如何去评估不改变软件的外部行为，充分的测试能保证吗？显然就我们目前的测试能力来看，这简单是非常美好的梦想。尤其是具有一些年头的代码，或者又是人员变化较频繁的代码，看上去并不清爽的代码，至少还能正常的工作，一旦重构不知会丢失多少其中通过各种手段修改出来的小功能点。
 今天的软件交付，可能说由于整体的需求是具有多变性，给软件开发带来不确认性。不确定就会产生怀疑和恐惧，我们经常会说，软件架构是要架构未来，不是解决当下问题。当不确定性还不算太多的时候，我们还在架构层面上来推演，整个软件系统的大致方向可以被预测，然后在此基础上不断地演化。而当不确定性实在太多的时候，对软件的要求就变成了可丢弃。换句话说，你开发的所有软件，从一开始，你就应该做好很快被丢弃的准备。
  采用开源：尤其是Github让开源的推广与使用变得越来越简单，开源软件在商用软件领域成为了越来越主流。即使你开发的是非常重要的商用软件也不需要自己从头开始，自己实现并一定比开源实现的好。
@@ -1609,7 +1594,7 @@ set -g prefix ^k unbind ^b 默认的tmux风格比较朴素甚至有些丑陋。�
         </tags>
         <content type="html"> 提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。
 BitTorrent协议简介 一个BitTorrent的文件在网络传输过程，由以下几个部分组成：
- WEB服务器 文件元信息(metainfo) BitTorrent Tracker 原始资源发布者 目的端用户浏览器 目的端用户下载者   其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。
+ WEB服务器 文件元信息(metainfo) BitTorrent Tracker 原始资源发布者 目的端用户浏览器 目的端用户下载者  其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。
  有的Tracker结构  [WebServer] | | torrent file | [ Peer ] ---Get Peers --- [TrackerServer] \ \ Download&amp;amp;Upload(TCP) \ \ [ OtherPeer ]  Trackerless的DHT结构  [WebServer] | | torrent file | [ Peer ] ---Get Peers --- [DHT Nodes] \ \ Download&amp;amp;Upload(TCP) \ \ [ OtherPeer ] Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。
 每个节点都有一个全局唯一的标识符，称为节点ID。距离度量用来比较两个节点或者节点与infohash之间的远近程度。节点必须维护一个含有少量其他节点联系信息的路由表。ID越靠近自身ID时，路由表越详细。节点知道很多离它很近的节点，只知道少量离它很远地节点。
 在Kademlia中，距离度量采用异或计算，结果解释成一个无符号整数。 distance (A,B)=(A ~| B)，值越小，距离越近。每个节点维护一个路由表，由它所知道的好节点组成。路由表中的节点被用作在DHT中发送请求的起点。当其他节点查询时，就返回路由表中的节点。
@@ -1657,7 +1642,8 @@ extension消息消息的长度不固定，消息Id为20， Taipei Torrent来来�
         <tags>
           <tag>Cloud</tag><tag>Multicast</tag><tag>P2P</tag>
         </tags>
-        <content type="html"> 背景 在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。 常用技术 组播 传统的IP通信有如下三种方式：
+        <content type="html"> 背景 在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。
+常用技术 组播 传统的IP通信有如下三种方式：
  单播（Unicast）：源主机与目的主机之间点对点的通信。 广播（Broadcast）：源主机与同一网段中所有其它主机之间一点对多点的通信。 组播（Multicast）：源主机与一组目的主机之间一点对多点的通信。与广播不同的是组播组中的所有接收者都可收到同样的数据拷贝，并且只有组播组内的主机可以接收该数据，而其它主机则不能收到。  组播技术有效地解决了单点发送、多点接收的问题。所以组播非常适合运用在云环境下的软件分发场景，单点到多点的高效数据传送，能够大量节约网络带宽、降低网络负载。
 一般情况下，在二层网络中，交换机会默认开启组播，但会对组播带宽进行抑制，防止网络风暴造成的影响。在实现应用中可以在交换机上设置合适的组播带宽。如果组播需要跨二层网络，需要在路由器上开启组播路由协议。
 组播组内的所有主机共享同一个地址，这种地址称为组播地址。组播地址是范围在224.0.0.0~239.255.255.255之间的IP地址。此范围内的所有地址的前4个二进制为都是“1110“。组播地址也被称为D类IP地址，与其它的A类、B类和C类地址相区别。组播组是开放的，主机可以在任何时候进入或离开组。 IANA(Internet Assigned Numbers Authority)组织负责分发永久组播地址。
@@ -1682,7 +1668,8 @@ P2P组网按是否有中心索引节点来分有三种：
         <tags>
           <tag>Docker</tag><tag>容器</tag>
         </tags>
-        <content type="html"> 从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教： 标准化是基础 从对Linux的贡献角度来说，Docker并没有什么技术创新。但为什么它会得到如此众多的追捧，主要他得益它制定了标准。尤其是我所在电信行业感受最深，真是得标准得天下：
+        <content type="html"> 从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：
+标准化是基础 从对Linux的贡献角度来说，Docker并没有什么技术创新。但为什么它会得到如此众多的追捧，主要他得益它制定了标准。尤其是我所在电信行业感受最深，真是得标准得天下：
  容器镜像：软件的交付件标准化，使得软件在云环境中的构建，发布，运行，迁移，复制等软件分发变得更加容易。 容器引擎：容器操作方式标准化，提供标准的Rest API，使得对容器的创建，删除，启停等生命周期管理更简单。  简单就是生产力 我们再来看Docker的诞生，它是来源于Docker公司前身dotCloud的实践，出发点是为了解决如何帮助开发人员实现软件的快速打包，部署。其实也就是目前大家都在说的CICD，通过统一的格式来提升打包，测试，部署的效率。所以大家看到Docker宣传的“Build，Ship，Run”，也就说它最大的特点，简化了开发到部署操作，极大地提高的软件开发验证效率。
 会带来什么价值 除前面的提高软件的开发验证效率，它还能给出我们带来什么价值？首先，Docker屏蔽了软件运行环境差异，这个怎么理解呢？因为它的镜像具有便携性，一致性的特点。这极大地简化了软件在部署过程由于环境的差异带来的不确认性。其次Docker本身就是一种OS容器技术。而OS容器是基于操作系统内核的虚拟化，是一种轻量的虚拟化。相比于Hypervisor的虚拟化技术，它没有指令转化这一层，只是共享主机内核，划出不同的Namesapce。在计算能力上它是没有什么性能损耗的。容器可以运行在物理机或虚拟机之上，不依赖于虚拟化软件。所以它的价值主要体现在两大方面：
 降成本（相比Hypervisor）  基于Hypervisor虚拟化的应用性能下降比较高，尤其是IO密集型，同等性能指标需要消耗更多的资源。
@@ -1707,7 +1694,8 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
         <tags>
           <tag>休闲</tag>
         </tags>
-        <content type="html"> 三天的元旦时间很快就过去，前两天是窝在家搞我这个网站。今天怎么也得出去走走，于是老婆约上她的几位好友，说去莲塘边的罗湖5号绿道感受一下大自然。天公有点不作美，一直下着毛毛细雨，但是我们还是意识坚定，风雨无阻。当我们一行7人踏上路程，蓦然发现朦胧细雨下的水库与5号绿道，别有一番诗情画意，望着不远的仙湖与梧桐山，他们就像一幅幅山水水墨画，恨不得把她们都收入到相机中。 一路上我们有说有笑，完全忘记了天气的不适。虽已是深冬，但深圳的冬天却还是花开的春天般。我们一行中有一位博学的动植物学老师，一路上的花花草草，她都能讲解得恰当时机，本是由于下雨无趣的路程，给增添了不少的知识与乐趣。不知不觉我们就到达了我们的目的地，梧桐山下的大望艺术小镇。正值中午，一路的能量消耗，也需要新的补充，她提议去她在杭州开会认识一位朋友的小店，说她家做的东西非常好吃。作为吃货的我们，自然是欣然答应。
+        <content type="html"> 三天的元旦时间很快就过去，前两天是窝在家搞我这个网站。今天怎么也得出去走走，于是老婆约上她的几位好友，说去莲塘边的罗湖5号绿道感受一下大自然。天公有点不作美，一直下着毛毛细雨，但是我们还是意识坚定，风雨无阻。当我们一行7人踏上路程，蓦然发现朦胧细雨下的水库与5号绿道，别有一番诗情画意，望着不远的仙湖与梧桐山，他们就像一幅幅山水水墨画，恨不得把她们都收入到相机中。
+一路上我们有说有笑，完全忘记了天气的不适。虽已是深冬，但深圳的冬天却还是花开的春天般。我们一行中有一位博学的动植物学老师，一路上的花花草草，她都能讲解得恰当时机，本是由于下雨无趣的路程，给增添了不少的知识与乐趣。不知不觉我们就到达了我们的目的地，梧桐山下的大望艺术小镇。正值中午，一路的能量消耗，也需要新的补充，她提议去她在杭州开会认识一位朋友的小店，说她家做的东西非常好吃。作为吃货的我们，自然是欣然答应。
 在大望艺术小镇内，七拐八拐才找到她，她仿如世外桃园，不与商业争艳。这不是一家普通的店，而是一家颇具文艺气息的休闲别院。店有一个非常诗意的名字：七秒时光。当我们推开门，经过一段门廊，映入我们眼帘是一座极具风情的别院：树，小溪，茶亭，书，钟表，留声机。一切充满了文艺，轻松的气息。而正门墙上的一段文字也深深地吸引了我：
  这也是我的天涯。进，看不见幸福，退，看不见你。止于此。春便还是春，夏便还是夏。爱止于此，心也止于此，风止于秋水，我止于你。
  店名的也是别具深意，在这个繁华的世界，你我学会放下烦恼，只要拥有你，便能止于此：
@@ -1727,7 +1715,8 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
           <tag>总结</tag>
         </tags>
         <content type="html"> 韶华易逝，往昔不再。时间已翻到2016年，在15年的12月份，忽然做了一个决定，注册了lanlingzi.cn这个域名，开始鼓励自己写写东西。原由是在15年的下半年，工作上做一个重大的调整，暮然发现自已写东西有时真让人费解。这个域名上已有的文章，是我之前在CSDN上一些记忆，以及自已电脑上留下的文档。虽然在公司也会写写技术博文，但那些更倾向于技术的细节与程序语言，对问题的思考与见解少了一些。
-在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。 不管怎么样，我已经开始写了，我也开始享受写作的过程，整理文字，就是整理自己的思绪。可以把零星的，模糊的想法，通过这个网络串起来，记录下来。我不求有人会去欣赏，孤芳自赏也是一种自娱。也许，每每自己回头阅读自己的文字，也是阅读自己的回忆。有会也许会觉得自己一些想法，见解，观点是那么的幼稚、怪诞，可笑。这或许也是自我的一种成长历程吧。
+在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。
+不管怎么样，我已经开始写了，我也开始享受写作的过程，整理文字，就是整理自己的思绪。可以把零星的，模糊的想法，通过这个网络串起来，记录下来。我不求有人会去欣赏，孤芳自赏也是一种自娱。也许，每每自己回头阅读自己的文字，也是阅读自己的回忆。有会也许会觉得自己一些想法，见解，观点是那么的幼稚、怪诞，可笑。这或许也是自我的一种成长历程吧。
 16年不再年轻，而技术却是日新月异，既然今年放弃了带团队，专走技术这一线，那就坚持吧。16年加油，技术不会随着年轮越走越窄，无论是编写代码，还是做设计方案，只要能沉下心来，专心专意去付出，就会又有收获。
 15年在思想上虽有一些波折，但整体还是圆满，要感谢的人太多太多。感谢家人的理解与支持，感谢领导与同事的器重，感谢大家的宽容与谅解。那些往事，那些经历，一路上有你们的支持，才能有我每年的成长。学会感恩，让自己的内心更加的平静，更加的强大。
 16年加油，让生活更美好！
@@ -1743,7 +1732,8 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
         <tags>
           <tag>Linux</tag><tag>Debian</tag>
         </tags>
-        <content type="html"> 万万没想到，在即将迎来2016年时，微信，科技新闻中都在传“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。 30日Debian社区正式发表了悼念声明如下：
+        <content type="html"> 万万没想到，在即将迎来2016年时，微信，科技新闻中都在传“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
+30日Debian社区正式发表了悼念声明如下：
  我们怀着沉重地心情哀悼刚刚离我们而去的 Ian Murdock，开源软件的坚定支持者，父亲，儿子，和 Debian 中的 &amp;ldquo;ian&amp;rdquo;。
 Ian 从 1993 年8 月开始启动 Debian 项目，并在同一年的稍晚时间正式发布了它的第一个版本，Debian 还会一直坚定不移地继续努力，成为流行世界、亿万人受惠的通用操作系统，不管是嵌入式设备还是太空站，都能看到它的身影。
 Ian 一直非常关注在创建一个发行版和开源社区文化的过程中做正取的事情，不管是技术上，还是道德上。每一次准备好的系统发布，都包含着对自由软件和自由精神立场的坚定支持。
@@ -1767,7 +1757,8 @@ Debian的名称也据说来源一个美丽的爱情故事（Deb来自于前女�
           <tag>软件架构</tag><tag>软件开发</tag><tag>北京</tag>
         </tags>
         <content type="html"> 参加ArchSummit北京站已有一周时间，一直没有时间来梳理一下。整体来说，这次的北京之行，不是很满意，可能是这类会议听多的原因，感觉ArchSummit的质量是越来越差了，没有什么新鲜感，觉得不值那6K的价格。
-组织不足 12月份的北京已是非常的干冷，可能由于我在南方呆久了，一到北京是极其地不适应，在北京三天多的时间，嘴唇开裂，到现在还没有完全好干净。离开北京的那一天，正好又感受了一下北京正宗的霾，帝都的人们活得真不容易啊。 为什么说ArchSummit组织不足呢？InfoQ也算是组织过多次大型会议的公司，但这一次比我之前参加InfoQ组织的任何会议都差，更无法与阿里组织的云栖会议相比。一个是以组织会议赚钱，一个是以个会议来打造生态。这次的ArchSummit是在北京国际个会议中心举行，每个分会场我都差不多的参加过，明显感觉组织不足:
+组织不足 12月份的北京已是非常的干冷，可能由于我在南方呆久了，一到北京是极其地不适应，在北京三天多的时间，嘴唇开裂，到现在还没有完全好干净。离开北京的那一天，正好又感受了一下北京正宗的霾，帝都的人们活得真不容易啊。
+为什么说ArchSummit组织不足呢？InfoQ也算是组织过多次大型会议的公司，但这一次比我之前参加InfoQ组织的任何会议都差，更无法与阿里组织的云栖会议相比。一个是以组织会议赚钱，一个是以个会议来打造生态。这次的ArchSummit是在北京国际个会议中心举行，每个分会场我都差不多的参加过，明显感觉组织不足:
  每个分会场演讲时，大门紧闭，空间质量非常的差，又没有充足的通风设备，感觉非常的窒息。 工作人员能力不行，第一天下午，有几个分会议室由于投影没有准备好，拖时半个多小时，也不见中途主持人来了说一声，最后连声道歉都没有。 几个分会场的投影效果差，灰蒙蒙的看不清楚。 连个矿泉水瓶上都是广告，并且不是每个位置都摆放好水，而是需要自己去指定位置去拿。有的分会场甚于连矿泉水都没有见到，准备的份数太少，6K的价格连个水都喝不到。 就餐地方太小（又是自助餐），效率低下，大量的人员挤在走廊上，我是差不多等了30多分钟才能进餐厅吃饭。大量的人员挤在一起存在安全风险。  两天的ArchSummit大会日程比较紧凑，再加上大多数时候有六个专题在并行，因此每个人能够真正去听的课程不会太多。我们也是只能选择地去听，但是每个演讲介绍不足，有些演讲名字高大上，听了之后，感觉有点上当，部分讲师存在水分，这里就不直说了。
 不过，参加ArchSummit大会，还是听到一些业内公司的技术分享，尤其是互联网企业，在应用新技术方面还是比较超前的。相对我们电信行业来说，我们遇到的问题有些是相似的，甚至部分问题的解决办法也与我们曾经想过的一些方案类似，只是他们早已经落地并且做到极致了。有很多东西对我们值得参考，可以说从开源使用、技术形态，运作方式，远远走在我们的前面了。
 PaaS平台 目前稍具规模的互联网公司，都会自建数据中心。而互联网的业务又有如下特点：
@@ -1808,7 +1799,8 @@ PaaS平台 目前稍具规模的互联网公司，都会自建数据中心。而
           <tag>Go</tag><tag>软件开发</tag>
         </tags>
         <content type="html"> 从8月份到现在，一直在公司尝试用Go写点东西。虽然我们几乎是清一色的Java开发，但我还是愿意在同事之间推广Go，有时间还是学学Go吧。
-认识Go 我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万&#43;的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。 14年的Docker以席卷全球之势火了一把。在15年，我又投入到平台集成Docker的分析，于是又开始了Go语言之旅，重点研究了Docker Distribution的代码，以及由其它部门开发的Index等相关部件的代码（都是基于Go）。自己也是顺便练练手，如把系统中Java的通用加解密库（是基于AES与HamcSHA256之上的封装库），转换Go实现。经测试发现原来在Java对于HamcSHA256迭代6W&#43;次数时需要差不多一分钟，而Go只需要几秒。由于系统需要对接Docker的API，涉及到Http Hijack，于是又得去分析Docker源码中这一块是怎么实现的，把它的实现转换成Java（虽有开源的Java Client API，但不能满足我们的要求）。所以差不多就是干些Java转Go，Go转Java的体力活。整个版本开发中也协助定位一些Docker相关的问题，需要走读Docker代码。整体来说，我写的Go代码不是太多。
+认识Go 我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万&#43;的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。
+14年的Docker以席卷全球之势火了一把。在15年，我又投入到平台集成Docker的分析，于是又开始了Go语言之旅，重点研究了Docker Distribution的代码，以及由其它部门开发的Index等相关部件的代码（都是基于Go）。自己也是顺便练练手，如把系统中Java的通用加解密库（是基于AES与HamcSHA256之上的封装库），转换Go实现。经测试发现原来在Java对于HamcSHA256迭代6W&#43;次数时需要差不多一分钟，而Go只需要几秒。由于系统需要对接Docker的API，涉及到Http Hijack，于是又得去分析Docker源码中这一块是怎么实现的，把它的实现转换成Java（虽有开源的Java Client API，但不能满足我们的要求）。所以差不多就是干些Java转Go，Go转Java的体力活。整个版本开发中也协助定位一些Docker相关的问题，需要走读Docker代码。整体来说，我写的Go代码不是太多。
 曾经的痛苦 C&#43;&#43; 十多年的编码经验,一半是做C/C&#43;&#43;开发，一半是Java。目前还记忆犹新的是，在08年写的一个消息缓存中间件，大量使用了共享内存、内存分片技术、大文件操作，以及缓存淘汰算法（主要与业务特性相关）。原本只是一个消息缓存&#43;持久化，但后来做着做着已不再是一个纯粹的缓存，参杂着业务复杂的逻辑，最终也导致代码质量不可控。一出问题就是踩地址（用于大消息缓存，原本设计是小消息），CoreDump文件分析困难。现在来看，其实如果只是做纯粹的缓存与持久化，Redis也能满足当时的需求，可惜那时开源没有现在这么火，更没有听说有Redis，连Memchached都没有听过。后来在09年与10年，又负责过另一个产品的版本稳定与性能提升。在那段日子里，我与另一个兄弟不知解决多少个CoreDump问题，现在还记得一个踩栈地址的问题整整花了我一周时间，通过猜测CoreDump中的地址信息加上反复走读代码才找到问题的原因。为了压榨单板的性能，在做优化时真是极其语言的偏门用法，尤其是在老的代码上为了发挥并发多线程的能力，代码写得真是惨不忍睹（那时也接触过erlang，发现erlang进程模型是多美好）。目前我司还有很多产品为了提高性能与降低时延，甚至是在内核做了一些修改，如零拷贝技术。这些性能上极致的代码也只能是少数人能看得懂。10年还做一件非常痛苦的工作，就是把跑到Linux上代码移植到Window，主要用于做开发验证仿真工具。即使采用MGWin，也是苦不堪言，其中的困难是谁做谁知道。
 Java 10年底开始做云计算，又开始做Java开发（之前也开发过Java，主要是JNI）。使用C开发时，没有什么开源框架可选，但Java的框架是一大堆，J2EE，OSGI，Spring&amp;hellip;无论是哪种，框架都是又臭又硬，太厚重了。大量使用第三方的开源Jar管理也是非常困难。即使我们采用Maven来做工程管理，也是相当的复杂，尤其是对一个大型系统，全编译构建时间都可以与原有C/C&#43;&#43;有得一拼（我之前经历过的C/C&#43;&#43;写的系统，全编译要花差不多一天时间，拿现的DevOps理念是不可想象的），也尝试使用过Maven的并行编译，但由于部分的Mavne插件不支持也放弃了，只能换成多台机器分布式编译。Java运行环境到14年我们才换成JDK8，之前一直采用JDK6，写多了就觉得Java的语法是硬伤，太不灵活，尤其是一堆的Getter与Setter（采用lombok简化），什么都得先定个interface，总之代码看起不是清爽简洁。Java的打包发布更是一个噩梦，虽有Maven管理，但对于一个大型系统，差不多一百号人的开发团队，系统整体打包是差不多2G的压缩包。我们是花了不少时间去清理不同版本的第三方Jar包（公司要求同一产品依赖的版本要归一），每次做版本升级，换一个Jar的版本会牵出一堆的Jar依赖要升级，也是苦不堪言，其中的痛苦是谁做谁知道。经过不断地努力，目前整个团队使用第三方Jar登记还有100&#43;，整体打包差不多1G的压缩包，对于严格的电信行业说，任何第三方Jar包要做内部开源扫描认证，这是一项浩大的工程。在06年做Java时，为了性能比拼，JVM的性能参数调优也是一个非常要有技术的活，吞吐量与时延两者不能兼顾。
 再来说Go 缘由 我为什么喜欢Go，最重要的原因是我目前从事云计算领域的研发。总结之前说了这么多的痛苦，对于C/C&#43;&#43;:
@@ -1828,7 +1820,8 @@ Java 10年底开始做云计算，又开始做Java开发（之前也开发过Jav
         <tags>
           <tag>Docker</tag><tag>容器</tag><tag>k8s</tag><tag>mesos</tag>
         </tags>
-        <content type="html"> 最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。 Mesos Mesos是倾向于是IaaS层上的 资源管理器。Mesos不要求计算计算是物理服务器还是虚拟机，只要是Linux操作系统计算资源就可以，Mesos可以理解成一个分布式的Kernel。所以讲师强调DCOS一个OS(阿里云栖讲师的分享)，而不是一个调度器。Mesos只分配集群计算资源，不负责任务调度。基于Mesos之上可以运行不同的分布式平台，如Spark，Storm，Hadoop，Marathon，Chronos等。
+        <content type="html"> 最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
+Mesos Mesos是倾向于是IaaS层上的 资源管理器。Mesos不要求计算计算是物理服务器还是虚拟机，只要是Linux操作系统计算资源就可以，Mesos可以理解成一个分布式的Kernel。所以讲师强调DCOS一个OS(阿里云栖讲师的分享)，而不是一个调度器。Mesos只分配集群计算资源，不负责任务调度。基于Mesos之上可以运行不同的分布式平台，如Spark，Storm，Hadoop，Marathon，Chronos等。
 Mesos中的核心是DFS，即资源管理策略 Dominant Resource Fairness。Mesos能够保证集群内的所有用户有平等的机会使用集群内的资源，这些资源包括 CPU，内存，磁盘等等。Mesos只做一件事，就是分布式集群资源分配，不管任务调度。Mesos只要你给出CPU、Memory参数就能分配资源，用于你的计算。
 Mesos 是一个双层调度器。 在第一层中，Mesos 将一定的资源提供（以容器的形式）给对应的框架或应用程序。在第二层中 ，应用程序将收到的资源进一步分配给内部的任务。但是资源分配器智能化程度不同，mesos是基于resource offer的调度机制，包含非常少的调度语义，他只是简单的将资源推给各个应用程序，由应用程序选择是否接受资源，而mesos本身并不知道各个应用程序资源需求。
 Mesos是Apache的开源项目，起源于UC Berkeley的一个研究项目。而背后的商业运作公司是Mesosphere，主要产品是基于Mesos构建的DCOS(datacenter operation system)。Mesos的商用程度很高，在国外的Airbnb, Apple, Uber, Twitter在使用，其中Apple的语音助手 siri是基于DCOS部署，有6000&#43;节点。而国内有携程，爱奇艺在使用。
@@ -1851,7 +1844,8 @@ Mesos与K8S Mesos与K8S都起源于Borg，Mesos和K8S的愿景差不多，但是
           <tag>成都</tag>
         </tags>
         <content type="html"> 风味十足的四川话，风姿卓然的川妹子，麻辣干香的风味菜，是我是对成都的初步映象。有“天府之国”、“蜀中苏杭”美誉的成都蓉城，在小说与故事中都有耳闻，向往已久。在上高中时，就想报考虑成都的高校，无奈分数不够高，被调济到北方。这次作为招聘技术面试官出差来了一趟成都，了却了一桩十几年前的心愿。
-作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。 背上背包，一路朝南，寻找成都的古迹。步行街、杜甫草堂、武侯祠，锦里古街，古香古色，即使仿古，也别有风味。在锦里，见到是当地老头老太，倒上一怀茶，四个人摆起麻将旧，忘记的游人带给这个城市的喧嚣。深深的巷子里，不管是一条宽的还是一条窄的，人们总是贪恋的过着闲趣的生活。而我也妄想在某个旧的巷子里头，旧的墙砖缝里，寻找历史的一点蛛丝马迹。
+作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。
+背上背包，一路朝南，寻找成都的古迹。步行街、杜甫草堂、武侯祠，锦里古街，古香古色，即使仿古，也别有风味。在锦里，见到是当地老头老太，倒上一怀茶，四个人摆起麻将旧，忘记的游人带给这个城市的喧嚣。深深的巷子里，不管是一条宽的还是一条窄的，人们总是贪恋的过着闲趣的生活。而我也妄想在某个旧的巷子里头，旧的墙砖缝里，寻找历史的一点蛛丝马迹。
 人最大的享受之一就是吃喝。来到成都，自然少不了品尝一下当地的小吃美食。“棒棒鸡”、“怪味兔”、“张飞牛肉”，总是映入到你的眼帘，从一品天下，到锦里古街，还是秘书安排的晚宴，我觉得我想吃的东西太多，但发现只要吃上一种，就有种会上瘾的感觉。即使我带回给儿子的牛皮糖，他也是爱吃得不了。
 成都的生活的确是安逸的，哪怕是现在。它始终是一个生活的好地方。也始终是令人憧憬或向往的。回到深圳，望着车流川息，感觉是从一个世界到另一个世界，快节奏的生活，超熬贵的房价，让我们无法去轻触着这个城市的生活轨迹。
 </content>
@@ -1868,7 +1862,7 @@ Mesos与K8S Mesos与K8S都起源于Borg，Mesos和K8S的愿景差不多，但是
         </tags>
         <content type="html"> 由于最近一直在从事Docker相关的工作，所以有机会参与这次的CNUTCon全球容器大会。名字比较“高格”，虽有少量的外国人分享，大部分还是中国的互联网企业在宣传，忽悠。除去这些，整体来说这次大会还是非常不错的，门票也不算太贵，目前看来应该还是值的。我司还是这次大会的钻石赞助商，也说明我们在容器这一块的发力程度。
 整体感受 Docker是这这两年成长最快的技术，受到资本市场的热捧。Docker技术以势不可挡地席卷全球。参考这次大会，整体感受是：
- Docker已不再是概念，已进入互联网企业的实际生产环境中 Docker的创业公司多，有远见的想在这次的浪潮中分享红利 大公司借Docker东风，亦想在云计算领域中拿下更多话语权 容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟   看国外 这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。
+ Docker已不再是概念，已进入互联网企业的实际生产环境中 Docker的创业公司多，有远见的想在这次的浪潮中分享红利 大公司借Docker东风，亦想在云计算领域中拿下更多话语权 容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟  看国外 这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。
 第一天的首场分享是来自RedHat副总裁，印度英语原来在公司就听到不少的印度同事，虽说听不太清楚，却有一股莫名的亲切感。由于是副总裁人物，讲的东西也是太High了，主要是分享OpenShift为什么要使用Docker，以及对Docker的认识。可以说在技术上空洞无物，对我来说“然并卵”。过程中的演示貌似险出了岔子。总之，他是来宣传OpenShift。
 其次是来自CoreOS产品负责人分享，不过也没有什么干货，可能他对国内Docker技术应用程度还不太了解，还停留在宣传概念阶段。主要讲了两组项目：一个是Chubby&#43;Borg，之后是etcd&#43;k8s。并分别对比了Chubby以及etcd，最后是基于etcd的使用演示，Demo放到了Git上。只能说这个Demo是对etcd相当的入门级。总之，他是来宣传etcd。
 可以说，第一天的两场分享，其实跟Docker，或容器技术关联不是很大，看来InfoQ请错人了。
@@ -1899,7 +1893,7 @@ Google是老牌的容器使用者，他在这一这方面的经验可能是最�
         <content type="html"> 作为一个软件人员，我们会经常遇到各种各样的需求，有时为了避免定制，通常的做法是提供更多的配置选项，以通过配置出满足不同的特定需求。
 原因是而当你开发定制代码来修改或扩展一个功能需求时，有可能会导致软件不能正常的工作，必须通过严格的测试与验证。在重大的版本升级情况下，定制是苛刻的和耗时的。甚至会面临无法修复的功能可能会被重构，从零开始。因此，一些做法是通过采越来越多地选择配置，来解决由于开发定制代码引入的问题与软件带来的成本。
 因此配置与定制之间的区别是：
- 配置：使用现有的数据来配置系统以满足您的业务需求 定制：将定制或使系统适应业务需求，涉及到定制开发流程。   作为一名开发或设计人员，重要的是要了解不同的配置和定制的区别，差异的关键是复杂度。配置使用的软件具有固有的灵活性，如添加字段，更改字段名称，修改下拉列表，或添加按钮。配置是使用强大的内置功能集。而定制是包括代码更改以创建出不可通过配置解决的功能。定制可能是昂贵的，并且可能会使软件的升级复杂化，因为由于代码变更可能不会很容易迁移到新版本。像“修改”或“扩展”往往意味着不同的东西，存在不确认的风险。
+ 配置：使用现有的数据来配置系统以满足您的业务需求 定制：将定制或使系统适应业务需求，涉及到定制开发流程。  作为一名开发或设计人员，重要的是要了解不同的配置和定制的区别，差异的关键是复杂度。配置使用的软件具有固有的灵活性，如添加字段，更改字段名称，修改下拉列表，或添加按钮。配置是使用强大的内置功能集。而定制是包括代码更改以创建出不可通过配置解决的功能。定制可能是昂贵的，并且可能会使软件的升级复杂化，因为由于代码变更可能不会很容易迁移到新版本。像“修改”或“扩展”往往意味着不同的东西，存在不确认的风险。
 要避免定制，提供的一些配置工具并不总是一个较简单的选择。但这些配置选项如何配合业务运行时，也会让运维人员无所事从，太多的配置选项最终变成谁也不敢去使用，因为无法去评估配置带来的运行期的影响。一种方式是提供向导驱动的配置，但同样面临没有在初始部署时掌握他们的细节和晦涩深奥的设置。
 </content>
     </entry>
@@ -1914,7 +1908,8 @@ Google是老牌的容器使用者，他在这一这方面的经验可能是最�
           <tag>软件架构</tag><tag>软件开发</tag><tag>微服务</tag>
         </tags>
         <content type="html"> 我司学习一个新的技术，往往是搞得轰轰烈烈，比如数字化转型，向互联网技术学习。其中一个非常重要的方向就是学习互联网的服务化体系架构。国内的阿里，京东，腾讯在服务化，确切地说是微服务应用取得非常大的成功。而国外的Netflix的微服务架构更是成为我们必定的样板教材。你做设计，谈方案，不说说微服务都不好意思。如果你不说这样，说明你思维落后陈旧了。任何一项技术都有一段疯狂期，虽这近一次在搞架构重构，领导遇到你，总是关心地问到：“服务化进展怎么样了”。甚至还得跟一些不太懂的领导解释什么是微服务。
-10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《微服务》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。 那先来看看Martinfowler怎么说的：
+10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《微服务》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。
+那先来看看Martinfowler怎么说的：
  微服务风格也与SOA所提倡的一些优势非常相似。尽管如此，问题在于SOA意味的太多不同的东西了，因此通常时候我们谈的所谓“SOA”时，它与我们谈论的风格不一致，因为它通常是指在整体风格应用中的ESB。
  从试图使用ESB隐藏复杂性，到集中治理模式抑制变更，这种面向服务的风格是复杂的，没有ESB什么都不是。互联网的发展，利用简单的协议方法，让它从这些经验传达的出来。可能说对SOA集中式标准中的一种反模式，而SOA需要用一个服务来管理你的所有的服务，你就知道这很麻烦。
  SOA的这种常见行为让微服务的提倡者拒绝打上SOA的标签，尽管有人认为微服务是从SOA中发展而来的，或许面向服务是对的。无论如何，事实上SOA表达这么多的含义，它给一个团队清醒的认识到这种构架风格就已经值的了。
@@ -1939,7 +1934,7 @@ Google是老牌的容器使用者，他在这一这方面的经验可能是最�
         <content type="html"> 最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。
 什么是重构  重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。
  这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：
- 局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。 模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。 架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。   重构风险 无论何种层次的重构，都必须要有一个可靠的测试环境，即自动化测试环境。因为频繁的代码修改可能会引入更多的缺陷，只有执行自动化测试并回归所有用例，才能保证及时发现这些缺陷，最大限度地降低重构的风险。
+ 局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。 模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。 架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。  重构风险 无论何种层次的重构，都必须要有一个可靠的测试环境，即自动化测试环境。因为频繁的代码修改可能会引入更多的缺陷，只有执行自动化测试并回归所有用例，才能保证及时发现这些缺陷，最大限度地降低重构的风险。
  局部的不良代码，可以通过小范围的重构来优化。但是对于架构上重构，因为重构影响范围过大，在实践中仍然存在绪多的困难。 架构上大的重构，至少几十人的投入，更需要半年到一年的开发周期。在老软件不能停止维护的前提下，这对开发人力将产生巨大冲击。 新架构虽然先进，但历史经验表明，新软件的成熟与稳定需要时间。在沉重的交付压力下，风险需要做很多的预防控制。  为什么要重构 给老大说明重构的意义往往很难，尤其不是技术出身的管理者，即使是，也需要面临交付上的考虑。从技术上讲，为什么要重构：
  不论如何先进的软件架构也不可能预见到几年甚至十几年后的需求，并预先设计 随着新功能的不断增加，以及新成员的加入，软件架构必然逐渐腐化 虽然强力的架构看护制度可以延缓架构腐化的速度，但不可能看护到实现细节 重构则提供了软件持续优化的机会，从而使软件更容易适应新的需求，同时及时地改进不合理的部分  重构与重写 对于一次重构来说区别不大，只是力度不同，重构侧得局部优化，也会重用现有的资产，重构的极端就是重写。他们的主要区别是重构强调的是持续的，随时的优化，而重写强调的是一次性的天翻地覆的改造。那我们如何判断是要重构还是重写？
  重构是持续的，并不是等到极端恶心才开始优化，所以坚持持续的重构可以代价更小的达到优化的目的 若已经极端恶化的模块，重写也是一种解决方式，但要注意避免失控，须在设计、测试、管理、人员能力等多方面要做好准备  何时重构 何时重构，因项目因人员能力而异：
@@ -1962,7 +1957,8 @@ Google是老牌的容器使用者，他在这一这方面的经验可能是最�
         <content type="html"> 什么是OSGi 维基百科：
  OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。
  我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。
-2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。 缘起 正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：
+2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
+缘起 正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：
  模块化，模块之间基于服务接口通讯。 插件化，Bunlde可以动态加载。 组件化，面向服务的组件，组件由多个服务组成。 生命周期管理，相比普通Jar包，我们可以更细粒度的管理 &amp;hellip;  我们使用OSGi，采用两种框架，一个是Apache的Felix，使用它主要是看重它很小，用于开发主机代理，在其上开发各种采集插件。一个是Spring的Spring DM，即后面的Eclipse Virgo。使用它主要是看重它集成了Spring，用于开发后端服务，采用Spring DM来简化OSGi的服务发布与引用，以及能较好地使用Spring的其它能力。
 可以说从11年到14年，我都是在基于OSGi做开发，从早期喜爱到最后的放弃，个中的滋味真不知怎么说。期间我在整个团队做了不少关于OSGi的推广，写过些文档介绍，规范要求，定位过稀奇的问题，最后大家都觉得我是这一方面的专家，只有搞不定的问题就来找我，我才逐渐意识到OSGi的理念虽好，但要真的把它使用得很好，真是不简单啊。
 OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式的系统，所以在后面又折腾过DOSGi，使用是的CXF实现的DOSGi，这个更难使用。先只有少数一两个服务在尝试使用它，期间遇到的问题更多，最后也不得不在13年初就放弃了。我不得不搞出另一个RPC的框架出来。
@@ -1982,7 +1978,8 @@ OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式�
           <tag>软件开发</tag>
         </tags>
         <content type="html"> 在我司，我发现大家很擅长把一个东西到极致，但极致可能是过犹不及了，例如测试并不是发现越来越多的Bug就越好，如果把很多的时间消耗到一些不重要的点，反而不可取，软件只要你去测试，怎能发现一些Bug，如要面对这些就非常纠结。作一名开发，说这话肯定会被一批的测试人员拍砖死了。在此表达一下不同的观点，不一定正确，请轻拍。
-在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。 一种较有说服力的观点是缺陷跟踪方便人们发现缺陷的趋势，对流程的改变很有一些效果，如提前做些缺陷预防。对于管理者来说，他们需要缺陷跟踪报告可能了解软件的质量状况。但可能实际却不是这样的，单单根据DI值来判断软件质量，这跟由湿度来判断天气是否好坏一样不太靠谱。
+在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。
+一种较有说服力的观点是缺陷跟踪方便人们发现缺陷的趋势，对流程的改变很有一些效果，如提前做些缺陷预防。对于管理者来说，他们需要缺陷跟踪报告可能了解软件的质量状况。但可能实际却不是这样的，单单根据DI值来判断软件质量，这跟由湿度来判断天气是否好坏一样不太靠谱。
 质量是什么，尤其是软件的质量是什么？是看软件的缺陷率吗？比如我现在比较喜欢荣耀手机，我会关注荣耀手机DTS中的单有多少吗？在消费者的眼中，质量就是对他有价值的东西。如果客户是快乐的，存在一些漏洞也是问题不大的。如果客户抱怨，跟有多少Bugs是无关的。
 前几年在摧广敏捷时，提到做刚刚好的系统，也提到了零缺陷：符合已确定之要求，一次做对。第一次把正确的事情做正确，包含了三个层次：正确的事、正确地做事和第一次做正确，三个因素缺一不可：
  正确的事：辨认出客户的真正需求，从而制定出相应的战略。 正确地做事：软件开发中所必需的全部活动都符合客户和市场的客观要求。 第一次做正确：防止不符合要求的成本产生，从而降低质量成本，提高效率。  什么是软件的缺陷，在软件程序中存在任何一种破坏正常运行能力的问题，都可能叫作缺陷，Bugs。但生产软件的最终目的是为了满足客户需求，如果以客户需求作为判断软件质量的标准，软件的缺陷可以包括如下几个因素：
@@ -2003,7 +2000,8 @@ OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式�
           <tag>软件开发</tag>
         </tags>
         <content type="html"> 最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？
-小儿已一岁多，现在回顾他做的一些体检。前三个月每月一次体检，一岁之前每3个月一次，一岁之后是每6个月一次。体检的项目有称体重、量身高、量头围、量胸围、验视力、测听力、检查动作发育、口腔检查、评价智能发育、验血、骨骼检查、心肺与心率检查、大便和血红蛋白。体检医生一上来就是开各个体检单，采用是西医的方式，看指标数据，再评测，体检应该是医院最好的生财路之一。个人也明白，正如我妈说的，我小时候哪有什么体检，也不是好好的吗？现在带小孩去体检，也是图个安心，提早预防。 那说这些跟软件开发有什么关系？西医是基于实验科学，从实验走向临床，再到应用，它关注对外界变化的认知，比如发现了细菌，就有了抗生素；发现了病毒，就有了疫苗；发明了人工心脏，就可以做植入心脏。西医的研究对象是外界。强调对症下药，看的是病。而中医以阴阳五行为基础，将人体看到气，形，神的统一。聚焦于人本身，就是人的经络，阴阳，五行等。通过中药、针灸、推拿、按摩、食疗、拔罐等多种手段来达到人体的阴阳调和而康复。强调调和平衡，看的是人。西医通过相同的病因数据，药物使用可能复制到不同的人。而中医需要通过医生的非常经验，开出不同的药方。所以年纪越老的中医越是历害。
+小儿已一岁多，现在回顾他做的一些体检。前三个月每月一次体检，一岁之前每3个月一次，一岁之后是每6个月一次。体检的项目有称体重、量身高、量头围、量胸围、验视力、测听力、检查动作发育、口腔检查、评价智能发育、验血、骨骼检查、心肺与心率检查、大便和血红蛋白。体检医生一上来就是开各个体检单，采用是西医的方式，看指标数据，再评测，体检应该是医院最好的生财路之一。个人也明白，正如我妈说的，我小时候哪有什么体检，也不是好好的吗？现在带小孩去体检，也是图个安心，提早预防。
+那说这些跟软件开发有什么关系？西医是基于实验科学，从实验走向临床，再到应用，它关注对外界变化的认知，比如发现了细菌，就有了抗生素；发现了病毒，就有了疫苗；发明了人工心脏，就可以做植入心脏。西医的研究对象是外界。强调对症下药，看的是病。而中医以阴阳五行为基础，将人体看到气，形，神的统一。聚焦于人本身，就是人的经络，阴阳，五行等。通过中药、针灸、推拿、按摩、食疗、拔罐等多种手段来达到人体的阴阳调和而康复。强调调和平衡，看的是人。西医通过相同的病因数据，药物使用可能复制到不同的人。而中医需要通过医生的非常经验，开出不同的药方。所以年纪越老的中医越是历害。
 现在的软件工程，也似乎像西医一样，试图通过固化流程，工程手段，指标数据来统一所有项目的开发。典型的是CMM，它关注项目本身，往往忽略了项目中的人。一个C版本三个月，我们个人并没有在这短短的三个月里边发生什么实质性的变化。一个本来连计划变更都要审批，还要被QA严格审计的受控团队，有时又变成一个居然可以什么都自己估算，和中途临时领取需求任务的自组织的团队，不可不谓一个相当疯狂的举动。最后项目管控就看是各种指标数据，个中变化指标能看到什么呢？即使各种指标细化，能真实的反应项目的实情吗，这要大大地打个问号了。也有人会说，数据好的项目并不一定好，但数据差的项目一定是不好。好吧，我认这一条。
 外界的敏捷开发，应该是强调项目中人的本身吧，快速适合各种变化。管理以人为本，时刻进行相应的调整，尽可能地发挥个体的能力。一个被各种指标数据盯着的团队能放下这些，快速适合变化，快速响应客户的需求吗？软件的开发过程也不可能固定不变，因人而异，因项目而异，一两种软件工程学能搞定所有的项目吗？
 </content>
@@ -2019,7 +2017,8 @@ OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式�
           <tag>软件开发</tag><tag>程序员</tag>
         </tags>
         <content type="html"> 我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1&#43;1&amp;lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。
-减少沟通成本，我们需要全栈工程师，因为各种技术都懂，胸有成竹，自己就全做了。即使是在团队协作中，与不同技术人员的沟通也会容易得多。懂你的，你懂的，相互理解，也就少了很多的时间在扯。 那什么是全栈工程师：通俗地讲，掌握多种技能，并能利用多种技能独立完成产品的人。打外比方，全栈工程师就是一个能独立盖一幢10层小洋楼的人，而普通工程师，则是可以和一群人盖一幢摩天大楼的人。较搞地讲，全栈工程师=**丝战斗机=系统&#43;网络&#43;研发&#43;DBA&#43;架构&#43;安全=没女朋友/没男朋友，拿一份工资做三份事情，公司的奋斗者，其它人眼中的牛人，傻X。有人说了，你再牛X，你懂五种技术，你能干五个人的活吗？全栈工程师并不是说一个人能干几个人的活，而是要从多个方面来看这个问题。
+减少沟通成本，我们需要全栈工程师，因为各种技术都懂，胸有成竹，自己就全做了。即使是在团队协作中，与不同技术人员的沟通也会容易得多。懂你的，你懂的，相互理解，也就少了很多的时间在扯。
+那什么是全栈工程师：通俗地讲，掌握多种技能，并能利用多种技能独立完成产品的人。打外比方，全栈工程师就是一个能独立盖一幢10层小洋楼的人，而普通工程师，则是可以和一群人盖一幢摩天大楼的人。较搞地讲，全栈工程师=**丝战斗机=系统&#43;网络&#43;研发&#43;DBA&#43;架构&#43;安全=没女朋友/没男朋友，拿一份工资做三份事情，公司的奋斗者，其它人眼中的牛人，傻X。有人说了，你再牛X，你懂五种技术，你能干五个人的活吗？全栈工程师并不是说一个人能干几个人的活，而是要从多个方面来看这个问题。
 我们遇到了什么问题？产品在报怨平台；开发在报怨SE没有搞清需求，规格写得不清不楚，不了解系统实现；测试在报怨开发，问题太多，Story写不好，自测试不充分；开发在报怨测试，不了解系统，机械提单，单的质量低，场景不符合业务。听多报怨，人也会变成急躁不安。心平气和，放下争端，谁都想开心上班，开心下班。报怨也是解决不了问题，反而是有摧卸责任之嫌。
 那在华为，全栈工程师能解决上面的问题吗？不能！首先，在华为，细化的分工很难培养出全栈工程师，那你还提全栈工程师有什么用。一名的好的开发者，能缓和一些项目中的扯皮矛盾。好的开发者，即使不是全栈，也要融会贯通多种技术。我从来不认为一个只专精一种技术的人有可能成为好的开发者。从广度和深度的组合看，我认为好的开发者大概有两种类型：1)手术刀;2)代码专家(来自《人月神话》)。手术刀是业务驱动的，最需要全栈的人；他们的核心价值在于：懂业务，技术全面，都能拿的起来，而且能选择最合适的技术。代码专家是技术驱动的，即使不够全栈也可以用，但是技能树点的越多当然有好处。
 如果你现在是一名开发，那我如何做。而在技术选择上以“关注商业目标”和“关注用户体验”为原则。脱离商业目标的技术都不会得到长期的认可，脱离用户体验的产品终究被淘汰掉。在华为，你做一名开发，首先要主动关注前期需求分析。发现问题，洞察需求，才能设计出实现方案，最终的实现也不太大的偏离。我一直比较反感我们想需求，觉得应该是这样的。或者做些用户根本不会使用的需求。但现在组织结构决定了我们不能向客户靠近太多。那我们能做的就是多与SE讨论，规格是一种载体，把问题讨论清楚，澄清准确是关键。开发也要意识到需求分析，设计不仅仅是SE的事。不懂设计的开发也不是一名合格的开发。
@@ -2079,18 +2078,14 @@ Hi username! You&amp;#39;ve successfully authenticated, but GitHub does not # pr
         </tags>
         <content type="html"> 关于什么是一名合格的程序员，优秀的程序员，这些讨论从来没有停止过，标准各不相同。有人说优秀程序员追求简洁的代码，优秀的框架结构，新的技术技能。我们不是在讨论什么是业界大牛，我心中的一名优秀程序具备如下几个素质：
  简洁高效
-优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。  开放心态
+优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。
+   开放心态
 不要盲目自信，自负，在IT这个领域，新知识层出不穷，你永远不可能全部掌握，在某些领域，你一定会是低人一等。教条、狭隘与不切实际的表现往往让你变得越来越自负，也会越来越陷入一个很小的框框内。
- 切合实际
-软件开发，不是理念的教堂，也不是技能的校场。忽略实际情况，再精妙的代码解决不了问题，也只是一纸空文。优秀程序能打破常规，找到问题的本质，快速地，简洁地解决问题。
- 质量保证
-态度明确，能一直以我交付的代码一定要是高质量的目标。对代码负责，会不停地优化与重构自己的代码。对代码充分的测试与验证，极少的Bugs。只会写代码，不会测试的程序员不是优秀的程序员。
- 积累分享
-平时注重通过研究新的技术，新的软件工程方法，来为以前无法解决的一些软件问题提供更优的方法。能对软件开发中的实践进行总续与升华，将自己所掌握的东西转成显式的知识，并能通知多种方式进行分享。知识的传承的重要性远远大于代码本身。
- 热爱编程
-不要做只会编码的码农，热爱生活，才能享受编程带来的快乐。热爱编码，热爱自已的职业。如果对编码没有热情，只是一种谋生手段，那最终在编程这一条路也不会走得太深。
- 沟通反馈
-在软件开发领域，尤其是大的系统开发，不可能是单打独斗。学会在团队中沟通，与同事协作一起完成任务。同时也要识别不合理的需求，懂得拒绝别人，学会Say No。在项目中，要明确自己的计划，明确自己的职责。要学习与同事，项目经理及时反馈。
+ 切合实际  软件开发，不是理念的教堂，也不是技能的校场。忽略实际情况，再精妙的代码解决不了问题，也只是一纸空文。优秀程序能打破常规，找到问题的本质，快速地，简洁地解决问题。
+ 质量保证  态度明确，能一直以我交付的代码一定要是高质量的目标。对代码负责，会不停地优化与重构自己的代码。对代码充分的测试与验证，极少的Bugs。只会写代码，不会测试的程序员不是优秀的程序员。
+ 积累分享  平时注重通过研究新的技术，新的软件工程方法，来为以前无法解决的一些软件问题提供更优的方法。能对软件开发中的实践进行总续与升华，将自己所掌握的东西转成显式的知识，并能通知多种方式进行分享。知识的传承的重要性远远大于代码本身。
+ 热爱编程  不要做只会编码的码农，热爱生活，才能享受编程带来的快乐。热爱编码，热爱自已的职业。如果对编码没有热情，只是一种谋生手段，那最终在编程这一条路也不会走得太深。
+ 沟通反馈  在软件开发领域，尤其是大的系统开发，不可能是单打独斗。学会在团队中沟通，与同事协作一起完成任务。同时也要识别不合理的需求，懂得拒绝别人，学会Say No。在项目中，要明确自己的计划，明确自己的职责。要学习与同事，项目经理及时反馈。
  </content>
     </entry>
     
@@ -2104,7 +2099,8 @@ Hi username! You&amp;#39;ve successfully authenticated, but GitHub does not # pr
           <tag>软件开发</tag><tag>总结</tag>
         </tags>
         <content type="html"> 白驹过隙，进入公司已是八年，一路学习一路收获。往后回首，一些经历回想起来还历历在目：经历过一线比拼的激情，经历过产品上线的喜悦，经历过多个项目的变换，经历过持续熬夜的艰辛；写过不少的代码，带过一些徒弟，负责过团队开发，一直在公司从事基层的研发工作。一路走下来，也得到部门领导，公司同事的帮助、指导与鼓励，能让我一直坚持下去，过程中我也得到一些很高的认可，感触多，收获多。在此我先感谢大家！
-团队成功才能成就个人 还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 只有团队的成功，才能有个人的成就 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，把分给我的工作尽自己最大的努力做好做实，做到问心无愧 。 做适合自己做的事 人贵有自知之明，熟悉自己的性格缺陷，搞明白自己擅长什么，这其实也非常地难做到，尤其是在面对一些机会时做决策。当初大学毕业时，家人就安排我在深圳益田村做物业管理，最后也没有做下去，原因是不适合。像我这种人，我不喜欢指挥人去干活。如果去做市场肯定打不开局面，不太会说动别人。如果去搞财经也肯定搞不好，看到一大堆的数据比较头疼。如果去搞前台设计也肯定搞不好，从小就没有什么艺术细胞。最后发现搞搞后台技术可能凑合着，也符合我个人的性格，能安静地做事。所以即使来到公司这么多年了，还是对技术情有独钟。事实上，很多岗位不一定要最优秀的，但必须是要最合适的。 每个人都有优缺点，金无足赤，人无完人，在合适的岗位上做自己擅长的事 。
+团队成功才能成就个人 还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 只有团队的成功，才能有个人的成就 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，把分给我的工作尽自己最大的努力做好做实，做到问心无愧 。
+做适合自己做的事 人贵有自知之明，熟悉自己的性格缺陷，搞明白自己擅长什么，这其实也非常地难做到，尤其是在面对一些机会时做决策。当初大学毕业时，家人就安排我在深圳益田村做物业管理，最后也没有做下去，原因是不适合。像我这种人，我不喜欢指挥人去干活。如果去做市场肯定打不开局面，不太会说动别人。如果去搞财经也肯定搞不好，看到一大堆的数据比较头疼。如果去搞前台设计也肯定搞不好，从小就没有什么艺术细胞。最后发现搞搞后台技术可能凑合着，也符合我个人的性格，能安静地做事。所以即使来到公司这么多年了，还是对技术情有独钟。事实上，很多岗位不一定要最优秀的，但必须是要最合适的。 每个人都有优缺点，金无足赤，人无完人，在合适的岗位上做自己擅长的事 。
 居安思危，适应变化 信息爆炸的时代，外部形势与内部因素都无时无刻都在变化，对个人来说，时刻可能都面临挑战。从在公司的几年来看，我个人的工作内容也一直在变化着，人传统的智能网到源于互联网的云云计算，从窄带智能网到宽窄带融合，从话音控制到消息内容，从单体大型服务到分布式集群应用，从C&#43;&#43;语言到Java语言。真是变化太快，每次转变，都需要去适应它。面对变化，自己需要时常有点危机感，不断地去学习。比如说去年带头做E2E一键部署时，需要了解的东西很多：要做界面，没有使用过Java Swing；虚拟化部署，没有使用过Power Shell，都需要快速学习，所有事情搞定。可以说每个人都有业务短板，你不可能是一个天才，这种对无法胜用的危机感导致不敢放松自己。缓解危机感往往需要的是应对实际困难的技能或技巧。时常有了危机感，才会促我去主动学习，主动思考，主动改变。我不是一个力求完美的人，但在工作中往往会尽最大的努力与热情来了解各种专业技能，把手头上的事情做对做好。
 兴趣，好奇心 记不得是哪个名人说过兴趣是最好的老师，我觉得应该是最好的向导。如果你对某件事感兴趣，它会牵引你去主动学习、行动与思考。 我一直对各种新技术比较好奇，以前下班之后回到家经常去逛一些技术网站与论坛。好奇心是一个研发人员的基本素质，据说做学问成功的第一要素既不是天赋，也不是勤奋与激情，也不是靠你努力就一定出得来的，而可能是好奇的灵光。好奇心驱使我去了解一些技术细节，技术动向，如之前对C&#43;&#43;比较执迷，经常请教同事一些较偏的用法，下班回家喜欢写点代码验证一下想法。又如当时GAE刚出来，我就利用周末开发GAE应用玩玩，后被墙掉访问不方便才没有继续玩了；又如之前开心网种菜火爆时，马上抓包分析写偷菜外挂；我也可能是一个刷机控，从09年开始的M8刷成Android，之后的iPod, iPad, iPhone, SAMSUMG手机没有少被我折腾过，刷成不同版本的定制系统。平时这些技术多猎奇可能看似对工作起不了直接帮助，但它们能扩展的视野，丰富我的知识，强化我的动手能力。若在工作中遇到类似问题时，可能举一反三，找到解决问题办法。关注技术但不要陷入技术，本质是用技术来提升认知问题，分析问题，解决问题的思想高度。
 耐得住寂寞 来深圳有不少的高中，大学同学，以及亲朋好友。大家大学毕业都差不多十年了，在坚持做技术是越来越少，尤其是从事软件开发的。以前大学同学每年的聚会，问的最多的问题是你还在HW啊？还在写代码？现在已经不问了。的确，在国内做软件开发的大环境相对不是很好，尤其是上了三十岁的人还从事一线编码工作，会觉得你是没有上进心的人。在外部，我好几个同学转行了，有些创业，做得还不错。在公司内部，也见到越来越多的同事，习惯于风风火火到处开会。这是很危险的，会使我们的杂乱信息越来越多，功底越来越浅。佛家中有一项坐功是讲你你定力修为，HW的研发人员也需要一种定力，任何一件事情的极致需要持续的积累才能达到。我想我还一直在从事基层的研发，一方面源于我的兴趣爱好，另一方面也符合我的性格。从另一方面来说，要能持续把一个简单的事情做好做对，也需要面对各种诱惑而得住寂寞的能力，心无杂念去做事。
@@ -2125,7 +2121,8 @@ Hi username! You&amp;#39;ve successfully authenticated, but GitHub does not # pr
         </tags>
         <content type="html"> 最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：
  线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。
- 所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。  大多直接是使用Exectors.newXXX直接new线程池，没有设置队列的大小，默认是整型的最大值，一旦有线程处理阻塞，队列上涨，内存不可控制啊。
+ 所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。
+   大多直接是使用Exectors.newXXX直接new线程池，没有设置队列的大小，默认是整型的最大值，一旦有线程处理阻塞，队列上涨，内存不可控制啊。
  最好不要使用newCachedThreadPool，曾经有个模块这么干，在工作线程处理慢时，线程线会不断上涨没能及时回收。这个模块出现异常，线程dump之出来发现有2000多个由它产生的线程，内存超高。
  所有线程都要受管理，不允许直接new Thread就直接start就不管了。同样所有从Exectors.newXXX创建的线程池，当bundle去激活时，一定要shutdown。
  线程个数设置多少合适？不是越多越好，多了竞争资源反而效率低。建议配置的线程数=可用的CPU数/(1-阻塞系数)。阻塞系统在0到1之间，所谓阻塞系数就是发生的IO操作，如读文件，读socket流，读写数据库等占程序时间的比率。这个数值每个系统肯定不一样，可通过分析工具或java.lang.managementAPI来确定这个值，也可以做个估计，然后测试逐步往最佳值靠拢。如果线程不是瓶颈所在，那么大概估一个值就好了。
@@ -2147,7 +2144,8 @@ Hi username! You&amp;#39;ve successfully authenticated, but GitHub does not # pr
           <tag>Java</tag>
         </tags>
         <content type="html"> 在JRE类白名单能控制类的使用权限（请点击），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。
-Security Manager Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（SecurityManager）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。 SecurityManager是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置SecurityManager实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过System.setSecurityManager来设置。一般情况下，检查权限是通过SecurityManager.checkPermission(Permission perm)来完成的。外部程序通过创建Permission实例，传递给前面的check方法。Permission是一个抽象类，需要继承它实现不同的权限验证，比如FilePermission，代表对某个文件的读写权限。new FilePermission(&amp;quot;test.txt&amp;quot;, &amp;quot;read&amp;quot;)；将这个实例传给SecurityManager，检查是否要读test.txt这个文件。
+Security Manager Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（SecurityManager）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
+SecurityManager是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置SecurityManager实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过System.setSecurityManager来设置。一般情况下，检查权限是通过SecurityManager.checkPermission(Permission perm)来完成的。外部程序通过创建Permission实例，传递给前面的check方法。Permission是一个抽象类，需要继承它实现不同的权限验证，比如FilePermission，代表对某个文件的读写权限。new FilePermission(&amp;quot;test.txt&amp;quot;, &amp;quot;read&amp;quot;)；将这个实例传给SecurityManager，检查是否要读test.txt这个文件。
 但SecurityManager也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。
 检查Permission时机 所以在设计方案时必须考虑对WebApp进行的资源授权只针对WebApp，不能影响Web容器其它代码运行。由于检查权限是通过SecurityManager.checkPermission(Permission perm)来完成的，如果在checkPermission实现很复杂的逻辑会对性能造成影响。所以需要分二个层次来设计Security Manager的设置：
  当Web容器启动时不设置任何的SecurityManager WebApp支行时采用新的SecurityManager类，在部署它时指定新SecurityManager类与Policy,在自定义的Filter中init方法中实现  重载java.security.SecurityManager(假定子类名定为CustomSecurityManager)。它主要是重载如下几个方法：
@@ -2172,7 +2170,8 @@ Security Manager Java从JDK 1.0开始就实现一套安全架构，主要用于A
           <tag>Java</tag>
         </tags>
         <content type="html"> ClassLoader JVM类加载器层次结构：
-Bootstrap ClassLoader | Extension ClassLoader | System ClassLoader JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C&#43;&#43;写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。 每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。
+Bootstrap ClassLoader | Extension ClassLoader | System ClassLoader JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C&#43;&#43;写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
+每一个自定义ClassLoader都必须继承ClassLoader这个抽象娄，而每个ClassLoader都会有一个Parent的ClassLoader，我们可以看一下ClassLoader这个抽象类中有一个getParent()方法，这个方法用来返回当前ClassLoader的Parent。这个Parent不是指的被继承的类，而是在实例化该ClassLoader时指定的上层ClassLoader。
 ClassLoader有两种载入类方式：
  pre-loading：预先载入，载入基础类。 load-on-demand：按需求载入，动态载入。  当JVM载入Java类的时候，需要经过三个步骤，装载、连接、初始化。装载就是找到相应的Class文件，读入JVM。连接分三步：
  验证Java类是否符合规格 准备，就是为类变量分配内存同时设置默认初始值 解释，而这步就是可选的，解释就是根据类中的符号引用查找相应的实体，再把符号引用替换成一个直接引用的过程。  每个ClassLoader加载Java类的过程如下：
@@ -2218,7 +2217,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           <tag>宗教</tag>
         </tags>
-        <content type="html"> 今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。 她所说的前大部分都是废话，最一后说灵魂远离罪恶才是基督的精髓。无论上帝是否存在其实都不重要，或许在人类达到不到地方，就是上帝存在的地方。这个上帝不是一个神，还是人类敬畏的未知领域。在这个物欲横流的糟糕社会，在一堆诱惑的面前，人们的灵魂又有几个能真正地远离罪恶，教堂成了人们忏悔的地方，宗教是一种精神的寄托。有时人有种寄托其实也很幸福的。
+        <content type="html"> 今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。
+她所说的前大部分都是废话，最一后说灵魂远离罪恶才是基督的精髓。无论上帝是否存在其实都不重要，或许在人类达到不到地方，就是上帝存在的地方。这个上帝不是一个神，还是人类敬畏的未知领域。在这个物欲横流的糟糕社会，在一堆诱惑的面前，人们的灵魂又有几个能真正地远离罪恶，教堂成了人们忏悔的地方，宗教是一种精神的寄托。有时人有种寄托其实也很幸福的。
 </content>
     </entry>
     
@@ -2232,7 +2232,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
           <tag>旅游</tag>
         </tags>
         <content type="html"> 到达德国的Frankfurt法兰克福大约是19号早晨的６点半左右。这边的天还没有亮，取得托运行李，再过完签证检查之后已是７点左右，天还是没有亮。这次还好，去年过境德国，被安检人员问了一堆的问题。这次可能我事先跟海关检查人员打了声招呼“Morning”，他居然什么都没有问，直接盖上大章就说“Pass”。出了Airport，外面非常的冷清，11月的德国已经开始很冷，有点冬的味道。
-我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。 我开始以为Darmstadt离Frankfurt比较近，一路坐车走高速过去，发现还是坐了25分钟左右。诺大的Bus上，只有三个人，除了我之外，还是两个本地人吧。我坐在第一排，看着司机很惬意地开着车，经常活动一下上身，偶尔也摇晃一下脑袋。到了Darmstadt，司机好像对我说了些什么，我只听见到Darmstadt，于是我就下了车。外面还是没有放亮，不过街道上开始有人在等公交车上班了。事先同事告诉我公司在Darmstadt火车站附近。还好，下了Bus之后，前面就是Hanptbahnhof，看到DB标识的火车站。
+我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。
+我开始以为Darmstadt离Frankfurt比较近，一路坐车走高速过去，发现还是坐了25分钟左右。诺大的Bus上，只有三个人，除了我之外，还是两个本地人吧。我坐在第一排，看着司机很惬意地开着车，经常活动一下上身，偶尔也摇晃一下脑袋。到了Darmstadt，司机好像对我说了些什么，我只听见到Darmstadt，于是我就下了车。外面还是没有放亮，不过街道上开始有人在等公交车上班了。事先同事告诉我公司在Darmstadt火车站附近。还好，下了Bus之后，前面就是Hanptbahnhof，看到DB标识的火车站。
 按着同事事先给我的Google地图，穿到火车站左拐一条街，下了电梯，出门之后再也找不到北了，按Google地图，公司办事处就应该在火车站200m附近，可惜我逛了一圈根本没有看到HW的标识，无奈又回到火车站，又开始用生硬的英语问了一个清洁工叔叔，可能也没有完全听懂我说什么，telephone应该在拉丁语系中都发声差不多，加之我的手势。他完全知道我要找公用电话。我是对德语一点不懂，他所说的我一句也没有听清楚。顺着他所指的方向，终天找到了T-Service的公用电话。在一处德语显示的公用电话屏上，我尝试了几次，终于打通同事的电话，涮涮地2.7欧贡献给了电话。
 与同事约好见面的地点，再等了约5分钟左右，终于见到我的同事，我的心也开始悬下来了。
 今天到德国的初映像就是冷，到达同事住的宿舍里，不得不把秋衣秋裤换上。洗漱一把之后，一点睡意没有，可能是在飞机上差不多朦胧睡了10个小时左右。Darmstadt是一个宁静的小城，一切显得得比较安详。我站在宿舍向外看，绝对见不到任何超过10层的建筑，路面宽阔干净整洁。
@@ -2256,7 +2257,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
           <tag>印度</tag>
         </tags>
         <content type="html"> 项目组由四地员工组成：深圳，南京，印度，土耳其。印度研究所设在班加罗尔（Bangalore），由于这次项目的重要性，把一堆的印度同事也拉到了深圳集中办公，也把部分的土耳其同事拉到了深圳。
-今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我join us for dinner。盛情难却，于是我说I&#39;m glad to go，我就参加了他们的一次聚会。 在去之前，我在想印度同事们来中国，他们能请什么客。出乎我的意料之外，他们一行10多人把我带到一家火锅店，莫非他们想尝尝中国的火锅？印度人大多是猪肉、牛肉，羊肉都不能吃，想吃火锅也难吧。他们拿着菜单，看图点菜，有点搞笑，点几盘的金银馒头，二盘的大盘鸡，也点了三种鱼（水煮鱼，炸鱼，清蒸鱼），我开始还以为他们很能吃鱼，发现上菜之后，根本不合他们的胃口。我感觉像领了群刚从难民营回来的人，在一家火锅店教着他们拿筷子，吃着馒头，啃着大盘鸡，场面真是极其搞笑。更有几个比较逗的印度同事，不停地在学中国话，用生硬的汉语叫喊着“服务员，纸巾，王老吉”，搞得我与其它两个中方员工脸色极其难堪。总得来说，印度同事还是很好相处的，来自社会底层，乐观而又安于现状。
+今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我join us for dinner。盛情难却，于是我说I&#39;m glad to go，我就参加了他们的一次聚会。
+在去之前，我在想印度同事们来中国，他们能请什么客。出乎我的意料之外，他们一行10多人把我带到一家火锅店，莫非他们想尝尝中国的火锅？印度人大多是猪肉、牛肉，羊肉都不能吃，想吃火锅也难吧。他们拿着菜单，看图点菜，有点搞笑，点几盘的金银馒头，二盘的大盘鸡，也点了三种鱼（水煮鱼，炸鱼，清蒸鱼），我开始还以为他们很能吃鱼，发现上菜之后，根本不合他们的胃口。我感觉像领了群刚从难民营回来的人，在一家火锅店教着他们拿筷子，吃着馒头，啃着大盘鸡，场面真是极其搞笑。更有几个比较逗的印度同事，不停地在学中国话，用生硬的汉语叫喊着“服务员，纸巾，王老吉”，搞得我与其它两个中方员工脸色极其难堪。总得来说，印度同事还是很好相处的，来自社会底层，乐观而又安于现状。
 印度同事给我们的印象还是比较正面的。中文员工自然是深受华为文化的影响，做事情是任劳任怨的。印度人大都比较温顺，有点喜欢跟你讨价还价，但只要确认的事情，是会按时按量完成，哪里他们私下加班加点完成。记得有一天周未，印度同事集体去东部华侨城玩，由于遇到紧急问题需要处理，被我们电话叫回。虽带些不高兴，回来公司还是跟我们一起奋斗到凌晨解决欧洲现场问题。
 相比之下，项目组的土耳其人却完全不是一样了，一个字来形容：“懒”。TNND的，拿的薪水比我们多很多，却什么都不会做，也什么都不会愿意做，一点积极性与主动性都没有。老大给三个土耳其人让我带，真是把我折磨死了。一是交流是困难，二是安排他们的工作是能拖则拖，又说他们不得。从与他们打交道，或有所思：一个能任劳任怨的民族才有可能伫立于世界民族之林，土耳其永远不可能，印度还有可能吧。
 </content>
@@ -2275,7 +2277,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
  树立团队荣誉感：
 如何树立团队荣誉感，没有什么好方法，我的理解就是带领团队不断地打胜仗，克服一个个困难，另外就是获得应该有的荣誉，这样你的团队才能有荣誉感。
  角色认知，系统化思考：
-你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。  面对不增值的事：
+你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。
+   面对不增值的事：
 其实在工作中我们总会遇到不少此类的重复又不增值的事情，从个人来讲，可能得不到技能上的提升。但对组织，对团队是非常有益的，需要你无条件地服从，不要去报怨。很多时候，这种忍耐，坚持会帮助你脱颖而出。
  面对困难的事：
 如果你所带的团队在最困难的时候，一个团队已经差到谷底了，这时不论住哪个方向走都是往上走。团队的困难时期正是我们做出变革的最佳时机。所以对团队来讲，困难和挫折是福，把一个团队从弱势带到强势的时候，这过程所积累的经验，以及团队的战斗力是无可比拟的。
@@ -2341,7 +2344,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           
         </tags>
-        <content type="html"> 昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。 后来我追上喊我的人，跟他聊起来，我对他说，我刚才是在遵守交通秩序，而不是胆小。他不屑地对我说，都没有什么车穿过，用不着在哪傻等吧。你们这年轻人怎么也爱犯教条主义，那用管这么多的条条框框。
+        <content type="html"> 昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。
+后来我追上喊我的人，跟他聊起来，我对他说，我刚才是在遵守交通秩序，而不是胆小。他不屑地对我说，都没有什么车穿过，用不着在哪傻等吧。你们这年轻人怎么也爱犯教条主义，那用管这么多的条条框框。
 我笑笑了，我知道，我跟他多说无益，因为思想决定境界。在中国传统文化之下，人总喜欢去破坏秩序，并且还自认有理。也有人会说，秩序是死的，人是活的。如果现在年轻人还都这样认为，那中国人的素质还真是没有什么希望。
 </content>
     </entry>
@@ -2355,7 +2359,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           <tag>旅游</tag>
         </tags>
-        <content type="html"> 少年时，一首青青世界的歌曲在春晚上唱红南北。歌里描绘的是一个梦幻世界，是我一直梦想的世界，一副有山有水的清净世界，歌词的作者天才乔羽现在是否还安好？听我们的老大们讲，乔老创造这首歌时，本来是我们公司请他来为公司写企业主题歌，就他住进了当时公司的培训与生活基地青青世界（那时青青世界刚开没有多久，资金运营上有困难，所以把酒店都包给公司）。精明的青青世界台湾老板自然是不会放过送上门来的文坛泰斗，于是就有了后来的青青世界这着歌，也让青青世界这个旅游景点火一把。 今天，歌声已逝，这首歌也成了记忆中的记忆。同学与我开车再次来到青青世界，重温一下记忆中的记忆。青青世界一直打着城市农夫的定位，虽然景点相对小而且没有新的旅游项目，今天依旧少不了一些童年的元素，80年代人的都玩的滚铁环，滚轮车在这里你可以随处玩。漫步在飘着细雨的雨林，可以忘却一切都市的压力。看着水车，踩在木板路，仿佛又回到了十多年前的那个乡村。我本是一农家仔，看着这些都是那么的亲切，早已厌倦了刚筋水泥墙，能亲近原生的自然多好啊。
+        <content type="html"> 少年时，一首青青世界的歌曲在春晚上唱红南北。歌里描绘的是一个梦幻世界，是我一直梦想的世界，一副有山有水的清净世界，歌词的作者天才乔羽现在是否还安好？听我们的老大们讲，乔老创造这首歌时，本来是我们公司请他来为公司写企业主题歌，就他住进了当时公司的培训与生活基地青青世界（那时青青世界刚开没有多久，资金运营上有困难，所以把酒店都包给公司）。精明的青青世界台湾老板自然是不会放过送上门来的文坛泰斗，于是就有了后来的青青世界这着歌，也让青青世界这个旅游景点火一把。
+今天，歌声已逝，这首歌也成了记忆中的记忆。同学与我开车再次来到青青世界，重温一下记忆中的记忆。青青世界一直打着城市农夫的定位，虽然景点相对小而且没有新的旅游项目，今天依旧少不了一些童年的元素，80年代人的都玩的滚铁环，滚轮车在这里你可以随处玩。漫步在飘着细雨的雨林，可以忘却一切都市的压力。看着水车，踩在木板路，仿佛又回到了十多年前的那个乡村。我本是一农家仔，看着这些都是那么的亲切，早已厌倦了刚筋水泥墙，能亲近原生的自然多好啊。
 </content>
     </entry>
     
@@ -2368,7 +2373,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           <tag>家庭</tag>
         </tags>
-        <content type="html"> 昨天去一了趟广州小叔那，我去看爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。 老人真像小孩一样，有时也会拿我开涮一下，他说他与奶奶在一起有60年了，正好有一花甲了。他说这一次要在广州多呆一段时间，要看广州这边国庆热闹。国庆之后，一定要做飞机回去，说一辈了还没有坐过飞机，总爱喜欢问一些关于飞机上的事，我只得一一回答。这次老人在广州呆着还是很愉快的，说广州比家里热多了，他喜欢天天呆在有空调的房子里不爱出去。他喜欢渴点酒，一天总是端一个杯子，我就劝他少渴点，也总是笑着对我说润润嘴巴。
+        <content type="html"> 昨天去一了趟广州小叔那，我去看爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。
+老人真像小孩一样，有时也会拿我开涮一下，他说他与奶奶在一起有60年了，正好有一花甲了。他说这一次要在广州多呆一段时间，要看广州这边国庆热闹。国庆之后，一定要做飞机回去，说一辈了还没有坐过飞机，总爱喜欢问一些关于飞机上的事，我只得一一回答。这次老人在广州呆着还是很愉快的，说广州比家里热多了，他喜欢天天呆在有空调的房子里不爱出去。他喜欢渴点酒，一天总是端一个杯子，我就劝他少渴点，也总是笑着对我说润润嘴巴。
 </content>
     </entry>
     
@@ -2381,7 +2387,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           <tag>历史</tag><tag>宗教</tag>
         </tags>
-        <content type="html"> 战乱多 自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。 杀功臣 一个人一旦成了皇帝，真的成了孤家寡人了，父亲儿子可以杀，那么下面的臣子更不用说了，中国历史上开国皇帝杀功臣的太多了。
+        <content type="html"> 战乱多 自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。
+杀功臣 一个人一旦成了皇帝，真的成了孤家寡人了，父亲儿子可以杀，那么下面的臣子更不用说了，中国历史上开国皇帝杀功臣的太多了。
 汉朝的刘邦怕韩信功高盖主，杀之。唐朝李世民对开国功臣处理比较得当，没有什么杀戮。宋朝赵匡胤对开国功臣采用较和平的方式，让他们回家养老，重文不重武，明朱元璋对开国功臣则是一率的赶尽杀绝，做事做绝。清朝由于前期左右势力均衡，才把顺治推上历史舞台，但其叔父多尔衮却杀了不少他的政敌（也有一些是开国功臣）。
 现代企业也普遍存在这种情况，尤其是在国有企业。一个企业的老总，就是这里的皇帝，整一个人太容易。随他一起创业的功臣，老总对他们忌惮太多，这可能也是中国很多企业昙花一现的原因之一。
 两极化 中国人的宗教生活不应该分成儒、佛、道三家，更确切地说，应当分成两个等级。即:普通百姓为一个等级，学者(学优而仕，中国古代没有独立的学者，学者即官员)为一个等级。
@@ -2406,7 +2413,8 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         </tags>
         <content type="html"> 无论Java还是C&#43;&#43;都有不少的性能优化工具。公司曾有人把一个系统从几十TPS优化到上千TPS，真是让人佩服到五体投地。但是由于架构的原因导致性 能问题，那就不好下手优化了。
 在软件项目设计前期，不可不能考虑性能设计。要确定好的性能要求，必须识别项目约束、确定软件将执行的服务并指定软件期望的 负载。但也不要过于注重性能设计。太注重往往会陷入设计的误区。有时甚至为了性能而牺牲功能，那是大错特错了。
-项目交付时首先是功能是否满足，其它才是性 能。换句话说软件首先要能工作，其次才是否能高效率的工作。性能设计必须依托测试结果。不要我以为这样做法性能会好。而现在很多的所谓的系统分析设计师却 喜欢我以为，爱拿以前的经验做依托，更喜欢拿其它项目成功的性能设计套用，岂知此系统非彼系统。 性能基准测试应尽早开始，以便在问题被引入软件时就将它们识别出来。将后续的基准测试与初始的软件性能基准进行比较，确定性能是进步了还是退步了。执行这样的测试时不要做不必要的改动（如更改硬件），以便可以对 连续测试得出准确的比较结果。同样，性能障碍越早发现改起来越省开销，而且也更容易克服。
+项目交付时首先是功能是否满足，其它才是性 能。换句话说软件首先要能工作，其次才是否能高效率的工作。性能设计必须依托测试结果。不要我以为这样做法性能会好。而现在很多的所谓的系统分析设计师却 喜欢我以为，爱拿以前的经验做依托，更喜欢拿其它项目成功的性能设计套用，岂知此系统非彼系统。
+性能基准测试应尽早开始，以便在问题被引入软件时就将它们识别出来。将后续的基准测试与初始的软件性能基准进行比较，确定性能是进步了还是退步了。执行这样的测试时不要做不必要的改动（如更改硬件），以便可以对 连续测试得出准确的比较结果。同样，性能障碍越早发现改起来越省开销，而且也更容易克服。
 当然，要提高性能需付出代价。虽然可以针对任何给定的问题空间生成高性能应用程序，但主要代价是每个事务的成本。有时有必要通过牺牲性能来控制成本。这又说到性能与成本的关系了。性能设计也不可不能权衡提高性能对成本的影响。在成本的约束下确定性能要求。
 </content>
     </entry>
@@ -2421,8 +2429,7 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
           <tag>cpp</tag>
         </tags>
         <content type="html"> C开发人员会经常使用#define即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C&#43;&#43;给我们带来了namespace名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。
-namespace outspname { const int CVAR1 = 1; const char* const CVAR2 = &amp;#34;33333&amp;#34;; void test(); namespace inspname { enum { A, B, C}; class Klass { }; } } 
-但即使一个简单的名字空间，其中也有不少的玄机。
+namespace outspname { const int CVAR1 = 1; const char* const CVAR2 = &amp;#34;33333&amp;#34;; void test(); namespace inspname { enum { A, B, C}; class Klass { }; } } 但即使一个简单的名字空间，其中也有不少的玄机。
  当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:
 const int local = outspname::inspname::A 这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:
 { using outspname::inspname::A; const int local = A; } 通过一个使用指令把该名字空间下所有的名字变成可用。
@@ -2451,7 +2458,7 @@ namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; 其中$
         <content type="html"> 如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。
 导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：
  过于僵硬 过于脆弱 复用率低 黏度过高  一个好的系统设计应该有如下的性质，这三条性质就是一个系统设计应当达到的目标。
- 可扩展性 灵活性 可插入性   软件的复用的好处有：
+ 可扩展性 灵活性 可插入性  软件的复用的好处有：
  较高的生产效率 较高的软件质量 恰当使用复用可改善系统的可维护性  在面向对象的语言中，数据的抽象化、继承、封装和多态性是几项最重要的语言特性，这些特性使得一个系统可以在更高的层次上提供可复用性。数据的抽象化和继承关系使得概念和定义可以复用；多态性使得实现和应用可以复用；而抽象化和封装可以保持和促进系统的可维护性。
 在一个设计得当的系统中，每一个模块都相对于其它模块独立存在，并只保持与其它模块的尽可能少的通信。这样一来，在其中某一个模块发生代码修改的时候，这个修改的压力不会传递到其它的模块。
 常见的设计原则有：
@@ -2481,7 +2488,8 @@ namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; 其中$
           <tag>cpp</tag>
         </tags>
         <content type="html"> STL中的容器都有erase方法，容器的存储分为顺序存储(如vector)与链式存储(如list,map)。先以map为例:
-typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap; typedef TStrMap::iterator TStrMapIter; TStrMap strmap; TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;); strmap.erase(iter); 这样使用erase方法没有任何问题，删除一个单结节之后，stl中的iterator都是与其中的数据元素关联的，关联的元素删除之后，iter已就失效，iter理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。 但有时我们一不注意，却会这样使用，这是错误的:
+typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap; typedef TStrMap::iterator TStrMapIter; TStrMap strmap; TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;); strmap.erase(iter); 这样使用erase方法没有任何问题，删除一个单结节之后，stl中的iterator都是与其中的数据元素关联的，关联的元素删除之后，iter已就失效，iter理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
+但有时我们一不注意，却会这样使用，这是错误的:
 for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();&#43;&#43;iter) { if (&amp;#34;somevalue&amp;#34; == iter-&amp;gt;second ) { strmap.erase(iter); } }  iter所指的元素删除之后，&#43;&#43;iter是错误的，会导致程序的未知结果，iter一般是不会移到指向下一个元素。
 对于map与list这样的链式存储结构。我们一般可以有两种解决办法:
 方法一 使用erase(iter&#43;&#43;)，因为iter2 = iter&#43;&#43;是iter先移到指向下一个节点，而iter2还是指向当前的节点。注意理解iter&#43;&#43;与&#43;&#43;iter的区别。
@@ -2503,7 +2511,8 @@ void test_vector_erase() { typedef std::vector&amp;lt;int&amp;gt; TIntVec; typed
         <content type="html"> 什么是闭包，我们先来用ruby看个例子：
 sum = 0 10.times{|n| sum &#43;= n} print sum 其中{}就是闭包的内容，代码看起来是不是很清爽与简单。
 我们还来看看Python写的闭包：
-def addx(x): return lambda y: x &#43; y add8 = addx(8) print add8(100) 用Python写就没有那么好看。 闭包（Closure）是词法闭包（Lexical Closure）的简称。对闭包的具体定义有很多种说法，这些说法大体可以分为两类：
+def addx(x): return lambda y: x &#43; y add8 = addx(8) print add8(100) 用Python写就没有那么好看。
+闭包（Closure）是词法闭包（Lexical Closure）的简称。对闭包的具体定义有很多种说法，这些说法大体可以分为两类：
  一种说法认为闭包是符合一定条件的函数，闭包是在其词法上下文中引用了自由变量的函数。 另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。比如参考资源中就有这样的的定义：在实现深约束时，需要创建一个能显式表示引用环境的东西，并将它与相关的子程序捆绑在一起，这样捆绑起来的整体被称为闭包。  这两种定义在某种意义上是对立的，一个认为闭包是函数，另一个认为闭包是函数和引用环境组成的整体。虽然有些咬文嚼字，但可以肯定第二种说法更确切。闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。
 什么是仿函数，我们先用C&#43;&#43;来写个例子：
 struct comparer { bool operator()(int a, int b) const { return a &amp;gt; b; } }; int main(int, char**) { std::vector&amp;lt;int&amp;gt; vec; std::sort(vec.begin(), vec.end(), comparer()); return 0; } 函数(functor)之所以称为仿函数，是因为这是一种利用某些类对象支持operator()的特性，来达到模拟函数调用效果的技术。从上面你也可以看出来，仿函数实现的内容其实就像动态语言闭包实现的方式差不多，形式不一样，效果是一样的。至于语言本质是什么，就让语言学家去争论吧。
@@ -2519,7 +2528,8 @@ struct comparer { bool operator()(int a, int b) const { return a &amp;gt; b; } }
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。 struct Test {}; void test() { Test stack_var; // a stack var; Test stack_var2; //a stack var; int *heap_var = new int; // a heap var } 上述的例子，stack_var与stack_var2都是一个栈变量，当然stack_var与stack_var2谁先从栈中分配，不的操作系统，内存管理方式也略有区别。更深一点讲，heap_var这个指针值也是一个栈变量承载，但heap_var所指的地址内容才是从堆上分配的内存空间。当退出test这个函数时，stack_var与stack_var2都会先调用Test的析构，再把其所在的内存空间回收到线程栈中。
+        <content type="html"> 栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
+struct Test {}; void test() { Test stack_var; // a stack var; Test stack_var2; //a stack var; int *heap_var = new int; // a heap var } 上述的例子，stack_var与stack_var2都是一个栈变量，当然stack_var与stack_var2谁先从栈中分配，不的操作系统，内存管理方式也略有区别。更深一点讲，heap_var这个指针值也是一个栈变量承载，但heap_var所指的地址内容才是从堆上分配的内存空间。当退出test这个函数时，stack_var与stack_var2都会先调用Test的析构，再把其所在的内存空间回收到线程栈中。
 在一些场景下，我们可以利用栈变量当退栈时会自动析构这特性，下面我将举两个应用例子。
 析构方法释放内存 从堆上面new出来的对象，在一个方法条件分支比较多的情况下，很容易在某个分支少写delete，就会造成内存的泄漏。于是我们可写一个这样的类，在它的析构方法中调用delete回收内存。
 template &amp;lt;typename T&amp;gt; class ScopePtr { public: ScopePtr(T *&amp;amp; pT) : m_pT(pT) { } ~ScopePtr() { if ( NULL != m_pT ) { delete m_pT; m_pT = NULL; } } private: typedef ScopePtr&amp;lt;T&amp;gt; TScopePtr; ScopePtr(const TScopePtr &amp;amp;) {} TScopePtr&amp;amp; operator = (const TScopePtr &amp;amp;) {} T *&amp;amp; m_pT; }; // 使用方式如下： void test_scope() { Test* p = new Test; ScopePtr&amp;lt;Test&amp;gt; tempScopePtr(p); }  析构方法打印日志 做软件，写debug日志是一个好的习惯，出问题时可以方便定位问题的发生源。下面的例子是实现是能记录函数在哪一行进入，在哪一行退出。如果函数某个地方抛异常了，则可以根据进入行与退出行相同一看便知。没有抛异常，也很方便查出是在哪个分支退出的。
@@ -2536,7 +2546,8 @@ int test_trace() { FUNC_TRACER(); if(...) { switch(...) case 1: FUNC_RET(1); def
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得operator比较好玩。C&#43;&#43;有时它的确是个耐玩的东东。operator它有两种用法，一种是operator overloading（操作符重载），一种是operator casting（操作隐式转换）。 operator overloading C&#43;&#43;可以通过operator 重载操作符，格式如下：类型T operator 操作符 ()，如比重载&#43;，如下所示
+        <content type="html"> 这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得operator比较好玩。C&#43;&#43;有时它的确是个耐玩的东东。operator它有两种用法，一种是operator overloading（操作符重载），一种是operator casting（操作隐式转换）。
+operator overloading C&#43;&#43;可以通过operator 重载操作符，格式如下：类型T operator 操作符 ()，如比重载&#43;，如下所示
 template&amp;lt;typename T&amp;gt; class A { public: const T operator &#43; (const T&amp;amp; rhs) { return this-&amp;gt;m_ &#43; rhs; } private: T m_; }; 又比如STL中的函数对象，重载()，这是C&#43;&#43;中较推荐的写法，功能与函数指针类似，如下所示
 template&amp;lt;typename T&amp;gt; struct A { T operator()(const T&amp;amp; lhs, const T&amp;amp; rhs){ return lhs-rhs;} };  operator casting C&#43;&#43;可以通过operator 重载隐式转换，格式如下： operator 类型T ()，如下所示
 class A { public: operator B* () { return this-&amp;gt;b_;} operator const B* () const {return this-&amp;gt;b_;} operator B&amp;amp; () { return *this-&amp;gt;b_;} operator const B&amp;amp; () const {return *this-&amp;gt;b_;} private: B* b_; };  A a;当if(a)，编译时转换成if(a.operator B*())，其实也就是判断if(a.b_).
@@ -2552,7 +2563,8 @@ class A { public: operator B* () { return this-&amp;gt;b_;} operator const B* ()
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 周末在家，自己用C&#43;&#43;练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。 顺序存储实现： template&amp;lt;typename T, size_t SIZE&amp;gt; class Queue { public: Queue() : m_front(0), m_rear(0) { } ~Queue() { } void clear() { m_front = 0; m_rear = 0; } const bool empty() const { return m_front == m_rear; } const int size() const { int s = (m_rear - m_front &#43; (int)SIZE) % (int)SIZE ; return s; } bool push(const T&amp;amp; t) { int pos = (m_rear &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_rear = %d&amp;#34;, pos); if (pos == m_front) { return false;// it&amp;#39;s full } m_rear = pos; m_data[m_rear] = t; return true; } T&amp;amp; pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } m_front = (m_front &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_front = %d&amp;#34;, m_front); return m_data[m_front]; } T&amp;amp; getfront() { return m_data[m_front]; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} for (int idx = m_front &#43; 1; idx != m_rear &#43; 1; idx&#43;&#43;) { if ( idx == (int)SIZE) { idx %= (int)SIZE; } //printf(&amp;#34;/n idx = %d&amp;#34;, idx); func(m_data[idx]); } } private: T m_data[SIZE]; int m_front; int m_rear; };  链表存储实现： template&amp;lt;typename T&amp;gt; struct QNode { QNode() : m_pNext(NULL) { } T m_data; QNode* m_pNext; }; template&amp;lt;typename T&amp;gt; class LQueue { typedef QNode&amp;lt;T&amp;gt; TQNode; public: LQueue() { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); m_pFront = m_pRear = pTemp; m_size = 0; } ~LQueue() { clear(); DELETE(m_pFront); } void clear() { TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp ) { TQNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pFront-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return m_pFront == m_pRear; } const int size() const { return m_size;} bool push(const T&amp;amp; t) { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); if ( NULL == pTemp) { return false;} pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pRear-&amp;gt;m_pNext; m_pRear-&amp;gt;m_pNext = pTemp; m_pRear = pTemp; m_size&#43;&#43;; return true; } T pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; m_pFront-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; if (NULL == m_pFront-&amp;gt;m_pNext) { m_pRear = m_pFront; } DELETE(pTemp); m_size--; return t; } T&amp;amp; getfront() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; return t; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TQNode* m_pFront; TQNode* m_pRear; int m_size; };  测试代码： void print_queue(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_queue() { LQueue&amp;lt;int&amp;gt; queue; //Queue&amp;lt;int, 4&amp;gt; queue; queue.push(1); queue.push(2); queue.push(3); queue.pop(); queue.pop(); queue.pop(); queue.push(1); queue.push(2); queue.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.clear(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); } </content>
+        <content type="html"> 周末在家，自己用C&#43;&#43;练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
+顺序存储实现： template&amp;lt;typename T, size_t SIZE&amp;gt; class Queue { public: Queue() : m_front(0), m_rear(0) { } ~Queue() { } void clear() { m_front = 0; m_rear = 0; } const bool empty() const { return m_front == m_rear; } const int size() const { int s = (m_rear - m_front &#43; (int)SIZE) % (int)SIZE ; return s; } bool push(const T&amp;amp; t) { int pos = (m_rear &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_rear = %d&amp;#34;, pos); if (pos == m_front) { return false;// it&amp;#39;s full } m_rear = pos; m_data[m_rear] = t; return true; } T&amp;amp; pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } m_front = (m_front &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_front = %d&amp;#34;, m_front); return m_data[m_front]; } T&amp;amp; getfront() { return m_data[m_front]; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} for (int idx = m_front &#43; 1; idx != m_rear &#43; 1; idx&#43;&#43;) { if ( idx == (int)SIZE) { idx %= (int)SIZE; } //printf(&amp;#34;/n idx = %d&amp;#34;, idx); func(m_data[idx]); } } private: T m_data[SIZE]; int m_front; int m_rear; };  链表存储实现： template&amp;lt;typename T&amp;gt; struct QNode { QNode() : m_pNext(NULL) { } T m_data; QNode* m_pNext; }; template&amp;lt;typename T&amp;gt; class LQueue { typedef QNode&amp;lt;T&amp;gt; TQNode; public: LQueue() { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); m_pFront = m_pRear = pTemp; m_size = 0; } ~LQueue() { clear(); DELETE(m_pFront); } void clear() { TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp ) { TQNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pFront-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return m_pFront == m_pRear; } const int size() const { return m_size;} bool push(const T&amp;amp; t) { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); if ( NULL == pTemp) { return false;} pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pRear-&amp;gt;m_pNext; m_pRear-&amp;gt;m_pNext = pTemp; m_pRear = pTemp; m_size&#43;&#43;; return true; } T pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; m_pFront-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; if (NULL == m_pFront-&amp;gt;m_pNext) { m_pRear = m_pFront; } DELETE(pTemp); m_size--; return t; } T&amp;amp; getfront() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; return t; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TQNode* m_pFront; TQNode* m_pRear; int m_size; };  测试代码： void print_queue(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_queue() { LQueue&amp;lt;int&amp;gt; queue; //Queue&amp;lt;int, 4&amp;gt; queue; queue.push(1); queue.push(2); queue.push(3); queue.pop(); queue.pop(); queue.pop(); queue.push(1); queue.push(2); queue.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.clear(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); } </content>
     </entry>
     
      <entry>
@@ -2564,7 +2576,8 @@ class A { public: operator B* () { return this-&amp;gt;b_;} operator const B* ()
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C&#43;&#43;中的静态断言，即在编译期间检查。 动态断言： assert宏的原型定义在中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：
+        <content type="html"> 断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C&#43;&#43;中的静态断言，即在编译期间检查。
+动态断言： assert宏的原型定义在中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：
 #include &amp;lt;assert.h&amp;gt; void assert( int expression ); assert的作用是先计算表达式expression ，如果其值为假（即为0），那么它先向stderr打印一条出错信息，然后通过调用abort 来终止程序运行。
 大家要注意是，其中的表达式为假时，会终止程序运行，包括我在内经常会写错代码，断言一个指针是否为空，往往写成了 assert(!p);其实应该写成assert(p);。
 assert是运行期的判断，并且会强制终止程序，一般要求只能用于debug版本中，是为了尽可能快的发现问题。尤其在我所从事的电信软件产品中，assert是要从release版本中去掉。所以一般开发会重新定义assert宏。
@@ -2587,7 +2600,8 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK STATIC_ASSERT(4 == sizeof
         </tags>
         <content type="html">  宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。
  宏的展开是一行，所以宏中的注释不能使用//，只能使用/* */。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。
- 宏的参数一般情况下使用时要用()括起来，如: #define MAX(a, b) a /2 &amp;gt; b ? a /2 : b MAX(3,4)使用没有问题，但MAX(3&#43;4, 4)却有问题，因为宏的参数仅为符号替换。 应用定义为#define MAX(a, b) (a) / 2 &amp;gt; (b) ? (a) /2 : (b)  宏的连接符分为#与## #表示一个符号直接转换为字符串，如 #define CAT(x) &amp;quot;First &amp;quot;#x &amp;quot; Third&amp;quot; const char * pszStr = CAT(Second); str的内容就是&amp;rdquo;First Second Third&amp;rdquo;，也就是说#会把其后的符号直接加上双引号。 ##符号会连接两个符号，从而产生新的符号(词法层次)，例如： #define NAME( x ) name_##x char* NAME( szlanny ); 宏被展开后将成为：char* name_szlanny;
+ 宏的参数一般情况下使用时要用()括起来，如: #define MAX(a, b) a /2 &amp;gt; b ? a /2 : b MAX(3,4)使用没有问题，但MAX(3&#43;4, 4)却有问题，因为宏的参数仅为符号替换。 应用定义为#define MAX(a, b) (a) / 2 &amp;gt; (b) ? (a) /2 : (b)
+   宏的连接符分为#与## #表示一个符号直接转换为字符串，如 #define CAT(x) &amp;quot;First &amp;quot;#x &amp;quot; Third&amp;quot; const char * pszStr = CAT(Second); str的内容就是&amp;rdquo;First Second Third&amp;rdquo;，也就是说#会把其后的符号直接加上双引号。 ##符号会连接两个符号，从而产生新的符号(词法层次)，例如： #define NAME( x ) name_##x char* NAME( szlanny ); 宏被展开后将成为：char* name_szlanny;
  宏中如有存在if等语句产生的分支，要使用do{}while(0)包起来，如 #define TEST(a ) if ( 0 == a ) dosomething() 如果在下面使用是会存在问题
 if ( 1 == b) TEST(a ): else { dootherthing(); } 那当代码展开之后，宏中的if与外面的else是一起匹配，而不是else与if ( 1 == b)匹配。 所以上述宏要修改为
 #define TEST(a ) do {/ if ( 0 == a ) { dosomething(); } }while(0) 对于可变参宏，可以使用VA_ARGS，GCC支持它，但并非所有的编译器支持，如果你的代码要跨平台，慎用。
@@ -2606,7 +2620,8 @@ if ( 1 == b) TEST(a ): else { dootherthing(); } 那当代码展开之后，宏�
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。 公用的宏与异常类:
+        <content type="html"> 还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
+公用的宏与异常类:
 #define NEW(var, T) do { / try { / var = new T; / }catch(...) { / var = NULL; / } / }while(0) #define DELETE(var) do { / if(NULL != var) / { / delete var; / var = NULL; / } / }while(0) template&amp;lt;typename T&amp;gt; struct Error { Error(const char* pszInfo = &amp;#34;Overflow&amp;#34;) { printf(&amp;#34;/nThrow a error, Info :%s/n&amp;#34;, pszInfo); } }; 顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。
 template&amp;lt;typename T, size_t SIZE&amp;gt; class Stack { public: Stack() : m_size(0) { } ~Stack() { } bool push(const T&amp;amp; t) { if (m_size == SIZE) { return false; } m_data[m_size] = t; m_size&#43;&#43;; return true; } T&amp;amp; pop() { if (0 == m_size) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } else { T&amp;amp; t = m_data[m_size]; m_size--; return t; } } void clear() { m_size = 0; } const bool empty() const { return 0 == m_size; } const size_t size() const { return m_size; } // 遍历所有的节点 void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } for (size_t idx = 0; idx &amp;lt; m_size; &#43;&#43;idx) { func(m_data[idx]); } } private: T m_data[SIZE]; size_t m_size; };  链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。
 template&amp;lt;typename T&amp;gt; struct SNode { T m_data; SNode* m_pNext; SNode() : m_pNext(NULL) { } }; template&amp;lt;typename T&amp;gt; class LStack { typedef SNode&amp;lt;T&amp;gt; TNode; public: LStack() : m_size(0) { NEW(m_pTop, TNode()); if (NULL != m_pTop) { m_pTop-&amp;gt;m_pNext = NULL; } } ~LStack() { clear(); DELETE(m_pTop); } void clear() { if (NULL == m_pTop) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { TNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pTop-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return (NULL == m_pTop || NULL == m_pTop-&amp;gt;m_pNext) ? true : false; } const size_t size() const { return m_size; } bool push(const T&amp;amp; t) { if (NULL == m_pTop) { return false; } TNode* pTemp = NULL; NEW(pTemp, TNode()); if (NULL == pTemp) { return false; } pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pTop-&amp;gt;m_pNext; m_pTop-&amp;gt;m_pNext = pTemp; m_size&#43;&#43;; return true; } T pop() { TNode* pTemp = m_pTop-&amp;gt;m_pNext; if (NULL == pTemp) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } T t = pTemp-&amp;gt;m_data; m_pTop-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; DELETE(pTemp); m_size--; return t; } // 遍历所有的节点 void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TNode* m_pTop; size_t m_size; }; 测试代码：
@@ -2624,7 +2639,8 @@ void print_stack(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void tes
         </tags>
         <content type="html"> C&#43;&#43;中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:
  第一部分是与malloc功能相同，是从堆上面申请内存块 第二部是调用类的构造方法来初始化刚申请的内存。  delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。
-new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。 下面是C&#43;&#43; 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
+new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。
+下面是C&#43;&#43; 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
 void* operator new(std::size_t) throw (std::bad_alloc); void* operator new[](std::size_t) throw (std::bad_alloc); void operator delete(void*) throw(); void operator delete[](void*) throw(); 使用举例:
 int* p1 = new int(); delete p2; int* p2 = new int[5]; delete [] p2; 终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C&#43;&#43;标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。
 /** * A simulation of c&#43;&#43; new T() &amp;amp; new T(param) operation */ struct NewObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { // allocate memory form heap void * pBuff = malloc(sizeof(T)); // call constructor pObj = new (pBuff) T(); } template &amp;lt;typename T, typename P&amp;gt; inline void operator()(T*&amp;amp; pObj, const P&amp;amp; param) { // allocate memory form heap void * pBuff = malloc(sizeof(T)); // call constructor, pass one param pObj = new(pBuff) T(param); } }; /** * A simulation of c&#43;&#43; delete T operation */ struct DeleteObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { if ( NULL == pObj ) { return ;} // call destructor pObj-&amp;gt;~T(); // free memory to heap free((void*)pObj); pObj = NULL; } }; /** * A simulation of c&#43;&#43; new T[N]() operation */ struct NewObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj, unsigned int size) { // save the number of array elements in the beginning of the space. long * pBuff = (long *) malloc (sizeof(T) * size &#43; sizeof(long)); *((unsigned int *) pBuff) = size; pBuff&#43;&#43;; // change pointer to T type, then can use pT&#43;&#43; T * pT = (T *) pBuff; // save the pointer to the start of the array. pObj = pT; // now iterate and construct every object in place. for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { new((void *) pT) T(); pT&#43;&#43;; } } }; /** * A simulation of c&#43;&#43; delete [] T operation */ struct DeleteObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { unsigned int size = *((unsigned int *) ((long *) pObj - 1)); T * pT = pObj; // call destructor on every element in the array. for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { pT-&amp;gt;~T(); pT&#43;&#43;; } // free memory to heap. free ((void *) ((long *) pObj - 1)); pObj = NULL; } };  测试代码:
@@ -2641,7 +2657,8 @@ struct TestClass { TestClass() : mem1(0), mem2(0) {} TestClass(int m) : mem1(m),
         <tags>
           <tag>cpp</tag>
         </tags>
-        <content type="html"> 前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C&#43;&#43;风格函数子造了一遍轮子。 排序算法  先来一个排序中的比较函数子，实现是左值小于右值。  template&amp;lt;typename T&amp;gt; struct CmpFuctor { bool operator()(const T&amp;amp; lhs, const T&amp;amp; rhs) { return lhs &amp;lt; rhs; } };  交换排序中用到的交换两个元素的函数。  template&amp;lt;typename T&amp;gt; void swap(T* lhs, T* rhs) { T tmp = *lhs; *lhs = *rhs; *rhs = tmp; }  排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。  template&amp;lt;typename T&amp;gt; void traverse(T* pArray, const int size, void (*func)(T&amp;amp;) ) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { func(pArray[idx]); } }  我们先来看一个最简单的插入排序。  template&amp;lt;typename T, typename CMP &amp;gt; void insertsort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { T temp = pArray[idx]; int pos = idx -1; while( pos &amp;gt;= 0 &amp;amp;&amp;amp; cmp(temp, pArray[pos]) ) // &amp;lt; { pArray[pos&#43;1] = pArray[pos]; pos--; } pArray[pos&#43;1] = temp; } }  再对上面的插入排序改进，查找为折半插入排序。  template&amp;lt;typename T, typename CMP&amp;gt; void binaryinsertsort(T* pArray, const int size, CMP cmp) { for(int idx = 1; idx &amp;lt; size; idx&#43;&#43;) { int left = 0; int right = idx -1; T temp = pArray[idx]; while( left &amp;lt;= right) { int middle = (left &#43; right) / 2; if ( cmp(temp, pArray[middle] )) // &amp;lt; { right = middle - 1; } else { left = middle &#43; 1; } } int j = idx-1; for(; j &amp;gt;= right&#43;1; j--) { pArray[j&#43;1] = pArray[j]; } pArray[right&#43;1] = temp; } }  再来一个改进版的插入排序。  是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。
+        <content type="html"> 前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C&#43;&#43;风格函数子造了一遍轮子。
+排序算法  先来一个排序中的比较函数子，实现是左值小于右值。  template&amp;lt;typename T&amp;gt; struct CmpFuctor { bool operator()(const T&amp;amp; lhs, const T&amp;amp; rhs) { return lhs &amp;lt; rhs; } };  交换排序中用到的交换两个元素的函数。  template&amp;lt;typename T&amp;gt; void swap(T* lhs, T* rhs) { T tmp = *lhs; *lhs = *rhs; *rhs = tmp; }  排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。  template&amp;lt;typename T&amp;gt; void traverse(T* pArray, const int size, void (*func)(T&amp;amp;) ) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { func(pArray[idx]); } }  我们先来看一个最简单的插入排序。  template&amp;lt;typename T, typename CMP &amp;gt; void insertsort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { T temp = pArray[idx]; int pos = idx -1; while( pos &amp;gt;= 0 &amp;amp;&amp;amp; cmp(temp, pArray[pos]) ) // &amp;lt; { pArray[pos&#43;1] = pArray[pos]; pos--; } pArray[pos&#43;1] = temp; } }  再对上面的插入排序改进，查找为折半插入排序。  template&amp;lt;typename T, typename CMP&amp;gt; void binaryinsertsort(T* pArray, const int size, CMP cmp) { for(int idx = 1; idx &amp;lt; size; idx&#43;&#43;) { int left = 0; int right = idx -1; T temp = pArray[idx]; while( left &amp;lt;= right) { int middle = (left &#43; right) / 2; if ( cmp(temp, pArray[middle] )) // &amp;lt; { right = middle - 1; } else { left = middle &#43; 1; } } int j = idx-1; for(; j &amp;gt;= right&#43;1; j--) { pArray[j&#43;1] = pArray[j]; } pArray[right&#43;1] = temp; } }  再来一个改进版的插入排序。  是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。
 template&amp;lt;typename T, typename CMP&amp;gt; void shellsort(T* pArray, const int size, CMP cmp) { int j = 0; int d = size / 2; // 通过增量控制排序的执行过程 while( d &amp;gt; 0 ) { for(int i = d; i&amp;lt; size;i&#43;&#43;) { j = i - d; while(j &amp;gt;= 0) { // 对各个分组进行处理 if ( cmp(pArray[j&#43;d], pArray[j]) ) { swap(&amp;amp;pArray[j], &amp;amp;pArray[j&#43;d]); j -= d; } else { j = -1; } } } d /= 2; //递减增量d } }  下面是一种简单选择排序算法。  template&amp;lt;typename T, typename CMP&amp;gt; void selectsort(T* pArray, const int size, CMP cmp) { for(int idx = 0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = idx &#43; 1; pos &amp;lt; size; pos&#43;&#43;) { if( cmp(pArray[pos], pArray[idx]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[idx]); } } } }  交换排序中最简单的冒泡排序。  template&amp;lt;typename T, typename CMP&amp;gt; void bubblesort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = 0; pos &amp;lt;= size - idx;pos&#43;&#43;) { if( cmp(pArray[pos&#43;1], pArray[pos]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[pos&#43;1]); } } } }  交换排序中最简单的快速排序。  template&amp;lt;typename T, typename CMP&amp;gt; int partition(T* pArray, int p, int r, CMP cmp) { int i = p - 1; int j = 0; for(j = p; j &amp;lt; r; j&#43;&#43;) { if(cmp(pArray[j], pArray[r])) //pArray[j] &amp;gt;= pArray[r] { i&#43;&#43;; swap(&amp;amp;pArray[i], &amp;amp;pArray[j]); } } swap(&amp;amp;pArray[i &#43; 1], &amp;amp;pArray[r]); return i &#43; 1; 测试代码 void print(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } int genrandom(int min, int max) { return (min &#43; (int)(((float)rand()/RAND_MAX)*(max - min))); } void random(int&amp;amp; a ) { a = genrandom(-50, 100); } void sort_test() { int A[] = {4, 1, 44, -12, 5, 125, 30}; int len = sizeof(A) / sizeof(int); // traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); insertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); binaryinsertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); shellsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); bubblesort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); selectsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); quicksort(A, 0, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); }  上面的函数有C风格的函数指针与C&#43;&#43;风格函数子（Functor，有时也叫函数对象），函数使用了C&#43;&#43;中模板的一些特性，测试环境为eclipse&#43;cdt&#43;gcc。
 </content>
     </entry>

@@ -54,9 +54,7 @@
 &lt;li&gt;&lt;code&gt;T &amp;lt;: A with B&lt;/code&gt; 表示A和B为T上界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A with B&lt;/code&gt; 表示A和B为T下界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

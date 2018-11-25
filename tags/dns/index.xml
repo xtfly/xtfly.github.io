@@ -27,8 +27,7 @@
 
 &lt;p&gt;Bind9可以作为权威与递归DNS。主要特性如下：&lt;/p&gt;
 
-&lt;p&gt;作为权威DNS时：
-&lt;/p&gt;</description>
+&lt;p&gt;作为权威DNS时：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -45,8 +44,7 @@
 
 &lt;p&gt;近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -161,8 +161,6 @@
 
 <p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
 
-<p></p>
-
 <h3 id="缓存穿透">缓存穿透</h3>
 
 <p>缓存系统一般都是按照key去缓存查询，如果不存在对应的value，就应该去后端系统（如DB）查找。如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会对后端系统造成很大的压力。这就叫做缓存穿透。</p>
@@ -295,7 +293,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -373,7 +371,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

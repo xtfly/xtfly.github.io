@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.41" />
+	<meta name="generator" content="Hugo 0.51" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -107,74 +107,6 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0515_go_web/" itemprop="url">
-        Golang Web开发
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-05-15">
-    2016-05-15
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1958 字 ~4分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h2 id="标准库-net-http">标准库[net/http]</h2>
-
-<p>采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到<code>net/http</code>包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的<code>net/http</code>是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在<code>golang.org/x/net/http2</code>,后续可能会移到标准库。</p>
-
-<p><code>net/http</code>库中主要涉及到如下几个类型与接口：</p>
-
-<h3 id="request结构体">Request结构体</h3>
-
-<p>封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
-</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0515_go_web/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0414_oracle_cloud_day/" itemprop="url">
         Oracle Cloud Day见闻简纪
         </a>
@@ -227,8 +159,7 @@
 <li>切实可行的”云”之路：为客户提供各种服务和商务方案使客户以最小的投资风险采用Oracle云服务。</li>
 </ul>
 
-<p>从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：
-</p>
+<p>从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -289,8 +220,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。</p>
 
-<p>正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本<a href="https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh">mkimage-arch.sh</a>，于是把它做了些改造，制作过程记录一下：
-</p>
+<p>正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本<a href="https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh">mkimage-arch.sh</a>，于是把它做了些改造，制作过程记录一下：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -344,7 +274,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">796 字 ~2分钟</span>
+<span class="leancloud-visitors-count">823 字 ~2分钟</span>
 </span>
       </div>
     </header>
@@ -362,8 +292,7 @@
 
 <p>任何一个架构师，都是需要重点解决某方面的尖锐问题，同时避免在不合适的场景下，一种技术、一类框架或一种架构模式被滥用。架构就需要对整体框定好范围与约束。</p>
 
-<p>架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。
-</p>
+<p>架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -424,8 +353,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。</p>
 
-<p>安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
-</p>
+<p>安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -479,7 +407,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3031 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3047 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -495,8 +423,7 @@
 <li>多数问题局限天一个局部，不要影响到全局。</li>
 </ul>
 
-<p>小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。
-</p>
+<p>小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -565,13 +492,8 @@
 
 <ul>
 <li>与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。</li>
-<li>提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。
-</li>
+<li>提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。</li>
 </ul>
-
-<h2 id="tmux的基本概念">tmux的基本概念</h2>
-
-<p>tmux的主要元素分为三层：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -632,12 +554,72 @@
     <div class="post-body" itemprop="articleBody">
     <h2 id="什么是软件架构设计">什么是软件架构设计</h2>
 
-<p>依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的<a href="http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_">《软件架构设计》</a>才知道这只是其中一大阵营的观点。而软件架构在定义上分为<code>“组成派”</code>和<code>“决策派”</code>两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。
-</p>
+<p>依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的<a href="http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_">《软件架构设计》</a>才知道这只是其中一大阵营的观点。而软件架构在定义上分为<code>“组成派”</code>和<code>“决策派”</code>两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。</p>
     </div>
     
     <div class="post-more-link text-center">
     <a class="btn" href="http://lanlingzi.cn/post/notes/2016/0215_about_soft_arch/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/" itemprop="url">
+        软件开发知行合一
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-01-31">
+    2016-01-31
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1140 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。</p>
+
+<p>同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有<code>知行合一</code>啊。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -750,7 +732,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">96</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -817,7 +799,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.41</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.51</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

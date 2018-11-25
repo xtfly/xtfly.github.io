@@ -26,8 +26,7 @@
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
   </channel>

@@ -54,9 +54,7 @@
 &lt;li&gt;&lt;code&gt;T &amp;lt;: A with B&lt;/code&gt; 表示A和B为T上界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A with B&lt;/code&gt; 表示A和B为T下界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -76,9 +74,7 @@
 
 &lt;p&gt;从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。&lt;/p&gt;
 
-&lt;p&gt;今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -93,9 +89,7 @@
 
 &lt;p&gt;Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。&lt;/p&gt;
 
-&lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -112,9 +106,7 @@
 
 &lt;h2 id=&#34;既存类型&#34;&gt;既存类型&lt;/h2&gt;
 
-&lt;p&gt;&lt;code&gt;impl Trait&lt;/code&gt;是对&lt;a href=&#34;https://en.wikipedia.org/wiki/Type_system#Existential_types&#34;&gt;&lt;code&gt;既存类型(Existential types)&lt;/code&gt;&lt;/a&gt;的支持，那什么是既存类型?&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;code&gt;impl Trait&lt;/code&gt;是对&lt;a href=&#34;https://en.wikipedia.org/wiki/Type_system#Existential_types&#34;&gt;&lt;code&gt;既存类型(Existential types)&lt;/code&gt;&lt;/a&gt;的支持，那什么是既存类型?&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -126,9 +118,7 @@
       <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34; /&gt;
-&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -141,9 +131,7 @@
 
 &lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
 
-&lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -173,8 +161,7 @@
 
 &lt;p&gt;Bind9可以作为权威与递归DNS。主要特性如下：&lt;/p&gt;
 
-&lt;p&gt;作为权威DNS时：
-&lt;/p&gt;</description>
+&lt;p&gt;作为权威DNS时：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -191,8 +178,7 @@
 
 &lt;p&gt;近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;
-&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -216,9 +202,7 @@
 &lt;li&gt;从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。&lt;/li&gt;
 &lt;li&gt;用户：实现操作资源的人员，对应物理存在的人，它由账号分配。&lt;/li&gt;
 &lt;li&gt;群组：一般对应企业的组织，把用户归属到一个群组里，用户可以自动获得这个群组所具有的权限。对于大型的企业，组织可能分为人员组织与业务组织。对于用户来说，群组也是为提供分级管理能力。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -235,8 +219,7 @@
 
 &lt;h3 id=&#34;可用性&#34;&gt;可用性&lt;/h3&gt;
 
-&lt;p&gt;可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。
-&lt;/p&gt;</description>
+&lt;p&gt;可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -253,8 +236,7 @@
 
 &lt;p&gt;熟悉电信IT系统的人或许听说过：OSS(Operation Support System)，运营支撑系统，它是运营商IT系统中三大支柱系统之一。其它两大系统是：BSS(Bussiness Support System), MSS(Management Support System)。&lt;/p&gt;
 
-&lt;p&gt;OSS是面向资源的后台支撑系统。资源主要包括网络，电信设备，计算系统等。系统的主要功能是包括专业网络管理，综合网络管理，资源管理，业务开通，服务保障等。但公司的产品线众多，产品形态也是千差万别，公司的OSS产品也一直在探索与发展。产品开发部门也是分分合合，一直是想打造一套统一的运营支撑平台。
-&lt;/p&gt;</description>
+&lt;p&gt;OSS是面向资源的后台支撑系统。资源主要包括网络，电信设备，计算系统等。系统的主要功能是包括专业网络管理，综合网络管理，资源管理，业务开通，服务保障等。但公司的产品线众多，产品形态也是千差万别，公司的OSS产品也一直在探索与发展。产品开发部门也是分分合合，一直是想打造一套统一的运营支撑平台。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -273,8 +255,7 @@
 &lt;li&gt;没有心情&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;我很佩服那种每天都能写上千字博文或公众号的人，因为坚持写作需要很强的毅力。我没有能够坚持下来，其实最重要还是没有心情，动力不足。那作为一位内心深处又想写点东西的人，如何破？
-&lt;/p&gt;</description>
+&lt;p&gt;我很佩服那种每天都能写上千字博文或公众号的人，因为坚持写作需要很强的毅力。我没有能够坚持下来，其实最重要还是没有心情，动力不足。那作为一位内心深处又想写点东西的人，如何破？&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -292,8 +273,7 @@
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -318,9 +298,7 @@ Open source relational database management system
 &lt;p&gt;简化开发，打通DevOps，实现业务应用的敏捷与弹性。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;不同的业务领域，要面对是&lt;code&gt;不同的传统应用架构如何通过PaaS平台迁移到云上&lt;/code&gt;，这就会导致各自对PaaS的需求或多或少有着不同的差异，理解不一样也是正常的。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;不同的业务领域，要面对是&lt;code&gt;不同的传统应用架构如何通过PaaS平台迁移到云上&lt;/code&gt;，这就会导致各自对PaaS的需求或多或少有着不同的差异，理解不一样也是正常的。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -341,9 +319,7 @@ Open source relational database management system
 &lt;li&gt;资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等&lt;/li&gt;
 &lt;li&gt;应用层次：资源泄露；软件Bug；系统处理能力不足等&lt;/li&gt;
 &lt;li&gt;数据层次：数据丢失；数据不一致等&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -356,9 +332,7 @@ Open source relational database management system
 
 &lt;p&gt;最近我司心声社区到处充斥着在40岁左右惯例的帖子，之前觉得这些觉得离自己很远。不经意发现自己今年也35岁了，惯例这一天迟早会来临，只是早晚而已，按目前现状，再为公司奋斗也不会有太多年了，你想奋斗关键公司不让你啊。最近也陆续听到之前曾经共事的同事，或由于身体原因，被沟通退休或离职；或由于绩效平平，合同到期不再续签；或由于种种原因，被进入战备预备队前途不明。公司主营业务已遇到瓶颈，整个行业暮色深沉，新的领域就开拓不足，公司高层也不断地发文要打粮食，熵减等等。总之：“山雨欲来风满楼”。&lt;/p&gt;
 
-&lt;p&gt;35岁应该是一个年富力强的年龄，不应该发出“今年35，还能做技术吗？”这样的话题，其中透露出一丝不自信。话说三十而立，但目前这个年龄段，我是上有老，下有小，身上还背着几百万的房贷，说没有压力不是可能的。作一名软件工程师，在国内来说其职业生涯是相当短的。而我一直从事软件相关的工作，目前虽是做软件架构设计，但还是喜欢写写代码，一直没有找到自己明确的发展方向，一方面有我自身的性格原因，一方面能力的确有些偏科。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;35岁应该是一个年富力强的年龄，不应该发出“今年35，还能做技术吗？”这样的话题，其中透露出一丝不自信。话说三十而立，但目前这个年龄段，我是上有老，下有小，身上还背着几百万的房贷，说没有压力不是可能的。作一名软件工程师，在国内来说其职业生涯是相当短的。而我一直从事软件相关的工作，目前虽是做软件架构设计，但还是喜欢写写代码，一直没有找到自己明确的发展方向，一方面有我自身的性格原因，一方面能力的确有些偏科。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -376,9 +350,7 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。&lt;/li&gt;
 &lt;li&gt;我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -406,8 +378,7 @@ Open source relational database management system
     go func() {
         // using x.k &amp;amp; x.v
     }()
-}&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+}&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -422,8 +393,7 @@ Open source relational database management system
 
 &lt;p&gt;目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。&lt;/p&gt;
 
-&lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：
-&lt;/p&gt;</description>
+&lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -444,20 +414,18 @@ Open source relational database management system
 
 &lt;h3 id=&#34;node-js&#34;&gt;Node.js&lt;/h3&gt;
 
-&lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。
-&lt;/p&gt;</description>
+&lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>要学会思维图形化</title>
+      <title>思维图形化</title>
       <link>http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/</link>
       <pubDate>Fri, 18 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/</guid>
       <description>&lt;p&gt;曾经，我幼稚地认为：只有写好代码才能对产品最“大”的贡献。什么需求分析文档，架构设计文档，没有最终的代码落地，那就是一张张的空纸。那些职位高高在上的架构师们，就也是写写胶片，画画图，他们又不懂技术细节，天天开会讨论来，讨论去都是在空谈一切。没有我们这些屌丝写的代码，你让他们去实现，估计几年也搞不出来。我写代码的能力比他们顶上N个人；再看看人家老外，60/70岁了还在码代码。为什么我国到了30岁了，都不去写代码了，都去搞所谓的架构设计了。是他们写代码写不好才去干架构师活吗？&lt;/p&gt;
 
-&lt;p&gt;经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：
-&lt;/p&gt;</description>
+&lt;p&gt;经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -466,8 +434,7 @@ Open source relational database management system
       <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</guid>
-      <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -478,8 +445,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/</guid>
       <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
 
-&lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。
-&lt;/p&gt;</description>
+&lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -492,8 +458,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;体验为王&#34;&gt;体验为王&lt;/h2&gt;
 
-&lt;p&gt;软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。
-&lt;/p&gt;</description>
+&lt;p&gt;软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -517,6 +482,14 @@ Open source relational database management system
 &lt;li&gt;接口类型&lt;/li&gt;
 &lt;li&gt;结构体&lt;/li&gt;
 &lt;li&gt;只包含上述类型的数组。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;但不能是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;slice&lt;/li&gt;
+&lt;li&gt;map&lt;/li&gt;
+&lt;li&gt;function&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     
@@ -540,8 +513,7 @@ Open source relational database management system
 
 &lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;
-&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -556,8 +528,7 @@ Open source relational database management system
 
 &lt;p&gt;上幼儿园是小孩步入社会第一步，是融入世界的起点。脱离原生家庭才能独立成长，幼儿园有孩子同龄的伙伴，可以让孩子收获不同的体验；幼儿园也有专业的老师，可以让孩子快乐自由的探索自己，认识朋友，体验世界。&lt;/p&gt;
 
-&lt;p&gt;我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。
-&lt;/p&gt;</description>
+&lt;p&gt;我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -574,8 +545,7 @@ Open source relational database management system
 
 &lt;p&gt;这二个主题都是&lt;a href=&#34;http://blog.coderzh.com/&#34;&gt;coderzh&lt;/a&gt;最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。&lt;/p&gt;
 
-&lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。
-&lt;/p&gt;</description>
+&lt;p&gt;第三个则是从零开始，移植Github上人气最高的Hexo主题：&lt;a href=&#34;https://github.com/iissnan/hexo-theme-next/&#34;&gt;NexT&lt;/a&gt;。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -602,8 +572,8 @@ Open source relational database management system
     . &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bytes&amp;#34;&lt;/span&gt;
     &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;io&amp;#34;&lt;/span&gt;
     &lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
-)&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+)&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -618,8 +588,7 @@ Open source relational database management system
 
 &lt;p&gt;在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。&lt;/p&gt;
 
-&lt;p&gt;在Java中，JDK库提供&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;来获取当前线程对象，提供&lt;code&gt;ThreadLocal&lt;/code&gt;来存储与获取线程局部变量。由于Java能通过&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。
-&lt;/p&gt;</description>
+&lt;p&gt;在Java中，JDK库提供&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;来获取当前线程对象，提供&lt;code&gt;ThreadLocal&lt;/code&gt;来存储与获取线程局部变量。由于Java能通过&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -644,8 +613,7 @@ Open source relational database management system
 &lt;li&gt;作为1的推论，任何类型的值都可以赋值给空接口interface{}。&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。
-&lt;/p&gt;</description>
+&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -660,8 +628,7 @@ Open source relational database management system
 
 &lt;p&gt;&lt;code&gt;Context&lt;/code&gt;通常被译作&lt;code&gt;上下文&lt;/code&gt;，它是一个比较抽象的概念。在公司技术讨论时也经常会提到&lt;code&gt;上下文&lt;/code&gt;。一般理解为程序单元的一个运行状态、现场、快照，而翻译中&lt;code&gt;上下&lt;/code&gt;又很好地诠释了其本质，上下上下则是存在上下层的传递，&lt;code&gt;上&lt;/code&gt;会把内容传递给&lt;code&gt;下&lt;/code&gt;。在Go语言中，程序单元也就指的是Goroutine。&lt;/p&gt;
 
-&lt;p&gt;每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个&lt;code&gt;Context&lt;/code&gt;变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。
-&lt;/p&gt;</description>
+&lt;p&gt;每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个&lt;code&gt;Context&lt;/code&gt;变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -700,11 +667,8 @@ Open source relational database management system
 
 &lt;ul&gt;
 &lt;li&gt;公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；&lt;/li&gt;
-&lt;li&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;采用Go语言的技术因素主要有：&lt;/p&gt;</description>
+&lt;li&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -729,11 +693,8 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;项目主页：&lt;a href=&#34;http://github.com/golang-china/gopl-zh&#34;&gt;http://github.com/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;项目主页：&lt;a href=&#34;http://bitbucket.org/golang-china/gopl-zh&#34;&gt;http://bitbucket.org/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在线阅读：&lt;/p&gt;</description>
+&lt;li&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -746,8 +707,7 @@ Open source relational database management system
 
 &lt;p&gt;在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。&lt;/p&gt;
 
-&lt;p&gt;Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。
-&lt;/p&gt;</description>
+&lt;p&gt;Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -760,22 +720,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;goroutine泄漏问题&#34;&gt;Goroutine泄漏问题&lt;/h2&gt;
 
-&lt;p&gt;Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。
-&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Go/Java/C&#43;&#43;杂谈</title>
-      <link>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</link>
-      <pubDate>Sat, 02 Jul 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</guid>
-      <description>&lt;p&gt;最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年+的C++开发经验，也有5年+的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。&lt;/p&gt;
-
-&lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
-
-&lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
-&lt;/p&gt;</description>
+&lt;p&gt;Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -793,11 +738,8 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整&lt;/li&gt;
 &lt;li&gt;云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用&lt;/li&gt;
-&lt;li&gt;云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;云计算的产业快速发展，带动硬件基础设施的发展，也带动了软件产业的发展，也带动了应用领域不同行业的发展,也迎来了新发展中的问题:&lt;/p&gt;</description>
+&lt;li&gt;云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -814,8 +756,7 @@ Open source relational database management system
 
 &lt;h3 id=&#34;request结构体&#34;&gt;Request结构体&lt;/h3&gt;
 
-&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。
-&lt;/p&gt;</description>
+&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -832,8 +773,7 @@ Open source relational database management system
 &lt;li&gt;切实可行的”云”之路：为客户提供各种服务和商务方案使客户以最小的投资风险采用Oracle云服务。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：
-&lt;/p&gt;</description>
+&lt;p&gt;从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -844,8 +784,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/</guid>
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
 
-&lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：
-&lt;/p&gt;</description>
+&lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -867,8 +806,7 @@ Open source relational database management system
 
 &lt;p&gt;任何一个架构师，都是需要重点解决某方面的尖锐问题，同时避免在不合适的场景下，一种技术、一类框架或一种架构模式被滥用。架构就需要对整体框定好范围与约束。&lt;/p&gt;
 
-&lt;p&gt;架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。
-&lt;/p&gt;</description>
+&lt;p&gt;架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -879,8 +817,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/notes/2016/0313_grub_win10/</guid>
       <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
 
-&lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
-&lt;/p&gt;</description>
+&lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -900,8 +837,7 @@ Open source relational database management system
 &lt;li&gt;多数问题局限天一个局部，不要影响到全局。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。
-&lt;/p&gt;</description>
+&lt;p&gt;小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -920,13 +856,8 @@ Open source relational database management system
 
 &lt;ul&gt;
 &lt;li&gt;与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。&lt;/li&gt;
-&lt;li&gt;提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;tmux的基本概念&#34;&gt;tmux的基本概念&lt;/h2&gt;
-
-&lt;p&gt;tmux的主要元素分为三层：&lt;/p&gt;</description>
+&lt;li&gt;提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -937,8 +868,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/notes/2016/0215_about_soft_arch/</guid>
       <description>&lt;h2 id=&#34;什么是软件架构设计&#34;&gt;什么是软件架构设计&lt;/h2&gt;
 
-&lt;p&gt;依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的&lt;a href=&#34;http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_&#34;&gt;《软件架构设计》&lt;/a&gt;才知道这只是其中一大阵营的观点。而软件架构在定义上分为&lt;code&gt;“组成派”&lt;/code&gt;和&lt;code&gt;“决策派”&lt;/code&gt;两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。
-&lt;/p&gt;</description>
+&lt;p&gt;依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的&lt;a href=&#34;http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_&#34;&gt;《软件架构设计》&lt;/a&gt;才知道这只是其中一大阵营的观点。而软件架构在定义上分为&lt;code&gt;“组成派”&lt;/code&gt;和&lt;code&gt;“决策派”&lt;/code&gt;两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -947,7 +877,9 @@ Open source relational database management system
       <pubDate>Sun, 31 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/</guid>
-      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
+
+&lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -958,8 +890,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/technical/2016/0123_refactor_death/</guid>
       <description>&lt;p&gt;上周在食堂吃饭，遇到同事聊起最近的系统重构，她说这一批的新员工不如13年的一批，就一个看似简单的问题也是折腾很久，重构的周期越拉越长。我作为这次的重构的特性SE，可以说也是硬着头皮上。我是越来越反感重构，尤其是涉及到多个模块的重构。在新年的聚餐上，我说我给你挖了坑，你来填坑，让我感到非常惭愧的，即又不得做这些事。&lt;/p&gt;
 
-&lt;p&gt;在现阶段项目交付变得越来越难，一方面我们面对众多的需求，做还是不做并不是你能轻易决定的；而另一方面我们又想从架构上解决可以快速满足需求。但本质的是这几个月内，人的技能与意识没有根本性的变化。在大家没有主人翁的精神下，说来说去也是为了需求在垒代码。即使你想从代码结构上重新设计，让系统更松的耦合性，更好的扩展性。受于项目进度冲击，以及代码实现者的被动，最终也会变得让你不想回头多看一眼。
-&lt;/p&gt;</description>
+&lt;p&gt;在现阶段项目交付变得越来越难，一方面我们面对众多的需求，做还是不做并不是你能轻易决定的；而另一方面我们又想从架构上解决可以快速满足需求。但本质的是这几个月内，人的技能与意识没有根本性的变化。在大家没有主人翁的精神下，说来说去也是为了需求在垒代码。即使你想从代码结构上重新设计，让系统更松的耦合性，更好的扩展性。受于项目进度冲击，以及代码实现者的被动，最终也会变得让你不想回头多看一眼。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -970,7 +901,18 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</guid>
       <description>&lt;p&gt;提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。&lt;/p&gt;
 
-&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;</description>
+&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;
+
+&lt;p&gt;一个BitTorrent的文件在网络传输过程，由以下几个部分组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;WEB服务器&lt;/li&gt;
+&lt;li&gt;文件元信息(metainfo)&lt;/li&gt;
+&lt;li&gt;BitTorrent Tracker&lt;/li&gt;
+&lt;li&gt;原始资源发布者&lt;/li&gt;
+&lt;li&gt;目的端用户浏览器&lt;/li&gt;
+&lt;li&gt;目的端用户下载者&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -983,8 +925,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
 
-&lt;p&gt;在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。
-&lt;/p&gt;</description>
+&lt;p&gt;在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -995,8 +936,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/technical/2016/0107_docker/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/docker_ecosystem.jpg&#34; alt=&#34;docker ecosystem&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：
-&lt;/p&gt;</description>
+&lt;p&gt;从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1008,10 +948,7 @@ Open source relational database management system
       <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/7stime/IMG_8337.jpg&#34; alt=&#34;image1&#34; /&gt;
 &lt;img src=&#34;http://lanlingzi.cn/images/7stime/IMG_8235.jpg&#34; alt=&#34;image2&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;三天的元旦时间很快就过去，前两天是窝在家搞我这个网站。今天怎么也得出去走走，于是老婆约上她的几位好友，说去莲塘边的罗湖5号绿道感受一下大自然。天公有点不作美，一直下着毛毛细雨，但是我们还是意识坚定，风雨无阻。当我们一行7人踏上路程，蓦然发现朦胧细雨下的水库与5号绿道，别有一番诗情画意，望着不远的仙湖与梧桐山，他们就像一幅幅山水水墨画，恨不得把她们都收入到相机中。
-
-&lt;img src=&#34;http://lanlingzi.cn/images/7stime/IMG_8220.jpg&#34; alt=&#34;image3&#34; /&gt;
-&lt;img src=&#34;http://lanlingzi.cn/images/7stime/IMG_8364.jpg&#34; alt=&#34;image4&#34; /&gt;&lt;/p&gt;</description>
+&lt;p&gt;三天的元旦时间很快就过去，前两天是窝在家搞我这个网站。今天怎么也得出去走走，于是老婆约上她的几位好友，说去莲塘边的罗湖5号绿道感受一下大自然。天公有点不作美，一直下着毛毛细雨，但是我们还是意识坚定，风雨无阻。当我们一行7人踏上路程，蓦然发现朦胧细雨下的水库与5号绿道，别有一番诗情画意，望着不远的仙湖与梧桐山，他们就像一幅幅山水水墨画，恨不得把她们都收入到相机中。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1024,8 +961,7 @@ Open source relational database management system
 
 &lt;p&gt;韶华易逝，往昔不再。时间已翻到2016年，在15年的12月份，忽然做了一个决定，注册了lanlingzi.cn这个域名，开始鼓励自己写写东西。原由是在15年的下半年，工作上做一个重大的调整，暮然发现自已写东西有时真让人费解。这个域名上已有的文章，是我之前在CSDN上一些记忆，以及自已电脑上留下的文档。虽然在公司也会写写技术博文，但那些更倾向于技术的细节与程序语言，对问题的思考与见解少了一些。&lt;/p&gt;
 
-&lt;p&gt;在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。
-&lt;/p&gt;</description>
+&lt;p&gt;在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1036,8 +972,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG&#34; alt=&#34;Debian&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;万万没想到，在即将迎来2016年时，微信，科技新闻中都在传&lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
-&lt;/p&gt;</description>
+&lt;p&gt;万万没想到，在即将迎来2016年时，微信，科技新闻中都在传&lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1052,8 +987,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;组织不足&#34;&gt;组织不足&lt;/h2&gt;
 
-&lt;p&gt;12月份的北京已是非常的干冷，可能由于我在南方呆久了，一到北京是极其地不适应，在北京三天多的时间，嘴唇开裂，到现在还没有完全好干净。离开北京的那一天，正好又感受了一下北京正宗的霾，帝都的人们活得真不容易啊。
-&lt;/p&gt;</description>
+&lt;p&gt;12月份的北京已是非常的干冷，可能由于我在南方呆久了，一到北京是极其地不适应，在北京三天多的时间，嘴唇开裂，到现在还没有完全好干净。离开北京的那一天，正好又感受了一下北京正宗的霾，帝都的人们活得真不容易啊。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1068,8 +1002,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;认识go&#34;&gt;认识Go&lt;/h2&gt;
 
-&lt;p&gt;我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。
-&lt;/p&gt;</description>
+&lt;p&gt;我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1080,8 +1013,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg&#34; alt=&#34;pets vs cattle&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
-&lt;/p&gt;</description>
+&lt;p&gt;最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1094,8 +1026,7 @@ Open source relational database management system
 
 &lt;p&gt;风味十足的四川话，风姿卓然的川妹子，麻辣干香的风味菜，是我是对成都的初步映象。有“天府之国”、“蜀中苏杭”美誉的成都蓉城，在小说与故事中都有耳闻，向往已久。在上高中时，就想报考虑成都的高校，无奈分数不够高，被调济到北方。这次作为招聘技术面试官出差来了一趟成都，了却了一桩十几年前的心愿。&lt;/p&gt;
 
-&lt;p&gt;作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。
-&lt;/p&gt;</description>
+&lt;p&gt;作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1116,13 +1047,8 @@ Open source relational database management system
 &lt;li&gt;Docker已不再是概念，已进入互联网企业的实际生产环境中&lt;/li&gt;
 &lt;li&gt;Docker的创业公司多，有远见的想在这次的浪潮中分享红利&lt;/li&gt;
 &lt;li&gt;大公司借Docker东风，亦想在云计算领域中拿下更多话语权&lt;/li&gt;
-&lt;li&gt;容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;看国外&#34;&gt;看国外&lt;/h2&gt;
-
-&lt;p&gt;这次的CNUTCon，居然没有请求正牌的Docker公司，而是请到他的死对头CoreOS，其次还有RedHat，Google，以及Rancher。&lt;/p&gt;</description>
+&lt;li&gt;容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1133,7 +1059,14 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/technical/2015/0813_cfg_vs_cus/</guid>
       <description>&lt;p&gt;作为一个软件人员，我们会经常遇到各种各样的需求，有时为了避免定制，通常的做法是提供更多的配置选项，以通过配置出满足不同的特定需求。&lt;/p&gt;
 
-&lt;p&gt;原因是而当你开发定制代码来修改或扩展一个功能需求时，有可能会导致软件不能正常的工作，必须通过严格的测试与验证。在重大的版本升级情况下，定制是苛刻的和耗时的。甚至会面临无法修复的功能可能会被重构，从零开始。因此，一些做法是通过采越来越多地选择配置，来解决由于开发定制代码引入的问题与软件带来的成本。&lt;/p&gt;</description>
+&lt;p&gt;原因是而当你开发定制代码来修改或扩展一个功能需求时，有可能会导致软件不能正常的工作，必须通过严格的测试与验证。在重大的版本升级情况下，定制是苛刻的和耗时的。甚至会面临无法修复的功能可能会被重构，从零开始。因此，一些做法是通过采越来越多地选择配置，来解决由于开发定制代码引入的问题与软件带来的成本。&lt;/p&gt;
+
+&lt;p&gt;因此配置与定制之间的区别是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置：使用现有的数据来配置系统以满足您的业务需求&lt;/li&gt;
+&lt;li&gt;定制：将定制或使系统适应业务需求，涉及到定制开发流程。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1146,8 +1079,7 @@ Open source relational database management system
 
 &lt;p&gt;我司学习一个新的技术，往往是搞得轰轰烈烈，比如数字化转型，向互联网技术学习。其中一个非常重要的方向就是学习互联网的服务化体系架构。国内的阿里，京东，腾讯在服务化，确切地说是微服务应用取得非常大的成功。而国外的Netflix的微服务架构更是成为我们必定的样板教材。你做设计，谈方案，不说说微服务都不好意思。如果你不说这样，说明你思维落后陈旧了。任何一项技术都有一段疯狂期，虽这近一次在搞架构重构，领导遇到你，总是关心地问到：“服务化进展怎么样了”。甚至还得跟一些不太懂的领导解释什么是微服务。&lt;/p&gt;
 
-&lt;p&gt;10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《&lt;a href=&#34;http://martinfowler.com/articles/microservices.html&#34;&gt;微服务&lt;/a&gt;》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。
-&lt;/p&gt;</description>
+&lt;p&gt;10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《&lt;a href=&#34;http://martinfowler.com/articles/microservices.html&#34;&gt;微服务&lt;/a&gt;》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1169,13 +1101,8 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。&lt;/li&gt;
 &lt;li&gt;模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。&lt;/li&gt;
-&lt;li&gt;架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;重构风险&#34;&gt;重构风险&lt;/h2&gt;
-
-&lt;p&gt;无论何种层次的重构，都必须要有一个可靠的测试环境，即自动化测试环境。因为频繁的代码修改可能会引入更多的缺陷，只有执行自动化测试并回归所有用例，才能保证及时发现这些缺陷，最大限度地降低重构的风险。&lt;/p&gt;</description>
+&lt;li&gt;架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1196,8 +1123,7 @@ Open source relational database management system
 
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
 
-&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
-&lt;/p&gt;</description>
+&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1208,8 +1134,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/thoughts/2014/0901_soft_dev_dt_trace/</guid>
       <description>&lt;p&gt;在我司，我发现大家很擅长把一个东西到极致，但极致可能是过犹不及了，例如测试并不是发现越来越多的Bug就越好，如果把很多的时间消耗到一些不重要的点，反而不可取，软件只要你去测试，怎能发现一些Bug，如要面对这些就非常纠结。作一名开发，说这话肯定会被一批的测试人员拍砖死了。在此表达一下不同的观点，不一定正确，请轻拍。&lt;/p&gt;
 
-&lt;p&gt;在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。
-&lt;/p&gt;</description>
+&lt;p&gt;在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1218,7 +1143,9 @@ Open source relational database management system
       <pubDate>Mon, 04 Aug 2014 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2014/0804_soft_dev_tcm_theory/</guid>
-      <description>&lt;p&gt;最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？&lt;/p&gt;
+
+&lt;p&gt;小儿已一岁多，现在回顾他做的一些体检。前三个月每月一次体检，一岁之前每3个月一次，一岁之后是每6个月一次。体检的项目有称体重、量身高、量头围、量胸围、验视力、测听力、检查动作发育、口腔检查、评价智能发育、验血、骨骼检查、心肺与心率检查、大便和血红蛋白。体检医生一上来就是开各个体检单，采用是西医的方式，看指标数据，再评测，体检应该是医院最好的生财路之一。个人也明白，正如我妈说的，我小时候哪有什么体检，也不是好好的吗？现在带小孩去体检，也是图个安心，提早预防。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1227,7 +1154,9 @@ Open source relational database management system
       <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2014/0729_better_developer/</guid>
-      <description>&lt;p&gt;我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1+1&amp;lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。&lt;/p&gt;</description>
+      <description>&lt;p&gt;我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1+1&amp;lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。&lt;/p&gt;
+
+&lt;p&gt;减少沟通成本，我们需要全栈工程师，因为各种技术都懂，胸有成竹，自己就全做了。即使是在团队协作中，与不同技术人员的沟通也会容易得多。懂你的，你懂的，相互理解，也就少了很多的时间在扯。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1250,8 +1179,8 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;简洁高效&lt;/p&gt;
 
-&lt;p&gt;优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。
-&lt;/p&gt;</description>
+&lt;p&gt;优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1264,8 +1193,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;团队成功才能成就个人&#34;&gt;团队成功才能成就个人&lt;/h2&gt;
 
-&lt;p&gt;还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 &lt;strong&gt;只有团队的成功，才能有个人的成就&lt;/strong&gt; 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，&lt;strong&gt;把分给我的工作尽自己最大的努力做好做实，做到问心无愧&lt;/strong&gt; 。
-&lt;/p&gt;</description>
+&lt;p&gt;还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 &lt;strong&gt;只有团队的成功，才能有个人的成就&lt;/strong&gt; 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，&lt;strong&gt;把分给我的工作尽自己最大的努力做好做实，做到问心无愧&lt;/strong&gt; 。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1279,8 +1207,8 @@ Open source relational database management system
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。
-&lt;/p&gt;</description>
+&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -1293,8 +1221,7 @@ Open source relational database management system
 
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
 
-&lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
-&lt;/p&gt;</description>
+&lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1311,8 +1238,7 @@ Open source relational database management system
    Extension ClassLoader
             |
    System ClassLoader&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
-&lt;/p&gt;</description>
+&lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1321,8 +1247,7 @@ Open source relational database management system
       <pubDate>Sat, 22 Jan 2011 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/stories/2011/0122_believe_god/</guid>
-      <description>&lt;p&gt;今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1333,8 +1258,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/stories/2010/1020_german_travel/</guid>
       <description>&lt;p&gt;到达德国的Frankfurt法兰克福大约是19号早晨的６点半左右。这边的天还没有亮，取得托运行李，再过完签证检查之后已是７点左右，天还是没有亮。这次还好，去年过境德国，被安检人员问了一堆的问题。这次可能我事先跟海关检查人员打了声招呼“Morning”，他居然什么都没有问，直接盖上大章就说“Pass”。出了Airport，外面非常的冷清，11月的德国已经开始很冷，有点冬的味道。&lt;/p&gt;
 
-&lt;p&gt;我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。
-&lt;/p&gt;</description>
+&lt;p&gt;我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1345,8 +1269,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/stories/2010/0716_indian_counterparts/</guid>
       <description>&lt;p&gt;项目组由四地员工组成：深圳，南京，印度，土耳其。印度研究所设在班加罗尔（Bangalore），由于这次项目的重要性，把一堆的印度同事也拉到了深圳集中办公，也把部分的土耳其同事拉到了深圳。&lt;/p&gt;
 
-&lt;p&gt;今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我&lt;code&gt;join us for dinner&lt;/code&gt;。盛情难却，于是我说&lt;code&gt;I&#39;m glad to go&lt;/code&gt;，我就参加了他们的一次聚会。
-&lt;/p&gt;</description>
+&lt;p&gt;今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我&lt;code&gt;join us for dinner&lt;/code&gt;。盛情难却，于是我说&lt;code&gt;I&#39;m glad to go&lt;/code&gt;，我就参加了他们的一次聚会。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1364,8 +1287,8 @@ Open source relational database management system
 
 &lt;li&gt;&lt;p&gt;角色认知，系统化思考：&lt;/p&gt;
 
-&lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。
-&lt;/p&gt;</description>
+&lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -1387,8 +1310,7 @@ Open source relational database management system
 去了一趟欧洲，&lt;br /&gt;
 去了一趟南京。&lt;br /&gt;
 工作走到十字路口，&lt;br /&gt;
-有更多的人生盲点。&lt;br /&gt;
-&lt;/p&gt;</description>
+有更多的人生盲点。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1397,8 +1319,7 @@ Open source relational database management system
       <pubDate>Fri, 06 Nov 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/stories/2009/1106_rule/</guid>
-      <description>&lt;p&gt;昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;昨天下班回来，当过马路时，我一个人在等红绿灯，忽然有一个人在喊我：”走啊，你们这群年轻还没有我们胆子大啊，现在都没有车“，我回头一看，是一个大约40~50岁的人，应该是我们公司供应商的员工。而我，已经习惯了过马路时等红绿灯，在我们公司附近，大家都这样做，即使没有车也会静静地在等着灯亮，这可能是榜样的力量吧。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1407,8 +1328,7 @@ Open source relational database management system
       <pubDate>Sun, 04 Oct 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/stories/2009/1004_qingqing/</guid>
-      <description>&lt;p&gt;少年时，一首青青世界的歌曲在春晚上唱红南北。歌里描绘的是一个梦幻世界，是我一直梦想的世界，一副有山有水的清净世界，歌词的作者天才乔羽现在是否还安好？听我们的老大们讲，乔老创造这首歌时，本来是我们公司请他来为公司写企业主题歌，就他住进了当时公司的培训与生活基地青青世界（那时青青世界刚开没有多久，资金运营上有困难，所以把酒店都包给公司）。精明的青青世界台湾老板自然是不会放过送上门来的文坛泰斗，于是就有了后来的青青世界这着歌，也让青青世界这个旅游景点火一把。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;少年时，一首青青世界的歌曲在春晚上唱红南北。歌里描绘的是一个梦幻世界，是我一直梦想的世界，一副有山有水的清净世界，歌词的作者天才乔羽现在是否还安好？听我们的老大们讲，乔老创造这首歌时，本来是我们公司请他来为公司写企业主题歌，就他住进了当时公司的培训与生活基地青青世界（那时青青世界刚开没有多久，资金运营上有困难，所以把酒店都包给公司）。精明的青青世界台湾老板自然是不会放过送上门来的文坛泰斗，于是就有了后来的青青世界这着歌，也让青青世界这个旅游景点火一把。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1417,8 +1337,7 @@ Open source relational database management system
       <pubDate>Sun, 06 Sep 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/stories/2009/0906_grandpa/</guid>
-      <description>&lt;p&gt;昨天去一了趟广州小叔那，我去看爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;昨天去一了趟广州小叔那，我去看爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1429,8 +1348,7 @@ Open source relational database management system
       <guid>http://lanlingzi.cn/post/notes/2009/0822_history_think/</guid>
       <description>&lt;h2 id=&#34;战乱多&#34;&gt;战乱多&lt;/h2&gt;
 
-&lt;p&gt;自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。
-&lt;/p&gt;</description>
+&lt;p&gt;自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1443,8 +1361,7 @@ Open source relational database management system
 
 &lt;p&gt;在软件项目设计前期，不可不能考虑性能设计。要确定好的性能要求，必须识别项目约束、确定软件将执行的服务并指定软件期望的 负载。但也不要过于注重性能设计。太注重往往会陷入设计的误区。有时甚至为了性能而牺牲功能，那是大错特错了。&lt;/p&gt;
 
-&lt;p&gt;项目交付时首先是功能是否满足，其它才是性 能。换句话说软件首先要能工作，其次才是否能高效率的工作。性能设计必须依托测试结果。不要我以为这样做法性能会好。而现在很多的所谓的系统分析设计师却 喜欢我以为，爱拿以前的经验做依托，更喜欢拿其它项目成功的性能设计套用，岂知此系统非彼系统。
-&lt;/p&gt;</description>
+&lt;p&gt;项目交付时首先是功能是否满足，其它才是性 能。换句话说软件首先要能工作，其次才是否能高效率的工作。性能设计必须依托测试结果。不要我以为这样做法性能会好。而现在很多的所谓的系统分析设计师却 喜欢我以为，爱拿以前的经验做依托，更喜欢拿其它项目成功的性能设计套用，岂知此系统非彼系统。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1467,8 +1384,7 @@ Open source relational database management system
       {  
       };  
    }  
-}&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+}&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -1493,11 +1409,8 @@ Open source relational database management system
 &lt;ul&gt;
 &lt;li&gt;可扩展性&lt;/li&gt;
 &lt;li&gt;灵活性&lt;/li&gt;
-&lt;li&gt;可插入性
-&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;软件的复用的好处有：&lt;/p&gt;</description>
+&lt;li&gt;可插入性&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -1512,8 +1425,7 @@ typedef TStrMap::iterator TStrMapIter;
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
 strmap.erase(iter);&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
-&lt;/p&gt;</description>
+&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1533,8 +1445,7 @@ print sum&lt;/pre&gt;&lt;/div&gt;
     return lambda y: x + y  
 add8 = addx(8)  
 print add8(100)&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;用Python写就没有那么好看。
-&lt;/p&gt;</description>
+&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1543,8 +1454,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Thu, 25 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</guid>
-      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1553,8 +1463,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Wed, 24 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</guid>
-      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1563,8 +1472,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Sat, 20 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</guid>
-      <description>&lt;p&gt;周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1573,8 +1481,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Sun, 14 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</guid>
-      <description>&lt;p&gt;断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1591,8 +1498,8 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
 &lt;li&gt;&lt;p&gt;宏的参数一般情况下使用时要用()括起来，如:
 &lt;code&gt;#define MAX(a, b) a /2 &amp;gt; b ? a /2  : b&lt;/code&gt;
 MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;
-&lt;/p&gt;</description>
+应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -1601,8 +1508,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <pubDate>Thu, 11 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</guid>
-      <description>&lt;p&gt;还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1620,8 +1526,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
 
 &lt;p&gt;delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。&lt;/p&gt;
 
-&lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。
-&lt;/p&gt;</description>
+&lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1630,8 +1535,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <pubDate>Sun, 07 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</guid>
-      <description>&lt;p&gt;前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。&lt;/p&gt;</description>
     </item>
     
     <item>

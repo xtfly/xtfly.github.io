@@ -23,9 +23,7 @@
 
 &lt;p&gt;Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。&lt;/p&gt;
 
-&lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -38,23 +36,7 @@
 
 &lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
 
-&lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Go/Java/C&#43;&#43;杂谈</title>
-      <link>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</link>
-      <pubDate>Sat, 02 Jul 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</guid>
-      <description>&lt;p&gt;最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年+的C++开发经验，也有5年+的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。&lt;/p&gt;
-
-&lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
-
-&lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
-&lt;/p&gt;</description>
+&lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -75,8 +57,7 @@
 
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
 
-&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。
-&lt;/p&gt;</description>
+&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -90,8 +71,8 @@
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。
-&lt;/p&gt;</description>
+&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -104,8 +85,7 @@
 
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
 
-&lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。
-&lt;/p&gt;</description>
+&lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -122,8 +102,7 @@
    Extension ClassLoader
             |
    System ClassLoader&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。
-&lt;/p&gt;</description>
+&lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。&lt;/p&gt;</description>
     </item>
     
   </channel>

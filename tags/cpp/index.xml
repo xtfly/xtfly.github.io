@@ -6,24 +6,10 @@
     <description>Recent content in Cpp on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 02 Jul 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jul 2009 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Go/Java/C&#43;&#43;杂谈</title>
-      <link>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</link>
-      <pubDate>Sat, 02 Jul 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/post/technical/2016/0702_go_cpp_java/</guid>
-      <description>&lt;p&gt;最近公司层面在摧广Go语言，我作为平台DU的首席编程，参加其中一些讨论。虽有5年+的C++开发经验，也有5年+的Java开发经验，Go差不多也有2年时间。但个人仍觉得语言不是解决业务问题的银弹，换种语言也不可能就能提升开发效率。从语言层面来说，各种语言都有它们的优缺点，有不同的使用场景；而一个语言是否能大规模应用，往往是它的整个生态。个人虽比较喜欢Go，但从目前刚兴起的生态来看，也不敢在产品中大面积推广它。下面就从各语言概要来说说他们。&lt;/p&gt;
-
-&lt;h2 id=&#34;go&#34;&gt;Go&lt;/h2&gt;
-
-&lt;p&gt;首先要肯定的，Go语言在并发方面，goroutine与channel机制提供了语言层面的轻量组的并发机制，使得并发编程变得较为简单；在性能方面，由于它直接编译为机器码，提供了据说超过Java的运行性能（1.6版本在计算方面部分已超过Java）；在内存资源点用方面，相对Java或其它带有虚拟机的语言来说，具备明显的优势；在语法方面，继承了C的简洁，严谨的编码要求，以及吸收像Python动态语言特性，在对象构建，序列化提供简洁的表态方式，而这些代码可能占据10%~20%的代码量，尤其对于处理数据，配置，协议映射场景下，相比C/C++在此方面笨拙，这就是动态语言为何让人着迷的地方。
-&lt;/p&gt;</description>
-    </item>
     
     <item>
       <title>C&#43;&#43;技巧之名字空间namespace</title>
@@ -45,8 +31,7 @@
       {  
       };  
    }  
-}&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;/p&gt;</description>
+}&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -61,8 +46,7 @@ typedef TStrMap::iterator TStrMapIter;
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
 strmap.erase(iter);&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
-&lt;/p&gt;</description>
+&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -82,8 +66,7 @@ print sum&lt;/pre&gt;&lt;/div&gt;
     return lambda y: x + y  
 add8 = addx(8)  
 print add8(100)&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;用Python写就没有那么好看。
-&lt;/p&gt;</description>
+&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -92,8 +75,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Thu, 25 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</guid>
-      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -102,8 +84,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Wed, 24 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</guid>
-      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -112,8 +93,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Sat, 20 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</guid>
-      <description>&lt;p&gt;周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -122,8 +102,7 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       <pubDate>Sun, 14 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</guid>
-      <description>&lt;p&gt;断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -140,8 +119,8 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
 &lt;li&gt;&lt;p&gt;宏的参数一般情况下使用时要用()括起来，如:
 &lt;code&gt;#define MAX(a, b) a /2 &amp;gt; b ? a /2  : b&lt;/code&gt;
 MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;
-&lt;/p&gt;</description>
+应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
     </item>
     
     <item>
@@ -150,8 +129,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <pubDate>Thu, 11 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</guid>
-      <description>&lt;p&gt;还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -169,8 +147,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
 
 &lt;p&gt;delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。&lt;/p&gt;
 
-&lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。
-&lt;/p&gt;</description>
+&lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -179,8 +156,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <pubDate>Sun, 07 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</guid>
-      <description>&lt;p&gt;前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。
-&lt;/p&gt;</description>
+      <description>&lt;p&gt;前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。&lt;/p&gt;</description>
     </item>
     
   </channel>
