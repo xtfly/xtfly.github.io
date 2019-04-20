@@ -12,7 +12,6 @@
     <meta property="og:image" content="/img/author.jpg"> 
     <meta name="title" content="Goroutine Local Storage - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
-    
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
     <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -105,11 +104,11 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0813_go_gls/" itemprop="url">
-          Goroutine Local Storage
+        Goroutine Local Storage
         </a>
       </h1>
       <div class="post-meta">
-        <span class="post-time">
+      <span class="post-time">
 <span class="post-meta-item-icon">
     <i class="fa fa-calendar-o"></i>
 </span>
@@ -117,8 +116,8 @@
 <time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-08-13">
     2016-08-13
 </time>
-</span>
-        
+</span> 
+      
 
   <span class="post-category" >
   &nbsp; | &nbsp;
@@ -137,7 +136,7 @@
 </span>
 
 
-         <span>
+       <span>
 &nbsp; | &nbsp;
 <span class="post-meta-item-icon">
     <i class="fa fa-eye"></i>
@@ -148,7 +147,7 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-      <h2 id="背景">背景</h2>
+    <h2 id="背景">背景</h2>
 
 <p>最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称<code>GoId</code>）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。</p>
 
@@ -332,7 +331,7 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 [5] <a href="http://www.zhihu.com/question/39863941/answer/83575802">在golang中如何优雅地获取goroutineID？</a></p>
     </div>
     <footer class="post-footer">
-      
+     
  
 <div class="post-tags">     
      
@@ -342,27 +341,27 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 
 
 
-      <div class="post-nav">
+     <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0803_go_interface/" rel="next" title="理解Go Interface">
-        <i class="fa fa-chevron-left"></i> 理解Go Interface
+        <a href="http://lanlingzi.cn/post/technical/2016/0824_go_testing/" rel="next" title="Go测试">
+        <i class="fa fa-chevron-left"></i> Go测试
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0824_go_testing/" rel="prev" title="Go测试">
-        Go测试 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2016/0803_go_interface/" rel="prev" title="理解Go Interface">
+        理解Go Interface <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
 </div>
       
-      
-      
-      
+     
+     
+     
 
 
 
@@ -409,15 +408,20 @@ BenchmarkSetValues 500000 4050 ns/op</p>
       </a>
     </div>
     <div class="site-state-item site-state-categories">    
-        <a href="http://lanlingzi.cn/categories/">       
+        <a href="http://lanlingzi.cn/categories/">      
+         
         <span class="site-state-item-count">4</span>
+        
         <span class="site-state-item-name">分类</span>
+        
         </a>
     </div>
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
+         
         <span class="site-state-item-count">56</span>
+        
         <span class="site-state-item-name">标签</span>
         </a>
     </div>
@@ -427,14 +431,14 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 <div class="links-of-author motion-element">
     
         <span class="links-of-author-item">
-        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+        <a href="" target="_blank" title="GitHub">
             <i class="fa fa-fw fa-github"></i>
             GitHub
         </a>
         </span>
     
         <span class="links-of-author-item">
-        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+        <a href="" target="_blank" title="知乎">
             <i class="fa fa-fw fa-globe"></i>
             知乎
         </a>
@@ -442,7 +446,9 @@ BenchmarkSetValues 500000 4050 ns/op</p>
     
 </div>
 
+
       
+
       <div class="links-of-blogroll motion-element inline">
 <script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
 </div>
@@ -476,12 +482,12 @@ BenchmarkSetValues 500000 4050 ns/op</p>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2018</span>
+  2009 - 2019</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.53</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

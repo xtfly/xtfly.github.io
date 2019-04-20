@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <search>
+    
+     <entry>
+        <title>Posts</title>
+        <url>http://lanlingzi.cn/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
+    </entry>
     
      <entry>
         <title>一指流沙，程序年华</title>
@@ -1325,7 +1336,7 @@ Markdown是一种内容与形式的分享的轻量级标记语言，受到越来
 Pandoc Pandoc 则是一款非常优秀的开源文本格式转化神器。Markdown转换为HTML Slide也自然不在话下。Pandoc是由Haskell开发，Pandoc作者John MacFarlane一位来自美国加州大学伯克利分校的哲学教授。Haskell是一种函数式编程语言。而文本格式转换，看似简单，其实非常麻烦。Haskell干这脏活、累活的最恰当选择，Pandoc也的确成功了，并已成功在短期内构建一个完整的生态链。
 安装 个人PC使用的Macbook，所以安装比较简单：
 $ brew install pandoc 检验 $ pandoc --version pandoc 1.17.1 Compiled with texmath 0.8.6.3, highlighting-kate 0.6.2. Syntax highlighting is supported for the following languages: abc, actionscript, ada, agda, apache, asn1, asp, awk, bash, bibtex, boo, c, changelog, clojure, cmake, coffee, coldfusion, commonlisp, cpp, cs, css, curry, d, diff, djangotemplate, dockerfile, dot, doxygen, doxygenlua, dtd, eiffel, elixir, email, erlang, fasm, fortran, fsharp, gcc, glsl, gnuassembler, go, hamlet, haskell, haxe, html, idris, ini, isocpp, java, javadoc, javascript, json, jsp, julia, kotlin, latex, lex, lilypond, literatecurry, literatehaskell, llvm, lua, m4, makefile, mandoc, markdown, mathematica, matlab, maxima, mediawiki, metafont, mips, modelines, modula2, modula3, monobasic, nasm, noweb, objectivec, objectivecpp, ocaml, octave, opencl, pascal, perl, php, pike, postscript, prolog, pure, python, r, relaxng, relaxngcompact, rest, rhtml, roff, ruby, rust, scala, scheme, sci, sed, sgml, sql, sqlmysql, sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl, xml, xorg, xslt, xul, yacc, yaml, zsh ...... 可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。
-样例 % Markdown &#43; Pandoc% lanlingzi% 2016-07-16## Web-based slideshow - is a slide show which can be played (viewed or presented) using a web browser- is typically generated to or authored in HTML, JavaScript and CSS code (files)- are generated from presentation software- offer templates allowing the slide show to be easily edited and changed.## Features - Keyboard navigation- Slide transitions and animations- Auto-play/timed transitions- Displays a table of contents- Nested slides- Separate slide notes for the speaker- Full screen support, with automatic text and images resizing to fit full screen- ..... Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。
+样例 % Markdown &#43; Pandoc % lanlingzi % 2016-07-16 ## Web-based slideshow  - is a slide show which can be played (viewed or presented) using a web browser - is typically generated to or authored in HTML, JavaScript and CSS code (files) - are generated from presentation software - offer templates allowing the slide show to be easily edited and changed. ## Features  - Keyboard navigation - Slide transitions and animations - Auto-play/timed transitions - Displays a table of contents - Nested slides - Separate slide notes for the speaker - Full screen support, with automatic text and images resizing to fit full screen - ..... Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。
 默认情况下每个二级标题是一张独立的幻灯片，所以，注意把每个二级标题下的内容控制在适当的长度。列表的显示效果可以人为设定，例如在幻灯片演示的时候逐条渐入。也可以直接在文本中嵌入HTML，用于显示Markdown等标记语言不支持的表格，或控制字体大小，以及进行其他更加复杂的排版。当然，如果用到的HTML标签过多，这不是Markdown这些轻量级标记语言的错，也许是做幻灯片的方式出了问题。因为演示本身要传达的是内容，复杂的排版没有任何意义。
 命令 $ pandoc -s -i -t slidy demo.md -o demo.html 其中-t slidy是生成Slide采用样式框架，目前Pandoc包含了对五种HTML Slide框架的支持:
  DZSlides Slidy S5 Slideous revealjs  其中-i表示渐进显示，即控制列表的显示效果（逐条渐入）。
@@ -2698,18 +2709,6 @@ struct TestClass { TestClass() : mem1(0), mem2(0) {} TestClass(int m) : mem1(m),
 排序算法  先来一个排序中的比较函数子，实现是左值小于右值。  template&amp;lt;typename T&amp;gt; struct CmpFuctor { bool operator()(const T&amp;amp; lhs, const T&amp;amp; rhs) { return lhs &amp;lt; rhs; } };  交换排序中用到的交换两个元素的函数。  template&amp;lt;typename T&amp;gt; void swap(T* lhs, T* rhs) { T tmp = *lhs; *lhs = *rhs; *rhs = tmp; }  排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。  template&amp;lt;typename T&amp;gt; void traverse(T* pArray, const int size, void (*func)(T&amp;amp;) ) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { func(pArray[idx]); } }  我们先来看一个最简单的插入排序。  template&amp;lt;typename T, typename CMP &amp;gt; void insertsort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { T temp = pArray[idx]; int pos = idx -1; while( pos &amp;gt;= 0 &amp;amp;&amp;amp; cmp(temp, pArray[pos]) ) // &amp;lt; { pArray[pos&#43;1] = pArray[pos]; pos--; } pArray[pos&#43;1] = temp; } }  再对上面的插入排序改进，查找为折半插入排序。  template&amp;lt;typename T, typename CMP&amp;gt; void binaryinsertsort(T* pArray, const int size, CMP cmp) { for(int idx = 1; idx &amp;lt; size; idx&#43;&#43;) { int left = 0; int right = idx -1; T temp = pArray[idx]; while( left &amp;lt;= right) { int middle = (left &#43; right) / 2; if ( cmp(temp, pArray[middle] )) // &amp;lt; { right = middle - 1; } else { left = middle &#43; 1; } } int j = idx-1; for(; j &amp;gt;= right&#43;1; j--) { pArray[j&#43;1] = pArray[j]; } pArray[right&#43;1] = temp; } }  再来一个改进版的插入排序。  是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。
 template&amp;lt;typename T, typename CMP&amp;gt; void shellsort(T* pArray, const int size, CMP cmp) { int j = 0; int d = size / 2; // 通过增量控制排序的执行过程 while( d &amp;gt; 0 ) { for(int i = d; i&amp;lt; size;i&#43;&#43;) { j = i - d; while(j &amp;gt;= 0) { // 对各个分组进行处理 if ( cmp(pArray[j&#43;d], pArray[j]) ) { swap(&amp;amp;pArray[j], &amp;amp;pArray[j&#43;d]); j -= d; } else { j = -1; } } } d /= 2; //递减增量d } }  下面是一种简单选择排序算法。  template&amp;lt;typename T, typename CMP&amp;gt; void selectsort(T* pArray, const int size, CMP cmp) { for(int idx = 0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = idx &#43; 1; pos &amp;lt; size; pos&#43;&#43;) { if( cmp(pArray[pos], pArray[idx]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[idx]); } } } }  交换排序中最简单的冒泡排序。  template&amp;lt;typename T, typename CMP&amp;gt; void bubblesort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = 0; pos &amp;lt;= size - idx;pos&#43;&#43;) { if( cmp(pArray[pos&#43;1], pArray[pos]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[pos&#43;1]); } } } }  交换排序中最简单的快速排序。  template&amp;lt;typename T, typename CMP&amp;gt; int partition(T* pArray, int p, int r, CMP cmp) { int i = p - 1; int j = 0; for(j = p; j &amp;lt; r; j&#43;&#43;) { if(cmp(pArray[j], pArray[r])) //pArray[j] &amp;gt;= pArray[r] { i&#43;&#43;; swap(&amp;amp;pArray[i], &amp;amp;pArray[j]); } } swap(&amp;amp;pArray[i &#43; 1], &amp;amp;pArray[r]); return i &#43; 1; 测试代码 void print(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } int genrandom(int min, int max) { return (min &#43; (int)(((float)rand()/RAND_MAX)*(max - min))); } void random(int&amp;amp; a ) { a = genrandom(-50, 100); } void sort_test() { int A[] = {4, 1, 44, -12, 5, 125, 30}; int len = sizeof(A) / sizeof(int); // traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); insertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); binaryinsertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); shellsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); bubblesort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); selectsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); quicksort(A, 0, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); }  上面的函数有C风格的函数指针与C&#43;&#43;风格函数子（Functor，有时也叫函数对象），函数使用了C&#43;&#43;中模板的一些特性，测试环境为eclipse&#43;cdt&#43;gcc。
 </content>
-    </entry>
-    
-     <entry>
-        <title>Posts</title>
-        <url>http://lanlingzi.cn/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
     </entry>
     
 </search>

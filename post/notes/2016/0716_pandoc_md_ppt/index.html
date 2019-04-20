@@ -12,7 +12,6 @@
     <meta property="og:image" content="/img/author.jpg"> 
     <meta name="title" content="Pandoc&#43;Mardown生成Web Slide - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
-    
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
     <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -105,11 +104,11 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2016/0716_pandoc_md_ppt/" itemprop="url">
-          Pandoc&#43;Mardown生成Web Slide
+        Pandoc&#43;Mardown生成Web Slide
         </a>
       </h1>
       <div class="post-meta">
-        <span class="post-time">
+      <span class="post-time">
 <span class="post-meta-item-icon">
     <i class="fa fa-calendar-o"></i>
 </span>
@@ -117,8 +116,8 @@
 <time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-16">
     2016-07-16
 </time>
-</span>
-        
+</span> 
+      
 
   <span class="post-category" >
   &nbsp; | &nbsp;
@@ -137,18 +136,18 @@
 </span>
 
 
-         <span>
+       <span>
 &nbsp; | &nbsp;
 <span class="post-meta-item-icon">
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1537 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1551 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-      <h2 id="背景">背景</h2>
+    <h2 id="背景">背景</h2>
 
 <p>在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。</p>
 
@@ -184,27 +183,27 @@ Syntax highlighting is supported for the following languages:
 <p>可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。</p>
 
 <h3 id="样例">样例</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">% Markdown + Pandoc<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span>% lanlingzi<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span>% 2016-07-16<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e">##</span> Web-based slideshow
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">% Markdown + Pandoc
+% lanlingzi
+% 2016-07-16
 
-<span style="color:#66d9ef">-</span> is a slide show which can be played (viewed or presented) using a web browser<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> is typically generated to or authored in HTML, JavaScript and CSS code (files)<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> are generated from presentation software<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> offer templates allowing the slide show to be easily edited and changed.<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e">##</span> Features
+<span style="color:#75715e">## Web-based slideshow
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">-</span> is a slide show which can be played (viewed or presented) using a web browser
+<span style="color:#66d9ef">-</span> is typically generated to or authored in HTML, JavaScript and CSS code (files)
+<span style="color:#66d9ef">-</span> are generated from presentation software
+<span style="color:#66d9ef">-</span> offer templates allowing the slide show to be easily edited and changed.
 
-<span style="color:#66d9ef">-</span> Keyboard navigation<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Slide transitions and animations<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Auto-play/timed transitions<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Displays a table of contents<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Nested slides<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Separate slide notes for the speaker<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">-</span> Full screen support, with automatic text and images resizing to fit full screen<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span>- .....</code></pre></div>
+<span style="color:#75715e">## Features
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">-</span> Keyboard navigation
+<span style="color:#66d9ef">-</span> Slide transitions and animations
+<span style="color:#66d9ef">-</span> Auto-play/timed transitions
+<span style="color:#66d9ef">-</span> Displays a table of contents
+<span style="color:#66d9ef">-</span> Nested slides
+<span style="color:#66d9ef">-</span> Separate slide notes for the speaker
+<span style="color:#66d9ef">-</span> Full screen support, with automatic text and images resizing to fit full screen
+- .....</code></pre></div>
 <p>Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。</p>
 
 <p>默认情况下每个二级标题是一张独立的幻灯片，所以，注意把每个二级标题下的内容控制在适当的长度。列表的显示效果可以人为设定，例如在幻灯片演示的时候逐条渐入。也可以直接在文本中嵌入HTML，用于显示Markdown等标记语言不支持的表格，或控制字体大小，以及进行其他更加复杂的排版。当然，如果用到的HTML标签过多，这不是Markdown这些轻量级标记语言的错，也许是做幻灯片的方式出了问题。因为演示本身要传达的是内容，复杂的排版没有任何意义。</p>
@@ -228,7 +227,7 @@ Syntax highlighting is supported for the following languages:
 <p>采用Pandoc把Markdown转化为Slide也不是万能的。受限于Markdown的标签表达能力，其中的表格、复杂公式、多国语言、上下标、交叉引用、图表对齐较多的场合，它并不适合。使用Pandoc，只是喜欢Slide的样式，不用去辛辛苦苦的做PPT， 也有PPT的展示效果，何乐而不为呢？</p>
     </div>
     <footer class="post-footer">
-      
+     
  
 <div class="post-tags">     
      
@@ -240,27 +239,27 @@ Syntax highlighting is supported for the following languages:
 
 
 
-      <div class="post-nav">
+     <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0703_goroutine/" rel="next" title="Goroutine陷阱">
-        <i class="fa fa-chevron-left"></i> Goroutine陷阱
+        <a href="http://lanlingzi.cn/post/technical/2016/0717_go_book/" rel="next" title="Go语言在线书籍收集">
+        <i class="fa fa-chevron-left"></i> Go语言在线书籍收集
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0717_go_book/" rel="prev" title="Go语言在线书籍收集">
-        Go语言在线书籍收集 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2016/0703_goroutine/" rel="prev" title="Goroutine陷阱">
+        Goroutine陷阱 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
 </div>
       
-      
-      
-      
+     
+     
+     
 
 
 
@@ -307,15 +306,20 @@ Syntax highlighting is supported for the following languages:
       </a>
     </div>
     <div class="site-state-item site-state-categories">    
-        <a href="http://lanlingzi.cn/categories/">       
+        <a href="http://lanlingzi.cn/categories/">      
+         
         <span class="site-state-item-count">4</span>
+        
         <span class="site-state-item-name">分类</span>
+        
         </a>
     </div>
 
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
+         
         <span class="site-state-item-count">56</span>
+        
         <span class="site-state-item-name">标签</span>
         </a>
     </div>
@@ -325,14 +329,14 @@ Syntax highlighting is supported for the following languages:
 <div class="links-of-author motion-element">
     
         <span class="links-of-author-item">
-        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+        <a href="" target="_blank" title="GitHub">
             <i class="fa fa-fw fa-github"></i>
             GitHub
         </a>
         </span>
     
         <span class="links-of-author-item">
-        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+        <a href="" target="_blank" title="知乎">
             <i class="fa fa-fw fa-globe"></i>
             知乎
         </a>
@@ -340,7 +344,9 @@ Syntax highlighting is supported for the following languages:
     
 </div>
 
+
       
+
       <div class="links-of-blogroll motion-element inline">
 <script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
 </div>
@@ -378,12 +384,12 @@ Syntax highlighting is supported for the following languages:
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2018</span>
+  2009 - 2019</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.53</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
