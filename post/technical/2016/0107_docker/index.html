@@ -1,0 +1,449 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>如何看待Docker - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="如何看待Docker">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="如何看待Docker - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0107_docker/" itemprop="url">
+        如何看待Docker
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-01-07">
+    2016-01-07
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3315 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://lanlingzi.cn/images/docker/docker_ecosystem.jpg" alt="docker ecosystem" /></p>
+
+<p>从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：</p>
+
+<h2 id="标准化是基础">标准化是基础</h2>
+
+<p>从对Linux的贡献角度来说，Docker并没有什么技术创新。但为什么它会得到如此众多的追捧，主要他得益它制定了标准。尤其是我所在电信行业感受最深，真是得标准得天下：</p>
+
+<ul>
+<li>容器镜像：软件的交付件标准化，使得软件在云环境中的构建，发布，运行，迁移，复制等软件分发变得更加容易。</li>
+<li>容器引擎：容器操作方式标准化，提供标准的Rest API，使得对容器的创建，删除，启停等生命周期管理更简单。</li>
+</ul>
+
+<h2 id="简单就是生产力">简单就是生产力</h2>
+
+<p>我们再来看Docker的诞生，它是来源于Docker公司前身dotCloud的实践，出发点是为了解决如何帮助开发人员实现软件的快速打包，部署。其实也就是目前大家都在说的CICD，通过统一的格式来提升打包，测试，部署的效率。所以大家看到Docker宣传的“Build，Ship，Run”，也就说它最大的特点，简化了开发到部署操作，极大地提高的软件开发验证效率。</p>
+
+<h2 id="会带来什么价值">会带来什么价值</h2>
+
+<p>除前面的提高软件的开发验证效率，它还能给出我们带来什么价值？首先，Docker屏蔽了软件运行环境差异，这个怎么理解呢？因为它的镜像具有便携性，一致性的特点。这极大地简化了软件在部署过程由于环境的差异带来的不确认性。其次Docker本身就是一种OS容器技术。而OS容器是基于操作系统内核的虚拟化，是一种轻量的虚拟化。相比于Hypervisor的虚拟化技术，它没有指令转化这一层，只是共享主机内核，划出不同的Namesapce。在计算能力上它是没有什么性能损耗的。容器可以运行在物理机或虚拟机之上，不依赖于虚拟化软件。所以它的价值主要体现在两大方面：</p>
+
+<h3 id="降成本-相比hypervisor">降成本（相比Hypervisor）</h3>
+
+<ul>
+<li>基于Hypervisor虚拟化的应用性能下降比较高，尤其是IO密集型，同等性能指标需要消耗更多的资源。<br /></li>
+<li>采Hypervisor虚拟化技术，License费用支出高，虚拟化管理软件也有成本支出。</li>
+<li>Hypervisor虚拟化对资源划分粒度比较大，而容器可以更细粒度你分割资源，可以提整体资源利用率。</li>
+<li>虚拟机镜像大（以G为单位），启动慢（分钟级）；而容器镜像相对小（以M为单位），启动快（秒级），应用可以快速伸缩，降低维护成本</li>
+<li>容器能快速创建与销毁，可以应用在一些短任务的业务（如大数据分析），长短任务的业务混合部署，错峰填谷来提升资源利用率。</li>
+</ul>
+
+<h3 id="加速创新">加速创新</h3>
+
+<ul>
+<li>改变软件的交付模式：CICD变得更加容易，可以使软件快速开发、上线、验证。软件开发迭代周期缩短，试错风险小，加速业务的创新能力。</li>
+<li>改变软件的架构模式：容器即完整执行环境，可以使用软件“微”服务化，服务之间能够快速组合和重构，提升业务的创新能力。</li>
+</ul>
+
+<h2 id="网络与存储">网络与存储</h2>
+
+<p>相对于传统的虚拟化来说，包括三个方面，计算虚拟化，网络虚拟化，存储虚拟化。映射到容器技术上来说，计算能力就是Docker引擎，而网络则是容器网络管理，存储则是容器卷管理。Docker在容器管理上是相对比较成熟的，但在网络方面目前还是相对比较弱，Docker现有的网络模型主要是通过使用Network namespace、Linux Bridge、Iptables、veth pair等技术实现的。Docker提供了四种网络模式：</p>
+
+<ul>
+<li>host模式： 容器和宿主机共享Network namespace。没有网络隔离，多容器需要规划端口，适合不需要动态调度的静态部署使用Docker。</li>
+<li>bridge模式： Bridge模式是Docker的默认模式，即NAT方式，容器网卡从docker0网桥所在的IP网段中选取一个未使用的IP，容器端口映射到主机上。性能下降15~20%，对网络性能与时延敏感的应用不适合。</li>
+<li>container模式： 容器和另外一个容器共享Network namespace。kubernetes中的pod就是多个容器共享一个Network namespace。这些方式有它特定的应用场景。</li>
+<li>none模式：容器有独立的Network namespace，但并没有对其进行任何网络设置，如分配veth pair 和网桥连接，配置IP等。这些方式适合通过Libnetwokr方式扩展。</li>
+</ul>
+
+<p>目前Docker释放出Libnetwork，旨在将Docker的网络功能从Docker核心代码中分离出去，形成一个单独的库。 Libnetwork通过插件的形式为Docker提供网络功能。用户可以根据自己的需求实现自己的Driver来提供不同的网络功能。
+Libnetwork引入了容器网络模型（CNM）:</p>
+
+<ul>
+<li>Network Sandbox：容器中一个网络配置的隔离环境</li>
+<li>Endpoint：在某个网络上进行网络通讯的接口，Endpoint可以加入一个network，同时，多个Endpoint也可以在一个网络沙盒中共存。</li>
+<li>Network：一个唯一的、可识别的endpoint组，组内endpoint可以相互通讯。</li>
+</ul>
+
+<p>Libnetwork从Docker1.7开始，目前整体来说，还是属于起步阶段。由于网络是一个绕不开的话题，网络方案热度很高，目前各个企业在使用Docker时也是有各自的解决方案，他们各所有长，没有包打天下的方案。Docker 1.9发布，已把libnetwork合入，号称已Production Ready，实际还是底层调用OVS或Vxlan。OVS与Vxlan在性能上都存在损耗。</p>
+
+<p>容器卷的管理相对网络来说，热度比较低。Docker之前可以通过Monut主机的目录来解决数据持久存储的问题，由于容器的特点是便携，本地数据肯定存在数据迁移的问题。Docker 1.9重新设计的一套完整存储卷管理系统，也像网络一样，支持能过插件形式来为Docker提供卷功能，实现自己的Driver来提供不同的卷管理功能。卷管理这一块走在前面是Flocker，其它没有看到较成熟的产品。</p>
+
+<p>Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑。毕竟即使开源，如果系统的开放性不够，就会导致商业可能为黑寡妇，最终伤害也是自己的利益。</p>
+
+<h2 id="使用方式">使用方式</h2>
+
+<p>正如前面所说的，容器涉及到计算，存储，网络。而目前网络与存储相对不是很成熟，也是影响着大家使用Docker的方式，目前主要有几种形态：</p>
+
+<ul>
+<li>IaaS + Docker：在虚拟机或物理机上是使用容器，容器是对资源进一步的分割与隔离。目前是主流，应用较成熟。</li>
+<li>轻量虚拟机 + Docker：主要是虚拟化技术厂商为准，借助虚拟化在存储，网络，安全的能力。像Vmware的Photon，创建虚拟机时同时拉起容器。其它代表有Intel的ClearLinux，国内的Hyper.sh。目前还实验阶段。</li>
+</ul>
+
+<p>目前大家还是把Docker当工具使用，因为整个工具链还不太成熟。容器编排与调度领域目前有K8S与Mesos/Marathon，Docker自家也有compose与swarm，但明显Google在这一领域更有发言权（Borg的成熟应用），也主导了CNCF。将来Google领导的K8S可能是容器编排的事实标准。</p>
+
+<p>而传统的虚拟化厂商明显感到来自Docker的挑战，所以也顺适而为，摧出轻量虚拟化+Docker结合技术，来继续巩固已有的虚拟化市场，这真是一个有意义的现象。</p>
+
+<h2 id="标准之争">标准之争</h2>
+
+<p>CoreOS不满于Docker在容器技术一家独食，发起了<a href="https://github.com/appc/spec">AppC</a>的容器规范，并实现该规范RTK与其竞争。其后在15年6月大家握手言和，成立了OCI（Open Container Initiative）组织。<a href="https://github.com/opencontainers/runc">RunC</a>就是Docker贡献出来的，按照该开放容器格式标准（OCF, Open Container Format）制定的一种具体实现。而Docker公司也很不情愿地把<a href="https://github.com/docker/libcontainer">LibContainer</a>以RunC方式贡献出来。从使用量来看，目前RKT使用很少，Docker是事实标准。值得一提的是，我司也在标准这块发挥着重要作用，并发布了<a href="https://github.com/huawei-openlab/oct">OCT</a>，一个基于开放容器规范的测试框架。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/docker" rel="tag" title="Docker">#Docker#</a>
+    
+    <a href="http://lanlingzi.cn/tags/%e5%ae%b9%e5%99%a8" rel="tag" title="容器">#容器#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0116_speed_sw_distribute/" rel="next" title="软件分发加速">
+        <i class="fa fa-chevron-left"></i> 软件分发加速
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/stories/2016/0103_7s_time/" rel="prev" title="7秒时光">
+        7秒时光 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#标准化是基础">标准化是基础</a></li>
+<li><a href="#简单就是生产力">简单就是生产力</a></li>
+<li><a href="#会带来什么价值">会带来什么价值</a>
+<ul>
+<li><a href="#降成本-相比hypervisor">降成本（相比Hypervisor）</a></li>
+<li><a href="#加速创新">加速创新</a></li>
+</ul></li>
+<li><a href="#网络与存储">网络与存储</a></li>
+<li><a href="#使用方式">使用方式</a></li>
+<li><a href="#标准之争">标准之争</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

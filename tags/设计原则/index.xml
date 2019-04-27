@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>设计原则 on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/tags/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</link>
+    <description>Recent content in 设计原则 on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 10 Sep 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>软件变革下设计原则</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0910_soft_design/</link>
+      <pubDate>Sat, 10 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0910_soft_design/</guid>
+      <description>&lt;p&gt;传统大型软件系统 ，多以功能需求驱动设计与开发。在体系结构上是一个单体应用，变更修改往往是牵一而发动全身；在系统生态上是一个封闭系统，系统集成是大量定制开发。单体封闭的系统在交付中面临着越来越多的挑战，提升系统的竞争力首先是在软件架构上先行。软件系统发展也需像硬件一样不断地更新换代，软件架构设计需要输入新的思维。只有在思想上彻底地变革，才能摆脱原有的束缚与局限性。&lt;/p&gt;
+
+&lt;h2 id=&#34;体验为王&#34;&gt;体验为王&lt;/h2&gt;
+
+&lt;p&gt;软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>软件设计原则</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0306_arch_principle/</link>
+      <pubDate>Sun, 06 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0306_arch_principle/</guid>
+      <description>&lt;p&gt;软件也像人一样，具有生命力，从出生到死亡，会经历多种变化。软件架构设计也不是一蹴而就的，是不断地演进发展。但为了能较好的发展，在软件设计时需要考虑一些原则。&lt;/p&gt;
+
+&lt;h3 id=&#34;清晰原则-使用简洁接口-简单部件组合&#34;&gt;清晰原则：使用简洁接口，简单部件组合&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;编程的本质就是要控制复杂度，后期维护会占用大部分的时间。&lt;/li&gt;
+&lt;li&gt;降低整体复杂度，用清晰的接口把若干简单模块组合成一个复杂的系统。&lt;/li&gt;
+&lt;li&gt;对外隐藏细节，“不要与陌生人说话”。&lt;/li&gt;
+&lt;li&gt;多数问题局限天一个局部，不要影响到全局。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;小结：本质是分而治之，复杂问题简单化，抽象框架，有序组全。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

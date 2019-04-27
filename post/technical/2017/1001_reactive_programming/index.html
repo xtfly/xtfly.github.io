@@ -1,0 +1,475 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>响应式编程 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="响应式编程">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="响应式编程 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/" itemprop="url">
+        响应式编程
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-10-01">
+    2017-10-01
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2895 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h2 id="rxjava">RxJava</h2>
+
+<p>最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了<a href="https://github.com/ReactiveX/RxJava">RxJava(Reactive Extension for Java)</a>。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的<a href="http://Rx.Net">Rx.Net</a>的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有<a href="http://projectreactor.io/">Project Reactor</a>, <a href="https://akka.io/">Akka</a>和<a href="https://github.com/google/agera">Agera</a>等等。</p>
+
+<p>传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的<code>Callback Hell</code>。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决<code>Callback Hell</code>。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。</p>
+
+<p>再拿RxJava来说，其最基础的原理是引入了<code>Observable</code>概念，一种观察者模式与Reactor模式的增强，但又与传统的观察者模式又不完全相同。传统的观察者模式只涉及到两个对象：观察者（Observer）和被观察者（Observable）。观察者通过将被观察的对象加到自己的观察队列中，当被观察者发生改变时，就会通知观察者东西已经改变。而RxJava中涉及到4个概念：</p>
+
+<ul>
+<li>Observable：可观察者，即被观察者</li>
+<li>Observer：观察者</li>
+<li>Subscribe：订阅</li>
+<li>Event：事件</li>
+</ul>
+
+<p><code>Observable</code>和<code>Observer</code>通过<code>subscribe()</code>方法实现订阅关系，从而<code>Observable</code>可以在需要的时候发出事件来通知 <code>Observer</code>数据刷新。而上游只管同过<code>Observable</code>发送数据，或是异步或是同步。下游只管处理，也无须关心上游数据到底怎么生成。</p>
+
+<p>如果这样的话，其实和<code>CallBack</code>也差不多啊。但<code>Observable</code>通过<code>Observable Contract</code>，使得所有<code>CallBack</code>都可以走上同一个管道。这就引出Stream的概念，也是Java 8中最主要的特性。Stream是Java弥补函数式编程的缺陷，解决集合类型函数式与链式操作，它看起来像一个管道的不断地<code>Iterable</code>流。回到RxJava，它使得<code>CallBack</code>都到一个<code>Stream</code>管道流了，而可以与Java 8的函数式编程完美结合，从而避免了<code>Callback Hell</code>。</p>
+
+<h2 id="响应式编程">响应式编程</h2>
+
+<p>回到正题，什么是响应式编程，如下是来自<a href="https://en.wikipedia.org/wiki/Reactive_programming">Reactive programming - Wikipedia</a>的定义：</p>
+
+<blockquote>
+<p>In computing, reactive programming is an asynchronous programming paradigm concerned with data streams and the propagation of change.</p>
+</blockquote>
+
+<p>响应式编程(简称RP)是一种异步编程范式，包含两个重要的关键词：</p>
+
+<ul>
+<li><p>Data streams: 即数据流，分为静态数据流（比如数组，文件）和动态数据流（比如事件流，日志流）两种。基于数据流模型，RP得以提供一套统一的Stream风格的数据处理接口。和Java 8中的Stream API相比，RP API除了支持静态数据流，还支持动态数据流，并且允许复用和同时接入多个订阅者。</p></li>
+
+<li><p>The propagation of change: 变化传播，简单来说就是以一个数据流为输入，经过一连串操作转化为另一个数据流，然后分发给各个订阅者的过程。这就有点像函数式编程中的组合函数，将多个函数串联起来，把一组输入数据转化为格式迥异的输出数据。</p></li>
+</ul>
+
+<p>在JVM上，由于Java语言层面不支持原生异步，RxJava与Rector等都是一种异步编程框架，他们涵盖以下三个特性：</p>
+
+<ul>
+<li><p>描述而非执行：在你最终调用subscribe()方法之前，从发布端到订阅端，没有任何事会发生。就好比无论多长的水管，只要水龙头不打开，水管里的水就不会流动。为了提高描述能力，RP提供了比Stream丰富的多的多的API，比如buffer(), merge(), onErrorMap()等。</p></li>
+
+<li><p>提高吞吐量：RP通过线程复用来提高吞吐量，它有点像异步IO的多路复用机制，通过线程复用来处理数据流。</p></li>
+
+<li><p>背压（Backpressure）机制：背压就是一种流控机制。就是消费者需要多少，生产者就生产多少。这有点类似于TCP里的流量控制，接收方根据自己的接收窗口的情况来控制接收速率，并通过反向的ACK包来控制发送方的发送速率。</p></li>
+</ul>
+
+<p>当然，与任何框架一样，有优势必然就有劣势：</p>
+
+<ul>
+<li>优势：
+
+<ul>
+<li>适用于高并发、带延迟操作</li>
+</ul></li>
+<li>劣势：
+
+<ul>
+<li>线程无法细粒度隔离：由于是线程复用，若线程存在卡死，可能导致整个应用被拖垮而不可用。</li>
+<li>调试定位因难：采用Stream的链式表达式，一旦出错，你将很难定位到具体是哪个环节出了问题。</li>
+</ul></li>
+</ul>
+
+<h2 id="响应式宣言">响应式宣言</h2>
+
+<p>和<a href="http://agilemanifesto.org/">敏捷宣言</a>一样，响应式编程也有<a href="http://www.reactivemanifesto.org/">响应式宣言</a>:</p>
+
+<blockquote>
+<p>We want systems that are Responsive, Resilient, Elastic and Message Driven. We call these Reactive Systems.</p>
+</blockquote>
+
+<p><img src="http://lanlingzi.cn/images/y17/reactive-traits.svg" alt="" /></p>
+
+<p>宣言中也包含了4组关键词:</p>
+
+<ul>
+<li>Responsive: 可响应的。要求系统尽可能做到在任何时候都能及时响应。</li>
+<li>Resilient: 可恢复的。要求系统即使出错了，也能保持可响应性。</li>
+<li>Elastic: 可伸缩的。要求系统在各种负载下都能保持可响应性。</li>
+<li>Message Driven: 消息驱动的。要求系统通过异步消息连接各个组件。</li>
+</ul>
+
+<p>从上面可以看，响应式宣言，主要目的是解决系统的可用性，用用性首先要保证就是可响应性。</p>
+
+<h2 id="spring-5-webflux">Spring 5 WebFlux</h2>
+
+<p>让我还在留在Java开发，还是因为Spring社区。Spring一直是Java编程领域的急先峰，如最早的IOC，后面AOP，当前微服务框架SpringCloud， SprintBoot，以及刚发布的Spring 5中最主要的WebFlux。它积极吸引业界优秀的实践，带入Java世界，给暮色沉沉的Java带来一些新意。</p>
+
+<p>Spring 5最大的亮点是提供了提供了完整的端到端响应式编程的支持，也是Java世界首个响应式Web框架。</p>
+
+<p><img src="http://lanlingzi.cn/images/y17/webflux-overview.png" alt="" /></p>
+
+<p>左侧是传统的基于Servlet的Spring Web MVC框架，右侧是5.0版本新引入的基于Reactive Streams的Spring WebFlux框架，从上到下依次是Router Functions，WebFlux，Reactive Streams三个新组件。</p>
+
+<ul>
+<li>Router Functions: 对标@Controller，@RequestMapping等标准的Spring MVC注解，提供一套函数式风格的API，用于创建Router，Handler和Filter。</li>
+<li>WebFlux: 核心组件，协调上下游各个组件提供响应式编程支持。</li>
+<li><a href="http://www.reactive-streams.org/">Reactive Streams</a>: 一种支持背压（Backpressure）的异步数据流处理标准，主流实现有RxJava和Reactor，Spring WebFlux默认集成的是Reactor。</li>
+</ul>
+
+<p>除了新的Router Functions接口，Spring WebFlux同时支持使用老的Spring MVC注解声明Reactive Controller。在Web容器的选择上，Spring WebFlux既支持像Tomcat，Jetty这样的的传统容器（前提是支持Servlet 3.1 Non-Blocking IO API），又支持像Netty，Undertow那样的异步容器。</p>
+
+<p>参考：<br />
+1. <a href="https://spring.io/blog/2016/04/19/understanding-reactive-types">Understanding Reactive types</a><br />
+2. <a href="Designing, Implementing, and Using Reactive APIs">Designing, Implementing, and Using Reactive APIs</a><br />
+3. <a href="https://www.slideshare.net/AliakseiZhynhiarousk/spring-framework-5-history-and-reactive-features">Spring Framework 5: History and Reactive features</a><br />
+4. <a href="http://blog.csdn.net/eMac/article/details/73557010">响应式编程总览</a></p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/java" rel="tag" title="Java">#Java#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/" rel="next" title="从Archlinux到Manjaro&#43;i3 WM">
+        <i class="fa fa-chevron-left"></i> 从Archlinux到Manjaro&#43;i3 WM
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/thoughts/2017/0925_soft_dilemma/" rel="prev" title="软件的困境">
+        软件的困境 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#rxjava">RxJava</a></li>
+<li><a href="#响应式编程">响应式编程</a></li>
+<li><a href="#响应式宣言">响应式宣言</a></li>
+<li><a href="#spring-5-webflux">Spring 5 WebFlux</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

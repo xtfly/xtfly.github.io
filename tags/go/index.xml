@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/tags/go/</link>
+    <description>Recent content in Go on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 03 Feb 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go性能优化小结</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</link>
+      <pubDate>Fri, 03 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</guid>
+      <description>&lt;h2 id=&#34;内存优化&#34;&gt;内存优化&lt;/h2&gt;
+
+&lt;h3 id=&#34;小对象合并成结构体一次分配-减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
+
+&lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
+
+&lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
+    k, v := k, v // copy for capturing by the goroutine
+    go func() {
+        // using k &amp;amp; v
+    }()
+}&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;替换为：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
+    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
+    go func() {
+        // using x.k &amp;amp; x.v
+    }()
+}&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go依赖管理机制</title>
+      <link>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</link>
+      <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</guid>
+      <description>&lt;p&gt;无论何种语言，依赖管理都是一个比较复杂的问题。而Go语言中的依赖管理机制目前还是让人比较失望的。在1.6版本之前，官方只有把依赖放在GOPATH中，并没有多版本管理机制；1.6版本（1.5版本是experimental feature）引入vendor机制，是包依赖管理对一次重要尝试。他在Go生态系统中依然是一个热门的争论话题，还没有想到完美的解决方案。&lt;/p&gt;
+
+&lt;h2 id=&#34;看其它&#34;&gt;看其它&lt;/h2&gt;
+
+&lt;p&gt;我们先来看看其它语言怎么解决，例举两种典型的管理方式：&lt;/p&gt;
+
+&lt;h3 id=&#34;java&#34;&gt;Java&lt;/h3&gt;
+
+&lt;p&gt;开发态，可以通过maven和gradle工具编辑依赖清单列表/脚本，指定依赖库的位置/版本等信息，这些可以帮助你在合适的时间将项目固化到一个可随时随地重复编译发布的状态。这些工具对我来说已经足够优雅有效。但maven中也有不同依赖库的内部依赖版本冲突等令人心烦的问题。尤其是在大型项目中的依赖传递问题，若团队成员对maven机制没有足够了解下，依赖scope的滥用，会让整个项目工程的依赖树变得特别的巨大而每次编译效率低下。运行态，目前Java也没有很好的依赖管理机制，虽有classloader可以做一定的隔离，但像OSGi那种严格的版本管理，会让使用者陷入多版本相互冲突的泥潭。&lt;/p&gt;
+
+&lt;h3 id=&#34;node-js&#34;&gt;Node.js&lt;/h3&gt;
+
+&lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go map key类型分析</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0904_go_map/</link>
+      <pubDate>Sun, 04 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0904_go_map/</guid>
+      <description>&lt;p&gt;团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。&lt;/p&gt;
+
+&lt;h2 id=&#34;map的key类型&#34;&gt;map的key类型&lt;/h2&gt;
+
+&lt;p&gt;map中的key可以是任何的类型，只要它的值能比较是否相等，Go的&lt;a href=&#34;http://golang.org/ref/spec#Comparison_operators&#34;&gt;语言规范&lt;/a&gt;已精确定义，Key的类型可以是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;布尔值&lt;/li&gt;
+&lt;li&gt;数字&lt;/li&gt;
+&lt;li&gt;字符串&lt;/li&gt;
+&lt;li&gt;指针&lt;/li&gt;
+&lt;li&gt;通道&lt;/li&gt;
+&lt;li&gt;接口类型&lt;/li&gt;
+&lt;li&gt;结构体&lt;/li&gt;
+&lt;li&gt;只包含上述类型的数组。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;但不能是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;slice&lt;/li&gt;
+&lt;li&gt;map&lt;/li&gt;
+&lt;li&gt;function&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go VIM开发环境</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0903_vim/</link>
+      <pubDate>Sat, 03 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0903_vim/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改&lt;/li&gt;
+&lt;li&gt;配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换&lt;/li&gt;
+&lt;li&gt;有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
+
+&lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go测试</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</link>
+      <pubDate>Wed, 24 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0824_go_testing/</guid>
+      <description>&lt;p&gt;Go语言内置了测试框架，编写单元测试非常方便。&lt;/p&gt;
+
+&lt;h2 id=&#34;命名约定&#34;&gt;命名约定&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;测试代码位于以&lt;code&gt;_test.go&lt;/code&gt;结尾的源文件中，一般与源码在同一个package中。&lt;/p&gt;
+
+&lt;p&gt;位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;测试源码可以修改package名，带上&lt;code&gt;_test&lt;/code&gt;结尾&lt;/p&gt;
+
+&lt;p&gt;修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的&lt;code&gt;bytes&lt;/code&gt;中的测试代码，方便使用被测试的元素，可以采用&lt;code&gt;.&lt;/code&gt;来import测试的package：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bytes_test&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
+    . &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bytes&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;io&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+)&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Goroutine Local Storage</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0813_go_gls/</link>
+      <pubDate>Sat, 13 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0813_go_gls/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称&lt;code&gt;GoId&lt;/code&gt;）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。&lt;/p&gt;
+
+&lt;p&gt;在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。&lt;/p&gt;
+
+&lt;p&gt;在Java中，JDK库提供&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;来获取当前线程对象，提供&lt;code&gt;ThreadLocal&lt;/code&gt;来存储与获取线程局部变量。由于Java能通过&lt;code&gt;Thread.CurrentThread()&lt;/code&gt;获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>理解Go Interface</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0803_go_interface/</link>
+      <pubDate>Wed, 03 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0803_go_interface/</guid>
+      <description>&lt;h2 id=&#34;概述&#34;&gt;概述&lt;/h2&gt;
+
+&lt;p&gt;Go语言中的&lt;a href=&#34;http://golang.org/doc/effective_go.html#interfaces&#34;&gt;接口&lt;/a&gt;很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组&lt;a href=&#34;http://golang.org/ref/spec#Method_sets&#34;&gt;方法的集合&lt;/a&gt;，要有方法为&lt;a href=&#34;http://golang.org/ref/spec#Interface_types&#34;&gt;接口类型&lt;/a&gt;就被认为是该接口。从定义上来看，接口有两个特点:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C++/Java中的接口，后者仅用于声明方法签名。&lt;/li&gt;
+&lt;li&gt;接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接口是完全抽象的，因此不能将其实例化。然而，可以创建一个其类型为接口的变量，它可以被赋值为任何满足该接口类型的实际类型的值。接口的重要特性是：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。&lt;/li&gt;
+&lt;li&gt;作为1的推论，任何类型的值都可以赋值给空接口interface{}。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>理解Go Context机制</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0802_go_context/</link>
+      <pubDate>Tue, 02 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0802_go_context/</guid>
+      <description>&lt;h2 id=&#34;什么是context&#34;&gt;什么是Context&lt;/h2&gt;
+
+&lt;p&gt;最近在公司分析gRPC源码，proto文件生成的代码，接口函数第一个参数统一是&lt;code&gt;ctx context.Context&lt;/code&gt;接口，公司不少同事都不了解这样设计的出发点是什么，其实我也不了解其背后的原理。今天趁着&lt;code&gt;妮妲&lt;/code&gt;台风妹子正面登陆深圳，全市停工、停课、停业，在家休息找了一些资料研究把玩一把。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Context&lt;/code&gt;通常被译作&lt;code&gt;上下文&lt;/code&gt;，它是一个比较抽象的概念。在公司技术讨论时也经常会提到&lt;code&gt;上下文&lt;/code&gt;。一般理解为程序单元的一个运行状态、现场、快照，而翻译中&lt;code&gt;上下&lt;/code&gt;又很好地诠释了其本质，上下上下则是存在上下层的传递，&lt;code&gt;上&lt;/code&gt;会把内容传递给&lt;code&gt;下&lt;/code&gt;。在Go语言中，程序单元也就指的是Goroutine。&lt;/p&gt;
+
+&lt;p&gt;每个Goroutine在执行之前，都要先知道程序当前的执行状态，通常将这些执行状态封装在一个&lt;code&gt;Context&lt;/code&gt;变量中，传递给要执行的Goroutine中。上下文则几乎已经成为传递与请求同生存周期变量的标准方法。在网络编程下，当接收到一个网络请求Request，处理Request时，我们可能需要开启不同的Goroutine来获取数据与逻辑处理，即一个请求Request，会在多个Goroutine中处理。而这些Goroutine可能需要共享Request的一些信息；同时当Request被取消或者超时的时候，所有从这个Request创建的所有Goroutine也应该被结束。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>为什么是Go</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0723_why_go/</link>
+      <pubDate>Sat, 23 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0723_why_go/</guid>
+      <description>&lt;p&gt;HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。&lt;/p&gt;
+
+&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;主要继承了C(func, struct，指针)&lt;/li&gt;
+&lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
+&lt;li&gt;多态吸取自Python与Ruby(duck type)&lt;/li&gt;
+&lt;li&gt;并发吸取自&lt;a href=&#34;http://doc.cat-v.org/inferno/4th_edition/limbo_language/&#34;&gt;Limbo&lt;/a&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Communicating_sequential_processes&#34;&gt;CSP&lt;/a&gt;模型)。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go语言不足</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</link>
+      <pubDate>Mon, 18 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/</guid>
+      <description>&lt;p&gt;最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。&lt;/p&gt;
+
+&lt;h2 id=&#34;生态不成熟&#34;&gt;生态不成熟&lt;/h2&gt;
+
+&lt;p&gt;一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100+的App从Java转向Go。Google内部主要有三大语言（C++、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。&lt;/p&gt;
+
+&lt;p&gt;目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；&lt;/li&gt;
+&lt;li&gt;互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Go语言在线书籍收集</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0717_go_book/</link>
+      <pubDate>Sun, 17 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0717_go_book/</guid>
+      <description>&lt;h2 id=&#34;effective-go&#34;&gt;Effective Go&lt;/h2&gt;
+
+&lt;p&gt;在线阅读：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.hellogcc.org/effective_go.html&#34;&gt;http://www.hellogcc.org/effective_go.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;go语言圣经&#34;&gt;Go语言圣经&lt;/h2&gt;
+
+&lt;p&gt;Go语言圣经，《The Go Programming Language》 中文版本
+&lt;img src=&#34;http://gopl-zh.b0.upaiyun.com/cover_middle.jpg&#34; alt=&#34;Go语言圣经&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;项目主页：&lt;a href=&#34;http://github.com/golang-china/gopl-zh&#34;&gt;http://github.com/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;项目主页：&lt;a href=&#34;http://bitbucket.org/golang-china/gopl-zh&#34;&gt;http://bitbucket.org/golang-china/gopl-zh&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;原版官网：&lt;a href=&#34;http://gopl.io&#34;&gt;http://gopl.io&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Goroutine陷阱</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0703_goroutine/</link>
+      <pubDate>Sun, 03 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0703_goroutine/</guid>
+      <description>&lt;p&gt;Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。&lt;/p&gt;
+
+&lt;h2 id=&#34;goroutine泄漏问题&#34;&gt;Goroutine泄漏问题&lt;/h2&gt;
+
+&lt;p&gt;Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Golang Web开发</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0515_go_web/</link>
+      <pubDate>Sun, 15 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0515_go_web/</guid>
+      <description>&lt;h2 id=&#34;标准库-net-http&#34;&gt;标准库[net/http]&lt;/h2&gt;
+
+&lt;p&gt;采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到&lt;code&gt;net/http&lt;/code&gt;包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的&lt;code&gt;net/http&lt;/code&gt;是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在&lt;code&gt;golang.org/x/net/http2&lt;/code&gt;,后续可能会移到标准库。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;net/http&lt;/code&gt;库中主要涉及到如下几个类型与接口：&lt;/p&gt;
+
+&lt;h3 id=&#34;request结构体&#34;&gt;Request结构体&lt;/h3&gt;
+
+&lt;p&gt;封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Taipei-Torrent源码分析</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</link>
+      <pubDate>Sun, 17 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</guid>
+      <description>&lt;p&gt;提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。&lt;/p&gt;
+
+&lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;
+
+&lt;p&gt;一个BitTorrent的文件在网络传输过程，由以下几个部分组成：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;WEB服务器&lt;/li&gt;
+&lt;li&gt;文件元信息(metainfo)&lt;/li&gt;
+&lt;li&gt;BitTorrent Tracker&lt;/li&gt;
+&lt;li&gt;原始资源发布者&lt;/li&gt;
+&lt;li&gt;目的端用户浏览器&lt;/li&gt;
+&lt;li&gt;目的端用户下载者&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>我为什么喜欢GoLang</title>
+      <link>http://lanlingzi.cn/post/technical/2015/1113_why_love_go/</link>
+      <pubDate>Fri, 13 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2015/1113_why_love_go/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://img3.imgtn.bdimg.com/it/u=3850601748,68654193&amp;amp;fm=21&amp;amp;gp=0.jpg&#34; alt=&#34;gopher&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从8月份到现在，一直在公司尝试用Go写点东西。虽然我们几乎是清一色的Java开发，但我还是愿意在同事之间推广Go，有时间还是学学Go吧。&lt;/p&gt;
+
+&lt;h2 id=&#34;认识go&#34;&gt;认识Go&lt;/h2&gt;
+
+&lt;p&gt;我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

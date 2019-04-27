@@ -1,0 +1,520 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Golang Web开发 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Golang Web开发">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Golang Web开发 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0515_go_web/" itemprop="url">
+        Golang Web开发
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-05-15">
+    2016-05-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1958 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h2 id="标准库-net-http">标准库[net/http]</h2>
+
+<p>采用Golang来开发Web应用或Rest接口的应用还是比较容易的。golang标准库就提供对Http协议的封装，主要涉及到<code>net/http</code>包，它包括了HTTP相关的各种函数、类型、变量等标识符。标准库的<code>net/http</code>是支持HTTP1.1协议，而目前Go1.6也支持HTTP2.0，包放在<code>golang.org/x/net/http2</code>,后续可能会移到标准库。</p>
+
+<p><code>net/http</code>库中主要涉及到如下几个类型与接口：</p>
+
+<h3 id="request结构体">Request结构体</h3>
+
+<p>封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  type Request struct {
+      Method string
+      URL *url.URL
+      Proto      string
+      ProtoMajor int
+      ProtoMinor int
+      Header Header
+      Body io.ReadCloser
+      ContentLength int64
+      TransferEncoding []string
+      Close bool
+      Host string
+      Form url.Values
+      PostForm url.Values
+      MultipartForm *multipart.Form
+      Trailer Header
+      RemoteAddr string
+      RequestURI string
+      TLS *tls.ConnectionState
+      Cancel &lt;-chan struct{}
+  }</pre></div>
+<h3 id="response结构体">Response结构体</h3>
+
+<p>封装HTTP的响应消息，其结构如下，Response会关联Request。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">  type Response struct {
+    Status     string
+    StatusCode int
+    Proto      string
+    ProtoMajor int
+    ProtoMinor int
+    Header Header
+    Body io.ReadCloser
+    ContentLength int64
+    TransferEncoding []string
+    Close bool
+    Trailer Header
+    Request *Request
+    TLS *tls.ConnectionState
+ }</pre></div>
+<h3 id="handler接口">Handler接口</h3>
+
+<p>用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> type Handler interface {
+    ServeHTTP(ResponseWriter, *Request)
+ }</pre></div>
+<h3 id="responsewriter接口">ResponseWriter接口</h3>
+
+<p>即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了<code>io.Writer</code>接口，可以写入响应的Body，<code>WriteHeader</code>方法用于向HTTP响应信息写入状态码，但必须先于<code>Writer</code>方法调用。若不调用<code>WriteHeader</code>，使用<code>Write</code>方法会自动写入状态码<code>http.StatusOK</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> type ResponseWriter interface {
+    Header() Header
+    Write([]byte) (int, error)
+    WriteHeader(int)
+ }</pre></div>
+<h3 id="listenandserve函数">ListenAndServe函数</h3>
+
+<p>启动HTTP服务，需要构建Server对象，并调用该Server的<code>ListenAndServe</code>方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type Server struct {
+    Addr           string        // TCP address to listen on, &#34;:http&#34; if empty
+    Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
+    ReadTimeout    time.Duration // maximum duration before timing out read of the request
+    WriteTimeout   time.Duration // maximum duration before timing out write of the response
+    MaxHeaderBytes int           // maximum size of request headers, DefaultMaxHeaderBytes if 0
+    TLSConfig      *tls.Config   // optional TLS config, used by ListenAndServeTLS
+    TLSNextProto map[string]func(*Server, *tls.Conn, Handler)
+    ConnState func(net.Conn, ConnState)
+    ErrorLog *log.Logger
+    disableKeepAlives int32     // accessed atomically.
+    nextProtoOnce     sync.Once // guards initialization of TLSNextProto in Serve
+    nextProtoErr      error
+}</pre></div>
+<p>Server需要关注如下几个方法，从方法名就可能知道它的用途。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func (srv *Server) ListenAndServe() error
+func (srv *Server) Serve(l net.Listener) error</pre></div>
+<h3 id="servemux结构体">ServeMux结构体</h3>
+
+<p>用于HTTP路由配置，其结构体定义如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type ServeMux struct {
+    mu    sync.RWMutex
+    m     map[string]muxEntry
+    hosts bool // whether any patterns contain hostnames
+}</pre></div>
+<p>ServeMux有如下几个方法，用于配置HTTP与URL的映射关系。其实ServeMux也是实现<code>ServeHTTP</code>接口，其ServeHTTP方法完成了ServeMux的主要功能，即根据HTTP请求找出最佳匹配的<code>Handler</code>并执行之，它本身就是一个多<code>Handler</code>封装器，是各个<code>Handler</code>执行的总入口。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func (mux *ServeMux) Handle(pattern string, handler Handler)
+func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string)
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)</pre></div>
+<p>ServeMux的路由功能是非常简单的，其只支持路径匹配，且匹配能力不强，也不支持对Method的匹配。<code>net/http</code>包已经为我们定义了一个可导出的ServeMux类型的变量<code>DefaultServeMux</code>。<code>net/http</code>包也提供了注册<code>Handler</code>的方法，它其实也是操作<code>DefaultServeMux</code>：</p>
+
+<ul>
+<li>调用<code>http.Handle</code>或<code>http.HandleFunc</code>实际上就是在调用<code>DefaultServeMux</code>对应的方法。</li>
+<li>若<code>ListenAndServe</code>的第二个参数为nil，它也默认使用<code>DefaultServeMux</code>.</li>
+</ul>
+
+<h2 id="第三方库-fasthttp">第三方库[fasthttp]</h2>
+
+<p>说到Golang的http，也不是只有标准库一家，Github也有人开源了<a href="https://github.com/valyala/fasthttp">fasthttp</a>，并号称比<code>net/http</code>包快10倍，上面介绍的<a href="https://github.com/labstack/echo">echo</a>，底层同时支持<code>net/http</code>与<code>fasthttp</code>，其性能测试对比如下：
+<img src="https://camo.githubusercontent.com/b3432f107b2bdaaca11a4ee0225edeb121b02607/687474703a2f2f692e696d6775722e636f6d2f665a566e4b35322e706e67" alt="echo perform" />
+但是由于<code>fasthttp</code>的API与<code>net/http</code>完全不同，这使得无法重用目前基于<code>net/http</code>开发的路由，Handler等工具，这也让人在选择它时不得不面临考虑的问题。</p>
+
+<h2 id="工具或框架">工具或框架</h2>
+
+<p>由于Golang提供了标准库<code>net/http</code>，使得开发Go的Web框架变得很简单，在Github上可以搜索到各种不同层次的框架。</p>
+
+<h3 id="路由工具">路由工具</h3>
+
+<ul>
+<li><a href="https://github.com/gorilla/mux">gorilla/mux</a></li>
+<li><a href="https://github.com/julienschmidt/httprouter">julienschmidt/httprouter</a></li>
+</ul>
+
+<h3 id="handler工具">Handler工具</h3>
+
+<ul>
+<li><a href="https://github.com/gorilla/handlers">gorilla/handlers</a></li>
+<li><a href="https://github.com/codegangsta/negroni">codegangsta/negroni</a></li>
+</ul>
+
+<h3 id="轻量框架">轻量框架</h3>
+
+<ul>
+<li><a href="https://github.com/labstack/echo">echo</a>，底层支持绑定fasthttp，号称10倍快于其它框架。</li>
+<li><a href="https://github.com/goji/goji">goji</a>，借鉴了Sinatra了思想。</li>
+<li><a href="https://github.com/go-martini/martini">martini</a>，提供了丰富的中间件。</li>
+<li><a href="https://github.com/gin-gonic/gin">goin</a>，借鉴了Martini，号称比它更快。</li>
+<li><a href="https://github.com/go-macaron/macaron">macaron</a>，其思路来自martini，个人感觉API比martini方便很多。</li>
+</ul>
+
+<h3 id="全功能框架">全功能框架</h3>
+
+<ul>
+<li><a href="https://github.com/hoisie/web">web.go</a>，其思路来自web.py。</li>
+<li><a href="http://beego.me/">beego</a>，其思路来自Tornado, Sinatra与Flask框架。</li>
+<li><a href="http://revel.github.io/">revel</a>，其思路完全来自Java的Play Framework。</li>
+</ul>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    
+    <a href="http://lanlingzi.cn/tags/web" rel="tag" title="web">#web#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" rel="next" title="第八届中国云计算大会简纪">
+        <i class="fa fa-chevron-left"></i> 第八届中国云计算大会简纪
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0414_oracle_cloud_day/" rel="prev" title="Oracle Cloud Day见闻简纪">
+        Oracle Cloud Day见闻简纪 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#标准库-net-http">标准库[net/http]</a>
+<ul>
+<li><a href="#request结构体">Request结构体</a></li>
+<li><a href="#response结构体">Response结构体</a></li>
+<li><a href="#handler接口">Handler接口</a></li>
+<li><a href="#responsewriter接口">ResponseWriter接口</a></li>
+<li><a href="#listenandserve函数">ListenAndServe函数</a></li>
+<li><a href="#servemux结构体">ServeMux结构体</a></li>
+</ul></li>
+<li><a href="#第三方库-fasthttp">第三方库[fasthttp]</a></li>
+<li><a href="#工具或框架">工具或框架</a>
+<ul>
+<li><a href="#路由工具">路由工具</a></li>
+<li><a href="#handler工具">Handler工具</a></li>
+<li><a href="#轻量框架">轻量框架</a></li>
+<li><a href="#全功能框架">全功能框架</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

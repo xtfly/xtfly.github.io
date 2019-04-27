@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>容器 on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/tags/%E5%AE%B9%E5%99%A8/</link>
+    <description>Recent content in 容器 on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Jan 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/%E5%AE%B9%E5%99%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CloudNative初探</title>
+      <link>http://lanlingzi.cn/post/technical/2017/0106_cloudnative/</link>
+      <pubDate>Fri, 06 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/0106_cloudnative/</guid>
+      <description>&lt;p&gt;随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考&lt;a href=&#34;http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst&#34;&gt;Cloud Native at Netflix&lt;/a&gt;）。那什么是CloudNative？&lt;/p&gt;
+
+&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+
+&lt;p&gt;目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。&lt;/p&gt;
+
+&lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何看待Docker</title>
+      <link>http://lanlingzi.cn/post/technical/2016/0107_docker/</link>
+      <pubDate>Thu, 07 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2016/0107_docker/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/docker_ecosystem.jpg&#34; alt=&#34;docker ecosystem&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Mesos与K8S的区别</title>
+      <link>http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/</link>
+      <pubDate>Tue, 20 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg&#34; alt=&#34;pets vs cattle&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>参加CNUTCon全球容器大会感受</title>
+      <link>http://lanlingzi.cn/post/technical/2015/0902_bj_cnutcon/</link>
+      <pubDate>Wed, 02 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2015/0902_bj_cnutcon/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/cnut.png&#34; alt=&#34;cnutcon&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由于最近一直在从事Docker相关的工作，所以有机会参与这次的&lt;a href=&#34;http://cnutcon.com/&#34;&gt;CNUTCon全球容器大会&lt;/a&gt;。名字比较“高格”，虽有少量的外国人分享，大部分还是中国的互联网企业在宣传，忽悠。除去这些，整体来说这次大会还是非常不错的，门票也不算太贵，目前看来应该还是值的。我司还是这次大会的钻石赞助商，也说明我们在容器这一块的发力程度。&lt;/p&gt;
+
+&lt;h2 id=&#34;整体感受&#34;&gt;整体感受&lt;/h2&gt;
+
+&lt;p&gt;Docker是这这两年成长最快的技术，受到资本市场的热捧。Docker技术以势不可挡地席卷全球。参考这次大会，整体感受是：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker已不再是概念，已进入互联网企业的实际生产环境中&lt;/li&gt;
+&lt;li&gt;Docker的创业公司多，有远见的想在这次的浪潮中分享红利&lt;/li&gt;
+&lt;li&gt;大公司借Docker东风，亦想在云计算领域中拿下更多话语权&lt;/li&gt;
+&lt;li&gt;容器技术处于战国群雄，完整的生态还比较混乱技术栈不成熟&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

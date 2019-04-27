@@ -1,0 +1,618 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Go测试 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Go测试">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Go测试 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0824_go_testing/" itemprop="url">
+        Go测试
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-08-24">
+    2016-08-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2207 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>Go语言内置了测试框架，编写单元测试非常方便。</p>
+
+<h2 id="命名约定">命名约定</h2>
+
+<ul>
+<li><p>测试代码位于以<code>_test.go</code>结尾的源文件中，一般与源码在同一个package中。</p>
+
+<p>位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。</p></li>
+
+<li><p>测试源码可以修改package名，带上<code>_test</code>结尾</p>
+
+<p>修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的<code>bytes</code>中的测试代码，方便使用被测试的元素，可以采用<code>.</code>来import测试的package：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">bytes_test</span>
+
+<span style="color:#f92672">import</span> (
+    . <span style="color:#e6db74">&#34;bytes&#34;</span>
+    <span style="color:#e6db74">&#34;io&#34;</span>
+    <span style="color:#f92672">...</span>
+)</pre></div></li>
+</ul>
+
+<ul>
+<li><p>以Test开头的功能测试函数</p>
+
+<ul>
+<li><p>以Benchmark开头的性能测试函数</p></li>
+
+<li><p>以Example开头的样例代码</p></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func ExampleHello() {
+    hl := hello()
+    fmt.Println(hl)
+    // Output: hello.
+}</pre></div>
+<p>示例函数无需接收参数，但需要使用注释的<code>Output:</code>标记说明示例函数的输出值，未指定<code>Output:</code>标记或输出值为空的示例函数不会被执行。<code>go doc</code>工具会解析示例函数的函数体作为对应<strong>包/函数/类型/类型方法</strong>的用法。</p>
+
+<p>示例函数需要归属于某个<strong>包/函数/类型/类型的方法</strong>，具体命名规则如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func Example() { ... }      // 包的示例函数
+func ExampleF() { ... }     // 函数F的示例函数
+func ExampleT() { ... }     // 类型T的示例函数
+func ExampleT_M() { ... }   // 类型T的M方法的示例函数
+
+// 多示例函数 需要跟下划线加小写字母开头的后缀
+func Example_suffix() { ... }
+func ExampleF_suffix() { ... }
+func ExampleT_suffix() { ... }
+func ExampleT_M_suffix() { ... }</pre></div></li>
+</ul>
+
+<h2 id="测试类型">测试类型</h2>
+
+<h3 id="功能测试">功能测试</h3>
+
+<p>功能测试函数以<code>*testing.T</code>类型为单一参数<code>t</code>，<code>testing.T</code>类型用来管理测试状态和格式化测试日志。测试日志在测试执行过程中积累，完成后输出到标准错误输出。</p>
+
+<p>常用方法:</p>
+
+<ul>
+<li><p>测试预期不符，使用<code>t.Error()</code>或<code>t.Errorf()</code>记录日志并标记测试失败</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestToTitle(t *testing.T) {
+    for _, tt := range ToTitleTests {
+        if s := string(ToTitle([]byte(tt.in))); s != tt.out {
+            t.Errorf(&#34;ToTitle(%q) = %q, want %q&#34;, tt.in, s, tt.out)
+        }
+    }
+}</pre></div></li>
+
+<li><p>测试预期不符，使用<code>t.Fatal()</code>和<code>t.Fatalf()</code>跳出该测试函数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestUnreadByte(t *testing.T) {
+    b := new(Buffer)
+    b.WriteString(&#34;abcdefghijklmnopqrstuvwxyz&#34;)
+
+    _, err := b.ReadBytes(&#39;m&#39;)
+    if err != nil {
+        t.Fatalf(&#34;ReadBytes: %v&#34;, err)
+    }
+    ...
+}</pre></div></li>
+
+<li><p>记录日志， 使用<code>t.Log()</code>和<code>t.Logf()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestFowler(t *testing.T) {
+    files, err := filepath.Glob(&#34;testdata/*.dat&#34;)
+    if err != nil {
+        t.Fatal(err)
+    }
+    for _, file := range files {
+        t.Log(file)
+        testFowler(t, file)
+    }
+}</pre></div></li>
+
+<li><p>跳过某条测试用例，使用<code>t.Skip()</code>和<code>t.Skipf()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestZip64(t *testing.T) {
+    if testing.Short() {
+        t.Skip(&#34;slow test; skipping&#34;)
+    }
+    const size = 1 &lt;&lt; 32 // before the &#34;END\n&#34; part
+    buf := testZip64(t, size)
+    testZip64DirectoryRecordLength(buf, t)
+}</pre></div></li>
+
+<li><p>并发执行测试用例，使用<code>t.Parallel()</code>标记</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestStackGrowth(t *testing.T) {
+    t.Parallel()
+    var wg sync.WaitGroup
+
+    // in a normal goroutine
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        growStack()
+    }()
+    wg.Wait()
+    ...
+}</pre></div></li>
+</ul>
+
+<h3 id="性能测试">性能测试</h3>
+
+<p>性能测试函数以接收<code>*testing.B</code>类型为单一参数<code>b</code>，性能测试函数中需要循环<code>b.N</code>次调用被测函数。<code>testing.B</code>类型用来管理测试时间和迭代运行次数，也支持和<code>testing.T</code>相同的方式管理测试状态和格式化测试日志，不一样的是<code>testing.B</code>的日志总是会输出。</p>
+
+<ul>
+<li><p>启用内存使用分析，使用<code>t.ReportAllocs()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func BenchmarkWriterFlush(b *testing.B) {
+    b.ReportAllocs()
+    bw := NewWriter(ioutil.Discard)
+    str := strings.Repeat(&#34;x&#34;, 50)
+    for i := 0; i &lt; b.N; i++ {
+        bw.WriteString(str)
+        bw.Flush()
+    }
+}</pre></div></li>
+
+<li><p>停止/重置/启动时间计值，使用<code>b.StopTimer()</code>、<code>b.ResetTimer()</code>、<code>b.StartTimer()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func BenchmarkScanInts(b *testing.B) {
+    b.ResetTimer()
+    ints := makeInts(intCount)
+    var r RecursiveInt
+    for i := b.N - 1; i &gt;= 0; i-- {
+        buf := bytes.NewBuffer(ints)
+        b.StartTimer()
+        scanInts(&amp;r, buf)
+        b.StopTimer()
+    }
+}</pre></div></li>
+
+<li><p>记录在一个操作中处理的字节数，使用<code>b.SetBytes()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func BenchmarkFields(b *testing.B) {
+    b.SetBytes(int64(len(fieldsInput)))
+    for i := 0; i &lt; b.N; i++ {
+        Fields(fieldsInput)
+    }
+}</pre></div></li>
+
+<li><p>并发执行被测对象，使用<code>b.RunParallel()</code>和<code>*testing.PB</code>类型的<code>Next()</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func BenchmarkValueRead(b *testing.B) {
+    var v Value
+    v.Store(new(int))
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            x := v.Load().(*int)
+            if *x != 0 {
+                b.Fatalf(&#34;wrong value: got %v, want 0&#34;, *x)
+            }
+        }
+    })
+}</pre></div></li>
+</ul>
+
+<h2 id="测试执行">测试执行</h2>
+
+<ul>
+<li>在某一包下执行测试: <code>go test</code></li>
+<li>执行指定的包测试: <code>go test $pkg_in_gopath</code></li>
+<li>执行某一目录下以及子目录下所有测试: <code>go test $pkg_in_gopath/...</code></li>
+<li>执行包下某一些用例: <code>go test -run=xxx</code>，<code>-run</code>参数支持使用正则表达式来匹配要执行的功能测试函数名</li>
+<li>执行包下性能测试: <code>go test -bench=.</code></li>
+<li>查看性能测试时的内存情况: <code>go test -bench=. -benchmem</code></li>
+<li>查看每个函数的执行结果: <code>go test -v</code></li>
+<li>查看覆盖率: <code>go test -cover</code></li>
+<li>输出覆盖率到文件: 增加参数<code>-coverprofile</code>，并使用<code>go tool cover</code>来查看，用法请参考<code>go tool cover -help</code></li>
+</ul>
+
+<h2 id="测试工具">测试工具</h2>
+
+<h3 id="io测试">IO测试</h3>
+
+<p><code>testing/iotest</code>包中实现了常用的出错的Reader和Writer:</p>
+
+<ul>
+<li>触发数据错误dataErrReader，通过DataErrReader()函数创建</li>
+<li>读取一半内容的halfReader，通过HalfReader()函数创建</li>
+<li>读取一个byte的oneByteReader，通过OneByteReader()函数创建</li>
+<li>触发超时错误的timeoutReader，通过TimeoutReader()函数创建</li>
+<li>写入指定位数内容后停止的truncateWriter，通过TruncateWriter()函数创建</li>
+<li>读取时记录日志的readLogger，通过NewReadLogger()函数创建</li>
+<li>写入时记录日志的writeLogger，通过NewWriteLogger()函数创建</li>
+</ul>
+
+<h3 id="http测试">HTTP测试</h3>
+
+<p><code>net/http/httptest</code>包提供了HTTP相关代码的测试工具</p>
+
+<ul>
+<li><code>httptest.Server</code>用来构建临时的Server，测试发送与接收HTTP请求</li>
+<li><code>httptest.ResponseRecorder</code>用来记录应答</li>
+</ul>
+
+<h3 id="黑盒测试">黑盒测试</h3>
+
+<p><code>testing/quick</code>包实现了帮助黑盒测试</p>
+
+<ul>
+<li><p>Check函数，测试的只返回bool值的黑盒函数f，Check会为f的每个参数设置任意值并多次调用</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func TestOddMultipleOfThree(t *testing.T) {
+    f := func(x int) bool {
+        y := OddMultipleOfThree(x)
+        return y%2 == 1 &amp;&amp; y%3 == 0
+    }
+    if err := quick.Check(f, nil); err != nil {
+        t.Error(err)
+    }
+}</pre></div></li>
+
+<li><p>CheckEqual函数，比较给定的两个黑盒函数是否相等</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func CheckEqual(f, g interface{}, config *Config) (err error)</pre></div></li>
+</ul>
+
+<h2 id="测试框架">测试框架</h2>
+
+<p><a href="github.com/stretchr/testify">stretchr/testify</a>是个人觉得目前最好的测试框架，相比标准库中<code>testing</code>包支持如下特性：</p>
+
+<ul>
+<li><a href="https://github.com/stretchr/testify/blob/master/README.md#assert-package">Easy assertions</a></li>
+<li><a href="https://github.com/stretchr/testify/blob/master/README.md#mock-package">Mocking</a></li>
+<li><a href="https://github.com/stretchr/testify/blob/master/README.md#http-package">HTTP response trapping</a></li>
+<li><a href="https://github.com/stretchr/testify/blob/master/README.md#suite-package">Testing suite interfaces and functions</a></li>
+</ul>
+
+<hr />
+
+<p>参考：<br />
+[1] <a href="https://golang.org/pkg/testing">https://golang.org/pkg/testing</a><br />
+[2] <a href="https://golang.org/pkg/testing/iotest">https://golang.org/pkg/testing/iotest</a><br />
+[3] <a href="https://golang.org/pkg/testing/quick">https://golang.org/pkg/testing/quick</a><br />
+[4] <a href="https://golang.org/pkg/net/http/httptest">https://golang.org/pkg/net/http/httptest</a><br />
+[5] <a href="https://github.com/stretchr/testify">https://github.com/stretchr/testify</a></p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0828_hugo_next_theme/" rel="next" title="Hexo NexT主题移植">
+        <i class="fa fa-chevron-left"></i> Hexo NexT主题移植
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0813_go_gls/" rel="prev" title="Goroutine Local Storage">
+        Goroutine Local Storage <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#命名约定">命名约定</a></li>
+<li><a href="#测试类型">测试类型</a>
+<ul>
+<li><a href="#功能测试">功能测试</a></li>
+<li><a href="#性能测试">性能测试</a></li>
+</ul></li>
+<li><a href="#测试执行">测试执行</a></li>
+<li><a href="#测试工具">测试工具</a>
+<ul>
+<li><a href="#io测试">IO测试</a></li>
+<li><a href="#http测试">HTTP测试</a></li>
+<li><a href="#黑盒测试">黑盒测试</a></li>
+</ul></li>
+<li><a href="#测试框架">测试框架</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

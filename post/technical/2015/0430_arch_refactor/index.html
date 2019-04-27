@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>架构重构 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="架构重构">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="架构重构 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/" itemprop="url">
+        架构重构
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2015-05-12">
+    2015-05-12
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1840 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。</p>
+
+<h2 id="什么是重构">什么是重构</h2>
+
+<blockquote>
+<p>重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。</p>
+</blockquote>
+
+<p>这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：</p>
+
+<ul>
+<li>局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。</li>
+<li>模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。</li>
+<li>架构重构，是对整个系统架构层次的重构，牵系相当的广，操作与实施难度比较高。</li>
+</ul>
+
+<h2 id="重构风险">重构风险</h2>
+
+<p>无论何种层次的重构，都必须要有一个可靠的测试环境，即自动化测试环境。因为频繁的代码修改可能会引入更多的缺陷，只有执行自动化测试并回归所有用例，才能保证及时发现这些缺陷，最大限度地降低重构的风险。</p>
+
+<ul>
+<li>局部的不良代码，可以通过小范围的重构来优化。但是对于架构上重构，因为重构影响范围过大，在实践中仍然存在绪多的困难。</li>
+<li>架构上大的重构，至少几十人的投入，更需要半年到一年的开发周期。在老软件不能停止维护的前提下，这对开发人力将产生巨大冲击。</li>
+<li>新架构虽然先进，但历史经验表明，新软件的成熟与稳定需要时间。在沉重的交付压力下，风险需要做很多的预防控制。</li>
+</ul>
+
+<h2 id="为什么要重构">为什么要重构</h2>
+
+<p>给老大说明重构的意义往往很难，尤其不是技术出身的管理者，即使是，也需要面临交付上的考虑。从技术上讲，为什么要重构：</p>
+
+<ul>
+<li>不论如何先进的软件架构也不可能预见到几年甚至十几年后的需求，并预先设计</li>
+<li>随着新功能的不断增加，以及新成员的加入，软件架构必然逐渐腐化</li>
+<li>虽然强力的架构看护制度可以延缓架构腐化的速度，但不可能看护到实现细节</li>
+<li>重构则提供了软件持续优化的机会，从而使软件更容易适应新的需求，同时及时地改进不合理的部分</li>
+</ul>
+
+<h2 id="重构与重写">重构与重写</h2>
+
+<p>对于一次重构来说区别不大，只是力度不同，重构侧得局部优化，也会重用现有的资产，重构的极端就是重写。他们的主要区别是重构强调的是持续的，随时的优化，而重写强调的是一次性的天翻地覆的改造。那我们如何判断是要重构还是重写？</p>
+
+<ul>
+<li>重构是持续的，并不是等到极端恶心才开始优化，所以坚持持续的重构可以代价更小的达到优化的目的</li>
+<li>若已经极端恶化的模块，重写也是一种解决方式，但要注意避免失控，须在设计、测试、管理、人员能力等多方面要做好准备</li>
+</ul>
+
+<h2 id="何时重构">何时重构</h2>
+
+<p>何时重构，因项目因人员能力而异：</p>
+
+<ul>
+<li>不同粒度层次的重构，重构的时机选择应该是不同的</li>
+<li>不同粒度层次的重构，实施的节奏也必然不同的</li>
+<li>关键技术需要提前原型验证，风险评估</li>
+<li>对于模块级，架构级重构，通常在添加新功能或特性之前充分考虑，留出部分空档期来重构</li>
+<li>制定重构计划，步步为营，切忌全面开花，导致风险不可控</li>
+</ul>
+
+<p>同时在重构时，需要平衡重构与交付：</p>
+
+<ul>
+<li>为了交付而不重构，是恶性循环，最终交付的压力会越来越大，质量会越来越差</li>
+<li>对于模块级，架构级重构，应该是有计划地落入到迭代版本中</li>
+<li>可以采用冬虫夏草的方式重构，逐步重构或替换，随时（至少每个迭代）可以保证系统的完整性</li>
+<li>注意控制每次迭代重构的范围，要分析并划分合理的重构边界</li>
+</ul>
+
+<h2 id="重构人员">重构人员</h2>
+
+<p>重构最终落实还是人员能力，对于参与的人员能力要求：</p>
+
+<ul>
+<li>知道重构的意义，重构需要有个人强烈的意愿，才能有所突破</li>
+<li>对现有的组件流程与实现非常地清楚</li>
+<li>针对性强，能够熟练地运用各种重构方法</li>
+<li>能够察觉出实现的问题，能提出改进（重构）建议（方案）</li>
+<li>经验是基础，对构架本身的体系有较为深厚的理解和应用经验</li>
+<li>不同层级的重构，需要不同的参与，不同阶段投入</li>
+</ul>
+
+<p>重构中有哪些角色，他们职责是什么</p>
+
+<ul>
+<li>SA/SE（系统架构师，系统设计师）：负责按照架构正确地设计与分解需求，能清楚系统中的痛点，以及各组件的主要问题</li>
+<li>SE/MDE（系统设计师，模块设计师）：负责某个组件整体看护，设计组件内疗实现机制，系统约束等</li>
+<li>SWE（软件工程师）：在软件架构的基础上，负责具体的功能实现。</li>
+<li>TE（测试工作师）：补充用例，执行自动化测试，及时发现系统中的缺陷，并与SWE结队处理问题。</li>
+</ul>
+
+<hr />
+
+<p>总之，重构要务实，务实就是尊重现实，基于现实情况分析与实施，不断地推进演化。架构重构不仅需要充分的设计，切实有效的重构操作方法也非常地重要。架构重构，抛开代码搞理论上的重构不行；充分利用代码，但又不能掉进“代码泥潭”。无论怎么重构，一定要构建夯实的测试防火墙，快速反馈重构中的问题。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" rel="tag" title="软件架构">#软件架构#</a>
+    
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e9%87%8d%e6%9e%84" rel="tag" title="软件重构">#软件重构#</a>
+    
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2015/0516_microservice_soa/" rel="next" title="微服务与SOA">
+        <i class="fa fa-chevron-left"></i> 微服务与SOA
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/" rel="prev" title="OSGi的缘起缘灭">
+        OSGi的缘起缘灭 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#什么是重构">什么是重构</a></li>
+<li><a href="#重构风险">重构风险</a></li>
+<li><a href="#为什么要重构">为什么要重构</a></li>
+<li><a href="#重构与重写">重构与重写</a></li>
+<li><a href="#何时重构">何时重构</a></li>
+<li><a href="#重构人员">重构人员</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

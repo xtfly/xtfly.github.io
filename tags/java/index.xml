@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on 蘭陵N散記</title>
+    <link>http://lanlingzi.cn/tags/java/</link>
+    <description>Recent content in Java on 蘭陵N散記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 23 Jun 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>自定义扩展Spring Cache注解</title>
+      <link>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</link>
+      <pubDate>Sat, 23 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</guid>
+      <description>&lt;p&gt;昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。&lt;/p&gt;
+
+&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。&lt;/p&gt;
+
+&lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>响应式编程</title>
+      <link>http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/</link>
+      <pubDate>Sun, 01 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/</guid>
+      <description>&lt;h2 id=&#34;rxjava&#34;&gt;RxJava&lt;/h2&gt;
+
+&lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
+
+&lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>OSGi的缘起缘灭</title>
+      <link>http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg&#34; alt=&#34;osgi&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;什么是osgi&#34;&gt;什么是OSGi&lt;/h2&gt;
+
+&lt;p&gt;维基百科：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
+
+&lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Java线程使用建议</title>
+      <link>http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/</link>
+      <pubDate>Wed, 24 Apr 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/</guid>
+      <description>&lt;p&gt;最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>[WebApp沙箱]SecurityManager运用</title>
+      <link>http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/</link>
+      <pubDate>Sat, 12 Mar 2011 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/</guid>
+      <description>&lt;p&gt;在JRE类白名单能控制类的使用权限（&lt;a href=&#34;http://lanlingzi.cn/post/technical/0311_java_sandbox_cl&#34;&gt;请点击&lt;/a&gt;），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。&lt;/p&gt;
+
+&lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
+
+&lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>[WebApp沙箱]JRE类白名单运用</title>
+      <link>http://lanlingzi.cn/post/technical/2011/0311_java_sandbox_cl/</link>
+      <pubDate>Fri, 11 Mar 2011 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2011/0311_java_sandbox_cl/</guid>
+      <description>&lt;h2 id=&#34;classloader&#34;&gt;ClassLoader&lt;/h2&gt;
+
+&lt;p&gt;JVM类加载器层次结构：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;   Bootstrap ClassLoader
+            |
+   Extension ClassLoader
+            |
+   System ClassLoader&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

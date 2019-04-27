@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Go map key类型分析 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Go map key类型分析">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Go map key类型分析 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0904_go_map/" itemprop="url">
+        Go map key类型分析
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-09-04">
+    2016-09-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1947 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。</p>
+
+<h2 id="map的key类型">map的key类型</h2>
+
+<p>map中的key可以是任何的类型，只要它的值能比较是否相等，Go的<a href="http://golang.org/ref/spec#Comparison_operators">语言规范</a>已精确定义，Key的类型可以是：</p>
+
+<ul>
+<li>布尔值</li>
+<li>数字</li>
+<li>字符串</li>
+<li>指针</li>
+<li>通道</li>
+<li>接口类型</li>
+<li>结构体</li>
+<li>只包含上述类型的数组。</li>
+</ul>
+
+<p>但不能是：</p>
+
+<ul>
+<li>slice</li>
+<li>map</li>
+<li>function</li>
+</ul>
+
+<p>Key类型只要能支持<code>==</code>和<code>!=</code>操作符，即可以做为Key，当两个值<code>==</code>时，则认为是同一个Key。</p>
+
+<h2 id="比较相等">比较相等</h2>
+
+<p>我们先看一下样例代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">_key</span> <span style="color:#66d9ef">struct</span> {
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">point</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">pair</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Sumer</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Suber</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pair</span>) <span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">point</span>) <span style="color:#a6e22e">Sum</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">pair</span>) <span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">point</span>) <span style="color:#a6e22e">Sub</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">y</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;_key{} == _key{}: &#34;</span>, <span style="color:#a6e22e">_key</span>{} <span style="color:#f92672">==</span> <span style="color:#a6e22e">_key</span>{}) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;point{} == point{}: &#34;</span>, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>} <span style="color:#f92672">==</span> <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>})     <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&amp;point{} == &amp;point{}: &#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>} <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;[2]point{} == [2]point{}: &#34;</span>, 
+	  [<span style="color:#ae81ff">2</span>]<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">3</span>}} <span style="color:#f92672">==</span> [<span style="color:#ae81ff">2</span>]<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}, <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">3</span>}}) <span style="color:#75715e">//output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a1</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#a6e22e">Sumer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Sumer.byptr == Sumer.byptr: &#34;</span>, <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">b</span>)        <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Sumer.sametype == Sumer.sametype: &#34;</span>, <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">a1</span>) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Suber</span> = <span style="color:#a6e22e">pair</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Suber</span> = <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d1</span> <span style="color:#a6e22e">point</span> = <span style="color:#a6e22e">point</span>{<span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">2</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Suber.byvalue == Suber.byvalue: &#34;</span>, <span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">d</span>)  <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Suber.byvalue == point.byvalue: &#34;</span>, <span style="color:#a6e22e">d</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">d1</span>) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">ci1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">ci2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ci1</span>
+	<span style="color:#a6e22e">ci3</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;chan int == chan int: &#34;</span>, <span style="color:#a6e22e">ci1</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">ci2</span>) <span style="color:#75715e">// output: true
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;chan int == chan int: &#34;</span>, <span style="color:#a6e22e">ci1</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">ci3</span>) <span style="color:#75715e">// output: false
+</span><span style="color:#75715e"></span>}</pre></div>
+<p>上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：</p>
+
+<ul>
+<li>Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。</li>
+<li>Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等</li>
+<li>Interface values are comparable. Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil.从上面的例子我们可以看出，当接口有相同的动态类型并且有相同的动态值，或者值为都为nil时相等。要注意的是：参考<a href="http://lanlingzi.cn/post/technical/2016/0803_go_interface/">理解Go Interface</a></li>
+<li>A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. They are equal if t&rsquo;s dynamic type is identical to X and t&rsquo;s dynamic value is equal to x.如果一个是非接口类型X的变量x，也实现了接口T，与另一个接口T的变量t，只t的动态类型也是类型X，并且他们的动态值相同，则他们相等。</li>
+<li>Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal.结构体当所有字段的值相同，并且没有 相应的非空白字段时，则他们相等，</li>
+<li>Array values are comparable if values of the array element type are comparable. Two array values are equal if their corresponding elements are equal.两个数组只要他们包括的元素，每个元素的值相同，则他们相等。</li>
+</ul>
+
+<p>注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行<code>==</code>操作的，例如slice，那么就不能作为map的key。</p>
+
+<h2 id="类型判断">类型判断</h2>
+
+<p>判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，<code>_type</code>结构是描述最为基础的类型（<code>runtime/type.go</code>），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type _type struct {
+	size       uintptr
+	ptrdata    uintptr 
+	hash       uint32
+	tflag      tflag
+	align      uint8
+	fieldalign uint8
+	kind       uint8
+	alg        *typeAlg
+	gcdata    *byte
+	str       nameOff
+	ptrToThis typeOff
+}
+...
+type chantype struct {
+	typ  _type
+	elem *_type
+	dir  uintptr
+}
+...
+type slicetype struct {
+	typ  _type
+	elem *_type
+}
+...</pre></div>
+<p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">type typeAlg struct {
+	// function for hashing objects of this type
+	// (ptr to object, seed) -&gt; hash
+	hash func(unsafe.Pointer, uintptr) uintptr
+	// function for comparing objects of this type
+	// (ptr to object A, ptr to object B) -&gt; ==?
+	equal func(unsafe.Pointer, unsafe.Pointer) bool
+}</pre></div>
+<p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func strhash(a unsafe.Pointer, h uintptr) uintptr {
+	x := (*stringStruct)(a)
+	return memhash(x.str, h, uintptr(x.len))
+}
+
+func strequal(p, q unsafe.Pointer) bool {
+	return *(*string)(p) == *(*string)(q)
+}</pre></div>
+<p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+	...
+	alg := t.key.alg
+	hash := alg.hash(key, uintptr(h.hash0)) // 1
+	m := uintptr(1)&lt;&lt;h.B - 1
+	b := (*bmap)(add(h.buckets, (hash&amp;m)*uintptr(t.bucketsize))) // 2
+	...
+	top := uint8(hash &gt;&gt; (sys.PtrSize*8 - 8))
+	if top &lt; minTopHash {
+		top += minTopHash
+	}
+	for {
+		for i := uintptr(0); i &lt; bucketCnt; i++ {
+			...
+			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
+			if alg.equal(key, k) { // 3
+				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
+				...
+				return v
+			}
+		}
+	...
+	}
+}</pre></div>
+<p>mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：</p>
+
+<ol>
+<li>调用<code>key</code>类型的<code>hash</code>方法，计算出<code>key</code>的<code>hash</code>值</li>
+<li>根据<code>hash</code>值找到对应的桶<code>bucket</code></li>
+<li>在桶中找到<code>key</code>值相等的map的<code>value</code>。判断相等需调用<code>key</code>类型的<code>equal</code>方法</li>
+</ol>
+
+<p>到现在我们也就有了初步了解，map中的<code>key</code>访问时同时需要使用该类型的<code>hash func</code>与 <code>equal func</code>，只要<code>key</code>值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">m := make(map[interface{}]interface{})
+m[_key{}] = &#34;value&#34;
+if v, ok := m[_key{}];ok {
+	fmt.Println(&#34;%v&#34;, v) // output: value
+}</pre></div>
+<hr />
+
+<p>参考：<br />
+[1] <a href="https://blog.golang.org/go-maps-in-action">https://blog.golang.org/go-maps-in-action</a><br />
+[2] <a href="https://golang.org/ref/spec#Comparison_operators">https://golang.org/ref/spec#Comparison_operators</a></p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0910_soft_design/" rel="next" title="软件变革下设计原则">
+        <i class="fa fa-chevron-left"></i> 软件变革下设计原则
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0903_vim/" rel="prev" title="Go VIM开发环境">
+        Go VIM开发环境 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#map的key类型">map的key类型</a></li>
+<li><a href="#比较相等">比较相等</a></li>
+<li><a href="#类型判断">类型判断</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>为什么是Go - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="为什么是Go">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="为什么是Go - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0723_why_go/" itemprop="url">
+        为什么是Go
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-23">
+    2016-07-23
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3234 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：</p>
+
+<ul>
+<li>主要继承了C(func, struct，指针)</li>
+<li>包管理吸取自Java（package, import）</li>
+<li>多态吸取自Python与Ruby(duck type)</li>
+<li>并发吸取自<a href="http://doc.cat-v.org/inferno/4th_edition/limbo_language/">Limbo</a>(<a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">CSP</a>模型)。</li>
+</ul>
+
+<p>同时是一种多范式的编程语言，集众多编程范式之所长，并以自己独到的方式将它们融合在一起：</p>
+
+<ul>
+<li>面向过程（if，switch，for&hellip;)</li>
+<li>面向对象（部分支持）：封装（struct），继承（匿名组合），多态（隐式Interface，即duck type）</li>
+<li>函数式（部分支持）：闭包，函数作为参数（入参，返回值）</li>
+</ul>
+
+<p>Go语言打的组合拳:</p>
+
+<ul>
+<li>简单易用 vs Python</li>
+<li>机器码性能 vs C/C++</li>
+<li>跨平台/标准库 vs Java</li>
+<li>并发模型（goroutine/channel）vs Erlang</li>
+<li>异步网络 vs Scala/Node.js</li>
+<li>动态反射 vs Java</li>
+<li>垃圾回收 vs Java</li>
+</ul>
+
+<p>Go语言可能不是每一条都是No.1，但却是目前同时具备上述全部7点特性唯一语言，看似平衡中庸的组合拳往往威力强大。</p>
+
+<p>而我司主要开发语言是C/C++，Java，Python，可以说是若应用Go语言具有广泛的群众基础，同时Go语言兼具他们各自的一些优点，在不同的场景下，能一定的范围内可以代替他们。并且我司的程序员大多较底级，Go语言的简洁与工程化能可能大大提升产品研发效率与降低维护成本。</p>
+
+<h2 id="云计算">云计算</h2>
+
+<p>我司原是一个设备制造厂商，而不是一个软件开发厂商。但是云计算已正快速改变原有的生态，当软件定义一切，尤其是云计算的全面渗透，计算资源统一X86化。即使传统的网络设备也将网络功能虚拟化（<a href="http://baike.baidu.com/view/12742623.htm">NFV</a>）。NFV化是趋势，若拒绝将是失去未来；只有及时拥抱，才能不被抛弃。</p>
+
+<p>虚拟化/容器化显著的特点：</p>
+
+<ul>
+<li><p>不再依赖于专用硬件，跨平台跨硬件混合部署：</p>
+
+<p>如传统的网卡直通，CPU绑定，内核零拷贝将在云计算下无法再发挥优势。而Go语言相比于C/C++天生跨平台，引入内置Runtime，通过它来隔离与不同的系统调用。这让程序迁移到不同的OS或CPU架构成本非常低，程序只需要重新在目标平台上编译而已。</p></li>
+
+<li><p>物理资源更细粒度的分割，提高整体资源利用率：</p>
+
+<p>Go语言相比于Java，在CPU、内存与磁盘大小占用方面相对比较低。尤其当前Docker等容器技术的兴起，细粒度的资源隔离。Go语言相比于Java动则上G的内存占用情况下，在资源上可能通过细粒度逻辑分割而达到充分灵活共享；而Go语言内置并发机制，并且Goroutine调度机制在设计上就充分考虑利用多核，让编写多核并发的程序变得更加的容易。</p></li>
+
+<li><p>快速上线开发与部署，缩短上线周期：</p>
+
+<p>Go语言设计的一个主要目的是降代程序员的心智负担，设计哲学是<code>大道至简</code>，所以一开始就在可读性、模块化、编译速度、适合大型团队（工程优化）和语法简洁上下足了功夫。Go语言相比于Java与C/C++，开发更简洁；内置丰富的标准库也能有效降低代码量。Go程序默认也是编译只是单个文件，减少了部署态的第三方依赖，这让应用上线部署非常容易。</p></li>
+
+<li><p>快速伸缩，故障隔离与自愈：</p>
+
+<p>Go语言相比于Java与Python，不需额外的运行环境，编译为一个独立的执行文件；相对于C/C++没有依赖动态库版本不一致的问题；Go语言程序相对于Java启动速度快，很适合于快速伸缩。而独立进程相比于Java中类Tomcat容器内多WebApp部署方式有更好的故障隔离；Go语言虽有异常（Panic），但可预知的错误建议采用error处理，引入了内置的error类型以及defer关键字来处理异常安全，这让程序员更容易写健壮的代码。</p></li>
+</ul>
+
+<p>在云计算环境下，只要是适合的场景产品（Go目前还不适合要求低时延，高实时的场景），如在面向管理控制、网络并发等领域，采用Go语言开发，用来代替部分C/C++开发的系统应用；Java开发的网络或后端服务应用；Python开发的管理控制应用；可能极大提升产品的整体竞争力。</p>
+
+<h2 id="微服务">微服务</h2>
+
+<p>现在的应用程序规模越来越庞大，逻辑处理也是越来越复杂。在我司的电信领域，一个产品的研发也是动则几百号人的团队一起开发；系统上处理的数据规模，与接入的用户请求数也是几何级增加，在吞吐量、稳定性都会面临着极大的挑战；当前的业务尤其是面向移动终端用户的业务，需求变化快，业务不断推出与消亡，传统的单体架构根本无法适合频繁的变更，系统的可扩展性、定制性尤显得重要。当功能繁杂，结构混乱，以及人员变化等因素影响下，要解决这些问题，不得不在交付中不断地制定策略，演进架构：</p>
+
+<p>随着云计算应用经验的不断积累，以及相关的工具链不断成熟，也伴随着微服务架构的出现。它通过将功能分解成多个独立的服务，以实现对解决方案或者复杂系统的解耦。微服务的诞生并非偶然:</p>
+
+<ul>
+<li><a href="http://dddcommunity.org/">领域驱动</a>设计指导我们如何分析并模型化复杂的业务；</li>
+<li><a href="http://agilemethodology.org/">敏捷方法论</a>帮助我们消除浪费，快速反馈；持续交付促使我们构建更快、更可靠、更频繁的软件部署和交付能力；</li>
+<li>虚拟化和基础设施自动化( Infrastructure As Code)则帮助我们简化环境的创建、安装；</li>
+<li><a href="http://dev2ops.org/2010/02/what-is-devops/">DevOps</a>文化的流行以及特性团队的出现，使得小团队更加全功能化。这些都是推动微服务诞生的重要因素。</li>
+</ul>
+
+<p>微服务通常有如下几个特征,也是与Go语言特征不谋而合：</p>
+
+<ul>
+<li><p>小：专注于做一件事情</p>
+
+<p>小即是极多，这与Go语言遵循设计原则。保持简单性的方法就是：每种特性仅提供一种方法，减少重复、冗余，只提供一种方法做事情，把事情做到极致，这就是Go语言的原则。而微服务通常讲是两个Pizza能吃饱的团队来共用维护一个服务的代码。与”单一职责原则”类似，每个服务只做一件事情，并且把它做好。Go语言在语法特性简洁处理，编写相同的功能，相比于其它语言代码量很少。同时它提供高质量的标准库，让程序员减少对第三方框架选择与熟悉难题，让程序员更多的精力放在业务本身的逻辑上。</p></li>
+
+<li><p>独：运行在独立的进程中</p>
+
+<p>当初接触Go语言时，发现它既然支持与C的调用，一直不太理解它为何不支持动态库（1.5版本部分支持）。但事实上，Go语言认为如果一项特性不带来显著的有益，那就不提供。其实动态库的版本当编译与运行时不一致导致程序崩溃一直是C/C++开发的噩梦。Go编译单一执行文件，能一定程度缓和这个问题。另外Go一直追求生成代码优化，执行文件最小化。这也方便程序部署在Docker容器中，运行在一个独立的操作系统进程，拥有更好的故障隔离。</p></li>
+
+<li><p>轻：轻量级的通信机制</p>
+
+<p>服务和服务之间通过轻量级的机制实现彼此间的通信。所谓轻量级通信机制，通常指基于语言无关、平台无关的这类协议，例如XML、JSON。Go语言的主要发力点之一就是网络编程，标准库内置了HTTP协议框架，同时也提供了对JSON、XML的序列化与序列化支持，结合它的Goroutine并发机制，开发一个Rest服务只须很少的代码。</p></li>
+
+<li><p>松：部署态与运行态松耦合</p>
+
+<p>Go语言是一个强类型静态语言，可以把代码编译为本地机器指令。它的RUNTIME是会在编译时一起链接到执行文件中，这也就意味着我们不需要像JAVA那样装一个JVM。而且编译出的执行文件本身不依赖于其他动态库，完全可以做到轻松的发布。Go语言基于Channel来通讯，也会带来一定程序代码结构上的松耦合。</p></li>
+</ul>
+
+<p>当产品架构朝微服务架构演进时，Go语言语言特征与微服务不谋而合，采用Go语言在一定程度上会助力微服务架构实施与落地。单体应用拆分成众多微服务时，服务之间从传统的插件机制来获得扩展性，转化成分布式多进程通讯来扩展。Go语言在网络并发上的优势，使得微服务开发变得更为简单，性能上更有优势。</p>
+
+<p>参考：<br />
+[1] <a href="http://www.infoq.com/cn/articles/enterprise-core-systems-transformation-practice">基于微服务架构，改造企业核心系统之实践</a><br />
+[2] <a href="http://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering">Go在谷歌：以软件工程为目的的语言设计</a><br />
+[3] <a href="http://yager.io/programming/go.html">Why Go is not Good</a><br />
+[4] <a href="http://studygolang.com/articles/2405">说说Golang的使用心得</a><br />
+[5] <a href="http://studygolang.com/articles/2944">go语言设计哲学</a><br />
+[6] <a href="http://www.oschina.net/news/30754/less-is-more-go-language">少即是极多 - Go 语言设计理念</a></p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    
+    <a href="http://lanlingzi.cn/tags/cloud" rel="tag" title="cloud">#cloud#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0802_go_context/" rel="next" title="理解Go Context机制">
+        <i class="fa fa-chevron-left"></i> 理解Go Context机制
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/" rel="prev" title="Go语言不足">
+        Go语言不足 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">98</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#背景">背景</a></li>
+<li><a href="#云计算">云计算</a></li>
+<li><a href="#微服务">微服务</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+</body>
+</html>
