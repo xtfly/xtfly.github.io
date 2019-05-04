@@ -6,10 +6,19 @@
     <description>Recent content on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 27 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>代码洁癖</title>
+      <link>http://lanlingzi.cn/post/technical/2019/050_clean_code/</link>
+      <pubDate>Sat, 04 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/050_clean_code/</guid>
+      <description>背景 我司强执行力，很容易把事情做得极致，但有时极致反而带来不好的意外的结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规</description>
+    </item>
     
     <item>
       <title>成就感</title>
