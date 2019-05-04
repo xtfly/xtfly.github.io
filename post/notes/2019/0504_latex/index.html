@@ -142,19 +142,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">428 字 ~1分钟</span>
+<span class="leancloud-visitors-count">433 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    
-
-<p>五一放假只好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support and maybe flowchart feature of markdown? Also disqus or livere comment system? Maybe google analytics?</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。
-&lt;!&ndash;more&gt;</p>
+    <p>五一放假正好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support&hellip;</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
 
 <h1 id="如何集成">如何集成</h1>
 
-<p>在主题<code>layouts/partials/script.html</code> 增加如下，采用了cloudflare的CDN，国内可能稍慢些。</p>
+<p>在主题文件<code>layouts/partials/script.html</code>中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
   MathJax.Hub.Config({
     extensions: [&#34;tex2jax.js&#34;],
@@ -196,7 +193,6 @@
 <p>$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$</p>
 
 <p>$$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</p>
-
     </div>
     <footer class="post-footer">
      
