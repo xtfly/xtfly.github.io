@@ -17,7 +17,11 @@
       <pubDate>Sat, 04 May 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2019/0504_latex/</guid>
-      <description>&lt;p&gt;五一放假正好有点时间，于是计划完成这个 Issue: &lt;a href=&#34;https://github.com/xtfly/hugo-theme-next/issues/8&#34;&gt;Is it possible to add latex support&amp;hellip;&lt;/a&gt;，要解决支持LateX，只需要集成&lt;a href=&#34;https://github.com/mathjax/MathJax&#34;&gt;MathJax&lt;/a&gt;。&lt;/p&gt;</description>
+      <description>&lt;p&gt;五一放假正好有点时间，于是计划完成这个 Issue: &lt;a href=&#34;https://github.com/xtfly/hugo-theme-next/issues/8&#34;&gt;Is it possible to add latex support&amp;hellip;&lt;/a&gt;，要解决支持LateX，只需要集成&lt;a href=&#34;https://github.com/mathjax/MathJax&#34;&gt;MathJax&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h1 id=&#34;如何集成&#34;&gt;如何集成&lt;/h1&gt;
+
+&lt;p&gt;在主题文件&lt;code&gt;layouts/partials/script.html&lt;/code&gt;中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。&lt;/p&gt;</description>
     </item>
     
     <item>
