@@ -56,7 +56,7 @@
 
 &lt;p&gt;这些年来，我所从事的工作领域在变化，所使用的技术在变化，经历过一线比拼的激情，持续熬夜的艰辛，产品上线的喜悦，一直在公司从事基层研发工作。人生就像自己编写的程序，在程序化地运行着，但能在最好的年华，做自己最热爱的事，于我是一种幸福。&lt;/p&gt;
 
-&lt;h2 id=&#34;有了电脑后的-放飞&#34;&gt;有了电脑后的“放飞”&lt;/h2&gt;
+&lt;h1 id=&#34;有了电脑后的-放飞&#34;&gt;有了电脑后的“放飞”&lt;/h1&gt;
 
 &lt;p&gt;上世纪90年代，爸爸单位用电脑记账，我觉得很是神奇，买不起电脑就买了个学习机，按照说明书，用GBASIC语言输出满屏各种形状的图形，心中被巨大的喜悦填满，开始了编程的启蒙。高考那年，又被《第一次亲密接触》中互联网的桥段吸引，毫不犹豫报了计算机专业，但遗憾被调剂到信息管理专业，这两个专业之间关系不大，我与编程失之交臂了。&lt;/p&gt;
 
@@ -75,9 +75,9 @@
 
 &lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;泛型&#34;&gt;泛型&lt;/h2&gt;
+&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h3&gt;
+&lt;h2 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
 
 &lt;p&gt;scala中泛型使用&lt;code&gt;[]&lt;/code&gt;指定泛型的类型参数，上下文界定是隐式参数的语法糖&lt;/p&gt;
 
@@ -91,7 +91,7 @@
 &lt;li&gt;&lt;code&gt;T:A:B&lt;/code&gt; 表示即同时满足AT这种隐式值和BT这种隐式值&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h3&gt;
+&lt;h2 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;lt;: A&lt;/code&gt; 表示T必须为A的子类&lt;/li&gt;

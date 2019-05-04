@@ -153,9 +153,9 @@
 
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
 
-<h2 id="泛型">泛型</h2>
+<h1 id="泛型">泛型</h1>
 
-<h3 id="toc_1"><code>:</code></h3>
+<h2 id="toc_1"><code>:</code></h2>
 
 <p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
 
@@ -169,7 +169,7 @@
 <li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
 </ul>
 
-<h3 id="与"><code>&lt;:</code> 与 <code>:&gt;</code></h3>
+<h2 id="与"><code>&lt;:</code> 与 <code>:&gt;</code></h2>
 
 <ul>
 <li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
@@ -186,7 +186,7 @@
 <li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。<br /></li>
 </ul>
 
-<h3 id="toc_3"><code>&lt;%</code></h3>
+<h2 id="toc_3"><code>&lt;%</code></h2>
 
 <p><code>&lt;%</code> 表示“view bounds”(视界)，比 <code>&lt;:</code> 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。</p>
 
@@ -196,7 +196,7 @@
 <li><code>T &lt;% A &lt;% B</code> 表示：同时能够满足隐式转换的A和隐式转换的B</li>
 </ul>
 
-<h3 id="与-1"><code>=：=</code> , <code>&lt;:&lt;</code> 与 <code>&lt;%&lt;</code></h3>
+<h2 id="与-1"><code>=：=</code> , <code>&lt;:&lt;</code> 与 <code>&lt;%&lt;</code></h2>
 
 <p>这些被称为广义的类型约束。他们允许你从一个类型参数化的class或trait，进一步约束其类型参数之一。</p>
 
@@ -206,7 +206,7 @@
 <li><code>&lt;%&lt;</code> 表示必须是可视化类型，<code>A &lt;%&lt; B</code> 表示 A 必须是可视化为 B类型, 可能通过隐式转换 (类似与简单类型约束<code>&lt;%</code> )</li>
 </ul>
 
-<h3 id="t-与-t"><code>[+T]</code> 与 <code>[-T]</code></h3>
+<h2 id="t-与-t"><code>[+T]</code> 与 <code>[-T]</code></h2>
 
 <p>在泛型中，需要描述泛型的类型之间<code>继承</code>关系可以转化的关系。</p>
 
@@ -215,7 +215,7 @@
 <li><code>[-T]</code> 表示“逆变”，是指能够使用派生程度更小的类型。如： AnyRef =&gt; String</li>
 </ul>
 
-<h4 id="t"><code>[+T]</code></h4>
+<h3 id="t"><code>[+T]</code></h3>
 
 <p>A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需在定义Container的时候加上“[+T]”就好了；但是注意，如果只加了“[+T]”，只可以实例化从父类到子类的引用。</p>
 
@@ -227,7 +227,7 @@ a = new Space[Bird]</pre></div>
 <p>但不能是</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">var a = new Space[Animal]
 a = new Space[Earth]</pre></div>
-<h4 id="t-1"><code>[-T]</code></h4>
+<h3 id="t-1"><code>[-T]</code></h3>
 
 <p>面向对象编程中，子类也可以指向父类的引用，在正常情况下，通过强制类型转换，是可以实现。但是在有集合类的情况下如何实现呢？这就是“协变”<code>[-T]</code>了，只需在定义集合类的时候在集合类上加上“[-T]”即可。</p>
 
@@ -238,9 +238,9 @@ a = new Space[Earth]</pre></div>
 <p>则如下是OK的：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">var a = new Space[Animal]
 a = new Space[Earth]</pre></div>
-<h2 id="列表操作符">列表操作符</h2>
+<h1 id="列表操作符">列表操作符</h1>
 
-<h3 id="与-2"><code>::</code> 与 <code>++</code></h3>
+<h2 id="与-2"><code>::</code> 与 <code>++</code></h2>
 
 <p><code>::</code> 表示普通元素与List的连接操作，示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">val a = 1
@@ -257,7 +257,7 @@ val c = a ++ b</pre></div>
 <p><code>++=</code> 表示连接两个集合，并赋值，示例</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">var a = List(1, 2)
 a ++= List(3, 4)</pre></div>
-<h3 id="toc_10"><code>:::</code></h3>
+<h2 id="toc_10"><code>:::</code></h2>
 
 <p><code>:::</code> 表示只能List的连接操作，示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">val a = List(1, 2)
@@ -265,7 +265,7 @@ val b = List(3, 4)
 val c = a ::: b</pre></div>
 <p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
 
-<h3 id="与-3"><code>:+</code> 与 <code>+:</code></h3>
+<h2 id="与-3"><code>:+</code> 与 <code>+:</code></h2>
 
 <ul>
 <li><code>:+</code> 用于List在尾部追加元素</li>
@@ -279,9 +279,9 @@ val c = a ::: b</pre></div>
 <li><code>Nil:+&quot;A&quot;:+&quot;B&quot;</code> 结果为 List(A, B)</li>
 </ul>
 
-<h2 id="成对的符号">成对的符号</h2>
+<h1 id="成对的符号">成对的符号</h1>
 
-<h3 id="与-4"><code>-&gt;</code> 与 <code>&lt;-</code></h3>
+<h2 id="与-4"><code>-&gt;</code> 与 <code>&lt;-</code></h2>
 
 <ul>
 <li><code>-&gt;</code> 是所有Scala对象都有的方法，生成元组，如 <code>A-&gt;B</code> 结果是返回一个二元的元组(A,B)</li>
@@ -289,16 +289,16 @@ val c = a ::: b</pre></div>
 <li><code>&lt;-</code> 用于for循环中，<code>&lt;-</code> 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var</li>
 </ul>
 
-<h3 id="与-5"><code>&lt;=</code> 与 <code>=&gt;</code></h3>
+<h2 id="与-5"><code>&lt;=</code> 与 <code>=&gt;</code></h2>
 
 <ul>
 <li><code>&lt;=</code> 只表示 小于等于号</li>
 <li><code>=&gt;</code> 使用场景相当地多</li>
 </ul>
 
-<h4 id="用法"><code>=&gt;</code>用法</h4>
+<h3 id="用法"><code>=&gt;</code>用法</h3>
 
-<h5 id="call-by-name">Call by name</h5>
+<h4 id="call-by-name">Call by name</h4>
 
 <p><code>传名调用</code>(Call by name)，在 <code>传名调用</code> 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。</p>
 
@@ -337,7 +337,7 @@ val c = a ::: b</pre></div>
         i -= 1
     } unless (i == 0)
 }</pre></div>
-<h5 id="函数定义">函数定义</h5>
+<h4 id="函数定义">函数定义</h4>
 
 <p>使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">List(1,2,3).map { (x: Int) =&gt; x * 2 }</pre></div>
@@ -387,7 +387,7 @@ x</pre></div>
         oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
     }
 }</pre></div>
-<h5 id="模式匹配">模式匹配</h5>
+<h4 id="模式匹配">模式匹配</h4>
 
 <p>这个比较容易理解，示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object MatchTest extends App {
@@ -398,7 +398,7 @@ x</pre></div>
     }
     println(matchTest(3))
 }</pre></div>
-<h5 id="自身类型-self-type">自身类型（self type）</h5>
+<h4 id="自身类型-self-type">自身类型（self type）</h4>
 
 <p>When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
 When a trait starts out with<br />
@@ -422,21 +422,21 @@ self-type java.io.File with LoggedException does not conform to LoggedException&
     val file = new File(&#34;/user&#34;) with LoggedException</pre></div>
 <p>在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。</p>
 
-<h2 id="下划线">下划线 <code>_</code></h2>
+<h1 id="下划线">下划线 <code>_</code></h1>
 
 <p><code>_</code> 在Scala上通常代表是通配符，占位符。</p>
 
-<h3 id="作为标识符">作为标识符</h3>
+<h2 id="作为标识符">作为标识符</h2>
 
 <p>例如定义一个变量 <code>val _num = 123</code></p>
 
-<h3 id="作为通配符">作为通配符</h3>
+<h2 id="作为通配符">作为通配符</h2>
 
-<h4 id="import语句">import语句</h4>
+<h3 id="import语句">import语句</h3>
 
 <p>例如 <code>import scala.math._</code></p>
 
-<h4 id="case语句">case语句</h4>
+<h3 id="case语句">case语句</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object MatchTest extends App {
     def matchTest(x: Int): String = x match {
         case 1 =&gt; &#34;one&#34;
@@ -445,7 +445,7 @@ self-type java.io.File with LoggedException does not conform to LoggedException&
     }
     println(matchTest(3))
 }</pre></div>
-<h4 id="元组-tuple-访问">元组（tuple）访问</h4>
+<h3 id="元组-tuple-访问">元组（tuple）访问</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
 t: (Int, Double, String) = (1,3.14,Fred)
 //可以用_1，_2，_3访问这个元组
@@ -468,11 +468,11 @@ second: Double = 3.14
 
 scala&gt; val (first, _, _) = t
 first: Int = 1</pre></div>
-<h3 id="将方法转换为函数">将方法转换为函数</h3>
+<h2 id="将方法转换为函数">将方法转换为函数</h2>
 
 <p>请参见 <a href="https://www.jianshu.com/p/d5ce4c683703">Scala中Method方法和Function函数的区别</a></p>
 
-<h3 id="作为函数的参数">作为函数的参数</h3>
+<h2 id="作为函数的参数">作为函数的参数</h2>
 
 <p>一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
@@ -529,15 +529,15 @@ You can safely force boxing by casting x.asInstanceOf[AnyRef].
 
 scala&gt; hashcodes(Seq(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;))
 res1: Seq[Int] = List(110182, 115276, 110339486)</pre></div>
-<h3 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h3>
+<h2 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h2>
 
-<h4 id="下划线与等号">下划线与等号 <code>_=</code></h4>
+<h3 id="下划线与等号">下划线与等号 <code>_=</code></h3>
 
 <p>自定义setter方法，请参见 <a href="https://www.jianshu.com/p/4a3362ec22de">Overriding def with var in Scala</a></p>
 
-<h4 id="下划线与星号">下划线与星号 <code>_*</code></h4>
+<h3 id="下划线与星号">下划线与星号 <code>_*</code></h3>
 
-<h5 id="变长参数">变长参数</h5>
+<h4 id="变长参数">变长参数</h4>
 
 <p>例如定义一个变长参数的方法sum，然后计算 <code>1-5</code> 的和，可以写为：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; def sum(args: Int*) = {
@@ -559,7 +559,7 @@ required: Int
 <p>这种情况必须在后面写上: <code>_*</code> 将<code>1 to 5</code> 转化为参数序列</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val s = sum(1 to 5: _*)
 s: Int = 15</pre></div>
-<h5 id="变量声明中的模式">变量声明中的模式</h5>
+<h4 id="变量声明中的模式">变量声明中的模式</h4>
 
 <p>例如，下面代码分别将arr中的第一个和第二个值赋给first和second</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; val arr = Array(1, 2, 3, 4, 5)
@@ -570,16 +570,16 @@ scala&gt; val Array(1, 2, _*) = arr
 scala&gt; val Array(first, second, _*) = arr
 first: Int = 1
 second: Int = 2</pre></div>
-<h2 id="at符">At符 <code>@</code></h2>
+<h1 id="at符">At符 <code>@</code></h1>
 
-<h3 id="标识注解">标识注解</h3>
+<h2 id="标识注解">标识注解</h2>
 
 <p>在方法，类，属性上标识一个注解， 如:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@deprecated(&#34;the delayedInit mechanism will disappear&#34;, &#34;2.11.0&#34;)
 override def delayedInit(body: =&gt; Unit) {
     initCode += (() =&gt; body)
 }</pre></div>
-<h3 id="赋值检测">赋值检测</h3>
+<h2 id="赋值检测">赋值检测</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">object test {
   def main(args: Array[String]) {
     val b=Some(2)
@@ -598,7 +598,7 @@ override def delayedInit(body: =&gt; Unit) {
 Some(1)
 2
 IMF</pre></div>
-<h3 id="值匹配重命名">值匹配重命名</h3>
+<h2 id="值匹配重命名">值匹配重命名</h2>
 
 <p>使用在match case场景，可以将匹配的值重新命名，示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def calcType(calc: Calculator) = calc match {
@@ -607,7 +607,7 @@ IMF</pre></div>
   case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
   case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
 }</pre></div>
-<h2 id="与-6"><code>/:</code> 与 <code>:\</code></h2>
+<h1 id="与-6"><code>/:</code> 与 <code>:\</code></h1>
 
 <p>了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：</p>
 
@@ -638,7 +638,7 @@ res33: Int = 5050</pre></div>
 <p><code>:\</code> 是foldRight的简写， 示例：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
 res51: Int = 85</pre></div>
-<h2 id="与-7"><code>%</code> 与 <code>%%</code></h2>
+<h1 id="与-7"><code>%</code> 与 <code>%%</code></h1>
 
 <p>使用SBT时，在build.st文件中，通常会看到</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
@@ -788,8 +788,6 @@ res51: Int = 85</pre></div>
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
-<ul>
 <li><a href="#泛型">泛型</a>
 <ul>
 <li><a href="#toc_1"><code>:</code></a></li>
@@ -851,7 +849,6 @@ res51: Int = 85</pre></div>
 </ul></li>
 <li><a href="#与-6"><code>/:</code> 与 <code>:\</code></a></li>
 <li><a href="#与-7"><code>%</code> 与 <code>%%</code></a></li>
-</ul></li>
 </ul>
 </nav></div>
     </div>

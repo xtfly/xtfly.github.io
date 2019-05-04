@@ -23,9 +23,9 @@
 
 &lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;泛型&#34;&gt;泛型&lt;/h2&gt;
+&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h3&gt;
+&lt;h2 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
 
 &lt;p&gt;scala中泛型使用&lt;code&gt;[]&lt;/code&gt;指定泛型的类型参数，上下文界定是隐式参数的语法糖&lt;/p&gt;
 
@@ -39,7 +39,7 @@
 &lt;li&gt;&lt;code&gt;T:A:B&lt;/code&gt; 表示即同时满足AT这种隐式值和BT这种隐式值&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h3&gt;
+&lt;h2 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;lt;: A&lt;/code&gt; 表示T必须为A的子类&lt;/li&gt;
