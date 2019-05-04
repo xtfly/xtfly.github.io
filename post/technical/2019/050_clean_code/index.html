@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>代码洁癖 - 蘭陵N散記</title>
+    <title>代码整洁与洁癖 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="代码洁癖">
+    <meta property="og:title" content="代码整洁与洁癖">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="代码洁癖 - 蘭陵N散記" />
+    <meta name="title" content="代码整洁与洁癖 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/050_clean_code/" itemprop="url">
-        代码洁癖
+        代码整洁与洁癖
         </a>
       </h1>
       <div class="post-meta">
@@ -142,22 +142,22 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">755 字 ~2分钟</span>
+<span class="leancloud-visitors-count">778 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="背景">背景</h1>
 
-<p>我司强执行力，很容易把事情做得极致，但有时极致反而带来不好的意外的结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是仁着见仁。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死的规范。</p>
+<p>我司强执行力，很容易把事情做得极致，但有时过于极致反而带来不好的意外结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是仁着见仁。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死记硬背的规范。</p>
 
 <h1 id="整洁代码">整洁代码</h1>
 
-<p><code>Robert C. Martin</code> 的《Clean Code》书是本非常接地气的开发经验总结，他告诉我们什么是好的代码，怎么去消除代码中“坏的味道”。如何才能写出整洁代码呢？总的原则无非是KISS（Keep It Simple Stupid）：让代码简单直接，让阅读者可以很容易地看出设计者的意图。本书谈到了大量的小技巧和规则，遵循这些规则可以帮你写出更加的整洁代码。整洁代码力求集中，每个函数、每个类和每个模块都全神贯注于一件事。整洁代码简单直接，从不隐藏设计者的意图。</p>
+<p><code>Robert C. Martin</code>的《Clean Code》书是本非常接地气的多年开发经验总结，他告诉我们什么是好的代码，怎么去消除代码中“坏的味道”。如何才能写出整洁代码呢？总的原则无非是KISS（Keep It Simple Stupid）：让代码简单直接，让阅读者可以很容易地看出设计者的意图。本书谈到了大量的小技巧和规则，遵循这些规则可以帮你写出更加的整洁代码。整洁代码力求集中，每个函数、每个类和每个模块都全神贯注于一件事。整洁代码简单直接，从不隐藏设计者的意图。</p>
 
 <h1 id="洁癖">洁癖</h1>
 
-<p>但整洁代码并不是一定要有代码洁癖症。与整理代码相比，他们最终的目的可能不同，代码洁癖者往往多有强迫症，自我欣赏，它关注是代码的格式上的清洁，追求代码视觉上的感受，而不是追求代码逻辑上、可读性与可维护性上整洁。什么是洁癖症表现：</p>
+<p>写出整洁代码并不是一定像处女座一样强迫，陷入代码洁癖症。代码洁癖与整洁相比，他们最终的目的可能不同，代码洁癖者往往多有强迫症，自我欣赏，它关注是代码的格式上的清洁，追求代码视觉上的感受，而不是追求代码逻辑上、可读性与可维护性上整洁。什么是洁癖症表现：</p>
 
 <ul>
 <li>多余的空格、空行，见一个删一个</li>
