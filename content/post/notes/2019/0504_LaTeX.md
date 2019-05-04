@@ -9,6 +9,7 @@ toc: true
 ---
 
 五一放假只好有点时间，于是计划完成这个 Issue: [Is it possible to add latex support and maybe flowchart feature of markdown? Also disqus or livere comment system? Maybe google analytics?](https://github.com/xtfly/hugo-theme-next/issues/8)，要解决支持LateX，只需要集成[MathJax](https://github.com/mathjax/MathJax)。
+<!--more>
 
 # 如何集成
 
