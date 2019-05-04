@@ -18,9 +18,9 @@ Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他�
 
 _说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。_ 
 
-## 泛型
+# 泛型
 
-### `:`
+## `:`
 
 scala中泛型使用`[]`指定泛型的类型参数，上下文界定是隐式参数的语法糖
 
@@ -30,7 +30,7 @@ scala中泛型使用`[]`指定泛型的类型参数，上下文界定是隐式�
 
  - `T:A:B` 表示即同时满足AT这种隐式值和BT这种隐式值
 
-### `<:` 与 `:>`
+## `<:` 与 `:>`
 
  - `<:` 表示只限定子类，如 `T <: A` 表示T必须为A的子类
  - `>:` 表示只限定子类，如 `T >: A` 表示T必须为A的父类
@@ -44,7 +44,7 @@ scala中泛型使用`[]`指定泛型的类型参数，上下文界定是隐式�
  - `T >: A <: B` 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。  
 
 <!--more-->
-### `<%`
+## `<%`
 
 `<%` 表示“view bounds”(视界)，比 `<:` 适用的范围更广，除了所有的子类型，还允许隐式转换过去的类型。
 
@@ -52,7 +52,7 @@ scala中泛型使用`[]`指定泛型的类型参数，上下文界定是隐式�
 
  - `T <% A <% B ` 表示：同时能够满足隐式转换的A和隐式转换的B 
 
-###  `=：=` , `<:<` 与 `<%<`
+##  `=：=` , `<:<` 与 `<%<`
 
 这些被称为广义的类型约束。他们允许你从一个类型参数化的class或trait，进一步约束其类型参数之一。
 
@@ -60,14 +60,14 @@ scala中泛型使用`[]`指定泛型的类型参数，上下文界定是隐式�
  - `<:<` 表示必须是子类型，如 `A <:< B` 表示 A 必须是B的子类型 (类似于简单类型约束 `<:` )
  - `<%<` 表示必须是可视化类型，`A <%< B` 表示 A 必须是可视化为 B类型, 可能通过隐式转换 (类似与简单类型约束` <%` )
 
-### `[+T]` 与 `[-T]`
+## `[+T]` 与 `[-T]`
  
 在泛型中，需要描述泛型的类型之间`继承`关系可以转化的关系。
 
  - `[+T]` 表示“协变“，是指能够使用与原始指定的派生类型相比，派生程度更大的类型。如：String => AnyRef
  - `[-T]` 表示“逆变”，是指能够使用派生程度更小的类型。如： AnyRef => String
 
-#### `[+T]`
+### `[+T]`
 
 A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需在定义Container的时候加上“[+T]”就好了；但是注意，如果只加了“[+T]”，只可以实例化从父类到子类的引用。
 
@@ -87,7 +87,7 @@ var a = new Space[Animal]
 a = new Space[Earth]
 ```
 
-#### `[-T]`
+### `[-T]`
 
 面向对象编程中，子类也可以指向父类的引用，在正常情况下，通过强制类型转换，是可以实现。但是在有集合类的情况下如何实现呢？这就是“协变”`[-T]`了，只需在定义集合类的时候在集合类上加上“[-T]”即可。
 
@@ -102,9 +102,9 @@ var a = new Space[Animal]
 a = new Space[Earth]
 ```
 
-## 列表操作符
+# 列表操作符
 
-### `::` 与 `++`
+## `::` 与 `++`
 
 `::` 表示普通元素与List的连接操作，示例：
 
@@ -133,7 +133,7 @@ var a = List(1, 2)
 a ++= List(3, 4)
 ```
 
-### `:::`
+## `:::`
 
 `:::` 表示只能List的连接操作，示例：
 
@@ -146,7 +146,7 @@ val c = a ::: b
 其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。
 
 
-### `:+` 与 `+:`
+## `:+` 与 `+:`
 
  -  `:+` 用于List在尾部追加元素
  -  `+:` 用于List在头部追加元素
@@ -157,22 +157,22 @@ val c = a ::: b
  - `Nil:+"A":+"B"` 结果为 List(A, B)
 
 
-## 成对的符号
+# 成对的符号
 
-### `->` 与 `<-`
+## `->` 与 `<-`
 
  - `->` 是所有Scala对象都有的方法，生成元组，如 `A->B` 结果是返回一个二元的元组(A,B)
  - `->` 用于map构建，表示Key -> Value， 如 `Map(1 -> "one", 2 -> "two")`
  - `<-` 用于for循环中，`<-` 在Scala中称为generator，在每次遍历的过程中，生成一个新的对象A，这个A是val，而不是var
 
-### `<=` 与 `=>`
+## `<=` 与 `=>`
 
  - `<=` 只表示 小于等于号
  - `=>` 使用场景相当地多
 
-#### `=>`用法
+### `=>`用法
 
-##### Call by name
+#### Call by name
 
 `传名调用`(Call by name)，在 `传名调用` 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。
 
@@ -225,7 +225,7 @@ object TargetTest extends App {
 
 
 
-##### 函数定义
+#### 函数定义
 
 使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：
 
@@ -287,7 +287,7 @@ object TimerAnonymous {
 }
 ```
 
-##### 模式匹配
+#### 模式匹配
 
 这个比较容易理解，示例：
 
@@ -302,7 +302,7 @@ object MatchTest extends App {
 }
 ```
 
-##### 自身类型（self type）
+#### 自身类型（self type）
 
 When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
 When a trait starts out with  
@@ -329,21 +329,21 @@ self-type java.io.File with LoggedException does not conform to LoggedException'
 
 在定义LoggedException使用了this: Exception =>那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。
 
-## 下划线 `_`
+# 下划线 `_`
 
 `_` 在Scala上通常代表是通配符，占位符。
 
-### 作为标识符
+## 作为标识符
 
 例如定义一个变量 `val _num = 123`
 
-### 作为通配符
+## 作为通配符
 
-#### import语句
+### import语句
 
 例如 `import scala.math._`
 
-#### case语句
+### case语句
 
 ```
 object MatchTest extends App {
@@ -356,7 +356,7 @@ object MatchTest extends App {
 }
 ```
 
-#### 元组（tuple）访问
+### 元组（tuple）访问
 
 ```
 scala> val t = (1, 3.14, "Fred")
@@ -387,11 +387,11 @@ scala> val (first, _, _) = t
 first: Int = 1
 ```
 
-### 将方法转换为函数
+## 将方法转换为函数
 
 请参见 [Scala中Method方法和Function函数的区别](https://www.jianshu.com/p/d5ce4c683703)
 
-### 作为函数的参数
+## 作为函数的参数
 
 一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：
 
@@ -488,15 +488,15 @@ scala> hashcodes(Seq("one", "two", "three"))
 res1: Seq[Int] = List(110182, 115276, 110339486)
 ```
 
-### 下划线和其他符号组合的使用方式
+## 下划线和其他符号组合的使用方式
 
-#### 下划线与等号 `_=`
+### 下划线与等号 `_=`
 
 自定义setter方法，请参见 [Overriding def with var in Scala](https://www.jianshu.com/p/4a3362ec22de)
 
-#### 下划线与星号 `_*` 
+### 下划线与星号 `_*` 
 
-##### 变长参数
+#### 变长参数
 
 例如定义一个变长参数的方法sum，然后计算 `1-5` 的和，可以写为：
 
@@ -530,7 +530,7 @@ scala> val s = sum(1 to 5: _*)
 s: Int = 15
 ```
 
-##### 变量声明中的模式
+#### 变量声明中的模式
 
 例如，下面代码分别将arr中的第一个和第二个值赋给first和second
 
@@ -545,9 +545,9 @@ first: Int = 1
 second: Int = 2
 ```
 
-## At符 `@`
+# At符 `@`
 
-### 标识注解
+## 标识注解
 
 在方法，类，属性上标识一个注解， 如:
 
@@ -558,7 +558,7 @@ override def delayedInit(body: => Unit) {
 }
 ```
 
-### 赋值检测
+## 赋值检测
 
 ```
 object test {
@@ -585,7 +585,7 @@ Some(1)
 IMF
 ```
 
-### 值匹配重命名
+## 值匹配重命名
 
 使用在match case场景，可以将匹配的值重新命名，示例：
 
@@ -598,7 +598,7 @@ def calcType(calc: Calculator) = calc match {
 }
 ```
 
-## `/:` 与 `:\`
+# `/:` 与 `:\`
 
 了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：
 
@@ -647,7 +647,7 @@ scala> ((1 to 5):\100)((i,sum)=> sum-i)
 res51: Int = 85
 ```
 
-## `%` 与 `%%`
+# `%` 与 `%%`
 
 使用SBT时，在build.st文件中，通常会看到
 
