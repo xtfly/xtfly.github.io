@@ -57,8 +57,6 @@ dfn {
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
-  border-left: solid .25rem #428bca;
-  padding: 0 .5rem;
 }
 mark {
   background: #ff0;
@@ -1010,6 +1008,11 @@ pre .javascript .function {
 }
 .post-body {
   font-family: 'Monda', "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.post-body h1 {
+  border-left: solid 5px #428bca;
+  padding: 5px;
+  margin: 10px 0;
 }
 @media (max-width: 767px) {
   .post-body {

@@ -10,11 +10,10 @@ toc: true
 
 五一放假正好有点时间，于是计划完成这个 Issue: [Is it possible to add latex support...](https://github.com/xtfly/hugo-theme-next/issues/8)，要解决支持LateX，只需要集成[MathJax](https://github.com/mathjax/MathJax)。
 
-<!--more-->
-
 # 如何集成
 
 在主题文件`layouts/partials/script.html`中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。
+<!--more-->
 
 ```
 <script type="text/x-mathjax-config">
