@@ -41,6 +41,7 @@ toc: true
   - 包含在段落之中，见上面的inlineMath配置，采用以 `$...$` 引用
   - 独立于其他文字，见上面的displayMath配置，采用以 `$$...$$` 引用
 
+更多的使用请参考： http://docs.mathjax.org/en/latest/tex.html 
 
 ## 样例
 
