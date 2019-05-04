@@ -6,10 +6,19 @@
     <description>Recent content in 笔记 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 21 Jul 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>支持LateX</title>
+      <link>http://lanlingzi.cn/post/notes/2019/0504_latex/</link>
+      <pubDate>Sat, 04 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2019/0504_latex/</guid>
+      <description>五一放假只好有点时间，于是计划完成这个 Issue: Is it possible to add latex support and maybe flowchart feature of markdown? Also disqus or livere comment system? Maybe google analytics?，要解决支持LateX，只需要集成Ma</description>
+    </item>
     
     <item>
       <title>Scala中的符号</title>

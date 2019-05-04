@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>HW八年总结 - 蘭陵N散記</title>
+    <title>代码整洁与洁癖 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="HW八年总结">
+    <meta property="og:title" content="代码整洁与洁癖">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="HW八年总结 - 蘭陵N散記" />
+    <meta name="title" content="代码整洁与洁癖 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2013/0909_hw_8years/" itemprop="url">
-        HW八年总结
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0501_clean_code/" itemprop="url">
+        代码整洁与洁癖
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2013-09-09">
-    2013-09-09
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-01">
+    2019-05-01
 </time>
 </span> 
       
@@ -127,8 +127,8 @@
   <span class="post-meta-item-text">分类：</span>
   
     <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
-        <span itemprop="name">感想</span>
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
       </a>
       &nbsp; 
     </span>
@@ -142,42 +142,36 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2886 字 ~6分钟</span>
+<span class="leancloud-visitors-count">780 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>白驹过隙，进入公司已是八年，一路学习一路收获。往后回首，一些经历回想起来还历历在目：经历过一线比拼的激情，经历过产品上线的喜悦，经历过多个项目的变换，经历过持续熬夜的艰辛；写过不少的代码，带过一些徒弟，负责过团队开发，一直在公司从事基层的研发工作。一路走下来，也得到部门领导，公司同事的帮助、指导与鼓励，能让我一直坚持下去，过程中我也得到一些很高的认可，感触多，收获多。在此我先感谢大家！</p>
+    <h1 id="背景">背景</h1>
 
-<h2 id="团队成功才能成就个人">团队成功才能成就个人</h2>
+<p>我司强执行力，很容易把事情做得极致，但有时过于极致反而带来不好的意外结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是仁着见仁。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死记硬背的规范。</p>
 
-<p>还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 <strong>只有团队的成功，才能有个人的成就</strong> 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，<strong>把分给我的工作尽自己最大的努力做好做实，做到问心无愧</strong> 。</p>
+<h1 id="整洁代码">整洁代码</h1>
 
-<h2 id="做适合自己做的事">做适合自己做的事</h2>
+<p><code>Robert C. Martin</code>的《Clean Code》书是本非常接地气的多年开发经验总结，他告诉我们什么是好的代码，怎么去消除代码中“坏的味道”。如何才能写出整洁代码呢？总的原则无非是KISS（Keep It Simple Stupid）：让代码简单直接，让阅读者可以很容易地看出设计者的意图。本书谈到了大量的小技巧和规则，遵循这些规则可以帮你写出更加的整洁代码。整洁代码力求集中，每个函数、每个类和每个模块都全神贯注于一件事。整洁代码简单直接，从不隐藏设计者的意图。</p>
 
-<p>人贵有自知之明，熟悉自己的性格缺陷，搞明白自己擅长什么，这其实也非常地难做到，尤其是在面对一些机会时做决策。当初大学毕业时，家人就安排我在深圳益田村做物业管理，最后也没有做下去，原因是不适合。像我这种人，我不喜欢指挥人去干活。如果去做市场肯定打不开局面，不太会说动别人。如果去搞财经也肯定搞不好，看到一大堆的数据比较头疼。如果去搞前台设计也肯定搞不好，从小就没有什么艺术细胞。最后发现搞搞后台技术可能凑合着，也符合我个人的性格，能安静地做事。所以即使来到公司这么多年了，还是对技术情有独钟。事实上，很多岗位不一定要最优秀的，但必须是要最合适的。 <strong>每个人都有优缺点，金无足赤，人无完人，在合适的岗位上做自己擅长的事</strong> 。</p>
+<h1 id="代码洁癖">代码洁癖</h1>
 
-<h2 id="居安思危-适应变化">居安思危，适应变化</h2>
+<p>写出整洁代码并不是一定像处女座一样强迫，陷入代码洁癖症。代码洁癖与整洁相比，他们最终的目的可能不同，代码洁癖者往往多有强迫症，自我欣赏，它关注是代码的格式上的清洁，追求代码视觉上的感受，而不是追求代码逻辑上、可读性与可维护性上整洁。什么是洁癖症表现：</p>
 
-<p>信息爆炸的时代，外部形势与内部因素都无时无刻都在变化，对个人来说，时刻可能都面临挑战。从在公司的几年来看，我个人的工作内容也一直在变化着，人传统的智能网到源于互联网的云云计算，从窄带智能网到宽窄带融合，从话音控制到消息内容，从单体大型服务到分布式集群应用，从C++语言到Java语言。真是变化太快，每次转变，都需要去适应它。面对变化，自己需要时常有点危机感，不断地去学习。比如说去年带头做E2E一键部署时，需要了解的东西很多：要做界面，没有使用过Java Swing；虚拟化部署，没有使用过Power Shell，都需要快速学习，所有事情搞定。可以说每个人都有业务短板，你不可能是一个天才，这种对无法胜用的危机感导致不敢放松自己。缓解危机感往往需要的是应对实际困难的技能或技巧。<strong>时常有了危机感，才会促我去主动学习，主动思考，主动改变</strong>。我不是一个力求完美的人，但在工作中往往会尽最大的努力与热情来了解各种专业技能，把手头上的事情做对做好。</p>
+<ul>
+<li>多余的空格、空行，见一个删一个</li>
+<li>什么情况下应该留空格、空行，就会去增加</li>
+<li>凡是没有注释，非得加上一个注释，连增删改查不例外，不管有没有意义</li>
+<li>纠结字符串统一采用单引号或双引号</li>
+<li>连常用无歧义的0或1数字等也得定义一个常量</li>
+<li>局部变量命名也非常长，看起来非常明确的样子</li>
+<li>&hellip;&hellip;</li>
+</ul>
 
-<h2 id="兴趣-好奇心">兴趣，好奇心</h2>
+<h1 id="小结">小结</h1>
 
-<p>记不得是哪个名人说过兴趣是最好的老师，我觉得应该是最好的向导。<strong>如果你对某件事感兴趣，它会牵引你去主动学习、行动与思考</strong>。 我一直对各种新技术比较好奇，以前下班之后回到家经常去逛一些技术网站与论坛。好奇心是一个研发人员的基本素质，据说做学问成功的第一要素既不是天赋，也不是勤奋与激情，也不是靠你努力就一定出得来的，而可能是好奇的灵光。好奇心驱使我去了解一些技术细节，技术动向，如之前对C++比较执迷，经常请教同事一些较偏的用法，下班回家喜欢写点代码验证一下想法。又如当时GAE刚出来，我就利用周末开发GAE应用玩玩，后被墙掉访问不方便才没有继续玩了；又如之前开心网种菜火爆时，马上抓包分析写偷菜外挂；我也可能是一个刷机控，从09年开始的M8刷成Android，之后的iPod, iPad, iPhone, SAMSUMG手机没有少被我折腾过，刷成不同版本的定制系统。平时这些技术多猎奇可能看似对工作起不了直接帮助，但它们能扩展的视野，丰富我的知识，强化我的动手能力。若在工作中遇到类似问题时，可能举一反三，找到解决问题办法。<strong>关注技术但不要陷入技术，本质是用技术来提升认知问题，分析问题，解决问题的思想高度。</strong></p>
-
-<h2 id="耐得住寂寞">耐得住寂寞</h2>
-
-<p>来深圳有不少的高中，大学同学，以及亲朋好友。大家大学毕业都差不多十年了，在坚持做技术是越来越少，尤其是从事软件开发的。以前大学同学每年的聚会，问的最多的问题是你还在HW啊？还在写代码？现在已经不问了。的确，在国内做软件开发的大环境相对不是很好，尤其是上了三十岁的人还从事一线编码工作，会觉得你是没有上进心的人。在外部，我好几个同学转行了，有些创业，做得还不错。在公司内部，也见到越来越多的同事，习惯于风风火火到处开会。这是很危险的，会使我们的杂乱信息越来越多，功底越来越浅。佛家中有一项坐功是讲你你定力修为，HW的研发人员也需要一种定力，任何一件事情的极致需要持续的积累才能达到。我想我还一直在从事基层的研发，一方面源于我的兴趣爱好，另一方面也符合我的性格。从另一方面来说，<strong>要能持续把一个简单的事情做好做对，也需要面对各种诱惑而得住寂寞的能力，心无杂念去做事。</strong></p>
-
-<h2 id="知识管理-思考总结">知识管理，思考总结</h2>
-
-<p>如今是信息爆炸的时代，各种各样杂乱无章的信息迎面扑来。如何将众多的信息提炼，转化为知识对于提升个人能力尤显相当地重要，有时不得不感慨：山中方一日，世上已千年。人与人之间的竞争，从某种意义上讲，可能也是个人运用知识快慢，正确与事的竞争力。大凡成功的人士，都少不了对知识的合理管理。</p>
-
-<p>对于太多数人来说获取过程也是收集过程，记录的知识可能是一些零碎的片段，即使分类也是杂乱的、没有关联的，不利于管理，更难形成体系。时间长了，如果没有好的工具搜索出来，也是前功尽弃。在实际工作中，我们更多是遇到类似的问题，才去搜索，搜索之后就是Ctrl+C与Ctrl+V，多半会被遗忘掉。所以在获取知识以后是积累，积累以后是实用，实用以后是分析，分析以后是总结。这样才能把知识转成一种能力。<strong>总结最好的方式是写出来，与人交流，写与说的过程一方面可以督促自己完善想法，加深认识，说不定还会擦出创新的火花。</strong> 所以我就一直尝试去写一些东西，虽然文笔很烂，坚持下去也会收获不少，今天一看，在公司的Hi3MS平台已写一百多篇的技术博文了。</p>
-
-<hr />
-
-<p>回头再看，浓缩一下：<strong>“持续学习，实践行动，思考总结”</strong>，这几个可能概括出我这几年的经历吧。想起姜育恒的《再回首》歌词来做结尾吧：不管明天要面对多少伤疼和迷惑，曾经在幽幽暗暗反反复复中追问，才知道平平淡淡从从容容是最真，再回首恍然如梦，再回首我心依旧，只有那无尽的长路伴着我。</p>
+<p>整洁代码是为了代码更好的阅读与维护，做到代码表义上精确无二义性，逻辑上简洁高效；但切不要陷入一些可以通过工具自动化的感观上干净，以及一些无意义的风格上统一。</p>
     </div>
     <footer class="post-footer">
      
@@ -186,8 +180,6 @@
      
     <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
-    <a href="http://lanlingzi.cn/tags/%e6%80%bb%e7%bb%93" rel="tag" title="总结">#总结#</a>
-    
 </div>
 
 
@@ -195,16 +187,16 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/thoughts/2013/1113_good_programmer/" rel="next" title="优秀程序员">
-        <i class="fa fa-chevron-left"></i> 优秀程序员
+        <a href="http://lanlingzi.cn/post/notes/2019/0504_latex/" rel="next" title="支持LateX">
+        <i class="fa fa-chevron-left"></i> 支持LateX
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/" rel="prev" title="Java线程使用建议">
-        Java线程使用建议 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/thoughts/2019/0427_fulfillment/" rel="prev" title="成就感">
+        成就感 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -310,15 +302,10 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
-<ul>
-<li><a href="#团队成功才能成就个人">团队成功才能成就个人</a></li>
-<li><a href="#做适合自己做的事">做适合自己做的事</a></li>
-<li><a href="#居安思危-适应变化">居安思危，适应变化</a></li>
-<li><a href="#兴趣-好奇心">兴趣，好奇心</a></li>
-<li><a href="#耐得住寂寞">耐得住寂寞</a></li>
-<li><a href="#知识管理-思考总结">知识管理，思考总结</a></li>
-</ul></li>
+<li><a href="#背景">背景</a></li>
+<li><a href="#整洁代码">整洁代码</a></li>
+<li><a href="#代码洁癖">代码洁癖</a></li>
+<li><a href="#小结">小结</a></li>
 </ul>
 </nav></div>
     </div>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>代码整洁与洁癖 - 蘭陵N散記</title>
+    <title>支持LateX - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="代码整洁与洁癖">
+    <meta property="og:title" content="支持LateX">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="代码整洁与洁癖 - 蘭陵N散記" />
+    <meta name="title" content="支持LateX - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/050_clean_code/" itemprop="url">
-        代码整洁与洁癖
+        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2019/0504_latex/" itemprop="url">
+        支持LateX
         </a>
       </h1>
       <div class="post-meta">
@@ -127,8 +127,8 @@
   <span class="post-meta-item-text">分类：</span>
   
     <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
       </a>
       &nbsp; 
     </span>
@@ -142,43 +142,67 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">780 字 ~2分钟</span>
+<span class="leancloud-visitors-count">427 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h1 id="背景">背景</h1>
+    
 
-<p>我司强执行力，很容易把事情做得极致，但有时过于极致反而带来不好的意外结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是仁着见仁。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死记硬背的规范。</p>
+<p>五一放假只好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support and maybe flowchart feature of markdown? Also disqus or livere comment system? Maybe google analytics?</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
 
-<h1 id="整洁代码">整洁代码</h1>
+<h1 id="如何集成">如何集成</h1>
 
-<p><code>Robert C. Martin</code>的《Clean Code》书是本非常接地气的多年开发经验总结，他告诉我们什么是好的代码，怎么去消除代码中“坏的味道”。如何才能写出整洁代码呢？总的原则无非是KISS（Keep It Simple Stupid）：让代码简单直接，让阅读者可以很容易地看出设计者的意图。本书谈到了大量的小技巧和规则，遵循这些规则可以帮你写出更加的整洁代码。整洁代码力求集中，每个函数、每个类和每个模块都全神贯注于一件事。整洁代码简单直接，从不隐藏设计者的意图。</p>
+<p>在主题<code>layouts/partials/script.html</code> 增加如下，采用了cloudflare的CDN，国内可能稍慢些。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
+  MathJax.Hub.Config({
+    extensions: [&#34;tex2jax.js&#34;],
+    jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;],
+    tex2jax: {
+      inlineMath: [ [&#39;$&#39;,&#39;$&#39;] ],
+      displayMath: [ [&#39;$$&#39;,&#39;$$&#39;] ],
+      processEscapes: true
+    },
+    &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] }
+  });
+&lt;/script&gt;
+&lt;script src=&#39;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML&#39; async&gt;&lt;/script&gt;</pre></div>
+<p>加上 <code>TeX-AMS-MML_HTMLorMML</code> 使得我们可以支持Tex和MathML公式，表示如果浏览器支持MathML解析，那么就使用它，否则会使用HTML-with-CSS来显示数学公式。</p>
 
-<h1 id="代码洁癖">代码洁癖</h1>
+<h1 id="如何使用">如何使用</h1>
 
-<p>写出整洁代码并不是一定像处女座一样强迫，陷入代码洁癖症。代码洁癖与整洁相比，他们最终的目的可能不同，代码洁癖者往往多有强迫症，自我欣赏，它关注是代码的格式上的清洁，追求代码视觉上的感受，而不是追求代码逻辑上、可读性与可维护性上整洁。什么是洁癖症表现：</p>
+<p>LaTeX 格式的公式使用主要有两种形式：</p>
 
 <ul>
-<li>多余的空格、空行，见一个删一个</li>
-<li>什么情况下应该留空格、空行，就会去增加</li>
-<li>凡是没有注释，非得加上一个注释，连增删改查不例外，不管有没有意义</li>
-<li>纠结字符串统一采用单引号或双引号</li>
-<li>连常用无歧义的0或1数字等也得定义一个常量</li>
-<li>局部变量命名也非常长，看起来非常明确的样子</li>
-<li>&hellip;&hellip;</li>
+<li>包含在段落之中，见上面的inlineMath配置，采用以 <code>$...$</code> 引用</li>
+<li>独立于其他文字，见上面的displayMath配置，采用以 <code>$$...$$</code> 引用</li>
 </ul>
 
-<h1 id="小结">小结</h1>
+<h2 id="样例">样例</h2>
 
-<p>整洁代码是为了代码更好的阅读与维护，做到代码表义上精确无二义性，逻辑上简洁高效；但切不要陷入一些可以通过工具自动化的感观上干净，以及一些无意义的风格上统一。</p>
+<h3 id="段落行内显示">段落行内显示</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are</pre></div>
+<p>将会生成</p>
+
+<p>When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are</p>
+
+<h3 id="独立段落显示">独立段落显示</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$
+
+ $$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</pre></div>
+<p>将会生成</p>
+
+<p>$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$</p>
+
+<p>$$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</p>
+
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    <a href="http://lanlingzi.cn/tags/theme" rel="tag" title="theme">#theme#</a>
     
 </div>
 
@@ -191,8 +215,8 @@
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/thoughts/2019/0427_fulfillment/" rel="prev" title="成就感">
-        成就感 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2019/0501_clean_code/" rel="prev" title="代码整洁与洁癖">
+        代码整洁与洁癖 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -242,7 +266,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-count">100</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -298,10 +322,15 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#整洁代码">整洁代码</a></li>
-<li><a href="#代码洁癖">代码洁癖</a></li>
-<li><a href="#小结">小结</a></li>
+<li><a href="#如何集成">如何集成</a></li>
+<li><a href="#如何使用">如何使用</a>
+<ul>
+<li><a href="#样例">样例</a>
+<ul>
+<li><a href="#段落行内显示">段落行内显示</a></li>
+<li><a href="#独立段落显示">独立段落显示</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </nav></div>
     </div>
@@ -375,5 +404,18 @@
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
 </body>
 </html>
