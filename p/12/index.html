@@ -106,6 +106,79 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" itemprop="url">
+        C&#43;&#43;技巧之名字空间namespace
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-07-13">
+    2009-07-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1011 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace outspname  
+{   
+   const int CVAR1 = 1;  
+   const char* const CVAR2 = &#34;33333&#34;;  
+   void test();  
+
+   namespace inspname  
+   {  
+      enum { A, B, C};  
+      class Klass  
+      {  
+      };  
+   }  
+}</pre></div>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/oo_design_principle/" itemprop="url">
         面向对象的设计原则
         </a>
@@ -550,74 +623,6 @@ print add8(100)</pre></div>
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/" itemprop="url">
-        C&#43;&#43;技巧之宏Macro应用
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-06-12">
-    2009-06-12
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">668 字 ~2分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <ol>
-<li><p>宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。</p></li>
-
-<li><p>宏的展开是一行，所以宏中的注释不能使用<code>//</code>，只能使用<code>/* */</code>。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。</p></li>
-
-<li><p>宏的参数一般情况下使用时要用()括起来，如:
-<code>#define MAX(a, b) a /2 &gt; b ? a /2  : b</code>
-MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code></p></li>
-</ol>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -718,7 +723,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">100</span>
+        <span class="site-state-item-count">101</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
