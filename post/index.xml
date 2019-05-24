@@ -6,10 +6,36 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 19 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>降低模块间耦合</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</link>
+      <pubDate>Thu, 23 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</guid>
+      <description>&lt;p&gt;提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。&lt;/p&gt;
+
+&lt;h1 id=&#34;依赖&#34;&gt;依赖&lt;/h1&gt;
+
+&lt;p&gt;模块依赖指模块之间发生了关系，如模块A调用了模块B的接口，则模块A依赖了模块B。依赖的英语是Dependency。&lt;/p&gt;
+
+&lt;p&gt;模块依赖是系统内不可避免的，复杂的系统是都是分而治之，软件架构活动中最重要的事就是如何正确把系统分解，并定义他们之间关系。存在关系就会存在依赖，依赖是系统分解的必然产物。如果一个系统内的模块他们不存在任何的关联，那他们应该是划分为不同的系统；任何的模块没有与其它的模块发生关联，那这个模块就应该不存在这个系统中。&lt;/p&gt;
+
+&lt;p&gt;模块依赖关系，按生命周期阶段可分为：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;开发态依赖&lt;/strong&gt;：如开发模块A时，需要依赖其它模块提供的接口，数据结构等文件依赖；还有一种如测试依赖，仅仅发生在开发阶段，在测试时，需要依赖测试数据，测试框架等，测试完成就不需要了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运行态依赖&lt;/strong&gt;：在系统运行时，模块A必须依赖其它模块提供能力才能完成某种完整的功能或服务，依赖的形态可能是本地或远程接口，集中配置数据，模型数据信息等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;开发态依赖可能引发运行态依赖，但运行态依赖不一定需要在开发态就依赖。我们经常关注是最终的运行态依赖导致的问题，目前的微服务架构设计，减少了开发态的依赖，把依赖导致的问题后移到运行态。&lt;/p&gt;
+
+&lt;p&gt;模块之间最好还是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是系统整体拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>清晰的代码结构</title>
