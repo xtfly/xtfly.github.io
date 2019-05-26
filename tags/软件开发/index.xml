@@ -23,7 +23,7 @@
 
 &lt;h1 id=&#34;单一职责&#34;&gt;单一职责&lt;/h1&gt;
 
-&lt;p&gt;大多数人只从事一种职业，也就是单一职责原则。同理若一个类只关注的就是自身职责的完成，也就是单一职责原则。&lt;/p&gt;
+&lt;p&gt;大多数人只从事一种职业，也就是单一职责原则。若一个类只关注的就是自身职责的完成，也就是单一职责原则。&lt;/p&gt;
 
 &lt;p&gt;面向对象设计的五个基本原则（SOLID），排在第一就是单一职责原则（SRP：Single responsibility principle）。SRP的原话解释是：There should never be more than one reason for a class to change。应该有且仅有一个原因引起类的变更。&lt;/p&gt;</description>
     </item>
