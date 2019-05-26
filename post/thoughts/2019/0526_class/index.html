@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>35还能做技术吗 - 蘭陵N散記</title>
+    <title>类的职责单一 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="35还能做技术吗">
+    <meta property="og:title" content="类的职责单一">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="35还能做技术吗 - 蘭陵N散記" />
+    <meta name="title" content="类的职责单一 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2017/0208_35_change/" itemprop="url">
-        35还能做技术吗
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0526_class/" itemprop="url">
+        类的职责单一
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-02-08">
-    2017-02-08
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-26">
+    2019-05-26
 </time>
 </span> 
       
@@ -133,6 +133,13 @@
       &nbsp; 
     </span>
   
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
 </span>
 
 
@@ -142,67 +149,124 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2686 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2688 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/change/change.jpg" alt="" /></p>
+    <h1 id="理解类">理解类</h1>
 
-<p>最近我司心声社区到处充斥着在40岁左右惯例的帖子，之前觉得这些觉得离自己很远。不经意发现自己今年也35岁了，惯例这一天迟早会来临，只是早晚而已，按目前现状，再为公司奋斗也不会有太多年了，你想奋斗关键公司不让你啊。最近也陆续听到之前曾经共事的同事，或由于身体原因，被沟通退休或离职；或由于绩效平平，合同到期不再续签；或由于种种原因，被进入战备预备队前途不明。公司主营业务已遇到瓶颈，整个行业暮色深沉，新的领域就开拓不足，公司高层也不断地发文要打粮食，熵减等等。总之：“山雨欲来风满楼”。</p>
+<p>类（实例化产生对象）是面向对象编程中最基本的组成单元，将逻辑和数据封装其中，以提高软件的重用性、灵活性和扩展性等。它相比人类社会组成，系统/子系统、组件/（微）服务、模块/包这些相当于社会中不同层次的实体或虚拟的组织机构；而类则相当于一类自然人，一个对象相当一个自然人。一个类在系统中承担着一种的 ”角色“ ，从事一种职业。</p>
 
-<p>35岁应该是一个年富力强的年龄，不应该发出“今年35，还能做技术吗？”这样的话题，其中透露出一丝不自信。话说三十而立，但目前这个年龄段，我是上有老，下有小，身上还背着几百万的房贷，说没有压力不是可能的。作一名软件工程师，在国内来说其职业生涯是相当短的。而我一直从事软件相关的工作，目前虽是做软件架构设计，但还是喜欢写写代码，一直没有找到自己明确的发展方向，一方面有我自身的性格原因，一方面能力的确有些偏科。</p>
+<h1 id="单一职责">单一职责</h1>
 
-<p>我非常能理解公司最近一些HR政策，企业为了保持长期的活力，换血难免。不管这事是否有多么无情，站在企业的角度来说无疑是正确的，毕竟企业不是慈善机构。公司也不可能让一个上了年龄、有家室的人一直从事一线编码工作。公司注重的是流程管理，觉得编码也可以像产业工人一样批量地生产。而年轻人更能干得多，给予得少。即使最近提倡的工程师文化，也是很难真正地做到，越提倡说明越缺失。</p>
+<p>大多数人只从事一种职业，也就是单一职责原则。同理若一个类只关注的就是自身职责的完成，也就是单一职责原则。</p>
 
-<p>先简单说一说我为什么走上软件开发这一条路的经历吧：</p>
+<p>面向对象设计的五个基本原则（SOLID），排在第一就是单一职责原则（SRP：Single responsibility principle）。SRP的原话解释是：There should never be more than one reason for a class to change。应该有且仅有一个原因引起类的变更。</p>
 
-<p>90年代还是读初中时，老爸单位就开始使用电脑记账，那时觉得电脑太神奇了。个人虽买不起电脑，而要求老爸买了学习机，当时按着说明书，用basic语言输出满屏幕的各种形状的图型，心中也被巨大的喜悦填满。目前我清楚地记得，我爷爷看到我能在学习机上打出全家的名字，觉得这个是怎么做到的而不可思议。</p>
+<p>单一职责原则是指导”高内聚，低耦合“的基本原则，但也是最难实施的原则。</p>
 
-<p>高考那一年，我一表哥从大学里寄来一本小说《第一次亲密地接触》，讲得就是网络交友，原来交朋友也可能通过互联网，当时觉得这个太好玩了。于是高考填写志愿，我报了某211计算机专业，可惜语文成绩刚及格，总分数不够（在本省就招3个，我排名第6，我爸通过关系才知道的）。还好有个第三志愿保底，并且填写可以调剂，于是我调转到另一所大学，学的是信息管理。妈蛋，到学校才知道，这个信息管理其实与计算机不太相关，虽然也会学些计算机原理，C语言编程等。但这不是主业，主业是信息检索，运筹学，是一个从图书馆管理发展起来杂学科，什么都学，什么都浅。</p>
+<h1 id="类的构建">类的构建</h1>
 
-<p>大学一年级第二学期就买了电脑，一买电脑，就没有心思学习了，第一年还拿奖学金，后面连课不上了。每天大部分时间都在折腾电脑，重装系统，Win系统不知安装了多少次；Linux当时还远没有现在好用，也折腾过蓝点，RedHat。除了折腾就是打游戏，或者泡在网上看各种论坛。计算机理论没有怎么学，但其间还是有些编程的基础，曾获得校编程比赛三等奖。后面也和同学搞搞网站，系网站还是我们整理的，界面虽然丑点，但蛮有满足感。</p>
-
-<p>04年大学毕业后就来了深圳，开始家里就给我安排了一份工作，是做物业管理。但我不是这种菜，没有干一天，就辞职不做了，现在想想年轻就是任性啊。出来就自己开始找工作，找来找去，发现只有做网站的公司要我，于是第一年我就在一家当时在体育界还算小有名气的小公司做一名程序员，负责后台的程序开发，从此就踏上了软件开发这一条道路。后来05年华为大规模地招新四军，经过电话面试，当面做题，也没有怎么答好就稀里糊涂地来了华为，真还得谢谢当时的技面官。后面更没有想到的事，有些同学纷纷转行，中间也有过多次的机会离开，而我却一干就是12年了。</p>
-
-<p>在华为一直干得比较辛苦，结婚生小孩之后，发现再不能跟小伙伴一直挑灯夜战了。之前也不是没有奋斗过：</p>
+<p>类是什么，两个角度来看：</p>
 
 <ul>
-<li>去国外出差，可以整夜不睡觉，为了就是调通一个功能，等着明天客户可以验收。而这样的状况是持续的，每天吃不好，睡不着，最后回来发现落下胃病。</li>
-<li>可以持续一个多月每天晚上11:30下班，回到公司附近的出租屋倒头就睡，明天又接着干。</li>
-<li>可以凌晨不知几点，一个电话把你叫醒，说日志发到你邮箱，尽快定位解决问题。</li>
-<li>可以明知道不可能完成的任务，还是坚持答应下来，即使周末过来，也要加班加点把它做完。</li>
-<li>&hellip;&hellip;</li>
+<li>组成派：是对一类事物的抽象，由成员属性和成员方法组成的数据结构，强调封装</li>
+<li>职责派：是为达成一种目标一组能力的集合，承担它所代表的抽象的职责，强调行为</li>
 </ul>
 
-<p>当过了三十多岁，的确现发现状态不如以前了，说一下感受吧：</p>
+<p>上述两个角度，可能是导致两种不同的类代码结构排版的原因？</p>
 
-<ol>
-<li>明显感觉体力不行了。以前定位解决问题，搞到凌晨三四点也没有什么睡意，第二天精神也不错。现在如果要搞到凌晨或通宵的话，后面两三天觉得身心疲惫。</li>
-<li>亚健康状态，平时锻炼比较少。每年的体检都有不少的问题，坐久了时间就觉得腰，颈椎痛。</li>
-<li>记忆力没有以前好了。以前看过的代码，长时间能记住，定位问题总是比其它人快速。看过的资料，吸收没有哪么快了，记得的东西有时突然就想不起来。</li>
-<li>明显感觉脑力跟不上了。以前码代码非常地快，一周就写10K；现在写代码总是思前想后，生产率没有那么高，但现在质量可能更好一些。想问题时注意力容易被打断，打断之后再难回神。</li>
-</ol>
+<ul>
+<li>先属性再是方法，莫非是组成派，首先考虑是类是由哪些元素（属性）组成，再是具备哪些行为操作（方法）</li>
+<li>先方法再是属性，莫非是职责派，首先考虑是类需要承担什么职责（方法），再是完成这些方法的功能需要哪些资源（属性）</li>
+</ul>
 
-<p>当然这些年也积累了非常多的经验：</p>
+<p>当然也可能是我的无稽之谈，由于个人主要使用Java系语言，建议类按如下顺序组成，这只是一种编码风格：</p>
 
-<ol>
-<li>尤其是攻关方面，我总是能解决问题，因为之前踩过不少的坑，看过不少的坑，也解决过不少的坑，问题总是本质一样的。写代码会本能地避免，定位总是会举一反三。</li>
-<li>知道怎么去做方案设计，分解并指导新人完成一个系统。有些问题能轻车熟路，以前解决类似问题的方案可以拿来复用。</li>
-<li>知道系统架构一些设计原则，理论基础，抽象建模，知道如何去权衡一些方案的利弊等。</li>
-<li>知识不再局限于编程语言，知道从多角度，多层次来看待一些问题，也在尝试去提炼一些编程之外的东西。</li>
-</ol>
+<ul>
+<li>类的静态常量</li>
+<li>类的静态变量</li>
+<li>类的成员变量</li>
+<li>类的构建方法</li>
+<li>类的成员方法（public-&gt;protect-&gt;private）</li>
+</ul>
 
-<p>热爱与钻研技术这个没有错，也不会随着年龄大了就不行了。虽然软件界的技术日新月益，编程语言层出不穷，各种框架各领风骚，但解决实现问题的经验与能力是非常重要的。现在你跟一群年轻人去拼体力拼时间，肯定是拼不过了，唯有作出转变。以前可能是“我能力强，效率高，部门的关键人物”，其实那是错的，不可替代性才是最有价值的。“人无远虑，必有近忧”，平时不妨努力提升自己，专注于某一领域，你能想到别人所想不到的，您能解决别人所处理不了的。编程只是一种解决问题的手段，技术也不仅仅只是编程。简单地说对于通用软件领域，当前主要的价值是如何构建分布式的架构体系统，以应对不断变化的商业模式与体量。</p>
+<h1 id="类的模型">类的模型</h1>
 
-<p>当然上面说的还是一条技术路线，更重要的是你想明白技术只是为了产品，为了商业模式服务的。要让自己增值，不再吃码农的青春饭，那就要改变自己的想法，以快速适应未知的变化。积累系统架构经验，积累技术把控能力，积累对商业的理解，积累发现机会的敏感，果敢地作出改变。</p>
+<p>以前看过<code>Martin Fowler</code>写的一篇文章叫”贫血模型”，批判贫血领域模型不够优雅、不够面向对象，提倡使用充血领域模型。若此观点应用在普通的类设计上非常有争议，至少在面向对象的语言体系中，这两种模型都存在，适用不同的场景。</p>
+
+<h2 id="贫血模型">贫血模型</h2>
+
+<p>贫血模型是指对象只有属性（getter/setter），或者包含少量的CRUD方法，而业务逻辑都不包含在其中，而是放在单独的业务处理逻辑层。JavaBean就是最为典型的代表，像Scala，Kotin在语言层次都存在数据类的概念，用于只描述数据的构成。</p>
+
+<p>该模型的确是不够面向对象，对象只是作为保存状态（如数据层的表映射）或者传递状态（如方法中的出入参数）使用，所以就说只有数据没有行为的对象不是真正的对象。</p>
+
+<p>在Java体系中，非常流程的就是这种设计，接口门面层（Controller）-&gt; 业务逻辑处理层（Service）-&gt; 数据访问层（ORM）。</p>
+
+<h2 id="充血模型">充血模型</h2>
+
+<p>充血模型是指对象里即有数据和状态，也有行为，行为负责维持本身的数据和状态，具有内聚性，最符合面向对象的设计，满足单一职责原则。这也是我们是为常见的对象设计方式。</p>
+
+<p><code>Martin Fowler</code>主张这种模型，他是从领域驱动开发（DDD）中领域模型对象来分析的，领域模型（Domain Model）是一个商业建模范畴。从一个模型的封装性来说，即有状态又有行为是合理的，但领域模型并非直接映射为单一类对象，它要比类的模型大很多，可能是由一组类聚合而成。</p>
+
+<p>遵循充血模型的规范，出发点非常好，但对开发人员要求非高，随着变化与演进，最后可能一个类充满了乱七八糟的内容，反而忘记初心，违背单一原则。</p>
+
+<h1 id="类的坏味道">类的坏味道</h1>
+
+<p>inFusion是一款非常不错的软件设计度量工具，它能帮助我们发现代码上坏味道。借助它分析，也讲讲inFusion中提到了哪些类的坏味道，他们违反了单一原则。</p>
+
+<h2 id="god-class">God Class</h2>
+
+<p>上帝类通常为过多地操作其它类的数据，从而破坏了类的封装类，上帝类从其它类中获得功能，却增加了自身的耦合性，通常会导致自己体积过大和较大的复杂度。</p>
+
+<p>导致出现上帝类一般是出现在业务逻辑层，没有对逻辑层合理的分层。此类有点像八爪鱼，手上攥了东西太多，聚合太多其它对象在一个对象中直接组合所有逻辑；另一个原因是被引用的对象的封装性不好，不够内聚，暴露太多数据需要其它类来完成它自身的职责。</p>
+
+<h2 id="blob-class">Blob Class</h2>
+
+<p>复杂类，它具有体积大（通常超过千行），高度复杂的特征。</p>
+
+<p>导致出现复杂类，除了类中的方法存在行数过大的原因之外。另一个原因是一个类最早只有简单的CRUD方法，每个方法复杂度不高。后面随着需求的增加，一种场景是方法实现的场景分支越来越多，导致方法复杂度变高；另一个场景是方法个数增加太多，如Query方法，一开始只有Query1，后面不断增加Query2，Query3&hellip;以满足不同的查询条件以及响应内容等等。</p>
+
+<h2 id="schizophrenic-class">Schizophrenic Class</h2>
+
+<p>紊乱类，一个类本应该一种抽象，完成一类责任。而该类确完成完成两种或以上的抽象，会影响类的理解和修改。特点是定义大量的接口方法，以及被不同的Client使用。</p>
+
+<p>导致出现复杂类，一般出现在界面类（如Controller）、工具类（Util）中，即提供太多公共方法，又同时处理相应的业务逻辑。</p>
+
+<h1 id="怎么做">怎么做</h1>
+
+<p>再回到单一职责，结合上面怎么进一步理解它，关键是职责的划分，但也是难点。</p>
+
+<p>职责的划分是一定的范围与层次，比如关注的是华为手机和其它东西的区别，那华为手机就是一个整体，就是用来实现手机的功能，不是用来切水果的，所以切水果的方法，不应该实现在华为手机中。当要关注华为手机的内部结构时，那它的模块肯定是隔离的，显示屏只关注显示，通信模块只关注通信，其实每个模块都是单一职责，最终聚合在一起，就是一个手机。</p>
+
+<p>在实际操作中非常难，正如上面”职责“是一个相对的概念，没有一个明确的划分原则，什么才是单一的。我们可以尝试按下面去思考一个类的设计，从多个角度来考虑，如类的组成结构，以及类的规模：</p>
+
+<ul>
+<li>类自己的数据与状态的变化可能尽可能地能控制在类内部</li>
+<li>变化的来源只有一类原因，原因导致变化也是围绕完成同一层次的一件事</li>
+<li>类的每个方法逻辑处理足够简单，整个类的逻辑才会简单</li>
+<li>类的方法数量不宜过多，个人觉得是少于15个，整个类的代码行数少于1000行左右</li>
+</ul>
+
+<p>遵循单一职责有不少的好处：</p>
+
+<ul>
+<li>可以降低类的复杂度：一个类只负责一项职责，其逻辑肯定要比负责多项职责简单。</li>
+<li>提高代码的可读性：类内中复杂度降低了，容易理解，也提升了整个系统的可维护性。</li>
+<li>降低变更产生的风险：变更是必然，单一职责遵守好，修改一个功能时，可以对其它功能无影响。</li>
+</ul>
+
+<h1 id="结语">结语</h1>
+
+<p>由于职责划分无量化的标准，在实际中，我们尽量根据项目需求的不同角度去划分职责。像充血模型一样，生搬硬套单一职责原则会引起类的体积膨胀。过细的职责划分，也导致类的数量膨胀，造成整个系统的复杂。单一职责关键是要看职责的范围与层次，在一定范围内的类足够封装性，引起它的变化只有一类原因。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/%e7%a8%8b%e5%ba%8f%e5%91%98" rel="tag" title="程序员">#程序员#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -211,16 +275,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2017/0216_dff/" rel="next" title="Design for Failure">
-        <i class="fa fa-chevron-left"></i> Design for Failure
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2017/0207_msa_think/" rel="prev" title="再说说微服务">
-        再说说微服务 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/" rel="prev" title="降低模块间耦合">
+        降低模块间耦合 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -249,7 +309,16 @@
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -313,6 +382,31 @@
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li><a href="#理解类">理解类</a></li>
+<li><a href="#单一职责">单一职责</a></li>
+<li><a href="#类的构建">类的构建</a></li>
+<li><a href="#类的模型">类的模型</a>
+<ul>
+<li><a href="#贫血模型">贫血模型</a></li>
+<li><a href="#充血模型">充血模型</a></li>
+</ul></li>
+<li><a href="#类的坏味道">类的坏味道</a>
+<ul>
+<li><a href="#god-class">God Class</a></li>
+<li><a href="#blob-class">Blob Class</a></li>
+<li><a href="#schizophrenic-class">Schizophrenic Class</a></li>
+</ul></li>
+<li><a href="#怎么做">怎么做</a></li>
+<li><a href="#结语">结语</a></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 

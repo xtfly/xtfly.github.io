@@ -6,10 +6,60 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 01 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 26 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>类的职责单一</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0526_class/</link>
+      <pubDate>Sun, 26 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0526_class/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>降低模块间耦合</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</link>
+      <pubDate>Thu, 23 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</guid>
+      <description>&lt;p&gt;提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。&lt;/p&gt;
+
+&lt;h1 id=&#34;依赖&#34;&gt;依赖&lt;/h1&gt;
+
+&lt;p&gt;模块依赖指模块之间发生了关系，如模块A调用了模块B的接口，则模块A依赖了模块B。依赖的英语是Dependency。&lt;/p&gt;
+
+&lt;p&gt;模块依赖是系统内不可避免的，复杂的系统都是分而治之，软件架构活动中最重要的事就是如何正确把系统分解，并定义他们之间关系。存在关系就会存在依赖，依赖是系统分解的必然产物。如果一个系统内的模块间不存在任何的关联，那他们应该划分为不同的系统；一个模块没有与其它的模块发生关联，那这个模块就应该不存在这个系统中。&lt;/p&gt;
+
+&lt;p&gt;模块的依赖关系，按生命周期阶段可分为：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;开发态依赖&lt;/strong&gt;：如开发模块A时，需要依赖其它模块提供的接口，数据结构等文件依赖；还有一种如测试依赖，仅仅发生在开发阶段，在测试时，需要依赖测试数据，测试框架等，测试完成就不需要了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运行态依赖&lt;/strong&gt;：在系统运行时，模块A必须依赖其它模块提供能力才能完成某种完整的功能或服务，依赖的形态可能是本地或远程接口，集中配置数据，模型数据信息等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;开发态依赖可能引发运行态依赖，但运行态依赖不一定需要在开发态就依赖。我们经常关注的是运行态依赖导致的问题，目前的微服务架构设计，减少了开发态的依赖，把依赖导致的问题后移到运行态。&lt;/p&gt;
+
+&lt;p&gt;模块之间最好还是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是系统整体拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>清晰的代码结构</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0519_structure/</link>
+      <pubDate>Sun, 19 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0519_structure/</guid>
+      <description>&lt;h1 id=&#34;问题&#34;&gt;问题&lt;/h1&gt;
+
+&lt;p&gt;架构设计中常常关注几个视图，如功能视图、逻辑视图、运行视图与部署视图。但架构师们由于层次较高，长期缺少代码编写能力，往往就直接忽视了开发视图。开发视图主要描述软件的开发工程结构、代码规范，以及构建技术等。代码结构和构建关系到项目的可持续维护以及维护的周期，非常重要。但实现开发活动，架构到开发中间层的GAP，真正重视并落地的很少很少。&lt;/p&gt;
+
+&lt;p&gt;清淅明确的代码结构，是软件项目成功的重要开始。&lt;/p&gt;
+
+&lt;p&gt;代码结构不应该仅仅归纳为 “代码编码风格” 一类，它是架构在代码层次的真实反应，架构是否能落地，代码结构的良好设计起着至关重要的作用。软件是有生命力的，需要考虑其可持续性发展。一个结构层次非常不好软件，它的逻辑可能并不一定复杂，但随着时间的推移，需要花费非常长的时间去理解它表达的的意思。同样不好的代码结构，让构建变得困难或效率低下，进一步降低了它的生命力。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>代码整洁与洁癖</title>

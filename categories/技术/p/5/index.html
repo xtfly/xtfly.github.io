@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>[c&#43;&#43;]自己实现的queue - 蘭陵N散記</title>
+    <title>技术 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="[c&#43;&#43;]自己实现的queue">
+    <meta property="og:title" content="技术">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="[c&#43;&#43;]自己实现的queue - 蘭陵N散記" />
+    <meta name="title" content="技术 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
     <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
     <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    
     <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
     <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" id="hexo.configuration">
@@ -24,13 +24,13 @@
   var CONFIG = {
     scheme: 'Pisces',
     sidebar: {"position":"left","display":"post"},
-     fancybox: true, 
+    fancybox: false, 
     motion: true
   };
 </script>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-<div class="container one-collumn sidebar-position-left page-home  ">
+<div class="container one-collumn sidebar-position-left   ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -99,295 +99,125 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-<section id="posts" class="posts-expand">
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+<section id="posts" class="posts-collapse">
+<div class="collection-title">
+    <h2 >技术
+    <small>分类</small>
+    </h2>
+</div>
+
+<div class="collection-title">
+  <h2 class="archive-year motion-element" id="archive-year-2009">2009</h2>
+</div>
+
+  <article class="post post-type-normal }}" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/" itemprop="url">
-        [c&#43;&#43;]自己实现的queue
+      <h1 class="post-title">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/" itemprop="url">
+            <span itemprop="name">[c&#43;&#43;]自己实现的stack</span>
         </a>
       </h1>
+
       <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2009-06-20">
-    2009-06-20
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">553 字 ~2分钟</span>
-</span>
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2009-06-11"
+              content="06-11" >
+          06-11
+        </time>
       </div>
     </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。</p>
-
-<h2 id="顺序存储实现">顺序存储实现：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, size_t SIZE&gt;  
-class Queue  
-{  
-public:  
-    Queue() :  m_front(0), m_rear(0)  
-    {  
-    }  
-    ~Queue()  
-    {  
-    }  
-    void clear()  
-    {  
-        m_front = 0;  
-        m_rear = 0;  
-    }  
-    const bool empty() const  
-    {  
-        return m_front == m_rear;  
-    }  
-    const int size() const  
-    {  
-        int s = (m_rear - m_front + (int)SIZE) % (int)SIZE ;  
-        return s;  
-    }  
-    bool push(const T&amp; t)  
-    {  
-        int pos = (m_rear + 1) % (int)SIZE;  
-        //printf(&#34;/n m_rear = %d&#34;, pos);  
-        if (pos == m_front)  
-        {  
-            return false;// it&#39;s full  
-        }  
-        m_rear = pos;  
-        m_data[m_rear] = t;  
-        return true;  
-    }  
-    T&amp; pop()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
-        }  
-        m_front = (m_front + 1) % (int)SIZE;  
-        //printf(&#34;/n m_front = %d&#34;, m_front);  
-        return m_data[m_front];  
-    }  
-    T&amp; getfront()  
-    {  
-        return m_data[m_front];  
-    }  
-    // 遍历所有的节点  
-    void traverse( void (*func)(T&amp;) )  
-    {  
-        if ( empty() ) { return;}  
-        for (int idx = m_front + 1; idx != m_rear + 1; idx++)  
-        {  
-            if ( idx == (int)SIZE)  
-            {  
-                idx %= (int)SIZE;  
-            }  
-            //printf(&#34;/n idx = %d&#34;, idx);  
-            func(m_data[idx]);  
-        }  
-    }  
-private:  
-    T m_data[SIZE];  
-    int m_front;  
-    int m_rear;  
-};  </pre></div>
-<h2 id="链表存储实现">链表存储实现：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;  
-struct QNode  
-{  
-    QNode() : m_pNext(NULL)  
-    {  
-    }  
-    T m_data;  
-    QNode* m_pNext;  
-};  
-template&lt;typename T&gt;  
-class LQueue  
-{  
-    typedef QNode&lt;T&gt; TQNode;  
-public:  
-    LQueue()  
-    {  
-        TQNode* pTemp = NULL;  
-        NEW(pTemp, TQNode() );  
-        m_pFront = m_pRear = pTemp;  
-        m_size = 0;  
-    }  
-    ~LQueue()  
-    {  
-        clear();  
-        DELETE(m_pFront);  
-    }  
-    void clear()  
-    {  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        while(NULL != pTemp )  
-        {  
-            TQNode* pTemp2 = pTemp-&gt;m_pNext;  
-            DELETE(pTemp);  
-            pTemp = pTemp2;  
-        }  
-        m_pFront-&gt;m_pNext = NULL;  
-        m_size = 0;  
-    }  
-    const bool empty() const  
-    {  
-        return m_pFront == m_pRear;  
-    }  
-    const int size() const { return m_size;}  
-    bool push(const T&amp; t)  
-    {  
-        TQNode* pTemp = NULL;  
-        NEW(pTemp, TQNode() );  
-        if ( NULL == pTemp) { return false;}  
-        pTemp-&gt;m_data = t;  
-        pTemp-&gt;m_pNext = m_pRear-&gt;m_pNext;  
-        m_pRear-&gt;m_pNext = pTemp;  
-        m_pRear = pTemp;  
-        m_size++;  
-        return true;  
-    }  
-    T pop()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
-        }  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        T t = pTemp-&gt;m_data;  
-        m_pFront-&gt;m_pNext = pTemp-&gt;m_pNext;  
-        if (NULL == m_pFront-&gt;m_pNext)  
-        {  
-            m_pRear = m_pFront;  
-        }  
-        DELETE(pTemp);  
-        m_size--;  
-        return t;  
-    }  
-    T&amp; getfront()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
-        }  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        T t = pTemp-&gt;m_data;  
-        return t;  
-    }  
-    // 遍历所有的节点  
-    void traverse( void (*func)(T&amp;) )  
-    {  
-        if ( empty() ) { return;}  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        while(NULL != pTemp)  
-        {  
-            func(pTemp-&gt;m_data);  
-            pTemp = pTemp-&gt;m_pNext;  
-        }  
-    }  
-private:  
-    TQNode* m_pFront;  
-    TQNode* m_pRear;  
-    int m_size;  
-};  </pre></div>
-<h2 id="测试代码">测试代码：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print_queue(int&amp; a)  
-{  
-    printf(&#34;%d/t&#34;, a);  
-}  
-void test_queue()  
-{  
-    LQueue&lt;int&gt; queue;  
-    //Queue&lt;int, 4&gt; queue;  
-    queue.push(1);  
-    queue.push(2);  
-    queue.push(3);  
-    queue.pop();  
-    queue.pop();  
-    queue.pop();  
-    queue.push(1);  
-    queue.push(2);  
-    queue.push(3);  
-    printf(&#34;/n1 : size: %d /n&#34;, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.pop();  
-    printf(&#34;/n2 : size: %d /n&#34;, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.push(4);  
-    printf(&#34;/n3 : size: %d /n&#34;, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.clear();  
-    printf(&#34;/n4 : size: %d /n&#34;, queue.size() );  
-    queue.traverse(print_queue);  
-}  </pre></div>
-    </div>
-    <footer class="post-footer">
-     
- 
-<div class="post-tags">     
-     
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
-    
-</div>
-
-
-
-     <div class="post-nav">
-    <div class="post-nav-next post-nav-item">
-    
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_operator/" rel="next" title="C&#43;&#43;技巧之operator操作符">
-        <i class="fa fa-chevron-left"></i> C&#43;&#43;技巧之operator操作符
-        </a>
-    
-    </div>
-
-    <div class="post-nav-prev post-nav-item">
-    
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/" rel="prev" title="C&#43;&#43;技巧之断言Assert">
-        C&#43;&#43;技巧之断言Assert <i class="fa fa-chevron-right"></i>
-        </a>
-    
-    </div>
-</div>
-      
-     
-     
-     
-
-
-
-
-    </footer>
   </article>
-</section>
+
+  <article class="post post-type-normal }}" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/" itemprop="url">
+            <span itemprop="name">用C&#43;&#43;模板来展示new与delete操作符原理</span>
+        </a>
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2009-06-08"
+              content="06-08" >
+          06-08
+        </time>
+      </div>
+    </header>
+  </article>
+
+  <article class="post post-type-normal }}" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_aglos/" itemprop="url">
+            <span itemprop="name">[c&#43;&#43;]常见的几个排序算法</span>
+        </a>
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2009-06-07"
+              content="06-07" >
+          06-07
+        </time>
+      </div>
+    </header>
+  </article>
+
+
+ </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="pagination">
+    <a class="extend prev" rel="prev" href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/p/4/"><i class="fa fa-angle-left"></i></a>
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/">1</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/p/2/">2</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/p/3/">3</a>
+        
+        
+    
+        
+        
+          <a class="page-number" href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/p/4/">4</a>
+        
+        
+    
+        
+        
+          <span class="page-number current">5</span>
+        
+        
+    
+    
+</nav>
+
 
           </div>
         </div>
@@ -437,6 +267,13 @@ void test_queue()
     </div>
 </nav>
       
+<div class="feed-link motion-element">
+<a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="alternate" type="application/rss+xml" target="_blank">
+    <i class="fa fa-rss"></i>
+    RSS 订阅
+</a>
+</div>
+
       
 <div class="links-of-author motion-element">
     
@@ -519,18 +356,16 @@ void test_queue()
 <script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
 <script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
 
-<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-
 <script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
 <script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
 <script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
 <script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
 
-<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
-<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
-<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
-
 <script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" id="motion.page.archive">
+  $('.archive-year').velocity('transition.slideLeftIn');
+</script>
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
 <script type="text/x-mathjax-config">
