@@ -3,6 +3,7 @@ title: "清晰的代码结构"
 date: "2019-05-19"
 categories:
  - "感想"
+ - "技术"
 tags:
  - "软件开发"
 toc: true
