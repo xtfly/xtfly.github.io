@@ -106,6 +106,82 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/" itemprop="url">
+        开源DNS Server
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-09-10">
+    2017-09-10
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3023 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p><img src="http://lanlingzi.cn/images/y17/dns.jpg" alt="" /></p>
+
+<p>DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：</p>
+
+<h2 id="bind9">Bind9</h2>
+
+<p>ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自<code>Berkeley Internet Name Domain</code>。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。</p>
+
+<p>Bind9可以作为权威与递归DNS。主要特性如下：</p>
+
+<p>作为权威DNS时：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0903_dns/" itemprop="url">
         [转]DNS扫盲系列
         </a>
@@ -618,77 +694,6 @@ Open source relational database management system
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0216_dff/" itemprop="url">
-        Design for Failure
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-02-16">
-    2017-02-16
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3316 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/dff/dff.jpeg" alt="" /></p>
-
-<h2 id="背景">背景</h2>
-
-<p>故有的思维会影响创新，在传统的软件设计考虑高可靠性，主要方法论是”防“，处处保护，让系统的每一处能长时间运行，不中断地提供服务。事实上电信级高可用性（HA）也只能宣称达到5个9，这意味着一年也就只有5分半钟的中断时间。但每增加一个9却实施成本非常地高，有些是建立在硬件可靠基础之上，并且不少是实验数据或理论上支持。传统的思维认识，在泥沙上建房子不可靠的。但软件架构设计，即完全不一样，在不可靠的基础设施上构建上可靠的系统，那才是真正NB的。</p>
-
-<p>依稀记得云计算刚出来时，大家都是持怀疑态度：性能下降的虚拟化技术、安全不可控的网络、变化复杂的资源管理，在其上如何构建可靠稳定的软件系统？事实上，Netflix完全基于AWS云基础设施，认为都有可能发生任何的故障（Failure），更何况资源也不掌握在自己手上。Netflix基于<code>Design for Failure</code>理念却构建出用户无感知的高可用系统，支撑他的业务飞速发展。事实上，故障无所不在，尤其是在云计算环境中：</p>
-
-<ul>
-<li>资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等</li>
-<li>应用层次：资源泄露；软件Bug；系统处理能力不足等</li>
-<li>数据层次：数据丢失；数据不一致等</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0216_dff/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -791,7 +796,7 @@ Open source relational database management system
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">104</span>
+        <span class="site-state-item-count">105</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

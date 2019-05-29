@@ -6,10 +6,43 @@
     <description>Recent content in 感想 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 26 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>编写短小的函数/方法</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0529_function/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0529_function/</guid>
+      <description>&lt;h1 id=&#34;函数与方法&#34;&gt;函数与方法&lt;/h1&gt;
+
+&lt;p&gt;我们经常会遇到两个词，函数（Function）与方法（Method），简言之：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;函数不属于任何对象&lt;/li&gt;
+&lt;li&gt;方法是关联到对象内的函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;他们的区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;函数是面向过程编程中，为解决问题划分每个步骤的体现&lt;/li&gt;
+&lt;li&gt;方法是面向对象编程中，对象能提供的能力或行为的体现
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的述诉，方法与函数统一称函数，不再区分。&lt;/p&gt;
+
+&lt;p&gt;他们的必要性：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;让代码可以重复使用，他们是”积木“&lt;/li&gt;
+&lt;li&gt;函数黑盒特性，有效封装，隐藏细节&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>类的职责单一</title>

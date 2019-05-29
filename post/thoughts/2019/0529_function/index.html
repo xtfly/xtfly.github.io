@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>软件架构一些感想 - 蘭陵N散記</title>
+    <title>编写短小的函数/方法 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="软件架构一些感想">
+    <meta property="og:title" content="编写短小的函数/方法">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="软件架构一些感想 - 蘭陵N散記" />
+    <meta name="title" content="编写短小的函数/方法 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2016/0319_arch_diathesis/" itemprop="url">
-        软件架构一些感想
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0529_function/" itemprop="url">
+        编写短小的函数/方法
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-03-19">
-    2016-03-19
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-29">
+    2019-05-29
 </time>
 </span> 
       
@@ -133,6 +133,13 @@
       &nbsp; 
     </span>
   
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
 </span>
 
 
@@ -142,52 +149,146 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">823 字 ~2分钟</span>
+<span class="leancloud-visitors-count">2372 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h2 id="软件架构">软件架构</h2>
+    <h1 id="函数与方法">函数与方法</h1>
 
-<p>软件系统架构不只是软件本身架构，它是一个全系统、全网络的架构，从层次上由低到高分为：</p>
+<p>我们经常会遇到两个词，函数（Function）与方法（Method），简言之：</p>
 
 <ul>
-<li>程序架构</li>
-<li>系统架构</li>
-<li>产品架构</li>
-<li>生态、商业模式的架构</li>
+<li>函数不属于任何对象</li>
+<li>方法是关联到对象内的函数</li>
 </ul>
 
-<p>任何一个架构师，都是需要重点解决某方面的尖锐问题，同时避免在不合适的场景下，一种技术、一类框架或一种架构模式被滥用。架构就需要对整体框定好范围与约束。</p>
+<p>他们的区别：</p>
 
-<p>架构设计不可能面面俱到，要解决或是发挥关键路径上的资源合理有效的最大价值。一个好的架构，不会随着时间或业务的变换，而需要进行大的破坏性的变化。</p>
+<ul>
+<li>函数是面向过程编程中，为解决问题划分每个步骤的体现</li>
+<li>方法是面向对象编程中，对象能提供的能力或行为的体现
+<br /></li>
+</ul>
 
-<h2 id="架构演进">架构演进</h2>
+<p>方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的述诉，方法与函数统一称函数，不再区分。</p>
 
-<p>从互联网公司的角度来看，他们认为架构都是在实际应用过程中的生长，一开始就设计和实施面面俱到的架构是不符合互联网快速交付的方式的，不要过度设计，谁也不知道业务上线后业务量将会是一个什么量。</p>
+<p>他们的必要性：</p>
 
-<p>架构的演进过程基本是围绕着性能，可靠性，扩展性，安全性，容灾展开。而对于可靠性，他们认为故障是不可能避免的，失败可能是常态，核心是如何地减少故障对用户或系统产生的影响范围。要提供有损服务，在故障的情况下，保证核心服务，可能放弃一些其它的服务。</p>
+<ul>
+<li>让代码可以重复使用，他们是”积木“</li>
+<li>函数黑盒特性，有效封装，隐藏细节</li>
+</ul>
 
-<p>相对于电信业务，互联网公司的业务更侧重于用户体验，极致的响应速度与简单易用的体验是第一个设计原则。而电信业务传统是更侧重于可靠性，甚至零无损。</p>
+<h1 id="短小的好处">短小的好处</h1>
 
-<h2 id="架构师素质">架构师素质</h2>
+<p><code>Kent Beck</code> 在 <code>Smalltalk Best Practice Patterns</code> 中定义的 <code>Composed Method</code> 模式。指出函数应该只能做一个层次上的抽象。函数应该是短小的，对于Smalltalk函数大小应该在一至六行。</p>
 
-<p>架构师要能充分理解用户需要，充分协调和利用资源，满足需求； 具备基本的方法论，敏锐的观察力，善于对事物的抽象，提炼，简化。同时由于架构涉及到范围广，需要能快速学习新知识，善于学习关键点，不能由于过多限于细节而影响精力分配。</p>
+<p>如果是现代语言像Java/Go/Scala/Kotlin等，每个函数应该是控制在有效行数在 <strong>20到25</strong> 行 。短小的函数会带来如下好处：</p>
 
-<p>架构师很多时间是技术决策，需要能勇于应对变化，积极改变，敢于挑战。能够将方案落地，从解决系统的具体问题出发，能解决别人看不清的问题，也同时需要具有战略眼光，看得更远。</p>
+<ul>
+<li>维护成本：越长的函数越要花费更大的成本去了解它要做什么，以及在什么地方作修改。而对于小函数，你可以快速的查明应该在何处作修改（尤其是在应用测试驱动开发的时候）</li>
+<li>代码可读性：在初始的学习曲线之后，小函数使得你更容易理解一个类要做什么。而且你不必滑动窗口就可以理解代码</li>
+<li>拥有重用潜力：把函数分解成一些小的模块，你可以识别出代码中通用的抽象，通过使用这些通用的抽象使你的代码总量急剧下降</li>
+<li>拥有子类化潜力：函数越长，你就越难以创建一个子类使用这个函数</li>
+<li>命名：小的函数命名起来要容易一些，因为它做的事情少</li>
+<li>性能属性：遇到了性能问题，一个使用composed method的系统更容易定位性能瓶颈</li>
+<li>灵活性：小函数使得重构更加容易，并且容易找到设计缺陷，比如feature envy</li>
+<li>代码质量：把大函数分解成小函数，定位隐晦的错误更加容易</li>
+<li>最小化注释：虽然注释是很有价值的东西，大多数注释可以通过谨慎的命名和调整结构消除。代码已经能说清楚，则注释是没有必要的。</li>
+</ul>
 
-<p>架构是上层建筑，影响深远，所以架构师需要善于识别和消除高风险，要广泛地吸收不同的意见，头脑风暴，风险识别、评估。对于风险进行排序，对于高风险点进行原型验证，切不可纯理论的架构，做成空中楼阁。</p>
+<p>注：来自<a href="http://langrsoft.com/articles/smallMethods.shtml">Small Methods: Nine Benefits of Making Your Methods Shorter</a></p>
 
-<hr />
+<h1 id="影响因素">影响因素</h1>
 
-<p>注：以上观点收集于公司内网某同事的输出，在此表示感谢。</p>
+<p>为了达成短小的函数，业界已有非常多的度量指标，指导我们写出可读性很好的函数。当然我们不能只是奔着降低指标而去，指标只是手段，不是目标。</p>
+
+<h2 id="圈复杂度">圈复杂度</h2>
+
+<p>圈复杂度是一种衡量代码复杂程度的标准，由<code>Thomas J. McCabe, Sr.</code>提出。它用来衡量一个模块判定结构的复杂程度，数量上表现为独立的行路径条数。</p>
+
+<p>圈复杂度高带来的害处，建议平均值控制在15以内：</p>
+
+<ul>
+<li>过高说明逻辑复杂性，不容易理解</li>
+<li>逻辑复杂可能导致质量低下</li>
+<li>路径过多难以测试覆盖
+<br /></li>
+</ul>
+
+<p>圈复杂度高主要表现：</p>
+
+<ul>
+<li>分支语句多：if/else, switch/case, for, while</li>
+<li>表达式复杂：条件表达式复杂，3个及以上逻辑运算符</li>
+</ul>
+
+<p>降低圈复杂度方法：</p>
+
+<ul>
+<li>抽取函数：独立业务代码封装为函数，通过函数名诠释代码作用，做到见名知意</li>
+<li>合并重复：不同条件的分支，有相似的处理，可以提炼出分支以外，或者封装为函数</li>
+<li>分解条件式：复杂的条件表达式，使用函数进行封装</li>
+<li>移除控制标记：有控制标签作为条件的，使用break/return取代</li>
+<li>设计模式：对于同一层的if/else, switch/case分支过多，可考虑采用状态机或策略模式、表驱动法（Map查找）</li>
+<li>单一职责：一个函数应该只实现一个功能点</li>
+</ul>
+
+<h2 id="嵌套层次">嵌套层次</h2>
+
+<p>不恰当的if/else与try/catch语句，是最为常见的嵌套层次过多代码；对于异步api，像nodejs还没有promise与async/await语言特性时，也会导致callback嵌套层次过多。</p>
+
+<p>嵌套层次带来害处显而易见，建议层次不要超过4层：</p>
+
+<ul>
+<li>圈复杂度变高，难以理解与测试</li>
+<li>有时像”横放着的金字塔“，代码太长，不方法阅读</li>
+</ul>
+
+<p>降低if/else嵌套层次方法：</p>
+
+<ul>
+<li>少使用else：使用<code>if + return</code>，代码反向判断，避免进入 else 分支，提前 return</li>
+<li>减少非空判断：如Java8引用Optional的orElse或orElseGet方法</li>
+<li>合并if条件判断：使用条件与（&amp;&amp;），利用条件短路的特性</li>
+<li>三元表达式：如Java中的 <code>e = (a==b) ? c : d</code> ，c与d可以是函数调用</li>
+</ul>
+
+<p>try/catch可以再嵌套try/catch，但也是最容易出逻辑问题的地方，降低try/catch嵌套层次方法：</p>
+
+<ul>
+<li>抽取函数：try与catch的中各代码块超过10行以上，建议是分别抽取函数，try/catch块内只有函数调用</li>
+<li>合并try/catch：分析是否可以合并try/catch到同一层次</li>
+<li>折分try/catch：让try的范围更小，尽早catch，避免大try中不必要的嵌套</li>
+</ul>
+
+<p>我们会经常对数据进行操作，Java8引入Stream对象。若能合理使用它，也可以减少迭代（for语句&ndash;&gt; map方法调用）、条件判断（if/else语句 &ndash;&gt; filter方法调用）组合带来的嵌套。面向过程变成面向函数式编程，也会让你的代码更为的清爽。</p>
+
+<h2 id="参数个数">参数个数</h2>
+
+<p>函数的输入参数过多，会使函数易于受外部的变化影响，从而导致函数变得不稳定，代码维护困难。过多的控制标记参数也会导致参数的使用组合变多，代码的分支路径变多，也就增加了测试的工作量。</p>
+
+<p>参数个数多少个才算多？建议是不超过5个。</p>
+
+<p>是否要将参数封装成对象，不能只看参数的数量，还要看它的业务意义，有时封装成对象反倒增加了阅读成本。参数过多说明它依赖过多，我们需要考虑是否需要对函数进一步拆分。</p>
+
+<p>对于构建方法参数过多，我们可以采用 <code>链式调用</code> ，它是一种Builder模式，比一堆的参数列表调用更有意义，也不容易出现赋值顺序出错而导致问题。</p>
+
+<h2 id="变量个数">变量个数</h2>
+
+<p>函数局部变量个数多，是函数的逻辑实现需要依赖较多的外数或内部数据，依赖多则会导致复杂度增加。</p>
+
+<p>局部变量个数多少个才算多？建议是不超过5个。</p>
+
+<p>解决局部变量变多的另一种思路是 <code>Replace Method with Method Object</code> (来自重构一书)，以函数对象取代函数，做法是将函数放进一个单独的对象当中，使用这个单独对象的值域（filed）来替代原函数中的局部变量。若这个单独的对象使用的范围非常小，我们通过把它声明为内部静态类。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" rel="tag" title="软件架构">#软件架构#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -196,16 +297,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/" rel="next" title="制作Archlinux Docker基础Image">
-        <i class="fa fa-chevron-left"></i> 制作Archlinux Docker基础Image
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/notes/2016/0313_grub_win10/" rel="prev" title="Grub引导Win10">
-        Grub引导Win10 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/thoughts/2019/0526_class/" rel="prev" title="类的职责单一">
+        类的职责单一 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -311,11 +408,14 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
+<li><a href="#函数与方法">函数与方法</a></li>
+<li><a href="#短小的好处">短小的好处</a></li>
+<li><a href="#影响因素">影响因素</a>
 <ul>
-<li><a href="#软件架构">软件架构</a></li>
-<li><a href="#架构演进">架构演进</a></li>
-<li><a href="#架构师素质">架构师素质</a></li>
+<li><a href="#圈复杂度">圈复杂度</a></li>
+<li><a href="#嵌套层次">嵌套层次</a></li>
+<li><a href="#参数个数">参数个数</a></li>
+<li><a href="#变量个数">变量个数</a></li>
 </ul></li>
 </ul>
 </nav></div>
