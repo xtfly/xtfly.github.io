@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Go语言不足 - 蘭陵N散記</title>
+    <title>逐层递进地编写代码 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Go语言不足">
+    <meta property="og:title" content="逐层递进地编写代码">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Go语言不足 - 蘭陵N散記" />
+    <meta name="title" content="逐层递进地编写代码 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/" itemprop="url">
-        Go语言不足
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0531_layer/" itemprop="url">
+        逐层递进地编写代码
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-18">
-    2016-07-18
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-31">
+    2019-05-31
 </time>
 </span> 
       
@@ -125,6 +125,13 @@
     <i class="fa fa-folder-o"></i>
   </span>
   <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
   
     <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
       <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
@@ -142,133 +149,120 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2083 字 ~5分钟</span>
+<span class="leancloud-visitors-count">1899 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。</p>
+    <h1 id="书的目录">书的目录</h1>
 
-<h2 id="生态不成熟">生态不成熟</h2>
+<p>现在的软件类的书籍是起来起厚，尤其是语言类书籍很多通篇都是代码，需要花费很多时间去读，久而之对厚厚的书就有一种莫名的恐惧感。现在个人看书喜欢先看它的目录，快速了解整本书的内容，挑选自己最感兴趣章节直接开始阅读。</p>
 
-<p>一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100+的App从Java转向Go。Google内部主要有三大语言（C++、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。</p>
-
-<p>目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：</p>
+<p>目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：</p>
 
 <ul>
-<li>公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；</li>
-<li>互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；</li>
+<li>让人清楚地知道书所讲的框架内容，一目了然</li>
+<li>让人了解体察作者写作该书的思想和行文脉络</li>
+<li>让人知道章节之间的逻辑关系，主次之分</li>
 </ul>
 
-<p>采用Go语言的技术因素主要有：</p>
+<h1 id="画出整体框架">画出整体框架</h1>
+
+<p>大约在2007年，有幸有机会接触过部门请的<a href="https://baike.baidu.com/item/%E4%BC%8A%E4%B8%87%C2%B7%E9%9B%85%E5%90%84%E5%B8%83%E6%A3%AE/17525680">雅各布森</a>咨询公司的顾问，他们给我们讲解如何 <code>Use Case Driven</code> 来做设计。当时感觉顾问没有说出的心里话是：在座的都是垃圾，连个UML时序图都不会画。对我映射最深是，他们竟然直接是时序图的流程映射到代码实现层。</p>
+
+<p>我后来就有一种习惯，当写代码的时候，喜欢先去定义整体的框架，像UML的时序图，先有哪些类、方法，把整个业务流程串起来。而这些类与方法先是空实现，就形成了基础骨架。这个骨架能够避免陷入实现的细节而不能自拔，像就像书的目录一下，清楚地呈现了流程的几个阶段或步骤。</p>
+
+<p>这个基础骨架的形成，与个人的思维习惯和对业务是否深入了解有一定的关系。如果开始写代码时可能层次不够清晰，不过我们随着写代码不断地深入而不断地调整，可使代码达到较理想的状态。</p>
+
+<p>搭建骨架就类似于编写一本书的目录。先有目录，再按目录的章节逐层展开。</p>
+
+<h1 id="单一抽象层次">单一抽象层次</h1>
+
+<p>单一抽象层次（ Single Level of Abstraction Principle，简称SLAP），指让一个方法中所有的操作处于<strong>相同</strong>的抽象层，否则跳跃的代码不同的抽象层次，就会破坏了代码的流畅性。</p>
+
+<p>什么是抽象层次，它需要与业务域结合一起来看：</p>
 
 <ul>
-<li>Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；</li>
-<li>Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；</li>
+<li>对一个问题进行一个粒度的划分</li>
+<li>代码对解决问题的一种抽象实现</li>
+<li>抽象层次是循序渐进，逐步分层</li>
 </ul>
 
-<p>Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。</p>
+<p>例如，对某一个数据集进行分析，第一层抽象：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func AnalysisData()  {
+    // 1. 读取数据
+    loadDataset() 
+    // 2. 处理数据
+    processDataset() 
+    // 3. 输出结果
+    outputResult()
+}</pre></div>
+<p>对处理数据进行第二层抽象：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func processDataset() {
+    // 2.1 转换数据
+    transformingData()
+    // 2.2 选择算法，建立模型
+    buildModel()
+    // 2.3 评估模型
+    EvaluateModel()
+}</pre></div>
+<p>在抽象层次中存在一种规则：自顶向下。按业务的处理逻辑进行了粒度拆分，把系统变成一个个不同层次的功能点。像UML时序图一样，我们按照先后顺序，从上往下一层层的组装。单一抽象层次原则使代码中代码块在单一的抽象层，每个代码块（可以提取为函数）也是就是函数级的目录或章节，当我们去读这种代码时，就像阅读书本一本，层次清晰。</p>
 
-<h2 id="动态扩展机制不成熟">动态扩展机制不成熟</h2>
+<h2 id="再说函数">再说函数</h2>
 
-<p>对于编译型静态语言，需要有一种机制来支持动态扩展。C/C++是通过动态库来扩展，Java是支持Class动态加载，或基于JVM平台的其它脚本语言互通。Go语言长期没有支持动态库，Go语言的创始人曾明确表态：</p>
-
-<blockquote>
-<p>动态库的存在是一个系统的设计Bug</p>
-</blockquote>
-
-<p>但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台（<a href="https://github.com/golang/go/wiki/cgo">cgo·golang/go Wiki</a>,<a href="https://github.com/golang/go/wiki/WindowsDLLs">WindowsDLLs·golang/go Wiki</a>）。同时支持也是有限制：</p>
+<p>在上一篇 <a href="http://lanlingzi.cn/post/thoughts/2019/0529_function/">编写短小的函数/方法</a> 中，提到小函数的优点，以及通过度量指标来思考把函数变”小“。结合 单一职责原则（SRP） 与 单一抽象层次原则（SLAP），发现他们是相辅相成的。</p>
 
 <ul>
-<li>Go语言代码，可以生成动态库给C代码调用，也可能给Go代码调用，但他们使用也有区别，参考：<a href="http://www.golangtc.com/t/55976045b09ecc0f51000001">Go1.5生成动态库</a></li>
-<li>不支持运行时在代码中动态加载库</li>
+<li>SRP，说函数只应该做一件事，那此函数应该不能再拆分出不在此函数层次上的新函数</li>
+<li>SLAP，说函数中的语句应该是一个抽象层上的步骤组合，也就是只做了一件事</li>
 </ul>
 
-<p>目前可行的解决方案：</p>
+<p>我们在写函数代码，通常会通过空行或注释分割逻辑片段，就像文章的段落：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">//注释1
+代码片段1
+
+//注释2
+代码片段2
+
+//注释3
+//代码片段3</pre></div>
+<p>如果所有片段都是在同一个抽象层次上，只要方法不是过长（有效性超过25行），并不需要把每个片段抽取为函数，个人觉得这种做法不算违背SLAP。当然往往随着时间的推移，一是可能增加需求会导致方法膨胀；二是新增的代码可能不在一个抽象层次上。尽信书不如无书，我们需要有思考与权衡。</p>
+
+<h2 id="常见思路">常见思路</h2>
+
+<p>把函数重构我们主要有两种方法：</p>
 
 <ul>
-<li><p>生成C语言动态库：通过动态加载生成C语言动态库，实现动态扩展，一个进程中，运行了多个“Go世界”（Go的Runtime）</p>
-
-<ul>
-<li>这需要GCC编译器，所以严格来说并不支持Win下的纯DLL动态库（cywin之类的gcc没有验证过）</li>
-</ul></li>
-
-<li><p>嵌入脚本语言，实现功能逻辑的动态扩展。</p>
-
-<ul>
-<li>目前开源项目已有纯Go实现的Lua VM，也有通过CGo绑定C的Lua。也有开源项目通过Cgo绑定支持Python,Ruby等；</li>
-<li>自创脚本脚本，或DSL脚本，采用Go来实现脚本解释。但如果对性能要高要求，需要支持对脚本的JIT，这是相当有难度，目前也未见有解决方案。</li>
-</ul></li>
-
-<li><p>实现基于通信机制的插件模式</p>
-
-<ul>
-<li>类似于VScode的语言服务插件机制，参考：<a href="http://www.oschina.net/translate/common-language-protocol">通用语言协议</a></li>
-<li>这本质是进程间的通讯，并不传统意义上的插件扩展机制。</li>
-</ul></li>
+<li>提取函数(Extract Method)</li>
+<li>分解函数(Compose Method)</li>
 </ul>
 
-<h2 id="不支持泛型">不支持泛型</h2>
+<p>Extract Method来自 [重构&ndash;改善既有代码的设计] 一书，就是把在原来函数的内部的一些语句抽离出来，放到一个独立的目标小函数中，再在原来函数中的地方修改成对目标函数的调用。它解决的函数过长的问题，把大的拆成小的，似乎并不有考虑抽象层次。</p>
 
-<p>泛型是目前高级语言最常见的语言基础，Java1.5采用擦除法的泛型（并不像C++一样的Template技术）也解放了不少生产力，能大大减少相似的代码。而Go语言官方团队相对是“民主集中制”，很难听取社区的意见，认为这个总是不紧急，并且他们也没有找到满意的实现方式（C++/Java实现方式都不让他们满意：C++是编译期间展示，生成不同的代码，对编译速度与生成文件大小都有影响；而Java是擦除法，只是语法糖，生成Bytecode变成Object对象，并没有本质变化）。</p>
+<p>Compose Method来自 <a href="https://www.industriallogic.com/xp/refactoring/composeMethod.html">Industrial Logic</a> 的重构模式，说的是 <code>Transform the logic into a small number of intention-revealing steps at the same level of detail</code>。目的就是朝着单一抽象层次来组装函数。</p>
 
-<p>从目前来看，Go语言在1.0规范发布之后，语法特性几乎没有什么变化，围绕是性能优化与跨平台支持。至少在Go2.0之前，极可能不会引入这个语言特性。</p>
-
-<p>目前可行的解决方案</p>
+<p>哪些常见的场景我们需要提取函数；</p>
 
 <ul>
-<li><p>interface{}</p>
-
-<ul>
-<li>类似于C的void*，Java的Object，但这会增加代码的可读性差与安全危险，又与Go的简单哲学不相符</li>
-</ul></li>
-
-<li><p>Go generate</p>
-
-<ul>
-<li>参考：<a href="http://www.kuqin.com/shuoit/20141104/343014.html">Golang generate 草案</a></li>
-</ul></li>
-
-<li><p>Go泛型编程库：<a href="http://www.open-open.com/lib/view/open1389580392476.html">gen</a></p>
-
-<ul>
-<li>gen 项目目的是为 Go 语言带来了类似泛型的函数，灵感来自 C# 的 LinQ 和 JavaScript 的 Array methods 以及 underscore 库。操作包括过滤、分组、排序等等。</li>
-</ul></li>
+<li>函数名称上存在And或Or的语义，函数代码不是几个函数的And与Or组装，而是大段代码</li>
+<li>For/While循环中存在较长的代码逻辑，循环体可以考虑抽取函数</li>
+<li>Switch/Case分支存存在较长的代码逻辑，则Case块可以虑抽取函数</li>
+<li>Try的代码块过多，或者Catch较多的异常，异常多说明分支多，则Try块可以考虑抽取函数</li>
+<li>函数中存在相似代码，如对Rest请求体的每个参数校验，则校验可集中处理，抽取函数</li>
+<li>两个数据结构采用较多Setter与Geter语句来拷贝数据，则拷贝代码提取方法到工具类或其中一个类上
+<br /></li>
 </ul>
 
-<h2 id="goroutine性能陷阱">Goroutine性能陷阱</h2>
+<h1 id="结语">结语</h1>
 
-<p>Goroutine简化了并发编程，但它并不能消除并发问题（资源竞争，原子性操作），只是把线程的调度预置到了它的Runtime中，让上层应用代码变得很少。它的坑也主要体现在它的调度不可控制上。</p>
-
-<p>下面阻塞不会创建新的调度线程：</p>
-
-<ul>
-<li>网络IO阻塞</li>
-<li>Channel阻塞</li>
-<li>Sleep，同步锁阻塞</li>
-<li>基于底层系统异步调用的Syscall</li>
-</ul>
-
-<p>下面阻塞会创建新的调度线程：</p>
-
-<ul>
-<li>磁盘IO阻塞</li>
-<li>CGo方式调用C语言动态库中的调用IO或其它阻塞</li>
-</ul>
-
-<p>这些情况下会导致线程数量爆涨，从而导致系统性能下降，而Goroutine通过go func就能产生一个Goroutine，犯错的成本低，容易被滥用。这需要开发人员熟悉Goroutine内部机制，并小心地避开这些坑。期待Go官方将来能重点解决这些问题。</p>
-
-<p>参考：<br />
-[1] <a href="http://studygolang.com/articles/84">goroutine背后的系统知识</a><br />
-[2] <a href="http://www.zhihu.com/question/20862617">golang的goroutine是如何实现的</a><br />
-[3] <a href="http://studygolang.com/articles/1855">goroutine与调度器</a></p>
+<p>像写书一样，先采用目录式的编写骨干代码，先抽象再具体，逐层分解。在适当的抽象层次上做合适的事，代码就会显得层次分明，代码也就更好的理解与维护。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -277,16 +271,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0723_why_go/" rel="next" title="为什么是Go">
-        <i class="fa fa-chevron-left"></i> 为什么是Go
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0717_go_book/" rel="prev" title="Go语言在线书籍收集">
-        Go语言在线书籍收集 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/thoughts/2019/0529_function/" rel="prev" title="编写短小的函数/方法">
+        编写短小的函数/方法 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -392,13 +382,14 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
+<li><a href="#书的目录">书的目录</a></li>
+<li><a href="#画出整体框架">画出整体框架</a></li>
+<li><a href="#单一抽象层次">单一抽象层次</a>
 <ul>
-<li><a href="#生态不成熟">生态不成熟</a></li>
-<li><a href="#动态扩展机制不成熟">动态扩展机制不成熟</a></li>
-<li><a href="#不支持泛型">不支持泛型</a></li>
-<li><a href="#goroutine性能陷阱">Goroutine性能陷阱</a></li>
+<li><a href="#再说函数">再说函数</a></li>
+<li><a href="#常见思路">常见思路</a></li>
 </ul></li>
+<li><a href="#结语">结语</a></li>
 </ul>
 </nav></div>
     </div>

@@ -6,10 +6,29 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 29 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>逐层递进地编写代码</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0531_layer/</link>
+      <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0531_layer/</guid>
+      <description>&lt;h1 id=&#34;书的目录&#34;&gt;书的目录&lt;/h1&gt;
+
+&lt;p&gt;现在的软件类的书籍是起来起厚，尤其是语言类书籍很多通篇都是代码，需要花费很多时间去读，久而之对厚厚的书就有一种莫名的恐惧感。现在个人看书喜欢先看它的目录，快速了解整本书的内容，挑选自己最感兴趣章节直接开始阅读。&lt;/p&gt;
+
+&lt;p&gt;目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;让人清楚地知道书所讲的框架内容，一目了然&lt;/li&gt;
+&lt;li&gt;让人了解体察作者写作该书的思想和行文脉络&lt;/li&gt;
+&lt;li&gt;让人知道章节之间的逻辑关系，主次之分&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>编写短小的函数/方法</title>
@@ -34,7 +53,7 @@
 &lt;br /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的述诉，方法与函数统一称函数，不再区分。&lt;/p&gt;
+&lt;p&gt;方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的叙述，方法与函数统一称函数，不再区分。&lt;/p&gt;
 
 &lt;p&gt;他们的必要性：&lt;/p&gt;
 
