@@ -6,10 +6,29 @@
     <description>Recent content in 软件开发 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 31 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 02 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>拒绝重复代码</title>
+      <link>http://lanlingzi.cn/post/thoughts/2019/0602_dry/</link>
+      <pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2019/0602_dry/</guid>
+      <description>&lt;h1 id=&#34;拒绝重复&#34;&gt;拒绝重复&lt;/h1&gt;
+
+&lt;p&gt;软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。&lt;/p&gt;
+
+&lt;p&gt;但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Robert C.Martin&lt;/code&gt;在他的代码整洁之道一书中写道:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title>逐层递进地编写代码</title>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>使用tmux - 蘭陵N散記</title>
+    <title>拒绝重复代码 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="使用tmux">
+    <meta property="og:title" content="拒绝重复代码">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="使用tmux - 蘭陵N散記" />
+    <meta name="title" content="拒绝重复代码 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2016/0221_mac_tmux/" itemprop="url">
-        使用tmux
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0602_dry/" itemprop="url">
+        拒绝重复代码
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-02-21">
-    2016-02-21
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-02">
+    2019-06-02
 </time>
 </span> 
       
@@ -127,8 +127,15 @@
   <span class="post-meta-item-text">分类：</span>
   
     <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
       </a>
       &nbsp; 
     </span>
@@ -142,127 +149,125 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1198 字 ~3分钟</span>
+<span class="leancloud-visitors-count">2208 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h2 id="什么是tmux">什么是tmux</h2>
+    <h1 id="拒绝重复">拒绝重复</h1>
 
-<p><a href="http://tmux.github.io/">tmux</a>是一个支持多会话独立运行的优秀的终端复用软件。它类似<a href="http://www.gnu.org/software/screen/">GNU Screen</a>，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。</p>
+<p>软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。</p>
 
-<h2 id="tmux的使用场景">tmux的使用场景</h2>
+<p>但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。</p>
 
-<p>Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？</p>
+<p><code>Robert C.Martin</code>在他的代码整洁之道一书中写道:</p>
 
-<ul>
-<li>与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。</li>
-<li>提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。</li>
-</ul>
+<blockquote>
+<p>重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。</p>
+</blockquote>
 
-<h2 id="tmux的基本概念">tmux的基本概念</h2>
+<h1 id="重复类型">重复类型</h1>
 
-<p>tmux的主要元素分为三层：</p>
+<p>何谓重复代码，简言之，就是指重复或近似的代码。</p>
 
-<ul>
-<li>Session会话： 一组窗口的集合，通常用来概括同一个任务。session可以有自己的名字便于任务之间的切换。</li>
-<li>Window 窗口： 单个可见窗口。Windows有自己的编号，也可以认为和ITerm2中的Tab类似。</li>
-<li>Pane 窗格： 被划分成小块的窗口，类似于Vim中 <code>C-w +v</code> 后的效果。</li>
-</ul>
-
-<p><img src="http://ww1.sinaimg.cn/mw690/7178f37egw1esoxc7hp5oj20gm0bkjs6.jpg" alt="层次结构" /></p>
-
-<h2 id="安装">安装</h2>
-
-<p>在Mac环境下，先安装<a href="http://brew.sh/">Brew</a>，使用Brew安装tmux命令如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">brew install tmux</pre></div>
-<h2 id="使用">使用</h2>
-
-<p>安装完成之后，在终端中直接敲入<code>tmux</code>就可启动一个 tmux 的会话。退出会话敲入 <code>exit</code> 即可退出当前会话Pane。可以使用 <code>tmux detach</code> 命令断开已有的会话。也可以使用快捷键 <code>Ctrl-b d</code> 断开会话</p>
-
-<p>tmux 默认使用 <code>Ctrl-b</code> 作为激活快捷键的开关,开关开启后就可以通过快捷键迅速调用大量的功能。快捷键参考如下：</p>
-
-<h3 id="基础">基础</h3>
+<p>重复代码都有哪些类型？最为简单明了的是完全一样的代码片段，其它的有如下，可让我们更好识别重复:</p>
 
 <ul>
-<li>? 获取帮助信息</li>
+<li>类型Ⅰ，代码片段中除了空格、注释以及换行以外的内容<strong>完全一致</strong></li>
+<li>类型Ⅱ，代码片段中除了空格、注释、换行以及<strong>变量名以外</strong>的内容完全一致</li>
+<li>类型Ⅲ，代码片段中除了空格、注释、换行以及变量名以外的语句可能有<strong>增删改，功能不变</strong></li>
+<li>类型Ⅳ，两个或更多个代码段执行<strong>相同的运算</strong>，但通过<strong>不同的语法和变量</strong>来实现。</li>
 </ul>
 
-<h3 id="session管理">Session管理</h3>
+<h1 id="重复原因">重复原因</h1>
+
+<p>消除复杂代码除了需要技巧之外，个人觉得存在重复代码主观上更多是一种工作态度的反映，需要我们有责任心，兴趣与热情。</p>
 
 <ul>
-<li>s 列出所有会话</li>
-<li>$ 重命名当前的会话</li>
-<li>d 断开当前的会话</li>
-</ul>
-
-<h3 id="window管理">window管理</h3>
+<li>懒惰，能够容忍不好的代码
 
 <ul>
-<li>c 创建一个新窗口</li>
-<li>, 重命名当前窗口</li>
-<li>w 列出所有窗口</li>
-<li>% 水平分割窗口</li>
-<li>&rdquo; 竖直分割窗口</li>
-<li>n 选择下一个窗口</li>
-<li>p 选择上一个窗口</li>
-<li>0~9 选择0~9对应的窗口</li>
-</ul>
-
-<h3 id="pane管理">pane管理</h3>
+<li>打一份工的心态，做完这份就去做其它的，哪管生死</li>
+<li>进度很紧，以完成任务为优先，后续没有再进行优化</li>
+</ul></li>
+<li>技能不足，出现不必要的重复代码
 
 <ul>
-<li>% 创建一个水平窗格</li>
-<li>&rdquo; 创建一个竖直窗格</li>
-<li>h 将光标移入左侧的窗格*</li>
-<li>j 将光标移入下方的窗格*</li>
-<li>l 将光标移入右侧的窗格*</li>
-<li>k 将光标移入上方的窗格*</li>
-<li>q 显示窗格的编号</li>
-<li>o 在窗格间切换</li>
-<li>} 与下一个窗格交换位置</li>
-<li>{ 与上一个窗格交换位置</li>
-<li>! 在新窗口中显示当前窗格</li>
-<li>x 关闭当前窗格&gt; 要使用带“*”的快捷键需要提前配置</li>
-</ul>
-
-<h3 id="其他">其他</h3>
+<li>老人留下的祖传代码，又缺少文档说明与测试用例，根本不敢随便动</li>
+<li>新人进来，一是对整体代码不熟悉，二是从模仿开发，Ctrl+C/Ctrl+V</li>
+</ul></li>
+<li>缺乏沟通，团队之间协作不够
 
 <ul>
-<li>t 在当前窗格显示时间</li>
+<li>没有 code review 机制，缺少代码持续看护</li>
+<li>团队成员间缺少交流，每个人自扫门前雪</li>
+</ul></li>
 </ul>
 
-<h2 id="配置">配置</h2>
-
-<p>像VIM一样，可以定制你的tmux。tmux默认会先从 <code>/etc/tmux.conf</code> 加载系统级的配置项，然后从 <code>~/.tmux.conf</code> 加载用户级的配置项。也可以启动tmux时使用参数 <code>-f</code> 指定一个配置文件。配置包含如下几个配置项：</p>
+<p>除主观原因之外，在软件架构与设计上不恰当，也会导致重复代码（更多情况是相似代码）：</p>
 
 <ul>
-<li>自定义各种快捷键</li>
-<li>自定义屏幕下方的状态条</li>
+<li>模块的职责分离不清晰：职责的分配不准确，就可能导致代码结构不清晰，也就可能导致代码的重复。比如说，每个模块都需要访问数据库，都会涉及到数据库的映射，事务管理等，如果能把数据访问层分离出单独一层，就可能避免数据操作的重复代码。也就是我们需要在设计上就抽取公共的模块。</li>
+<li>模块内抽象的粒度过大：重用的关键是保持合适的粒度，以及对关系的解耦。粒度表现类一级，缺少可复用的辅助类或模板类，可以通过寻找共性，以泛化的方式提取共性特征。粒度表现在方法级，需要编写许多小的方法，找到类中可以重复调用的职责，抽取为单独的方法。</li>
 </ul>
 
-<p>如配置激活快捷键：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">set -g prefix ^k
-unbind ^b</pre></div>
-<p>默认的tmux风格比较朴素甚至有些丑陋。如果希望做一些美化和个性化配置的话，建议使用<a href="https://github.com/gpakosz/.tmux">gpakosz</a> 的tmux配置。它的本质是一个tmux配置文件，实现了以下功能：</p>
+<h1 id="重复层次">重复层次</h1>
+
+<p>像Java/C/C++语言，我们一般采用工具 <code>Simian</code> 或 <code>PMD</code> 集成到CI来自动检查代码重复率。根据重复所在范围，我们通常可以分为如下几种：</p>
+
+<p><strong>在同一个类中重复</strong></p>
+
+<p>在同一个类中存在重复代码，通过走读代码就可以识别出来，也最容易解决。解决办法也相当简单，通常是采用 <code>提取方法</code> 来消除。</p>
+
+<p><strong>在同一个类树下重复</strong></p>
+
+<p>在同一个类树下的不同子类中重复，也比较能容易识别出来。可以通过 <code>上移方法</code> 和 <code>模板方法</code> 将公共部分上移到共同的父类。如果方法中没有操作成员变量，可以提到辅助类。</p>
+
+<p><strong>在不相干的类中重复</strong></p>
+
+<p>在两个完全不相干的类中，如果不是专门地寻找很难发现，借助工具一般能扫描出来。 可以先 <code>提取方法</code> ，然后 <code>移动方法</code> 到新建的类，来消除重复。</p>
+
+<p><strong>在不同的模块中重复</strong></p>
+
+<p>在不同的模块中存在重复代码，一般考虑提供公共的模块。提取公共模块可以消除重复，但也带来了依赖，提到公共横块中的代码应该是稳定的。公共模块通常需要从整个软件设计来思考，合理的模块划分能有效地消除大量的重复。</p>
+
+<p><strong>大量大段重复代码</strong></p>
+
+<p>如果出现大量大段重复的代码，如相似的配置项解释代码，当超过几百行时，我们可以考虑采用代码自动生成，虽没有消除重复代码，但消除重复劳动。有些语言提供代码宏机制，合理的使用宏也可以消除大段重复代码。</p>
+
+<h1 id="重复轮子">重复轮子</h1>
+
+<p>还有一种重复，是工具扫描不出来的，就是与其它项目的重复。在开源的世界里，提供了非常多并且成熟的轮子。有人说，软件工程师写多少代码不重要，重要的是解决问题的效率，而提升效率之一就是懂得使用已有的轮子。好的软件工程师，要善用前人打下的基础，站在成功的肩膀上。</p>
+
+<p>最大的问题是我们不知有轮子存在，那我们怎么解决呢？开源社区总是存在非常多有热心的人，他们整理各个 <code>awesome</code> 项目，首先是要善用搜索与社区：</p>
 
 <ul>
-<li>基于powerline的美化</li>
-<li>显示笔记本电池电量</li>
-<li>和Mac互通的剪切板</li>
-<li>和vim更相近的快捷键</li>
+<li>Java: <a href="https://github.com/akullpp/awesome-java">https://github.com/akullpp/awesome-java</a></li>
+<li>Java: <a href="https://github.com/jobbole/awesome-java-cn">https://github.com/jobbole/awesome-java-cn</a></li>
+<li>Go: <a href="https://github.com/avelino/awesome-go">https://github.com/avelino/awesome-go</a></li>
 </ul>
 
-<p><img src="https://cloud.githubusercontent.com/assets/553208/9890858/ee3c0ca6-5c02-11e5-890e-05d825a46c92.gif" alt=".tmux" /></p>
+<p>上面只是简单列出有哪些项目，还需要我们进一步的选型分析。对于Java软件工程师来说，已有足够多的工具库，常用他们也可以大量降低我们代码量：</p>
+
+<ul>
+<li>Apache Commons： 最为常用的是<a href="http://commons.apache.org/proper/commons-lang/">Lang</a>，<a href="http://commons.apache.org/proper/commons-collections/">Collections</a>，<a href="http://commons.apache.org/proper/commons-io/">IO</a>，<a href="http://commons.apache.org/proper/commons-math/">Math</a>库</li>
+<li>Guava： <a href="https://www.yiibai.com/guava/">Guava教程</a></li>
+</ul>
+
+<h1 id="结语">结语</h1>
+
+<p>消除重复代码的技能，没有什么特别的复杂的东西，无非就是提取函数，提取类，提取公共模块、复用现有的轮子。</p>
+
+<p>消除重复代码，其实就是解放软件工程师自己的时间，只有正确的心态去面对，自己才会有更大的收获，而不是在无意义地重复地劳动。</p>
+
+<p>解决重复并不困难，困难的是发现重复。发现重复并不困难，困难是培养发现重复的习惯。当我们开始习惯性地向内看看同组的代码，向看外看看开源代码，只有看得多才能有更开阔的眼界，消除重复就是轻而易举。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/mac" rel="tag" title="Mac">#Mac#</a>
-    
-    <a href="http://lanlingzi.cn/tags/shell" rel="tag" title="Shell">#Shell#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -271,16 +276,12 @@ unbind ^b</pre></div>
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0306_arch_principle/" rel="next" title="软件设计原则">
-        <i class="fa fa-chevron-left"></i> 软件设计原则
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/notes/2016/0215_about_soft_arch/" rel="prev" title="软件架构设计">
-        软件架构设计 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/thoughts/2019/0531_layer/" rel="prev" title="逐层递进地编写代码">
+        逐层递进地编写代码 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -386,22 +387,12 @@ unbind ^b</pre></div>
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
-<ul>
-<li><a href="#什么是tmux">什么是tmux</a></li>
-<li><a href="#tmux的使用场景">tmux的使用场景</a></li>
-<li><a href="#tmux的基本概念">tmux的基本概念</a></li>
-<li><a href="#安装">安装</a></li>
-<li><a href="#使用">使用</a>
-<ul>
-<li><a href="#基础">基础</a></li>
-<li><a href="#session管理">Session管理</a></li>
-<li><a href="#window管理">window管理</a></li>
-<li><a href="#pane管理">pane管理</a></li>
-<li><a href="#其他">其他</a></li>
-</ul></li>
-<li><a href="#配置">配置</a></li>
-</ul></li>
+<li><a href="#拒绝重复">拒绝重复</a></li>
+<li><a href="#重复类型">重复类型</a></li>
+<li><a href="#重复原因">重复原因</a></li>
+<li><a href="#重复层次">重复层次</a></li>
+<li><a href="#重复轮子">重复轮子</a></li>
+<li><a href="#结语">结语</a></li>
 </ul>
 </nav></div>
     </div>
