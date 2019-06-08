@@ -6,17 +6,48 @@
     <description>Recent content on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 02 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 08 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>不可变减少副作用</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0608_inmutable/</link>
+      <pubDate>Sat, 08 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0608_inmutable/</guid>
+      <description>&lt;h1 id=&#34;可变与不可变&#34;&gt;可变与不可变&lt;/h1&gt;
+
+&lt;p&gt;在JVM系统语言如Scala与Kotlin中有两个关键字定义变量&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;var是一个&lt;strong&gt;可变&lt;/strong&gt;变量，可以通过重新分配来更改为另一个值的变量&lt;/li&gt;
+&lt;li&gt;val是一个&lt;strong&gt;只读&lt;/strong&gt;变量，创建的时候必须初始化，以后不能再被改变
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;为什么新的语言需要强调变量&lt;code&gt;不可改变&lt;/code&gt;？ 我再来看一下Rust语言中的变量不可改变。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;let，采用此关键字来绑定变量，变量默认不可变&lt;/li&gt;
+&lt;li&gt;let mut，采用此关键字来绑定可以变更的变量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Rust在mutable（可变）与immutable（不可变）上相比Scala上更进了一步：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Scala的val只能约束了同一个变量名不可再重新赋值，变量绑定的对象是可以改变的（如val的list对象，可以调用它的append方法修改对象内容）&lt;/li&gt;
+&lt;li&gt;Rust通过借用（borrow）语义与mut关键字，约束了只有声明为 mut 的变量，才能对绑定的对象是进变更（如只有是mut的vec对象，才能调用它的push方法修改其内容）&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
       <title>拒绝重复代码</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0602_dry/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0602_dry/</link>
       <pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0602_dry/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0602_dry/</guid>
       <description>&lt;h1 id=&#34;拒绝重复&#34;&gt;拒绝重复&lt;/h1&gt;
 
 &lt;p&gt;软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。&lt;/p&gt;
@@ -32,10 +63,10 @@
     
     <item>
       <title>逐层递进地编写代码</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0531_layer/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0531_layer/</link>
       <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0531_layer/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0531_layer/</guid>
       <description>&lt;h1 id=&#34;书的目录&#34;&gt;书的目录&lt;/h1&gt;
 
 &lt;p&gt;现在的软件类的书籍是越来越厚，尤其是语言类书籍很多通篇都是代码，需要花费很长的时间去阅读，久而之对厚厚的书就有一种莫名的恐惧感。个人看书喜欢先看一本书的目录，快速了解整本书的内容，挑选自己最感兴趣的章节直接开始阅读。&lt;/p&gt;
@@ -51,10 +82,10 @@
     
     <item>
       <title>编写短小的函数/方法</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0529_function/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0529_function/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0529_function/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0529_function/</guid>
       <description>&lt;h1 id=&#34;函数与方法&#34;&gt;函数与方法&lt;/h1&gt;
 
 &lt;p&gt;我们经常会遇到两个词，函数（Function）与方法（Method），简言之：&lt;/p&gt;
@@ -84,10 +115,10 @@
     
     <item>
       <title>类的职责单一</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0526_class/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0526_class/</link>
       <pubDate>Sun, 26 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0526_class/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0526_class/</guid>
       <description>&lt;h1 id=&#34;理解类&#34;&gt;理解类&lt;/h1&gt;
 
 &lt;p&gt;类（实例化产生对象）是面向对象编程中最基本的组成单元，将逻辑和数据封装其中，以提高软件的重用性、灵活性和扩展性等。它相比人类社会组成，系统/子系统、组件/（微）服务、模块/包这些相当于社会中不同层次的实体或虚拟的组织机构；而类则相当于一类自然人，一个对象相当一个自然人。一个类在系统中承担着一种的 ”角色“ ，从事一种职业。&lt;/p&gt;
@@ -101,10 +132,10 @@
     
     <item>
       <title>降低模块间耦合</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0523_dep_couple/</link>
       <pubDate>Thu, 23 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0523_dep_couple/</guid>
       <description>&lt;p&gt;提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。&lt;/p&gt;
 
 &lt;h1 id=&#34;依赖&#34;&gt;依赖&lt;/h1&gt;
@@ -127,10 +158,10 @@
     
     <item>
       <title>清晰的代码结构</title>
-      <link>http://lanlingzi.cn/post/thoughts/2019/0519_structure/</link>
+      <link>http://lanlingzi.cn/post/technical/2019/0519_structure/</link>
       <pubDate>Sun, 19 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/thoughts/2019/0519_structure/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0519_structure/</guid>
       <description>&lt;h1 id=&#34;问题&#34;&gt;问题&lt;/h1&gt;
 
 &lt;p&gt;架构设计中常常关注几个视图，如功能视图、逻辑视图、运行视图与部署视图。但架构师们由于层次较高，长期缺少代码编写能力，往往就直接忽视了开发视图。开发视图主要描述软件的开发工程结构、代码规范，以及构建技术等。代码结构和构建关系到项目的可持续维护以及维护的周期，非常重要。但实现开发活动，架构到开发中间层的GAP，真正重视并落地的很少很少。&lt;/p&gt;

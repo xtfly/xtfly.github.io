@@ -13,8 +13,45 @@
     </entry>
     
      <entry>
+        <title>不可变减少副作用</title>
+        <url>http://lanlingzi.cn/post/technical/2019/0608_inmutable/</url>
+        <categories>
+          <category>感想</category><category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 可变与不可变 在JVM系统语言如Scala与Kotlin中有两个关键字定义变量
+ var是一个可变变量，可以通过重新分配来更改为另一个值的变量 val是一个只读变量，创建的时候必须初始化，以后不能再被改变   为什么新的语言需要强调变量不可改变？ 我再来看一下Rust语言中的变量不可改变。
+ let，采用此关键字来绑定变量，变量默认不可变 let mut，采用此关键字来绑定可以变更的变量  Rust在mutable（可变）与immutable（不可变）上相比Scala上更进了一步：
+ Scala的val只能约束了同一个变量名不可再重新赋值，变量绑定的对象是可以改变的（如val的list对象，可以调用它的append方法修改对象内容） Rust通过借用（borrow）语义与mut关键字，约束了只有声明为 mut 的变量，才能对绑定的对象是进变更（如只有是mut的vec对象，才能调用它的push方法修改其内容）  小结一下，关于var、val与mutable、immutable的区别：
+ 变量不可变性：val和var只是表明定义的变量是否能被修改而指向其他内容，即变量是否能重新 绑定 新的内容 内容不可变性：mutable和immutable表明定义的内容能否被修改，即变量所指向内容是否可以被重新修改  可变的问题 对于变量声明，var相比val有如下问题：
+ 分支遗漏：var变量多个地方重用，可能存在某个分支遗漏修改，导致代码逻辑错误 未初始使用：变量可能会在使用前没有初始化的代码，会导致空指针异常 可读性变差：阅读代码时，确定变量的值是比较困难，因为存在不同的地方对它可能的修改  在编程中我们更希望是对象是immutable（不可变）的，简言之：
+ mutable：对象的内部数据可变，变化就会引入风险 immutable：对象的内部数据的不可变导致其更加安全，可以用作多线程的共享对象而不必考虑同步问题  不可变其实是函数式编程相关的重要概念，函数式编程中认为可变性是万恶之源，因为可变性的对象会给程序带来“副作用”；函数式编程也认为: 只有纯的没有副作用的函数，才是合格的函数。
+什么是“副作用”：
+ 在计算机科学中，函数副作用指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量）或修改参数。－－维基百科
+ 函数副作用会给程序设计带来不必要的麻烦，给程序带来十分难以查找的错误，并降低程序的可读性。严格的函数式语言要求函数必须无副作用。
+而面向对象语言中虽强调对象的封装性，但没有在语义上强制约束对象的不可变性。面向对象的编程通过封装可变的部分来构造能够让人读懂的代码，函数式编程则是通过最大程度地减少可变的部分来构造出可让人读懂的代码。
+函数式风格 Scala与Kotlin鼓励使用val，变量只是只读，使代码像函数式风格。我们来一个简单的Scala例子：
+def printArgs(args: Array[String]): Unit = { var i = 0 while (i &amp;lt; args.length) { println(args(i)) i &#43;= 1 } }  可以通过去掉var的办法把这个代码变得偏函数式风格:
+def printArgs(args: Array[String]): Unit = { args.foreach(println) }  很显然，重构后的代码比原来的代码更简洁明了，也更少机会犯错。因为它消除了var变量，也消除了var变量上述可能导致的问题。
+当然它并不是纯函数式的，因为它有副作用，其副作用是打印到标准输出流。如果某个函数不返回任何值，就是说其结果类型为Unit，那么这个函数唯一能让其有点儿变化的办法就是通过某种副作用。而函数式的方式应该是定义对需打印的arg进行格式化的方法，但是仅返回格式化之后的字串。
+def formatArgs(args: Array[String]) = args.mkString(&amp;#34;\n&amp;#34;) val res = formatArgs(Array(&amp;#34;zero&amp;#34;, &amp;#34;one&amp;#34;, &amp;#34;two&amp;#34;)) println(res) 回到Java Java中的String类的对象都是典型的immutable数据类型，一个String对象一旦被new出来，其代表的数据便不可被重新修改。
+对于变量是否可以重新赋值，Java采用final关键字，同时被final修饰的方法不能被重写，他们也都强制变量或方法不可变性。Java还有一种用法，匿名内部类用的变量必须final，为用什么要有这种约束？
+是为了保护数据安全和代码稳定，Java通过类的封装规范了类与类之间的访问权限，而内部类却打破了这种规范。它可以直接访问自身所在的外部类里私有成员，而且自身还可以创建相同的成员（另一个有意思的问题，变量遮蔽Shadow）。从作用域角度看，内部类的新成员修改了什么值，外部方法也是不知道，因为程序的运行由外而内的，所以外部根本无法确定内部这时到底有没有这个东西。综上所述，选择final来修饰外部方法的成员，让其引用地址保持不变、值也不能被改变保证了外部类的稳定性。
+多使用final 除了匿名内部类用的变量必须final有这种约束，Java没有其它的语法上强约束不变性。我们还是可以善用不可变性的特点，来减少由可变带来的风险，提升代码的安全性与健壮性。
+建议多使用final让对象不可变、让变量不可变：
+ 类的域（Field）不可变：尽可能把成员变量声明成final，对于构造方法传入外部参数，若此参数是直接赋值给成员变量，那把此声明final；在构造方法中能通过计算初始化的成员变量，那把此声明final。 类与方法不可变：将类或方法声明为final，这样就不会重写它，不允许将类子类化，也不会存在子类来修改父类的成员变量与方法。Kotlin直接在语言上就遵循了这一条最佳实现，Kotlin中的类与方法默认是final的，若想能子类化，则必须声明为open。 返回值不可变：对于成员变量的getter方法，其返回值尽可能是新对象，防止外部直接修改内部数据。如返回list类型的成员变量，不是直接返回其引用，而是直接再new一个list对象，拷贝成员变量的值，因为外部直接引用的修改，内部不感知 参数变量不可变：对于方法的输入参数，我们尽可能地通过final修饰，避免在方法内对入参重新赋值操作。 局部变量不可变：对于局部变量，尽可能地通过final修饰，避免不同的分支对变量多次赋值操作。  函数式编程 函数式编程是java8的一大特色，说到函数式编程，就不得不提及流Stream。
+Stream其中有一个特点：它不会改变原集合，它是一堆元素顺序或者并行执行我们串起来的函数，函数并不会对集合中的元素造成影响。对Stream的使用就是实现一个filter-map-reduce过程，这个过程我也叫做聚合操作，产生一个最终结果。
+final List&amp;lt;Integer&amp;gt; nums = Arrays.asList(1, 2, 3, 4); final Integer sum = nums.stream() .filter(n -&amp;gt; n % 2 == 0) .map(n -&amp;gt; n * n) .reduce(0, Integer::sum); 正如上面的代码，我们对nums重新聚合，新的结果sum并没有对原有nums产生副作用。同时我们都可以把两个变量都声明为final，不需要对变量进行改变。
+结语 不可变可以摈弃Java中许多一些典型烦心的缺陷。因为改变越多，就需要越多的测试来确保导致变化的做法是正确的。通过严格限制改变来隔离变化的发生，那么错误的发生在更小的空间，需要测试的地方也就更少。
+而函数式认为可变是万恶之源，不可变的好处是使得开发更加简单，测试友好，减少了任何可能的副作用。做一名传统的面向对象语言的开发人员，我们更要吸纳函数式语言的特点，在代码尽可能让变量不可变，对象不可变，来提升我们代码中的可读性与安全性。
+</content>
+    </entry>
+    
+     <entry>
         <title>拒绝重复代码</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0602_dry/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0602_dry/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>
@@ -51,7 +88,7 @@ Robert C.Martin在他的代码整洁之道一书中写道:
     
      <entry>
         <title>逐层递进地编写代码</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0531_layer/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0531_layer/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>
@@ -84,7 +121,7 @@ Compose Method 来自 Industrial Logic 的重构模式，说的是 Transform the
     
      <entry>
         <title>编写短小的函数/方法</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0529_function/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0529_function/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>
@@ -121,7 +158,7 @@ Compose Method 来自 Industrial Logic 的重构模式，说的是 Transform the
     
      <entry>
         <title>类的职责单一</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0526_class/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0526_class/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>
@@ -159,7 +196,7 @@ Schizophrenic Class 紊乱类，一个类本应该一种抽象，完成一类责
     
      <entry>
         <title>降低模块间耦合</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0523_dep_couple/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0523_dep_couple/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>
@@ -200,7 +237,7 @@ Schizophrenic Class 紊乱类，一个类本应该一种抽象，完成一类责
     
      <entry>
         <title>清晰的代码结构</title>
-        <url>http://lanlingzi.cn/post/thoughts/2019/0519_structure/</url>
+        <url>http://lanlingzi.cn/post/technical/2019/0519_structure/</url>
         <categories>
           <category>感想</category><category>技术</category>
         </categories>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>拒绝重复代码 - 蘭陵N散記</title>
+    <title>不可变减少副作用 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="拒绝重复代码">
+    <meta property="og:title" content="不可变减少副作用">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="拒绝重复代码 - 蘭陵N散記" />
+    <meta name="title" content="不可变减少副作用 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0602_dry/" itemprop="url">
-        拒绝重复代码
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0608_inmutable/" itemprop="url">
+        不可变减少副作用
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-02">
-    2019-06-02
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-08">
+    2019-06-08
 </time>
 </span> 
       
@@ -149,118 +149,131 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2208 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2869 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h1 id="拒绝重复">拒绝重复</h1>
+    <h1 id="可变与不可变">可变与不可变</h1>
 
-<p>软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。</p>
+<p>在JVM系统语言如Scala与Kotlin中有两个关键字定义变量</p>
 
-<p>但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。</p>
+<ul>
+<li>var是一个<strong>可变</strong>变量，可以通过重新分配来更改为另一个值的变量</li>
+<li>val是一个<strong>只读</strong>变量，创建的时候必须初始化，以后不能再被改变
+<br /></li>
+</ul>
 
-<p><code>Robert C.Martin</code>在他的代码整洁之道一书中写道:</p>
+<p>为什么新的语言需要强调变量<code>不可改变</code>？ 我再来看一下Rust语言中的变量不可改变。</p>
+
+<ul>
+<li>let，采用此关键字来绑定变量，变量默认不可变</li>
+<li>let mut，采用此关键字来绑定可以变更的变量</li>
+</ul>
+
+<p>Rust在mutable（可变）与immutable（不可变）上相比Scala上更进了一步：</p>
+
+<ul>
+<li>Scala的val只能约束了同一个变量名不可再重新赋值，变量绑定的对象是可以改变的（如val的list对象，可以调用它的append方法修改对象内容）</li>
+<li>Rust通过借用（borrow）语义与mut关键字，约束了只有声明为 mut 的变量，才能对绑定的对象是进变更（如只有是mut的vec对象，才能调用它的push方法修改其内容）</li>
+</ul>
+
+<p>小结一下，关于var、val与mutable、immutable的区别：</p>
+
+<ul>
+<li>变量不可变性：val和var只是表明定义的变量是否能被修改而指向其他内容，即变量是否能重新 <code>绑定</code> 新的内容</li>
+<li>内容不可变性：mutable和immutable表明定义的内容能否被修改，即变量所指向内容是否可以被重新修改</li>
+</ul>
+
+<h1 id="可变的问题">可变的问题</h1>
+
+<p>对于变量声明，var相比val有如下问题：</p>
+
+<ul>
+<li>分支遗漏：var变量多个地方重用，可能存在某个分支遗漏修改，导致代码逻辑错误</li>
+<li>未初始使用：变量可能会在使用前没有初始化的代码，会导致空指针异常</li>
+<li>可读性变差：阅读代码时，确定变量的值是比较困难，因为存在不同的地方对它可能的修改</li>
+</ul>
+
+<p>在编程中我们更希望是对象是immutable（不可变）的，简言之：</p>
+
+<ul>
+<li>mutable：对象的内部数据可变，变化就会引入风险</li>
+<li>immutable：对象的内部数据的不可变导致其更加安全，可以用作多线程的共享对象而不必考虑同步问题</li>
+</ul>
+
+<p>不可变其实是函数式编程相关的重要概念，函数式编程中认为可变性是万恶之源，因为可变性的对象会给程序带来“副作用”；函数式编程也认为: <code>只有纯的没有副作用的函数，才是合格的函数。</code></p>
+
+<p>什么是“副作用”：</p>
 
 <blockquote>
-<p>重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。</p>
+<p>在计算机科学中，函数副作用指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量）或修改参数。－－维基百科</p>
 </blockquote>
 
-<h1 id="重复类型">重复类型</h1>
+<p>函数副作用会给程序设计带来不必要的麻烦，给程序带来十分难以查找的错误，并降低程序的可读性。严格的函数式语言要求函数必须无副作用。</p>
 
-<p>何谓重复代码，简言之，就是指重复或近似的代码。</p>
+<p>而面向对象语言中虽强调对象的封装性，但没有在语义上强制约束对象的不可变性。面向对象的编程通过<strong>封装可变</strong>的部分来构造能够让人读懂的代码，函数式编程则是通过最大程度地<strong>减少可变</strong>的部分来构造出可让人读懂的代码。</p>
 
-<p>重复代码都有哪些类型？最为简单明了的是完全一样的代码片段，其它的有如下，可让我们更好识别重复:</p>
+<h1 id="函数式风格">函数式风格</h1>
+
+<p>Scala与Kotlin鼓励使用val，变量只是只读，使代码像函数式风格。我们来一个简单的Scala例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def printArgs(args: Array[String]): Unit = {  
+    var i = 0 
+    while (i &lt; args.length) {  
+        println(args(i))  
+        i += 1  
+    }  
+}  </pre></div>
+<p>可以通过去掉var的办法把这个代码变得偏函数式风格:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def printArgs(args: Array[String]): Unit = {  
+    args.foreach(println)  
+}  </pre></div>
+<p>很显然，重构后的代码比原来的代码更简洁明了，也更少机会犯错。因为它消除了var变量，也消除了var变量上述可能导致的问题。</p>
+
+<p>当然它并不是纯函数式的，因为它有副作用，其副作用是打印到标准输出流。如果某个函数不返回任何值，就是说其结果类型为Unit，那么这个函数唯一能让其有点儿变化的办法就是通过某种副作用。而函数式的方式应该是定义对需打印的arg进行格式化的方法，但是仅返回格式化之后的字串。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def formatArgs(args: Array[String]) = args.mkString(&#34;\n&#34;)
+
+val res = formatArgs(Array(&#34;zero&#34;, &#34;one&#34;, &#34;two&#34;))
+println(res)</pre></div>
+<h1 id="回到java">回到Java</h1>
+
+<p>Java中的String类的对象都是典型的immutable数据类型，一个String对象一旦被new出来，其代表的数据便不可被重新修改。</p>
+
+<p>对于变量是否可以重新赋值，Java采用final关键字，同时被final修饰的方法不能被重写，他们也都强制变量或方法不可变性。Java还有一种用法，匿名内部类用的变量必须final，为用什么要有这种约束？</p>
+
+<p>是为了保护数据安全和代码稳定，Java通过类的封装规范了类与类之间的访问权限，而内部类却打破了这种规范。它可以直接访问自身所在的外部类里私有成员，而且自身还可以创建相同的成员（另一个有意思的问题，变量遮蔽Shadow）。从作用域角度看，内部类的新成员修改了什么值，外部方法也是不知道，因为程序的运行由外而内的，所以外部根本无法确定内部这时到底有没有这个东西。综上所述，选择final来修饰外部方法的成员，让其引用地址保持不变、值也不能被改变保证了外部类的稳定性。</p>
+
+<h2 id="多使用final">多使用final</h2>
+
+<p>除了匿名内部类用的变量必须final有这种约束，Java没有其它的语法上强约束不变性。我们还是可以善用不可变性的特点，来减少由可变带来的风险，提升代码的安全性与健壮性。</p>
+
+<p>建议多使用final让对象不可变、让变量不可变：</p>
 
 <ul>
-<li>类型Ⅰ，代码片段中除了空格、注释以及换行以外的内容<strong>完全一致</strong></li>
-<li>类型Ⅱ，代码片段中除了空格、注释、换行以及<strong>变量名以外</strong>的内容完全一致</li>
-<li>类型Ⅲ，代码片段中除了空格、注释、换行以及变量名以外的语句可能有<strong>增删改，功能不变</strong></li>
-<li>类型Ⅳ，两个或更多个代码段执行<strong>相同的运算</strong>，但通过<strong>不同的语法和变量</strong>来实现。</li>
+<li>类的域（Field）不可变：尽可能把成员变量声明成final，对于构造方法传入外部参数，若此参数是直接赋值给成员变量，那把此声明final；在构造方法中能通过计算初始化的成员变量，那把此声明final。</li>
+<li>类与方法不可变：将类或方法声明为final，这样就不会重写它，不允许将类子类化，也不会存在子类来修改父类的成员变量与方法。Kotlin直接在语言上就遵循了这一条最佳实现，Kotlin中的类与方法默认是final的，若想能子类化，则必须声明为open。</li>
+<li>返回值不可变：对于成员变量的getter方法，其返回值尽可能是新对象，防止外部直接修改内部数据。如返回list类型的成员变量，不是直接返回其引用，而是直接再new一个list对象，拷贝成员变量的值，因为外部直接引用的修改，内部不感知</li>
+<li>参数变量不可变：对于方法的输入参数，我们尽可能地通过final修饰，避免在方法内对入参重新赋值操作。</li>
+<li>局部变量不可变：对于局部变量，尽可能地通过final修饰，避免不同的分支对变量多次赋值操作。</li>
 </ul>
 
-<h1 id="重复原因">重复原因</h1>
+<h2 id="函数式编程">函数式编程</h2>
 
-<p>消除复杂代码除了需要技巧之外，个人觉得存在重复代码主观上更多是一种工作态度的反映，需要我们有责任心，兴趣与热情。</p>
+<p>函数式编程是java8的一大特色，说到函数式编程，就不得不提及流Stream。</p>
 
-<ul>
-<li>懒惰，能够容忍不好的代码
-
-<ul>
-<li>打一份工的心态，做完这份就去做其它的，哪管生死</li>
-<li>进度很紧，以完成任务为优先，后续没有再进行优化</li>
-</ul></li>
-<li>技能不足，出现不必要的重复代码
-
-<ul>
-<li>老人留下的祖传代码，又缺少文档说明与测试用例，根本不敢随便动</li>
-<li>新人进来，一是对整体代码不熟悉，二是从模仿开发，Ctrl+C/Ctrl+V</li>
-</ul></li>
-<li>缺乏沟通，团队之间协作不够
-
-<ul>
-<li>没有 code review 机制，缺少代码持续看护</li>
-<li>团队成员间缺少交流，每个人自扫门前雪</li>
-</ul></li>
-</ul>
-
-<p>除主观原因之外，在软件架构与设计上不恰当，也会导致重复代码（更多情况是相似代码）：</p>
-
-<ul>
-<li>模块的职责分离不清晰：职责的分配不准确，就可能导致代码结构不清晰，也就可能导致代码的重复。比如说，每个模块都需要访问数据库，都会涉及到数据库的映射，事务管理等，如果能把数据访问层分离出单独一层，就可能避免数据操作的重复代码。也就是我们需要在设计上就抽取公共的模块。</li>
-<li>模块内抽象的粒度过大：重用的关键是保持合适的粒度，以及对关系的解耦。粒度表现类一级，缺少可复用的辅助类或模板类，可以通过寻找共性，以泛化的方式提取共性特征。粒度表现在方法级，需要编写许多小的方法，找到类中可以重复调用的职责，抽取为单独的方法。</li>
-</ul>
-
-<h1 id="重复层次">重复层次</h1>
-
-<p>像Java/C/C++语言，我们一般采用工具 <code>Simian</code> 或 <code>PMD</code> 集成到CI来自动检查代码重复率。根据重复所在范围，我们通常可以分为如下几种：</p>
-
-<p><strong>在同一个类中重复</strong></p>
-
-<p>在同一个类中存在重复代码，通过走读代码就可以识别出来，也最容易解决。解决办法也相当简单，通常是采用 <code>提取方法</code> 来消除。</p>
-
-<p><strong>在同一个类树下重复</strong></p>
-
-<p>在同一个类树下的不同子类中重复，也比较能容易识别出来。可以通过 <code>上移方法</code> 和 <code>模板方法</code> 将公共部分上移到共同的父类。如果方法中没有操作成员变量，可以提到辅助类。</p>
-
-<p><strong>在不相干的类中重复</strong></p>
-
-<p>在两个完全不相干的类中，如果不是专门地寻找很难发现，借助工具一般能扫描出来。 可以先 <code>提取方法</code> ，然后 <code>移动方法</code> 到新建的类，来消除重复。</p>
-
-<p><strong>在不同的模块中重复</strong></p>
-
-<p>在不同的模块中存在重复代码，一般考虑提供公共的模块。提取公共模块可以消除重复，但也带来了依赖，提到公共横块中的代码应该是稳定的。公共模块通常需要从整个软件设计来思考，合理的模块划分能有效地消除大量的重复。</p>
-
-<p><strong>大量大段重复代码</strong></p>
-
-<p>如果出现大量大段重复的代码，如相似的配置项解释代码，当超过几百行时，我们可以考虑采用代码自动生成，虽没有消除重复代码，但消除重复劳动。有些语言提供代码宏机制，合理的使用宏也可以消除大段重复代码。</p>
-
-<h1 id="重复轮子">重复轮子</h1>
-
-<p>还有一种重复，是工具扫描不出来的，就是与其它项目的重复。在开源的世界里，提供了非常多并且成熟的轮子。有人说，软件工程师写多少代码不重要，重要的是解决问题的效率，而提升效率之一就是懂得使用已有的轮子。好的软件工程师，要善用前人打下的基础，站在成功的肩膀上。</p>
-
-<p>最大的问题是我们不知有轮子存在，那我们怎么解决呢？开源社区总是存在非常多有热心的人，他们整理各个 <code>awesome</code> 项目，首先是要善用搜索与社区：</p>
-
-<ul>
-<li>Java: <a href="https://github.com/akullpp/awesome-java">https://github.com/akullpp/awesome-java</a></li>
-<li>Java: <a href="https://github.com/jobbole/awesome-java-cn">https://github.com/jobbole/awesome-java-cn</a></li>
-<li>Go: <a href="https://github.com/avelino/awesome-go">https://github.com/avelino/awesome-go</a></li>
-</ul>
-
-<p>上面只是简单列出有哪些项目，还需要我们进一步的选型分析。对于Java软件工程师来说，已有足够多的工具库，常用他们也可以大量降低我们代码量：</p>
-
-<ul>
-<li>Apache Commons： 最为常用的是<a href="http://commons.apache.org/proper/commons-lang/">Lang</a>，<a href="http://commons.apache.org/proper/commons-collections/">Collections</a>，<a href="http://commons.apache.org/proper/commons-io/">IO</a>，<a href="http://commons.apache.org/proper/commons-math/">Math</a>库</li>
-<li>Guava： <a href="https://www.yiibai.com/guava/">Guava教程</a></li>
-</ul>
+<p>Stream其中有一个特点：它不会改变原集合，它是一堆元素顺序或者并行执行我们串起来的函数，函数并不会对集合中的元素造成影响。对Stream的使用就是实现一个filter-map-reduce过程，这个过程我也叫做聚合操作，产生一个最终结果。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">final List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4);
+final Integer sum = nums.stream()
+  .filter(n -&gt; n % 2 == 0)
+  .map(n -&gt; n * n)
+  .reduce(0, Integer::sum);</pre></div>
+<p>正如上面的代码，我们对nums重新聚合，新的结果sum并没有对原有nums产生副作用。同时我们都可以把两个变量都声明为final，不需要对变量进行改变。</p>
 
 <h1 id="结语">结语</h1>
 
-<p>消除重复代码的技能，没有什么特别的复杂的东西，无非就是提取函数，提取类，提取公共模块、复用现有的轮子。</p>
+<p>不可变可以摈弃Java中许多一些典型烦心的缺陷。因为改变越多，就需要越多的测试来确保导致变化的做法是正确的。通过严格限制改变来隔离变化的发生，那么错误的发生在更小的空间，需要测试的地方也就更少。</p>
 
-<p>消除重复代码，其实就是解放软件工程师自己的时间，只有正确的心态去面对，自己才会有更大的收获，而不是在无意义地重复地劳动。</p>
-
-<p>解决重复并不困难，困难的是发现重复。发现重复并不困难，困难是培养发现重复的习惯。当我们开始习惯性地向内看看同组的代码，向看外看看开源代码，只有看得多才能有更开阔的眼界，消除重复就是轻而易举。</p>
+<p>而函数式认为可变是万恶之源，不可变的好处是使得开发更加简单，测试友好，减少了任何可能的副作用。做一名传统的面向对象语言的开发人员，我们更要吸纳函数式语言的特点，在代码尽可能让变量不可变，对象不可变，来提升我们代码中的可读性与安全性。</p>
     </div>
     <footer class="post-footer">
      
@@ -280,8 +293,8 @@
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/thoughts/2019/0531_layer/" rel="prev" title="逐层递进地编写代码">
-        逐层递进地编写代码 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2019/0602_dry/" rel="prev" title="拒绝重复代码">
+        拒绝重复代码 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -331,7 +344,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">107</span>
+        <span class="site-state-item-count">108</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -387,11 +400,14 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li><a href="#拒绝重复">拒绝重复</a></li>
-<li><a href="#重复类型">重复类型</a></li>
-<li><a href="#重复原因">重复原因</a></li>
-<li><a href="#重复层次">重复层次</a></li>
-<li><a href="#重复轮子">重复轮子</a></li>
+<li><a href="#可变与不可变">可变与不可变</a></li>
+<li><a href="#可变的问题">可变的问题</a></li>
+<li><a href="#函数式风格">函数式风格</a></li>
+<li><a href="#回到java">回到Java</a>
+<ul>
+<li><a href="#多使用final">多使用final</a></li>
+<li><a href="#函数式编程">函数式编程</a></li>
+</ul></li>
 <li><a href="#结语">结语</a></li>
 </ul>
 </nav></div>
