@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>自定义扩展Spring Cache注解 - 蘭陵N散記</title>
+    <title>合理有效的注释 - 蘭陵N散記</title>
     <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="自定义扩展Spring Cache注解">
+    <meta property="og:title" content="合理有效的注释">
     <meta property="og:site_name" content="蘭陵N散記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="自定义扩展Spring Cache注解 - 蘭陵N散記" />
+    <meta name="title" content="合理有效的注释 - 蘭陵N散記" />
     <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/" itemprop="url">
-        自定义扩展Spring Cache注解
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0609_comment/" itemprop="url">
+        合理有效的注释
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-06-23">
-    2018-06-23
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-09">
+    2019-06-09
 </time>
 </span> 
       
@@ -142,174 +142,83 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2171 字 ~5分钟</span>
+<span class="leancloud-visitors-count">1867 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。</p>
+    <h1 id="注释是什么">注释是什么</h1>
 
-<h2 id="背景">背景</h2>
+<p>注释是否有用一直以来都被程序员们广泛争论。也有人说，良好的编程习惯从写注释开始；有的人说，注释是恶魔，它将我们的代码变得很难理解。那什么才是注释？</p>
 
-<p>Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。</p>
+<blockquote>
+<p>注释就是对代码的解释和说明，其目的是让人们能够更加轻松地了解代码。注释是编写程序时，写程序的人给一个语句、程序段、函数等的解释或提示，能提高程序代码的可读性。 &ndash; 百度百科</p>
+</blockquote>
 
-<p>于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：</p>
+<p>注释主要是给人看的，其目的是增加代码的可读性。不同的公司、项目，对代码注释要求不同，他们被写入到编程规范中。而大多的规范中对注释关注的是格式，却难以说明如何正确地写注释，什么样的注释不应该写，什么地方需要写注释。</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Data
-public class RoleAuthPO {
-    String relId;  // primary key
-    String roleId; // cache key
-    String authId; // roleId&lt;-&gt;authId: n&lt;-&gt;m
-}
+<h1 id="注释必要性">注释必要性</h1>
 
-@Mapper
-@CacheConfig(cacheNames = &#34;role-auth)
-public interface RoleAuthMapper {
- 
-  @UpdateProvider(type=RoleAuthSQLProvider.class, method=&#34;batchUpdate&#34;)
-  @BatchCache(keyPrefix=&#34;role-auth:role-id:&#34;, keyFiled=&#34;roleId&#34;)
-  void batchUpdate(List&lt;RoleAuthPO&gt; pos);
+<p>写注释与维护注释需要花费大量的时间，甚至比写代码与维护代码更花时间，大多的程序员都不喜欢写注释。即使在编程规范要求下，为了注释而注释，这种不情愿的做法导致形成了某种主义：注释是恶魔，认为代码注释实际上是有害的。大家都想逃避注释时，大多会举起这种主义大旗来反对。虽然代码注释有时候确实会适得其反，但真正有害的是我们对它的看法。</p>
 
-  @Select(&#34;SELECT * FROM T_ROLE_AUTH WHERE ROLE_ID=#{roleId}&#34;)
-  @Cacheable(key=&#34;`role-auth:role-id:`+p0&#34;)
-  List&lt;RoleAuthPO&gt; queryByRoleId(@Param(&#34;roleId&#34;) String roleId);
-}
- 
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface BatchCache {
-  String keyPrefix() default &#34;&#34;;
-  String keyFiled() default &#34;&#34;;
-}
+<p>确实在一段晦涩难懂的代码中有一段合理有效的注释，会比仅仅有代码好很多。也有人要说，我们应该去重构晦涩难懂的代码，直到让代码能够自解释，让人非常容易理解，也就不需要注释了。我们通过有意义的变量名，自解释的方法、类名称，清晰的代码结构，能大大提升代码可读性。清晰的实现让我们产生一种错觉，认为不需要再写注释了。</p>
 
-@Aspect
-@Component
-public class BatchCacheAspect {
- 
-  @AfterReturing(&#34;@annotation(BatchCache)&#34;)
-  public void doBatchCache(JoinPoint point) {
-    System.out.println(&#34;before batchCache&#34;);
-  }
-}</pre></div>
-<p>笔者的项目是使用Spring Boot 1.5.12，Debug跟踪都无法进入doBatchCache方法。而项目也有采用@Aspect来实现其它的注解，这些注解能正常切入，他们的区别是这些注解是标注在具体类的方法上，而不是接口方法。</p>
+<p>的确好的代码能正确地反映代码正在做什么，但它却无法说明为什么这样做的背景、原因等。理想很丰满，现实却有骨干，完全自解释的代码是不存在的。过了几个月之后，当我们自己回头再看我们写的代码，有时候却难以理解为什么要这么实现。不要过于相信自己的理解力，因为当你写代码时，可能是思路清晰的；当你阅读代码，可能没有了当时的思路。</p>
 
-<h2 id="问题浮现">问题浮现</h2>
+<p>任何一个稍大点的软件系统，需要多人协作一起完成。一个人写的代码，需要被整个团队的其他人所理解。合理的注释会增强团队之间的沟通，尤其是对于接口类代码，是非常有必要通过注释来明确接口的行为，接口的用法。注释不是为了要指出代码中存在的缺陷，而是为了避免可能由于不恰当的使用导致的缺陷。</p>
 
-<p>那为什么Spring Cache的注解可以切入？通过查看Cache的注解实现，它并没有采用@Aspect声明的切面，而是采用CacheOperationSourcePointcut。</p>
+<h1 id="注释与文档">注释与文档</h1>
 
-<p>后又做了一个验证，把Spring Boot切换到2.X，奇迹发生了，居然是可以切入。那有一种可能就是这个问题就出在Spring Boot 1.5.X的@Aspect不支持对标识在接口方法的拦截。</p>
+<p>有一种观点，代码即文档。我们不能望文生义，注释提升了代码的可读性，但它并不能代替全部的文档。每一种编程语言，都有自己的注释格式规范，基于特定的标签，通过工具能自动生成格式化的文档。</p>
 
-<p>网上已有牛人对这个问题做了深入的分析，参见 <a href="http://www.importnew.com/28788.html">接口方法上的注解无法被 @Aspect 声明的切面拦截的原因分析</a> ，从他的分析来看，Mybatis的Mapper接口是通过JDK动态代理生成的逻辑，此问题在Spring Boot 1.5.X下是无解的，@Aspect不支持切入不受Spring Bean管理的对象。而我的项目中存在大量的Mapper，也不可能给每个Mapper定义一个FactoryBean来达到让Spring来管理。</p>
+<p>对外提供的API，通过注释文档化是非常有必要的，我们把这类叫API文档。这类注释文档好处是，开发代码的同时开发文档，保持一致性。</p>
 
-<h2 id="另一解决思路">另一解决思路</h2>
+<p>生成的文档能清晰地说明每个类、方法的作用与用法。但他们通常是片段式，缺少整体连贯性。虽不说注释能代替架构设计类文档，即使使用指导或开发指导都无法代替。</p>
 
-<p>既然Spring Cache的注解在接口方法上有效，那我们再来看看它的机制。当我们在Configuration类打上@EnableCaching注释时，除了启动Spring AOP机制,引入的另一个类ProxyCachingConfiguration就是SpringCache具体实现相关bean的配置类：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Configuration  
-public class ProxyCachingConfiguration extends AbstractCachingConfiguration {  
+<h1 id="怎么写注释">怎么写注释</h1>
 
-    @Bean(name = CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME)  
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)  
-    public BeanFactoryCacheOperationSourceAdvisor cacheAdvisor() {  
-        BeanFactoryCacheOperationSourceAdvisor advisor =  
-                new BeanFactoryCacheOperationSourceAdvisor();  
-        advisor.setCacheOperationSource(cacheOperationSource());  
-        advisor.setAdvice(cacheInterceptor());  
-        advisor.setOrder(this.enableCaching.&lt;Integer&gt;getNumber(&#34;order&#34;));  
-        return advisor;  
-    }  
-  
-  
-    @Bean  
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)  
-    public CacheOperationSource cacheOperationSource() {  
-        return new AnnotationCacheOperationSource();  
-    }  
-  
-  
-    @Bean  
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)  
-    public CacheInterceptor cacheInterceptor() {  
-        CacheInterceptor interceptor = new CacheInterceptor();  
-        interceptor.setCacheOperationSources(cacheOperationSource());  
-        .....
-        return interceptor;  
-    }  
-}  </pre></div>
-<ul>
-<li>AnnotationCacheOperationSource的主要作用是获取定义在类和方法上的SpringCache相关的标注并将其转换为对应的CacheOperation属性。</li>
-<li>BeanFactoryCacheOperationSourceAdvisor是一个PointcutAdvisor，是SpringCache使用Spring AOP机制的关键所在，该advisor会织入到需要执行缓存操作的bean的增强代理中形成一个切面。并在方法调用时在该切面上执行拦截器CacheInterceptor的业务逻辑。</li>
-<li>CacheInterceptor是一个拦截器，当方法调用时碰到了BeanFactoryCacheOperationSourceAdvisor定义的切面，就会执行CacheInterceptor的业务逻辑，该业务逻辑就是缓存的核心业务逻辑。</li>
-</ul>
+<p>现在，我们不难发现：注释是必要的，只是注释不应该记录代码在做什么，而是记录为什么要这么做以及怎样做。</p>
 
-<p>从Spring的AOP机制已知，要对一个方法或类切入需要实现如下：</p>
+<p>大部分代码不是SDK之类的代码，而是业务逻辑代码。大部分情况下不需要、也不应该注释。尤其是业务类的代码，当需求改变了，代码也随之跟着变化。如果我们写注释，这就意味着必须去维护注释。如果注释没有跟随代码的变化而变化，那终将是无用的注释。所以：</p>
 
 <ul>
-<li>一个Advisor，它可以扩展Spring中AbstractBeanFactoryPointcutAdvisor</li>
-<li>一个Pointcut，它可以扩展Spring中StaticMethodMatcherPointcut</li>
-<li>一个MethodInterceptor，在此接口中实现拦截逻辑</li>
+<li>不必要对每行代码都写注释</li>
+<li>不必要对每个函数都写注释</li>
+<li>不要写直接代码翻译的注释</li>
+<li>不要写没有额外含义的注释</li>
+<li>不要写代码是谁写的，SCM有提交记录</li>
 </ul>
 
-<p>参考Spring Cache的ProxyCachingConfiguration，实现对@BatchCache拦截核心实现如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Configuration
-public class ProxyBatchCacheConfiguration {
+<p>有必要的注释是：</p>
 
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public BatchCacheBeanFactorySourceAdvisor batchCacheAdvisor(@Autowired  CacheManager cacheManager) {
-        BatchCacheBeanFactorySourceAdvisor advisor = new BatchCacheBeanFactorySourceAdvisor();
-        advisor.setAdvice(new BatchCacheInterceptor(cacheManager));
-        return advisor;
-    }
-}
+<ul>
+<li><p>描述解决的问题</p>
 
-// 对存在标识有@BatchCache方法进行切入
-public class BatchCacheSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {
-    @Override
-    public boolean matches(Method method, Class&lt;?&gt; aClass) {
-        BatchCache batchCache =  method.getAnnotation(BatchCache.class);
-        return batchCache != null;
-    }
-}
+<p>注释将代码做的事情用语言再描述一遍，其实是画蛇添足。后续维护者或者代码阅读者，最想知道的是为什么这么做，是为了解决什么特殊问题吗？有没有什么复杂的业务背景。</p></li>
 
-// 定义一个Advisor，指定Pointcut
-public class BatchCacheBeanFactorySourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {
-    @Override
-    public Pointcut getPointcut() {
-        return new BatchCacheSourcePointcut();
-    }
-}
+<li><p>描述场景的约束</p>
 
-// 当Pointcut.matches时，Spring框架会调用invoke，即可实现BatchCache所要逻辑了
-public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
+<p>任何一段代码，有它的输入输出。不同的前置条件，会有不同的结果。在什么场景下使用，使用后会产生什么样的后果。当代码本身无法表达它的约束时，需要通过注释额外地说明使用场景，系统约束。</p></li>
 
-    // 注入CacheManager，可以根据cacheNames来操作Cache
-    final CacheManager cacheManager;
+<li><p>描述关键算法实现</p>
 
-    public BatchCacheInterceptor(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
+<p>当代码涉及到算法实现时，由于可能会使用到数学公式，公式到代码的实现通常是比较以及理解的。这类的代码我们应该描述使用了什么算法，算法实现可参考的论文地址等。</p></li>
 
-    @Override
-    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        Method method = methodInvocation.getMethod();
-        BatchCache batchCache = method.getAnnotation(BatchCache.class);
-        // .... 省略BatchCache的逻辑
-        return methodInvocation.proceed();
-    }
-}</pre></div>
-<p><img src="http://lanlingzi.cn/images/2018/Snip20180623_3.png" alt="Snip20180623_3.png" /></p>
+<li><p>描述代码实现思路</p>
 
-<p>从Debug调用栈来看，在Spring框架中，当调用是接口动态代理对象方法时，会生成JdkDynamicAopProxy，此对象会设置所有advisors。只要我们写的advisor以Bean方式注入到Spring框架，它会就生效，流程总结如下：</p>
+<p>有时我们写代码会考虑比较深远，但现有代码并不会完全实现将来可能发生的情况。针对他们可能已有明确的实现思路，为了代码的连续性，我们有必要说明后续可能的变化，在现有代码如何地修改，从而避免后续维护者破坏性的修改。</p></li>
+</ul>
 
-<p><code>声明advisor-&gt;Pointcut.matches-&gt;MethodInterceptor.invoke</code></p>
+<h1 id="结语">结语</h1>
+
+<p>代码自解释不代表不用写注释，也不存在能完全自斛释的代码。没有人喜欢糟糕的注释，也不应由于注释会过时成为偷懒的借口。排斥注释并不能解决注释本身质量的问题。合理有效的注释是代码一部分，站在维护者角色来思考如何写好必要的注释，将会有不少的收益。</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/java" rel="tag" title="Java">#Java#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -318,16 +227,12 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" rel="next" title="Cache设计">
-        <i class="fa fa-chevron-left"></i> Cache设计
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2018/0602_existential_types/" rel="prev" title="Rust支持既存类型的理解">
-        Rust支持既存类型的理解 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2019/0608_inmutable/" rel="prev" title="不可变减少副作用">
+        不可变减少副作用 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -433,12 +338,11 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li>
-<ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#问题浮现">问题浮现</a></li>
-<li><a href="#另一解决思路">另一解决思路</a></li>
-</ul></li>
+<li><a href="#注释是什么">注释是什么</a></li>
+<li><a href="#注释必要性">注释必要性</a></li>
+<li><a href="#注释与文档">注释与文档</a></li>
+<li><a href="#怎么写注释">怎么写注释</a></li>
+<li><a href="#结语">结语</a></li>
 </ul>
 </nav></div>
     </div>

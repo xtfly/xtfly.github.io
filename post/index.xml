@@ -6,10 +6,27 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 08 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>合理有效的注释</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0609_comment/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0609_comment/</guid>
+      <description>&lt;h1 id=&#34;注释是什么&#34;&gt;注释是什么&lt;/h1&gt;
+
+&lt;p&gt;注释是否有用一直以来都被程序员们广泛争论。也有人说，良好的编程习惯从写注释开始；有的人说，注释是恶魔，它将我们的代码变得很难理解。那什么才是注释？&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注释就是对代码的解释和说明，其目的是让人们能够更加轻松地了解代码。注释是编写程序时，写程序的人给一个语句、程序段、函数等的解释或提示，能提高程序代码的可读性。 &amp;ndash; 百度百科&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;注释主要是给人看的，其目的是增加代码的可读性。不同的公司、项目，对代码注释要求不同，他们被写入到编程规范中。而大多的规范中对注释关注的是格式，却难以说明如何正确地写注释，什么样的注释不应该写，什么地方需要写注释。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>不可变减少副作用</title>
