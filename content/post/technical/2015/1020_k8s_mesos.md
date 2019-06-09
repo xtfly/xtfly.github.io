@@ -12,8 +12,6 @@ toc: true
 ---
 
 
-![pets vs cattle](https://dn-sdkcnssl.qbox.me/editor/fWnRKkZgug2fvzeDNd8k.jpg)
-
 最近经常有同事问道，mesos与k8s有什么不同？平时对k8s要研究多一些，对mesos仅限于一些网上的了解。前一段时间去参加阿里云栖大会，正好也有一场是由于Mosos及Mesosphere公司的人来现身说“法”，听了之后对mesos算了解更深一点吧。
 <!--more-->
 
