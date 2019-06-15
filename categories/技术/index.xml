@@ -6,10 +6,35 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>优雅地使用异常</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0615_execption/</link>
+      <pubDate>Sat, 15 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0615_execption/</guid>
+      <description>&lt;h1 id=&#34;异常与错误码&#34;&gt;异常与错误码&lt;/h1&gt;
+
+&lt;p&gt;在开发业务系统代码，我们会经常与异常与错误码打交道，但有时傻傻地分不清楚。编写代码时，到底是使用异常还是返回错误码，一直以来都被程序员们广泛争论。&lt;/p&gt;
+
+&lt;p&gt;我们先来看看他们的区别，在编程语言上区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;异常：与面向对象编程结合紧密，它是一个类型系统，表示程序运行时发生错误的信号，一种识别及响应错误情况的一致性机制。&lt;/li&gt;
+&lt;li&gt;错误码：与面向过程编程结合紧密，它通常是一串数字，表示处理函数返回业务流程错误的结果，错误码很容易被忽略且经常被忽略。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在接口定义上区别：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;异常： 面向代码开发者，通常用于在代码实现层，尤其是在面对象语言中，接口定义异常需要方法签名，以强制要求接口使用都处理异常。&lt;/li&gt;
+&lt;li&gt;错误码：面向客户界面，通常用于对外接口响应非正常结果定义，自定义错误码以增加接口的交互体验与问题定位。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>合理有效的注释</title>
