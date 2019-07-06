@@ -1,6 +1,6 @@
 ---
 title: "正确地打印日志"
-date: "2019-06-16"
+date: "2019-07-06"
 categories:
  - "技术"
 tags:
