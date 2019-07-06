@@ -6,10 +6,36 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 15 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>正确地打印日志</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0616_logging/</link>
+      <pubDate>Sun, 16 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0616_logging/</guid>
+      <description>&lt;h1 id=&#34;日志种类&#34;&gt;日志种类&lt;/h1&gt;
+
+&lt;p&gt;软件记录日志非常重要，公司已积累了非常多日志输出经验，也制定了不少的规范。通常会把业务软件系统的日志分为如下几种：&lt;/p&gt;
+
+&lt;p&gt;用于软件问题定界定位的日志：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;调试日志：其目的是为了快速定位问题的根源，主要记录程序的执行轨迹，充当软件的调试器。&lt;/li&gt;
+&lt;li&gt;运行日志：其目的是为了跟踪程序的指标变化，主要记录程序各种关键指标数据统计，运行环境数据。&lt;/li&gt;
+&lt;li&gt;接口日志：其目的是为了快速对问题边界排查，主要记录的接口的输入信息，以及处理结果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;用于用户行为安全审计的日志：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;操作日志：其目的是为了跟踪用户操作安全审计，主要记录记录用户操作行为轨迹，操作什么资源内容，其结果是什么。&lt;/li&gt;
+&lt;li&gt;安全日志：其目的是为了跟踪用户安全变更审计，主要记录用户的登录录出事件，权限修改等安全事件或行为。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>优雅地使用异常</title>
