@@ -6,17 +6,17 @@
     <description>Recent content in 软件开发 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 16 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jul 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>正确地打印日志</title>
-      <link>http://lanlingzi.cn/post/technical/2019/0616_logging/</link>
-      <pubDate>Sun, 16 Jun 2019 00:00:00 +0000</pubDate>
+      <link>http://lanlingzi.cn/post/technical/2019/0706_logging/</link>
+      <pubDate>Sat, 06 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/0616_logging/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0706_logging/</guid>
       <description>&lt;h1 id=&#34;日志种类&#34;&gt;日志种类&lt;/h1&gt;
 
 &lt;p&gt;软件记录日志非常重要，公司已积累了非常多日志输出经验，也制定了不少的规范。通常会把业务软件系统的日志分为如下几种：&lt;/p&gt;
