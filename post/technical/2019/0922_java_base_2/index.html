@@ -142,14 +142,14 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4411 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4408 字 ~9分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h1 id="java并发编程">Java并发编程</h1>
+    <h1 id="并发体系">并发体系</h1>
 
-<h2 id="锁">锁</h2>
+<h2 id="线程">线程</h2>
 
 <h3 id="线程安全">线程安全</h3>
 
@@ -259,7 +259,7 @@
 
 <p>由于线程处理不同任务的速度不同，这样就可能存在某个线程先执行完了自己队列中的任务的情况，这时为了提升效率，我们可以让该线程去“窃取”其它任务队列中的任务，这就是所谓的工作窃取算法。ForkJoinPool是一种实现了工作窃取算法的线程池。</p>
 
-<h2 id="锁-1">锁</h2>
+<h2 id="锁">锁</h2>
 
 <p><img src="http://lanlingzi.cn/images/java/lock_sys.png" alt="lock_sys.png" /></p>
 
@@ -548,9 +548,9 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
 <ul>
-<li><a href="#java并发编程">Java并发编程</a>
+<li><a href="#并发体系">并发体系</a>
 <ul>
-<li><a href="#锁">锁</a>
+<li><a href="#线程">线程</a>
 <ul>
 <li><a href="#线程安全">线程安全</a></li>
 <li><a href="#线程状态">线程状态</a></li>
@@ -559,7 +559,7 @@
 <li><a href="#工作窃取算法">工作窃取算法</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#锁-1">锁</a>
+<li><a href="#锁">锁</a>
 <ul>
 <li><a href="#乐观锁-悲观锁">乐观锁/悲观锁</a>
 <ul>

@@ -17,9 +17,9 @@
       <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</guid>
-      <description>&lt;h1 id=&#34;java并发编程&#34;&gt;Java并发编程&lt;/h1&gt;
+      <description>&lt;h1 id=&#34;并发体系&#34;&gt;并发体系&lt;/h1&gt;
 
-&lt;h2 id=&#34;锁&#34;&gt;锁&lt;/h2&gt;
+&lt;h2 id=&#34;线程&#34;&gt;线程&lt;/h2&gt;
 
 &lt;h3 id=&#34;线程安全&#34;&gt;线程安全&lt;/h3&gt;
 
