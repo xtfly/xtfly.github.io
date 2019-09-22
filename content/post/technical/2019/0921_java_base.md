@@ -26,7 +26,7 @@ toc: true
 
 # 控制语句
 
-## Swith语句
+## swith语句
 
 switch(A)括号中A的取值类型如下：
 
