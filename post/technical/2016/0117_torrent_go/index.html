@@ -165,8 +165,7 @@
 <p>其中原始资源发布者与目的端下载者都称为Peer，而Tracker主要用于获取不同的Peer信息信息，BitTorrent把要下载文件虚拟分成大小相等的块，并把每块的索引信息与Hash验证码等元数据信息写到一个.torrent文件中，即种子文件。种子文件采用B编码格式，它本质是一个文本。Peer与Tacker或DHT节点通讯也采用B编码格式。根据获取Peer信息的途径不同，又分为两种。</p>
 
 <ul>
-<li>有的Tracker结构</li>
-</ul>
+<li><p>有的Tracker结构</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">		[WebServer]
 		  |
 		  | torrent file
@@ -177,10 +176,9 @@
 	      Download&amp;Upload(TCP)
 	       \
 	        \
-	       [ OtherPeer ]</pre></div>
-<ul>
-<li>Trackerless的DHT结构</li>
-</ul>
+	       [ OtherPeer ]</pre></div></li>
+
+<li><p>Trackerless的DHT结构</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">		[WebServer]
 		  |
 		  | torrent file
@@ -191,7 +189,9 @@
 	      Download&amp;Upload(TCP)
 	       \
 	        \
-	       [ OtherPeer ]</pre></div>
+	       [ OtherPeer ]</pre></div></li>
+</ul>
+
 <p>Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。</p>
 
 <p>每个节点都有一个全局唯一的标识符，称为节点ID。距离度量用来比较两个节点或者节点与infohash之间的远近程度。节点必须维护一个含有少量其他节点联系信息的路由表。ID越靠近自身ID时，路由表越详细。节点知道很多离它很近的节点，只知道少量离它很远地节点。</p>
@@ -452,7 +452,7 @@ port消息的长度固定，为7字节，其中listen-port占两个字节。该�
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -542,7 +542,7 @@ port消息的长度固定，为7字节，其中listen-port占两个字节。该�
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

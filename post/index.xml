@@ -6,10 +6,88 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 06 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 21 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java基础知识点1</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0921_java_base/</link>
+      <pubDate>Sat, 21 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0921_java_base/</guid>
+      <description>&lt;h1 id=&#34;基本数据类型&#34;&gt;基本数据类型&lt;/h1&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;数据类型&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;大小&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;范围&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;默认值&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;byte(字节)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;8&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;-128 - 127&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;shot(短整型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;-2^15 - 2^15-1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;int(整型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;-2^31 - 2^31-1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;long(长整型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;-2^63 - 2^63-1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;float(浮点型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1.4013E-45 - 3.4028E+38&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0.0f&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;double(双精度)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;-1.7976E+308 - 1.79769E+308&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0.0d&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;char(字符型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000 - u\ffff&lt;/code&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;boolean(布尔型)&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;true/false&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;false&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description>
+    </item>
     
     <item>
       <title>正确地打印日志</title>

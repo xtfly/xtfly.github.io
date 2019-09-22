@@ -152,91 +152,87 @@
 <h2 id="排序算法">排序算法</h2>
 
 <ul>
-<li>先来一个排序中的比较函数子，实现是左值小于右值。</li>
-</ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> template&lt;typename T&gt;
+<li><p>先来一个排序中的比较函数子，实现是左值小于右值。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
 struct CmpFuctor
 {
-  bool operator()(const T&amp; lhs, const T&amp; rhs)
-  {
-    return lhs &lt; rhs;
-  }
+bool operator()(const T&amp; lhs, const T&amp; rhs)
+{
+return lhs &lt; rhs;
+}
 };</pre></div>
 <ul>
-<li>交换排序中用到的交换两个元素的函数。</li>
-</ul>
+<li><p>交换排序中用到的交换两个元素的函数。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
 void swap(T* lhs, T* rhs)
 {
-  T tmp = *lhs;
-  *lhs = *rhs;
-  *rhs = tmp;
-}</pre></div>
-<ul>
-<li>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</li>
-</ul>
+T tmp = *lhs;
+*lhs = *rhs;
+*rhs = tmp;
+}</pre></div></li>
+</ul></li>
+
+<li><p>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
 void traverse(T* pArray, const int size, void (*func)(T&amp;) )
 {
-  for(int idx =0; idx&lt; size; idx++)
-  {
-    func(pArray[idx]);
-  }
-}</pre></div>
-<ul>
-<li>我们先来看一个最简单的插入排序。</li>
-</ul>
+for(int idx =0; idx&lt; size; idx++)
+{
+func(pArray[idx]);
+}
+}</pre></div></li>
+
+<li><p>我们先来看一个最简单的插入排序。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP &gt;
 void insertsort(T* pArray, const int size, CMP cmp)
 {
-  for(int idx =0; idx&lt; size; idx++)
-  {
-    T temp = pArray[idx];
-    int pos = idx -1;
-    while( pos &gt;= 0 &amp;&amp; cmp(temp, pArray[pos]) ) // &lt;
-    {
-      pArray[pos+1] = pArray[pos];
-      pos--;
-    }
-    pArray[pos+1] = temp;
-  }
-}</pre></div>
-<ul>
-<li>再对上面的插入排序改进，查找为折半插入排序。</li>
-</ul>
+for(int idx =0; idx&lt; size; idx++)
+{
+T temp = pArray[idx];
+int pos = idx -1;
+while( pos &gt;= 0 &amp;&amp; cmp(temp, pArray[pos]) ) // &lt;
+{
+  pArray[pos+1] = pArray[pos];
+  pos--;
+}
+pArray[pos+1] = temp;
+}
+}</pre></div></li>
+
+<li><p>再对上面的插入排序改进，查找为折半插入排序。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
 void binaryinsertsort(T* pArray, const int size, CMP cmp)
 {
-  for(int idx = 1; idx &lt; size; idx++)
+for(int idx = 1; idx &lt; size; idx++)
+{
+int left = 0;
+int right = idx -1;
+T temp = pArray[idx];
+while( left &lt;= right)
+{
+  int middle = (left + right) / 2;
+
+  if ( cmp(temp, pArray[middle] )) // &lt;
   {
-    int left = 0;
-    int right = idx -1;
-    T temp = pArray[idx];
-    while( left &lt;= right)
-    {
-      int middle = (left + right) / 2;
-
-      if ( cmp(temp, pArray[middle] )) // &lt;
-      {
-        right = middle - 1;
-      }
-      else
-      {
-        left = middle + 1;
-      }
-    }
-
-    int j = idx-1;
-    for(; j &gt;= right+1; j--)
-    {
-      pArray[j+1] = pArray[j];
-    }
-    pArray[right+1] = temp;
-
+    right = middle - 1;
   }
-}</pre></div>
-<ul>
-<li>再来一个改进版的插入排序。</li>
+  else
+  {
+    left = middle + 1;
+  }
+}
+
+int j = idx-1;
+for(; j &gt;= right+1; j--)
+{
+  pArray[j+1] = pArray[j];
+}
+pArray[right+1] = temp;
+
+}
+}</pre></div></li>
+
+<li><p>再来一个改进版的插入排序。</p></li>
 </ul>
 
 <p>是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。</p>
@@ -270,58 +266,57 @@ void shellsort(T* pArray, const int size, CMP cmp)
   }
 }</pre></div>
 <ul>
-<li>下面是一种简单选择排序算法。</li>
-</ul>
+<li><p>下面是一种简单选择排序算法。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
 void selectsort(T* pArray, const int size, CMP cmp)
 {
-  for(int idx = 0; idx &lt; size; idx++)
+for(int idx = 0; idx &lt; size; idx++)
+{
+for(int pos = idx + 1; pos &lt; size; pos++)
+{
+  if( cmp(pArray[pos], pArray[idx]) ) // &lt;
   {
-    for(int pos = idx + 1; pos &lt; size; pos++)
-    {
-      if( cmp(pArray[pos], pArray[idx]) ) // &lt;
-      {
-        swap(&amp;pArray[pos], &amp;pArray[idx]);
-      }
-    }
+    swap(&amp;pArray[pos], &amp;pArray[idx]);
   }
-}</pre></div>
-<ul>
-<li>交换排序中最简单的冒泡排序。</li>
-</ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> template&lt;typename T, typename CMP&gt;
+}
+}
+}</pre></div></li>
+
+<li><p>交换排序中最简单的冒泡排序。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
 void bubblesort(T* pArray, const int size, CMP cmp)
 {
-  for(int idx =0; idx &lt; size; idx++)
+for(int idx =0; idx &lt; size; idx++)
+{
+for(int pos = 0; pos &lt;= size - idx;pos++)
+{
+  if( cmp(pArray[pos+1], pArray[pos]) ) // &lt;
   {
-    for(int pos = 0; pos &lt;= size - idx;pos++)
-    {
-      if( cmp(pArray[pos+1], pArray[pos]) ) // &lt;
-      {
 
-        swap(&amp;pArray[pos], &amp;pArray[pos+1]);
-      }
-    }
+    swap(&amp;pArray[pos], &amp;pArray[pos+1]);
   }
-}</pre></div>
-<ul>
-<li>交换排序中最简单的快速排序。</li>
-</ul>
+}
+}
+}</pre></div></li>
+
+<li><p>交换排序中最简单的快速排序。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
 int partition(T* pArray, int p, int r, CMP cmp)
 {
-  int i = p - 1;
-  int j = 0;
-  for(j = p; j &lt; r; j++)
-  {
-    if(cmp(pArray[j], pArray[r])) //pArray[j] &gt;= pArray[r]
-    {
-      i++;
-      swap(&amp;pArray[i], &amp;pArray[j]);
-    }
-  }
-  swap(&amp;pArray[i + 1], &amp;pArray[r]);
-  return i + 1;</pre></div>
+int i = p - 1;
+int j = 0;
+for(j = p; j &lt; r; j++)
+{
+if(cmp(pArray[j], pArray[r])) //pArray[j] &gt;= pArray[r]
+{
+  i++;
+  swap(&amp;pArray[i], &amp;pArray[j]);
+}
+}
+swap(&amp;pArray[i + 1], &amp;pArray[r]);
+return i + 1;</pre></div></li>
+</ul>
+
 <h2 id="测试代码">测试代码</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print(int&amp; a)
 {
@@ -462,7 +457,7 @@ void sort_test()
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -529,7 +524,7 @@ void sort_test()
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

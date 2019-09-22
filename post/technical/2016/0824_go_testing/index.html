@@ -174,13 +174,14 @@
 <ul>
 <li><p>以Benchmark开头的性能测试函数</p></li>
 
-<li><p>以Example开头的样例代码</p></li>
-</ul>
+<li><p>以Example开头的样例代码</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func ExampleHello() {
-    hl := hello()
-    fmt.Println(hl)
-    // Output: hello.
-}</pre></div>
+hl := hello()
+fmt.Println(hl)
+// Output: hello.
+}</pre></div></li>
+</ul>
+
 <p>示例函数无需接收参数，但需要使用注释的<code>Output:</code>标记说明示例函数的输出值，未指定<code>Output:</code>标记或输出值为空的示例函数不会被执行。<code>go doc</code>工具会解析示例函数的函数体作为对应<strong>包/函数/类型/类型方法</strong>的用法。</p>
 
 <p>示例函数需要归属于某个<strong>包/函数/类型/类型的方法</strong>，具体命名规则如下：</p>
@@ -468,7 +469,7 @@ func ExampleT_M_suffix() { ... }</pre></div></li>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -561,7 +562,7 @@ func ExampleT_M_suffix() { ... }</pre></div></li>
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -201,18 +201,16 @@ $ sudo apt-get install squashfs-tools</pre></div>
 <p>升级到14936或以后的Insider Preview版本。</p>
 
 <ul>
-<li>Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:</li>
-</ul>
+<li><p>Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman-key --init
-# pacman-key --populate</pre></div>
-<ul>
-<li>locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：</li>
-</ul>
+# pacman-key --populate</pre></div></li>
+
+<li><p>locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># cd /usr/share/i18n/charmaps
 # tar zxvf UTF-8.gz
-# locale-gen</pre></div>
-<ul>
-<li>编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：</li>
+# locale-gen</pre></div></li>
+
+<li><p>编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：</p></li>
 </ul>
 
 <p>升级到14959或以后的Insider Preview版本。</p>
@@ -309,7 +307,7 @@ $ sudo apt-get install squashfs-tools</pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -392,7 +390,7 @@ $ sudo apt-get install squashfs-tools</pre></div>
   <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
