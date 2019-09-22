@@ -9,14 +9,15 @@
         <tags>
           <tag>软件开发</tag><tag>Java</tag>
         </tags>
-        <content type="html"> Java并发编程 线程安全 线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。
+        <content type="html"> Java并发编程 锁 线程安全 线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。
  原子性 可见性 顺序的  线程实现：
  Runnable：函数没有返回值 Callable：函数有返回值 Future：对于具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果、设置结果操作。 FutureTask：是Future也是Runnable，又是包装了的Callable Thread：代表JVM一个线程  线程状态  NEW：至今尚未启动的线程处于该状态，通俗来讲，该状态是线程实例化后还从未执行start()方法的状态； RUNNABLE：正在java虚拟机中执行的线程处于这种状态； BLOCKED：受阻塞并等待某个监视器锁的线程处于这种状态； WAITING：无限期地等待另一个线程来执行某一特定操作的线程处于这种状态； TIMED_WAITING：等待另一个线程来执行取决于指定等待时间的操作的线程处于这种状态； TERMINATED：已退出的线程处于这种状态，线程被销毁。  方法：
  sleep： 暂停阻塞等待一段时间，时间过了就继续。注意这个是不释放“锁”的 wait： 也是阻塞和等待，但是需要notify来唤醒。wait是需要释放“锁”的 join： 在一个线程中调用other.join(),将等待other执行完后才继续本线程 notify/notifyAll: 唤醒线程 yield: 当前线程可转让cpu控制权，让别的就绪状态线程运行（切换），也会等待阻塞一段时间，但是时间不是由客户控制了 interrupte: 打断线程，可代替过时方法stop setPriority： MIN_PRIORITY 最小优先级=1 ， NORM_PRIORITY 默认优先级=5 ，MAX_PRIORITY 最大优先级=10  线程安全实现方法 互斥同步：
  synchronized关键字， Java 5 以前使用，独占锁是一种悲观锁，synchronized就是一种独占锁 锁：重量型，消耗内存较多，原子性，可见的，顺序：公平锁 、非顺序：非公平锁  非阻塞同步：
  volatile 变量：轻量级的线程同步，不会引起线程调度，提供可见性，但是不提供原子性 CAS 原子指令：轻量级线程同步，不会引起线程调度，提供可见性和原子性  无锁方案：
  不共享对象 线程本地变量 不可变对象  synchronized与volatile：
- volatile是线程安全的轻量级实现，volatile性能比synchronized好，且volatile只能修饰于变量，synchronized可以修饰方法，以及代码块 多线程访问volatile不会发生阻塞，而synchronized会发生阻塞 volatile能保证数据可见性，但不能保证原子性；而synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公有内存中的数据做同步。  线程池 线程池的两个主要作用：
+ volatile是线程安全的轻量级实现，volatile性能比synchronized好，且volatile只能修饰于变量，synchronized可以修饰方法，以及代码块 多线程访问volatile不会发生阻塞，而synchronized会发生阻塞 volatile能保证数据可见性，但不能保证原子性；而synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公有内存中的数据做同步。  ##3 线程池
+线程池的两个主要作用：
  控制线程数量，避免因为创建大量的线程导致的系统崩溃 重用线程，避免频繁地创建销毁线程  Java 1.5引入Executor与ExecutorService：
  Executor： 提交普通的可执行任务 ExecutorService： 在Executor的基础上增强了对任务的控制，同时包括对自身生命周期的管理 ScheduledExecutorService： 在ExecutorService基础上，提供对任务的周期性执行支持  Executors，是生产Executor的工厂：
  固定线程数的线程池：newFixedThreadPool 单个线程的线程池：newSingleThreadExecutor 可缓存的线程池：newCachedThreadPool 可延时/周期调度的线程池：newScheduledThreadPool Fork/Join线程池：newWorkStealingPool，在Java 1.7时才引入，其核心实现就是ForkJoinPool类  工作窃取算法 由于线程处理不同任务的速度不同，这样就可能存在某个线程先执行完了自己队列中的任务的情况，这时为了提升效率，我们可以让该线程去“窃取”其它任务队列中的任务，这就是所谓的工作窃取算法。ForkJoinPool是一种实现了工作窃取算法的线程池。
