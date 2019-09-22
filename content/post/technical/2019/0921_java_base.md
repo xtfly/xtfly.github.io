@@ -13,7 +13,7 @@ toc: true
 
 |数据类型           |大小       |范围                                              |默认值|
 |:------           |:------    |:------                                          |:------|
-|byte(字节) 	    |8          | -128 - 127                                       |0    |
+|byte(字节) 	      |8          | -128 - 127                                       |0    |
 |shot(短整型)       |16         | -2^15 - 2^15-1                                   |0    |
 |int(整型)          |32         | -2^31 - 2^31-1                                   |0    |
 |long(长整型)       |64         | -2^63 - 2^63-1                                   |0     |   
@@ -69,10 +69,10 @@ for( int idx = 0; idx < vectorLength; idx++) {
 # 异常体系
 
 - Throwable作为所有异常的超类
-  - Error（错误）：是程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。
-  - Exception（异常）：程序本身可以捕获并且可以处理的异常。 
-    - 运行时异常(不受检异常)：RuntimeException类极其子类表示JVM在运行期间可能出现的错误。比如说试图使用空值对象的引用（NullPointerException）、数组下标越界（ArrayIndexOutBoundException）。此类异常属于不可查异常，一般是由程序逻辑错误引起的，在程序中可以选择捕获处理，也可以不处理。
-    - 编译异常(受检异常)：Exception中除RuntimeException极其子类之外的异常。如果程序中出现此类异常，比如说IOException，必须对该异常进行处理，否则编译不通过。在程序中，通常不会自定义该类异常，而是直接使用系统提供的异常类。
+- Error（错误）：是程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。
+- Exception（异常）：程序本身可以捕获并且可以处理的异常。 
+  - 运行时异常(不受检异常)：RuntimeException类极其子类表示JVM在运行期间可能出现的错误。比如说试图使用空值对象的引用（NullPointerException）、数组下标越界（ArrayIndexOutBoundException）。此类异常属于不可查异常，一般是由程序逻辑错误引起的，在程序中可以选择捕获处理，也可以不处理。
+  - 编译异常(受检异常)：Exception中除RuntimeException极其子类之外的异常。如果程序中出现此类异常，比如说IOException，必须对该异常进行处理，否则编译不通过。在程序中，通常不会自定义该类异常，而是直接使用系统提供的异常类。
 
 
 # 集合体系
@@ -98,7 +98,7 @@ ListIterator：
 
 Collection接口：
 
-- List接口：有序(存入和取出的顺序一致),元素都有索引(角标)，元素可以重复。
+- List接口：有序(存入和取出的顺序一致),元素都有索引(下标)，元素可以重复。
   - Vector：内部是 数组 数据结构，是同步的。增删，查询都很慢！100%延长（几乎不用了）  
   - ArrayList：内部是 数组 数据结构，是不同步的。替代了Vector，查询的速度快，增删速度慢。50%延长。查询时是从容器的第一个元素往后找，由于数组的内存空间是连续的，所以查询快；增删的话所有元素内存地址都要改变，所以增删慢。
   - LinkedList：内部是 链表 数据结构，是不同步的。增删元素的速度很快。同理，链表的内存空间是不连续的，所以查询慢；增删时只需改变单个指针的指向，所以快。
@@ -113,9 +113,9 @@ List接口：
 
 Set和List的区别：
 
- - Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素 <最本质区别>。
+ - Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素。
  - Set检索效率低下，删除和插入效率高，插入和删除不会引起元素位置改变 。
- - List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变  。
+ - List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变。
 
 ## Map
 
@@ -134,9 +134,8 @@ Map常用的子类：
 
 Map的迭代方法（Map本身没有迭代器）：
 
- - 利用Map接口的values()方法,返回此映射中包含的值的 Collection （值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候）
- - 通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），
- - 再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。
+ - 利用Map接口的values()方法,返回此映射中包含的值的 Collection（值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候）
+ - 通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。
  - 利用Map的内部接口Map.Entry<K,V>使用iterator。
 
 ## Queue
@@ -174,26 +173,26 @@ PriorityQueue:
 
 排序
 
- - Collections.sort(List<?> list)：
- - Collections.sort(List<?> list, Collections.reverseOrder());
+ - `Collections.sort(List<?> list)`
+ - `Collections.sort(List<?> list, Collections.reverseOrder())`
 
 同步视图
 
- - <T> Collection<T> synchronizedCollection(Collection<T> c)
- - <T> Collection<T> synchronizedCollection(Collection<T> c, Object mutex)
+ - `<T> Collection<T> synchronizedCollection(Collection<T> c)`
+ - `<T> Collection<T> synchronizedCollection(Collection<T> c, Object mutex)`
   
 只读视图
 
- - <T> Collection<T> unmodifiableCollection(Collection<? extends T> c)
+ - `<T> Collection<T> unmodifiableCollection(Collection<? extends T> c)`
 
 其它工具
 
-  - <T> int binarySearch(List<? extends Comparable<? super T>> list, T key)
-  - <T> int indexedBinarySearch(List<? extends Comparable<? super T>> list, T key)
-  - <T> T max(Collection<? extends T> coll, Comparator<? super T> comp)
-  - <T> T min(Collection<? extends T> coll, Comparator<? super T> comp)
-  - <T> void fill(List<? super T> list, T obj)
-  - <T> List<T> nCopies(int n, T o)
+  - `<T> int binarySearch(List<? extends Comparable<? super T>> list, T key)`
+  - `<T> int indexedBinarySearch(List<? extends Comparable<? super T>> list, T key)`
+  - `<T> T max(Collection<? extends T> coll, Comparator<? super T> comp)`
+  - `<T> T min(Collection<? extends T> coll, Comparator<? super T> comp)`
+  - `<T> void fill(List<? super T> list, T obj)`
+  - `<T> List<T> nCopies(int n, T o)`
 
 ## 并发集合
 
