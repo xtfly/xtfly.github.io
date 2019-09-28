@@ -11,8 +11,8 @@
         </tags>
         <content type="html"> IO体系 普通IO 整个Java.io包主要分为两大部分
  文件特征对象 文件内容操作对象  文件对象 在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。
-文件特征对象主要有如下： - 文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等 - 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象 - 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统 - 文件特征，包括Closeable，Flushable，FileFilter，Serializable
-文件内容操作对象主要有两大类：流式操作与数据转换。
+文件特征对象主要有如下：
+ 文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统 文件特征，包括Closeable，Flushable，FileFilter，Serializable  文件内容操作对象主要有两大类：流式操作与数据转换。
 IO操作 流式操作组件 流式操作又分类(byte)字节流，与字符(char)流
    分类 字节输入流 字节输出流 字符输入流 字符输出流     接口 InputStream OutputStream Reader Writer   Filter FilterInputStream FilterOutputStream FilterReader FilterWriter   访问文件 FileInputStream FileOutputStream FileReader FileWriter   访问数组 ByteArrayInputStream ByteArrayOutputStream CharArrayReader CharArrayWriter   访问管道 PipedInputStream PipedOutputStream PipedReader PipedWriter   访问字符串   StringReader StringWriter   缓冲流 BufferedInputStream BufferedOutputStream BufferedReader BufferedWriter   转换流   InputStreamReader OutputStreamWriter   打印流  PrintStream  PrintWriter   推回输入流 PushbackInputStream  PushbackReader     数据流 DataInputStream DataOutputStream     对象流 ObjectInputStream ObjectOutputStream      数据转换组件 数据转换，支持把字节流与Java基本数据类型间相互转换
    分类 数据输入 数据输出     抽象基类 DataInput DataInput   数据操作 DataInputStream DataOutputStream   对象操作 ObjectInput ObjectOut   对象操作 ObjectInputStream ObjectOutputStream   文件操作 RandomAccessFile RandomAccessFile    NIO NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。
