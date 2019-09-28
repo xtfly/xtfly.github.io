@@ -19,7 +19,7 @@
       <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</guid>
       <description>&lt;h1 id=&#34;java字节码&#34;&gt;Java字节码&lt;/h1&gt;
 
-&lt;p&gt;Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。&lt;/p&gt;
+&lt;p&gt;Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。&lt;/p&gt;
 
 &lt;p&gt;其结构如下：&lt;/p&gt;
 

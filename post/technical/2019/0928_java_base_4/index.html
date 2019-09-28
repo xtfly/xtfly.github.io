@@ -142,14 +142,14 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3699 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3668 字 ~8分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="java字节码">Java字节码</h1>
 
-<p>Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。</p>
+<p>Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。</p>
 
 <p>其结构如下：</p>
 
@@ -280,10 +280,29 @@
 
 <p>class文件只有两种数据类型：无符号数和表。</p>
 
-<p>|数据类型|定义|说明|
-|:&ndash;|:&ndash;|
-|无符号数|无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值|其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节|
-|表|表是由多个无符号数或其他表构成的复合数据结构|所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明|</p>
+<table>
+<thead>
+<tr>
+<th align="left">数据类型</th>
+<th align="left">定义</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">无符号数</td>
+<td align="left">无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值</td>
+<td align="left">其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节</td>
+</tr>
+
+<tr>
+<td align="left">表</td>
+<td align="left">表是由多个无符号数或其他表构成的复合数据结构</td>
+<td align="left">所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明</td>
+</tr>
+</tbody>
+</table>
 
 <h2 id="常量池">常量池</h2>
 
@@ -314,7 +333,7 @@
 
 <h2 id="javap">javap</h2>
 
-<p>javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。</p>
+<p>javap是JDK自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">-</span><span style="color:#a6e22e">help</span>  <span style="color:#f92672">--</span><span style="color:#a6e22e">help</span>  <span style="color:#f92672">-</span><span style="color:#960050;background-color:#1e0010">?</span>         <span style="color:#a6e22e">输出此用法消息</span>
  <span style="color:#f92672">-</span><span style="color:#a6e22e">version</span>                 <span style="color:#a6e22e">版本信息</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">其实是当前javap所在jdk的版本信息</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">不是class在哪个jdk下生成的</span><span style="color:#960050;background-color:#1e0010">。</span>
  <span style="color:#f92672">-</span><span style="color:#a6e22e">v</span>  <span style="color:#f92672">-</span><span style="color:#a6e22e">verbose</span>             <span style="color:#a6e22e">输出附加信息</span><span style="color:#960050;background-color:#1e0010">（</span><span style="color:#a6e22e">包括行号</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">本地变量表</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">反汇编等详细信息</span><span style="color:#960050;background-color:#1e0010">）</span>
@@ -346,18 +365,18 @@
 <ul>
 <li>Bootstrap ClassLoader：最顶层的加载类，主要加载核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等。另外需要注意的是可以通过启动JVM时指定-Xbootclasspath和路径来改变Bootstrap ClassLoader的加载目录。</li>
 <li>Extention ClassLoader：扩展的类加载器，加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件。还可以加载-Djava.ext.dirs选项指定的目录。</li>
-<li>Appclass Loader：也称为SystemAppClass 加载当前应用的classpath的所有类</li>
+<li>Application ClassLoader：也称为System ClassLoader 加载当前应用的classpath的所有类</li>
 </ul>
 
 <h2 id="加载器特点">加载器特点</h2>
 
 <h3 id="传递性">传递性</h3>
 
-<p>虚拟机的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 AppClassLoader。</p>
+<p>JVM的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 App ClassLoader。</p>
 
 <h3 id="双亲委派">双亲委派</h3>
 
-<p>每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。</p>
+<p>每个 ClassLoader 实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。</p>
 
 <h3 id="动态性">动态性</h3>
 
@@ -365,7 +384,7 @@
 
 <h3 id="类与加载器">类与加载器</h3>
 
-<p>对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。</p>
+<p>对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个 Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。</p>
 
 <h2 id="自定义加载器">自定义加载器</h2>
 

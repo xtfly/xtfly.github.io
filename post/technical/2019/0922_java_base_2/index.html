@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4432 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4430 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -375,7 +375,6 @@
 <th align="left">锁状态</th>
 <th align="left">存储内容</th>
 <th align="left">标识位</th>
-<th align="left">备注</th>
 </tr>
 </thead>
 
@@ -384,31 +383,29 @@
 <td align="left">无锁</td>
 <td align="left">对象的hashcode、对象分代年龄、是否是偏向锁（0）</td>
 <td align="left">01</td>
-<td align="left"></td>
 </tr>
 
 <tr>
 <td align="left">偏向锁</td>
 <td align="left">偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1）</td>
 <td align="left">01</td>
-<td align="left">偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。</td>
 </tr>
 
 <tr>
 <td align="left">轻量级锁</td>
 <td align="left">指向栈中锁记录的指针</td>
 <td align="left">00</td>
-<td align="left"></td>
 </tr>
 
 <tr>
 <td align="left">重量级锁</td>
 <td align="left">指向互斥量的指针</td>
 <td align="left">10</td>
-<td align="left"></td>
 </tr>
 </tbody>
 </table>
+
+<p>偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。</p>
 
 <p>整体的锁状态升级流程如下：</p>
 

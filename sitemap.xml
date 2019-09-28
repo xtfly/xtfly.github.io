@@ -9,19 +9,18 @@
         <tags>
           <tag>软件开发</tag><tag>Java</tag>
         </tags>
-        <content type="html"> Java字节码 Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。
+        <content type="html"> Java字节码 Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。
 其结构如下：
    类型 名称 说明 长度     u4 magic 魔数，识别Class文件格式，0XCAFEBABE 4个字节   u2 minor_version 副版本号，如0x0000 2个字节   u2 major_version 主版本号，如0x0034 2个字节   u2 constant_pool_count 常量池计数 2个字节   cp_info constant_pool 常量池 n个字节   u2 access_flags 访问标志 2个字节   u2 this_class 类索引 2个字节   u2 super_class 父类索引 2个字节   u2 interfaces_count 接口计数 2个字节   u2 interfaces 接口索引集合 2个字节   u2 fields_count 字段个数 2个字节   field_info fields 字段集合 n个字节   u2 methods_count 方法计数器 2个字节   method_info methods 方法集合 n个字节   u2 attributes_count 附加属性计数 2个字节   attribute_info attributes 附加属性集合 n个字节    class文件只有两种数据类型：无符号数和表。
-|数据类型|定义|说明| |:&amp;ndash;|:&amp;ndash;| |无符号数|无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值|其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节| |表|表是由多个无符号数或其他表构成的复合数据结构|所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明|
-常量池 常量池主要存放两大类常量：
+   数据类型 定义 说明     无符号数 无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值 其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节   表 表是由多个无符号数或其他表构成的复合数据结构 所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明    常量池 常量池主要存放两大类常量：
  字面量：文本字符串，声明为final的常量值 符号引用：类和接口的全限定名，字段的名称和描述符，方法的名称和描述符   描述符 描述符的作用是用来描述字段的数据类型、方法的参数列表（包括数量、类型以及顺序）和返回值。
- B：基本数据类型byte C：基本数据类型char D：基本数据类型double F：基本数据类型float I：基本数据类型int J：基本数据类型long S：基本数据类型short Z：基本数据类型boolean V：基本数据类型void L：对象类型,如Ljava/lang/Object  javap javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
+ B：基本数据类型byte C：基本数据类型char D：基本数据类型double F：基本数据类型float I：基本数据类型int J：基本数据类型long S：基本数据类型short Z：基本数据类型boolean V：基本数据类型void L：对象类型,如Ljava/lang/Object  javap javap是JDK自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
 -help --help -? 输出此用法消息 -version 版本信息，其实是当前javap所在jdk的版本信息，不是class在哪个jdk下生成的。 -v -verbose 输出附加信息（包括行号、本地变量表，反汇编等详细信息） -l 输出行号和本地变量表 -public 仅显示公共类和成员 -protected 显示受保护的/公共类和成员 -package 显示程序包/受保护的/公共类 和成员 (默认) -p -private 显示所有类和成员 -c 对代码进行反汇编 -s 输出内部类型签名 -sysinfo 显示正在处理的类的系统信息 (路径, 大小, 日期, MD5 散列) -constants 显示静态最终常量 -classpath &amp;lt;path&amp;gt; 指定查找用户类文件的位置 -bootclasspath &amp;lt;path&amp;gt; 覆盖引导类文件的位置 类加载器 类加载器（ClassLoader）是用来加载Class的。它负责将Class的字节码形式转换成内存形式的Class对象。主要作用：
  负责将 Class 加载到 JVM 中 审查每个类由谁加载（父优先的等级加载机制） 将 Class 字节码重新解析成 JVM 统一要求的对象格式  Java语言系统自带有三个类加载器:
- Bootstrap ClassLoader：最顶层的加载类，主要加载核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等。另外需要注意的是可以通过启动JVM时指定-Xbootclasspath和路径来改变Bootstrap ClassLoader的加载目录。 Extention ClassLoader：扩展的类加载器，加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件。还可以加载-Djava.ext.dirs选项指定的目录。 Appclass Loader：也称为SystemAppClass 加载当前应用的classpath的所有类  加载器特点 传递性 虚拟机的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 AppClassLoader。
-双亲委派 每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。
+ Bootstrap ClassLoader：最顶层的加载类，主要加载核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等。另外需要注意的是可以通过启动JVM时指定-Xbootclasspath和路径来改变Bootstrap ClassLoader的加载目录。 Extention ClassLoader：扩展的类加载器，加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件。还可以加载-Djava.ext.dirs选项指定的目录。 Application ClassLoader：也称为System ClassLoader 加载当前应用的classpath的所有类  加载器特点 传递性 JVM的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 App ClassLoader。
+双亲委派 每个 ClassLoader 实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。
 动态性 程序启动时，并不是一次把所有的类全部加载后再运行，它总是先把保证程序运行的基础类一次性加载到JVM中，其它类等到JVM用到的时候再加载。而用到时再加载这也是java动态性的一种体现。
-类与加载器 对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。
+类与加载器 对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个 Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。
 自定义加载器 Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，需要自定义加载器。
 ClassLoader 里面有三个重要的方法，调用顺序为：loadClass -&amp;gt; findClass -&amp;gt; defineClass
  loadClass()：是加载目标类的入口，它首先会查找当前 ClassLoader 以及它的双亲里面是否已经加载了目标类，如果没有找到就会让双亲尝试加载 findClass()：如果双亲都加载不了，就会调用 findClass() 让自定义加载器自己来加载目标类。ClassLoader 的 findClass() 方法是需要子类来覆盖的，不同的加载器将使用不同的逻辑来获取目标类的字节码。 defineClass()：拿到这个字节码之后再调用 defineClass() 方法将字节码转换成 Class 对象。   定义自已的类加载器分为两步：
@@ -65,7 +64,7 @@ contextClassLoader是线程上下文类加载器，是从父线程那里继承�
 文件特征对象主要有如下：
  文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统 文件特征，包括Closeable，Flushable，FileFilter，Serializable  文件内容操作对象主要有两大类：流式操作与数据转换。
 IO操作 流式操作组件 流式操作又分类(byte)字节流，与字符(char)流
-   分类 字节输入流 字节输出流 字符输入流 字符输出流     接口 InputStream OutputStream Reader Writer   Filter FilterInputStream FilterOutputStream FilterReader FilterWriter   访问文件 FileInputStream FileOutputStream FileReader FileWriter   访问数组 ByteArrayInputStream ByteArrayOutputStream CharArrayReader CharArrayWriter   访问管道 PipedInputStream PipedOutputStream PipedReader PipedWriter   访问字符串   StringReader StringWriter   缓冲流 BufferedInputStream BufferedOutputStream BufferedReader BufferedWriter   转换流   InputStreamReader OutputStreamWriter   打印流  PrintStream  PrintWriter   推回输入流 PushbackInputStream  PushbackReader     数据流 DataInputStream DataOutputStream     对象流 ObjectInputStream ObjectOutputStream      数据转换组件 数据转换，支持把字节流与Java基本数据类型间相互转换
+   分类 字节输入流 字节输出流 字符输入流 字符输出流     接口 InputStream OutputStream Reader Writer   Filter FilterInputStream FilterOutputStream FilterReader FilterWriter   访问文件 FileInputStream FileOutputStream FileReader FileWriter   访问数组 ByteArrayInputStream ByteArrayOutputStream CharArrayReader CharArrayWriter   访问管道 PipedInputStream PipedOutputStream PipedReader PipedWriter   访问字符串   StringReader StringWriter   缓冲流 BufferedInputStream BufferedOutputStream BufferedReader BufferedWriter   转换流   InputStreamReader OutputStreamWriter   打印流  PrintStream  PrintWriter   推回输入流 PushbackInputStream  PushbackReader    数据流 DataInputStream DataOutputStream     对象流 ObjectInputStream ObjectOutputStream      数据转换组件 数据转换，支持把字节流与Java基本数据类型间相互转换
    分类 数据输入 数据输出     抽象基类 DataInput DataInput   数据操作 DataInputStream DataOutputStream   对象操作 ObjectInput ObjectOut   对象操作 ObjectInputStream ObjectOutputStream   文件操作 RandomAccessFile RandomAccessFile    NIO NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。
 区别 NIO和普通IO（后简称IO）之间第一个最大的区别是：
  IO是面向流的。面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。 NIO是面向缓冲区的。NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。  另一个区别是是否阻塞：
@@ -127,7 +126,8 @@ AQS定义了一套多线程访问共享资源的同步器框架，许多同步�
 AQS定义两种资源共享方式：
  Exclusive：独占，只有一个线程能执行，如ReentrantLock Share：共享，多个线程可同时执行，如Semaphore/CountDownLatch  AQS支持中断、超时：
  阻塞和非阻塞（例如tryLock）同步 可选的超时设置，让调用者可以放弃等待 可中断的阻塞操作  自旋锁/适应性自旋锁  自旋锁：指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU。  自旋等待的时间必须要有一定的限度，如果自旋超过了限定次数（默认是10次，可以使用-XX:PreBlockSpin来更改）没有成功获得锁，就应当挂起线程。 自旋锁的实现原理同样也是CAS，AtomicInteger中调用unsafe进行自增操作的源码中的do-while循环就是一个自旋操作，如果修改数值失败则通过循环来执行自旋，直至修改成功。  适应性自旋锁：自适应意味着自旋的时间（次数）不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。  在自旋锁中 另有三种常见的锁形式:TicketLock、CLHlock和MCSlock。   公平锁/非公平锁  公平锁：指多个线程按照申请锁的顺序来获取锁。ReetrantLock通过构造函数指定该锁是否是公平锁，默认是非公平锁。非公平锁的优点在于吞吐量比公平锁大。 非公平锁：指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。有可能，会造成优先级反转或者饥饿现象。Synchronized是非公平锁。  无锁/偏向锁/轻量级锁/重量级锁 后三种锁是指锁的状态，并且是针对Synchronized。
- 无锁：没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。 偏向锁：指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。 轻量级锁：是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。 重量级锁：是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让他申请的线程进入阻塞，性能降低。     锁状态 存储内容 标识位 备注     无锁 对象的hashcode、对象分代年龄、是否是偏向锁（0） 01    偏向锁 偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1） 01 偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。   轻量级锁 指向栈中锁记录的指针 00    重量级锁 指向互斥量的指针 10     整体的锁状态升级流程如下：
+ 无锁：没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。 偏向锁：指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。 轻量级锁：是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。 重量级锁：是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让他申请的线程进入阻塞，性能降低。     锁状态 存储内容 标识位     无锁 对象的hashcode、对象分代年龄、是否是偏向锁（0） 01   偏向锁 偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1） 01   轻量级锁 指向栈中锁记录的指针 00   重量级锁 指向互斥量的指针 10    偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。
+整体的锁状态升级流程如下：
 无锁 &amp;mdash;&amp;gt; 偏向锁 &amp;mdash;&amp;gt; 轻量级锁 &amp;mdash;&amp;gt; 重量级锁
 可重入锁/非可重入锁  可重入锁：又名递归锁，表示该锁能够支持 一个线程对资源的重复加锁，不会因为之前已经获取过还没释放而阻塞。ReentrantLock和synchronized都是重入锁。可重入锁的一个优点是可一定程度避免死锁。 非可重入锁：表示该锁不支持 一个线程 对资源的重复加锁，同一线程重入会导致死锁。  注：以上内容收集于互联网多篇文章，在此感谢原作者们。
 </content>
