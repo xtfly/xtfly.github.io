@@ -23,6 +23,7 @@ toc: true
 在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。
 
 文件特征对象主要有如下：
+
   - 文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等
   - 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象
   - 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统
