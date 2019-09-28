@@ -1,0 +1,691 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Java基础知识点4 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Java基础知识点4">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Java基础知识点4 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0928_java_base_4/" itemprop="url">
+        Java基础知识点4
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-28">
+    2019-09-28
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3673 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="java字节码">Java字节码</h1>
+
+<p>Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。</p>
+
+<p>其结构如下：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">名称</th>
+<th align="left">说明</th>
+<th align="left">长度</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">u4</td>
+<td align="left">magic</td>
+<td align="left">魔数，识别Class文件格式，0XCAFEBABE</td>
+<td align="left">4个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">minor_version</td>
+<td align="left">副版本号，如0x0000</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">major_version</td>
+<td align="left">主版本号，如0x0034</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">constant_pool_count</td>
+<td align="left">常量池计数</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">cp_info</td>
+<td align="left">constant_pool</td>
+<td align="left">常量池</td>
+<td align="left">n个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">access_flags</td>
+<td align="left">访问标志</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">this_class</td>
+<td align="left">类索引</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">super_class</td>
+<td align="left">父类索引</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">interfaces_count</td>
+<td align="left">接口计数</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">interfaces</td>
+<td align="left">接口索引集合</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">fields_count</td>
+<td align="left">字段个数</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">field_info</td>
+<td align="left">fields</td>
+<td align="left">字段集合</td>
+<td align="left">n个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">methods_count</td>
+<td align="left">方法计数器</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">method_info</td>
+<td align="left">methods</td>
+<td align="left">方法集合</td>
+<td align="left">n个字节</td>
+</tr>
+
+<tr>
+<td align="left">u2</td>
+<td align="left">attributes_count</td>
+<td align="left">附加属性计数</td>
+<td align="left">2个字节</td>
+</tr>
+
+<tr>
+<td align="left">attribute_info</td>
+<td align="left">attributes</td>
+<td align="left">附加属性集合</td>
+<td align="left">n个字节</td>
+</tr>
+</tbody>
+</table>
+
+<p>class文件只有两种数据类型：无符号数和表。</p>
+
+<p>|数据类型|定义|说明|
+|:&ndash;|:&ndash;|
+|无符号数|无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值|其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节|
+|表|表是由多个无符号数或其他表构成的复合数据结构|所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明|</p>
+
+<h2 id="常量池">常量池</h2>
+
+<p>常量池主要存放两大类常量：</p>
+
+<ul>
+<li>字面量：文本字符串，声明为final的常量值</li>
+<li>符号引用：类和接口的全限定名，字段的名称和描述符，方法的名称和描述符
+<br /></li>
+</ul>
+
+<h2 id="描述符">描述符</h2>
+
+<p>描述符的作用是用来描述字段的数据类型、方法的参数列表（包括数量、类型以及顺序）和返回值。</p>
+
+<ul>
+<li>B：基本数据类型byte</li>
+<li>C：基本数据类型char</li>
+<li>D：基本数据类型double</li>
+<li>F：基本数据类型float</li>
+<li>I：基本数据类型int</li>
+<li>J：基本数据类型long</li>
+<li>S：基本数据类型short</li>
+<li>Z：基本数据类型boolean</li>
+<li>V：基本数据类型void</li>
+<li>L：对象类型,如Ljava/lang/Object</li>
+</ul>
+
+<h2 id="javap">javap</h2>
+
+<p>javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">-</span><span style="color:#a6e22e">help</span>  <span style="color:#f92672">--</span><span style="color:#a6e22e">help</span>  <span style="color:#f92672">-</span><span style="color:#960050;background-color:#1e0010">?</span>         <span style="color:#a6e22e">输出此用法消息</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">version</span>                 <span style="color:#a6e22e">版本信息</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">其实是当前javap所在jdk的版本信息</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">不是class在哪个jdk下生成的</span><span style="color:#960050;background-color:#1e0010">。</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">v</span>  <span style="color:#f92672">-</span><span style="color:#a6e22e">verbose</span>             <span style="color:#a6e22e">输出附加信息</span><span style="color:#960050;background-color:#1e0010">（</span><span style="color:#a6e22e">包括行号</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">本地变量表</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">反汇编等详细信息</span><span style="color:#960050;background-color:#1e0010">）</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">l</span>                       <span style="color:#a6e22e">输出行号和本地变量表</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">public</span>                  <span style="color:#a6e22e">仅显示公共类和成员</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">protected</span>               <span style="color:#a6e22e">显示受保护的</span><span style="color:#f92672">/</span><span style="color:#a6e22e">公共类和成员</span>
+ <span style="color:#f92672">-</span><span style="color:#f92672">package</span>                 <span style="color:#a6e22e">显示程序包</span><span style="color:#f92672">/</span><span style="color:#a6e22e">受保护的</span><span style="color:#f92672">/</span><span style="color:#a6e22e">公共类</span> <span style="color:#a6e22e">和成员</span> (<span style="color:#a6e22e">默认</span>)
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">p</span>  <span style="color:#f92672">-</span><span style="color:#a6e22e">private</span>             <span style="color:#a6e22e">显示所有类和成员</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>                       <span style="color:#a6e22e">对代码进行反汇编</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">s</span>                       <span style="color:#a6e22e">输出内部类型签名</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">sysinfo</span>                 <span style="color:#a6e22e">显示正在处理的类的系统信息</span> (<span style="color:#a6e22e">路径</span>, <span style="color:#a6e22e">大小</span>, <span style="color:#a6e22e">日期</span>, <span style="color:#a6e22e">MD5</span> <span style="color:#a6e22e">散列</span>)
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">constants</span>               <span style="color:#a6e22e">显示静态最终常量</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">classpath</span> &lt;<span style="color:#a6e22e">path</span>&gt;        <span style="color:#a6e22e">指定查找用户类文件的位置</span>
+ <span style="color:#f92672">-</span><span style="color:#a6e22e">bootclasspath</span> &lt;<span style="color:#a6e22e">path</span>&gt;    <span style="color:#a6e22e">覆盖引导类文件的位置</span></pre></div>
+<h1 id="类加载器">类加载器</h1>
+
+<p>类加载器（ClassLoader）是用来加载Class的。它负责将Class的字节码形式转换成内存形式的Class对象。主要作用：</p>
+
+<ul>
+<li>负责将 Class 加载到 JVM 中</li>
+<li>审查每个类由谁加载（父优先的等级加载机制）</li>
+<li>将 Class 字节码重新解析成 JVM 统一要求的对象格式</li>
+</ul>
+
+<p>Java语言系统自带有三个类加载器:</p>
+
+<p><img src="http://lanlingzi.cn/images/java/class_loader.png" alt="classload" /></p>
+
+<ul>
+<li>Bootstrap ClassLoader：最顶层的加载类，主要加载核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等。另外需要注意的是可以通过启动JVM时指定-Xbootclasspath和路径来改变Bootstrap ClassLoader的加载目录。</li>
+<li>Extention ClassLoader：扩展的类加载器，加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件。还可以加载-Djava.ext.dirs选项指定的目录。</li>
+<li>Appclass Loader：也称为SystemAppClass 加载当前应用的classpath的所有类</li>
+</ul>
+
+<h2 id="加载器特点">加载器特点</h2>
+
+<h3 id="传递性">传递性</h3>
+
+<p>虚拟机的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 AppClassLoader。</p>
+
+<h3 id="双亲委派">双亲委派</h3>
+
+<p>每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。</p>
+
+<h3 id="动态性">动态性</h3>
+
+<p>程序启动时，并不是一次把所有的类全部加载后再运行，它总是先把保证程序运行的基础类一次性加载到JVM中，其它类等到JVM用到的时候再加载。而用到时再加载这也是java动态性的一种体现。</p>
+
+<h3 id="类与加载器">类与加载器</h3>
+
+<p>对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。</p>
+
+<h2 id="自定义加载器">自定义加载器</h2>
+
+<p>Java中提供的默认ClassLoader，只加载指定目录下的jar和class，如果我们想加载其它位置的类或jar时，需要自定义加载器。</p>
+
+<p>ClassLoader 里面有三个重要的方法，调用顺序为：loadClass -&gt; findClass -&gt; defineClass</p>
+
+<ul>
+<li>loadClass()：是加载目标类的入口，它首先会查找当前 ClassLoader 以及它的双亲里面是否已经加载了目标类，如果没有找到就会让双亲尝试加载</li>
+<li>findClass()：如果双亲都加载不了，就会调用 findClass() 让自定义加载器自己来加载目标类。ClassLoader 的 findClass() 方法是需要子类来覆盖的，不同的加载器将使用不同的逻辑来获取目标类的字节码。</li>
+<li>defineClass()：拿到这个字节码之后再调用 defineClass() 方法将字节码转换成 Class 对象。
+<br /></li>
+</ul>
+
+<p>定义自已的类加载器分为两步：</p>
+
+<ul>
+<li>继承java.lang.ClassLoader</li>
+<li>重写父类的findClass方法</li>
+</ul>
+
+<h2 id="class加载过程">Class加载过程</h2>
+
+<p>类从被加载到虚拟机内存中开始，直到卸载出内存为止，它的整个生命周期包括了：加载、验证、准备、解析、初始化、使用和卸载这7个阶段。其中，验证、准备和解析这三个部分统称为连接（linking）。</p>
+
+<ul>
+<li>顺序确定的：加载、验证、准备、初始化和卸载这五个阶段的顺序是确定的</li>
+<li>顺序不确认的：解析阶段在某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的运行时绑定。</li>
+</ul>
+
+<p>类的实例化与类的初始化是两个完全不同的概念：</p>
+
+<ul>
+<li>类的实例化是指创建一个类的实例(对象)的过程</li>
+<li>类的初始化是指为类中各个类成员(被static修饰的成员变量)赋初始值的过程，是类生命周期中的一个阶段。
+<br /></li>
+</ul>
+
+<h3 id="加载方式">加载方式</h3>
+
+<p>JVM加载class文件的两种方法：</p>
+
+<ul>
+<li>隐式加载：程序在运行过程中当碰到通过new 等方式生成对象时，隐式调用类装载器加载对应的类到JVM中</li>
+<li>显式加载：通过Class.forname()、ClassLoader().loadClass()等方法显式加载需要的类，或者我们自己实现的 ClassLoader 的 findlass() 方法。</li>
+</ul>
+
+<p>Class.forName vs ClassLoader.loadClass</p>
+
+<p>这两个方法都可以用来加载目标类，它们之间有一个小小的区别，那就是 Class.forName() 方法可以获取原生类型的 Class，而 ClassLoader.loadClass() 则会报错。</p>
+
+<p>如 <code>Class&lt;?&gt; x = Class.forName(&quot;[I&quot;);</code></p>
+
+<p>Thread.contextClassLoader</p>
+
+<p>contextClassLoader是线程上下文类加载器，是从父线程那里继承过来的，用途如下：</p>
+
+<ul>
+<li>它可以做到跨线程共享类，只要它们共享同一个 contextClassLoader。父子线程之间会自动传递 contextClassLoader，所以共享起来将是自动化的。</li>
+<li>如果不同的线程使用不同的 contextClassLoader，那么不同的线程使用的类就可以隔离开来。</li>
+</ul>
+
+<h3 id="加载异常">加载异常</h3>
+
+<p>在类加载过程与初始化过程中，会出现如下异常：</p>
+
+<ul>
+<li>ClassNotFoundExecption：当 JVM 要加载指定文件的字节码到内存时，并没有找到这个文件对应的字节码，也就是这个文件并不存在。解决方法就是检查在当前的 classpath 目录下有没有指定的文件。</li>
+<li>NoClassDefFoundError：可能的情况就是使用new关键字、属性引用某个类、继承了某个接口或者类，以及方法的某个参数中引用了某个类，这时就会触发JVM或者类加载器实例尝试加载类型的定义，但是该定义却没有找到，影响了执行路径。换句话说，在编译时这个类是能够被找到的，但是在执行时却没有找到。解决这个错误的方法就是确保每个类引用的类都在当前的classpath下面。</li>
+<li>UnsatisfiedLinkError：通常是在 JVM 启动的时候，如果 JVM 中的某个 lib 删除了，就有可能报这个错误。</li>
+<li>ExceptionInInitializerError：在初始化时出异常，如给静态成员赋值出错。</li>
+<li>NoSuchMethodError：NoSuchMethodError代表这个类型确实存在，但是一个不正确的版本被加载了，出现使用的方法不存在。
+<br /></li>
+</ul>
+
+<h2 id="java9变化">Java9变化</h2>
+
+<p>Java9模块化之后，对ClassLoader有所改造，对应的ClassLoader加载各自对应的模块：</p>
+
+<ul>
+<li>Bootstrap ClassLoader：加载lib/modules下基本的modules，如java.base ，jdk.net等20个modules</li>
+<li>Extention ClassLoader：更名为Platform Classloader，加载lib/modules下其它的30个modules</li>
+<li>Application classloader加载-cp，-mp指定的类，也会加载lib/modules下25个moduels</li>
+</ul>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/java" rel="tag" title="Java">#Java#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2019/0923_java_base_3/" rel="prev" title="Java基础知识点3">
+        Java基础知识点3 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">115</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li><a href="#java字节码">Java字节码</a>
+<ul>
+<li><a href="#常量池">常量池</a></li>
+<li><a href="#描述符">描述符</a></li>
+<li><a href="#javap">javap</a></li>
+</ul></li>
+<li><a href="#类加载器">类加载器</a>
+<ul>
+<li><a href="#加载器特点">加载器特点</a>
+<ul>
+<li><a href="#传递性">传递性</a></li>
+<li><a href="#双亲委派">双亲委派</a></li>
+<li><a href="#动态性">动态性</a></li>
+<li><a href="#类与加载器">类与加载器</a></li>
+</ul></li>
+<li><a href="#自定义加载器">自定义加载器</a></li>
+<li><a href="#class加载过程">Class加载过程</a>
+<ul>
+<li><a href="#加载方式">加载方式</a></li>
+<li><a href="#加载异常">加载异常</a></li>
+</ul></li>
+<li><a href="#java9变化">Java9变化</a></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

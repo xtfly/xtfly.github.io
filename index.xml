@@ -6,10 +6,148 @@
     <description>Recent content on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 23 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 28 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java基础知识点4</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</guid>
+      <description>&lt;h1 id=&#34;java字节码&#34;&gt;Java字节码&lt;/h1&gt;
+
+&lt;p&gt;Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。&lt;/p&gt;
+
+&lt;p&gt;其结构如下：&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34;&gt;类型&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;名称&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;说明&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;长度&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;magic&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;魔数，识别Class文件格式，0XCAFEBABE&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;4个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;minor_version&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;副版本号，如0x0000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;major_version&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;主版本号，如0x0034&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;constant_pool_count&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;常量池计数&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;cp_info&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;constant_pool&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;常量池&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;access_flags&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;访问标志&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;this_class&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;类索引&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;super_class&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;父类索引&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;interfaces_count&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;接口计数&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;interfaces&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;接口索引集合&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;fields_count&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;字段个数&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;field_info&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;fields&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;字段集合&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;methods_count&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;方法计数器&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;method_info&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;methods&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;方法集合&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;attributes_count&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;附加属性计数&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td align=&#34;left&#34;&gt;attribute_info&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;attributes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;附加属性集合&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description>
+    </item>
     
     <item>
       <title>Java基础知识点3</title>

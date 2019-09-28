@@ -106,6 +106,67 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/" itemprop="url">
+        思维图形化
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-11-18">
+    2016-11-18
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
+        <span itemprop="name">感想</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">778 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>曾经，我幼稚地认为：只有写好代码才能对产品最“大”的贡献。什么需求分析文档，架构设计文档，没有最终的代码落地，那就是一张张的空纸。那些职位高高在上的架构师们，就也是写写胶片，画画图，他们又不懂技术细节，天天开会讨论来，讨论去都是在空谈一切。没有我们这些屌丝写的代码，你让他们去实现，估计几年也搞不出来。我写代码的能力比他们顶上N个人；再看看人家老外，60/70岁了还在码代码。为什么我国到了30岁了，都不去写代码了，都去搞所谓的架构设计了。是他们写代码写不好才去干架构师活吗？</p>
+
+<p>经过这么多年在产品中挖坑、填坑，发现我们的产品是越来越复杂，但使用上也是越来越复杂，问题也是越来越难理清。我们的问题到底是出在什么地方：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2016/1118_arch_drawing/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/" itemprop="url">
         Archlinux on WSL
         </a>
@@ -587,84 +648,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0824_go_testing/" itemprop="url">
-        Go测试
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-08-24">
-    2016-08-24
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2207 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>Go语言内置了测试框架，编写单元测试非常方便。</p>
-
-<h2 id="命名约定">命名约定</h2>
-
-<ul>
-<li><p>测试代码位于以<code>_test.go</code>结尾的源文件中，一般与源码在同一个package中。</p>
-
-<p>位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。</p></li>
-
-<li><p>测试源码可以修改package名，带上<code>_test</code>结尾</p>
-
-<p>修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的<code>bytes</code>中的测试代码，方便使用被测试的元素，可以采用<code>.</code>来import测试的package：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">bytes_test</span>
-
-<span style="color:#f92672">import</span> (
-    . <span style="color:#e6db74">&#34;bytes&#34;</span>
-    <span style="color:#e6db74">&#34;io&#34;</span>
-    <span style="color:#f92672">...</span>
-)</pre></div></li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0824_go_testing/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -781,7 +764,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">114</span>
+        <span class="site-state-item-count">115</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
