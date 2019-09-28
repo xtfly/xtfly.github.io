@@ -6,10 +6,40 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 22 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java基础知识点3</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0923_java_base3/</link>
+      <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0923_java_base3/</guid>
+      <description>&lt;h1 id=&#34;io体系&#34;&gt;IO体系&lt;/h1&gt;
+
+&lt;h2 id=&#34;普通io&#34;&gt;普通IO&lt;/h2&gt;
+
+&lt;p&gt;整个Java.io包主要分为两大部分&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文件特征对象&lt;/li&gt;
+&lt;li&gt;文件内容操作对象&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;文件对象&#34;&gt;文件对象&lt;/h3&gt;
+
+&lt;p&gt;在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。&lt;/p&gt;
+
+&lt;p&gt;文件特征对象主要有如下：
+  - 文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等
+  - 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象
+  - 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统
+  - 文件特征，包括Closeable，Flushable，FileFilter，Serializable&lt;/p&gt;
+
+&lt;p&gt;文件内容操作对象主要有两大类：流式操作与数据转换。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Java基础知识点2</title>

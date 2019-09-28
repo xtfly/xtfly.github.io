@@ -6,7 +6,7 @@
     <description>Recent content in Tags on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 22 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Java</title>
       <link>http://lanlingzi.cn/tags/java/</link>
-      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/java/</guid>
       <description></description>
@@ -23,7 +23,7 @@
     <item>
       <title>软件开发</title>
       <link>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/</link>
-      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/</guid>
       <description></description>
@@ -192,7 +192,7 @@
     </item>
     
     <item>
-      <title>Go</title>
+      <title>go</title>
       <link>http://lanlingzi.cn/tags/go/</link>
       <pubDate>Fri, 03 Feb 2017 00:00:00 +0000</pubDate>
       
