@@ -163,7 +163,7 @@ PriorityQueue:
   - 堆的操作，主要就是两个：siftUp和siftDown，一个是向上调整堆，一个是向下调整堆。
 
 
-## 集合框架工具类Collections
+## 工具类Collections
  
 根据字符串长度的正序和倒序排序：
 
