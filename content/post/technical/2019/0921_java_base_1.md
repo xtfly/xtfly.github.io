@@ -238,3 +238,7 @@ Queue：
    - 队满阻塞：若要插入元素，首先需要获取putLock；在此基础上，若此时队满，则调用notFull.await()，阻塞当前线程；当移除一个元素后调用notFull.signal()唤醒在notFull上等待的线程；最后，当插入操作完成后释放putLock。
    - 若要删除/获取元素，首先要获取takeLock；在此基础上，若队为空，则调用notEmpty.await()，阻塞当前线程；当插入一个元素后调用notEmpty.signal()唤醒在notEmpty上等待的线程；最后，当删除操作完成后释放takeLock。
  - LinkedBlockingDeque双向链表实现的双端阻塞队列。
+
+----- 
+
+注：以上内容收集于互联网多篇文章，在此感觉原作者们。
