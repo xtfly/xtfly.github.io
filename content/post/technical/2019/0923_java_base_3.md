@@ -39,32 +39,32 @@ toc: true
 
 流式操作又分类(byte)字节流，与字符(char)流
 
-|分类	|字节输入流	|字节输出流	|字符输入流	|字符输出流|
-|:-----|:-----|:-----|:-----|:-----|
-|接口|InputStream|OutputStream|Reader|Writer|
-|Filter|FilterInputStream|FilterOutputStream|FilterReader|FilterWriter|
-|访问文件|FileInputStream|FileOutputStream|FileReader|FileWriter|
-|访问数组|ByteArrayInputStream|ByteArrayOutputStream|CharArrayReader|CharArrayWriter|
-|访问管道|PipedInputStream|PipedOutputStream|PipedReader|PipedWriter
-|访问字符串| 	 	|     |StringReader|StringWriter|
-|缓冲流|BufferedInputStream|BufferedOutputStream|BufferedReader|BufferedWriter
-|转换流|        |     |InputStreamReader|OutputStreamWriter|	 	 
-|打印流|   |PrintStream|  |PrintWriter
-|推回输入流|PushbackInputStream|    |	 PushbackReader	 | |
-|数据流|DataInputStream|DataOutputStream| | |
-|对象流|ObjectInputStream|ObjectOutputStream| | |
+| 分类       | 字节输入流           | 字节输出流            | 字符输入流        | 字符输出流         |
+| :--------- | :------------------- | :-------------------- | :---------------- | :----------------- |
+| 接口       | InputStream          | OutputStream          | Reader            | Writer             |
+| Filter     | FilterInputStream    | FilterOutputStream    | FilterReader      | FilterWriter       |
+| 访问文件   | FileInputStream      | FileOutputStream      | FileReader        | FileWriter         |
+| 访问数组   | ByteArrayInputStream | ByteArrayOutputStream | CharArrayReader   | CharArrayWriter    |
+| 访问管道   | PipedInputStream     | PipedOutputStream     | PipedReader       | PipedWriter        |
+| 访问字符串 |                      |                       | StringReader      | StringWriter       |
+| 缓冲流     | BufferedInputStream  | BufferedOutputStream  | BufferedReader    | BufferedWriter     |
+| 转换流     |                      |                       | InputStreamReader | OutputStreamWriter |
+| 打印流     |                      | PrintStream           |                   | PrintWriter        |
+| 推回输入流 | PushbackInputStream  |                       | PushbackReader    |                    |
+| 数据流     | DataInputStream      | DataOutputStream      |                   |                    |
+| 对象流     | ObjectInputStream    | ObjectOutputStream    |                   |                    |
 
 #### 数据转换组件
 
 数据转换，支持把字节流与Java基本数据类型间相互转换
   
-|分类|数据输入|数据输出	|
-|:-----|:-----|:-----|
-|抽象基类|DataInput|DataInput|
-|数据操作|DataInputStream|DataOutputStream|
-|对象操作|ObjectInput|ObjectOut|
-|对象操作|ObjectInputStream|ObjectOutputStream|
-|文件操作|RandomAccessFile|RandomAccessFile|
+| 分类     | 数据输入          | 数据输出           |
+| :------- | :---------------- | :----------------- |
+| 抽象基类 | DataInput         | DataInput          |
+| 数据操作 | DataInputStream   | DataOutputStream   |
+| 对象操作 | ObjectInput       | ObjectOut         |
+| 对象操作 | ObjectInputStream | ObjectOutputStream |
+| 文件操作 | RandomAccessFile  | RandomAccessFile   |
 
 ## NIO
 
@@ -107,11 +107,11 @@ IO选择器（Selector）:
 
 ### 核心组件
 
-|核心组件|定义|作用|特点|使用|
-|:------|:------|:------|:------|:------|
-|通道Channel|是数据的源头与目的地|给Buffer提供数据，从Buffer读取数据|双向读取<br/>异步读写<br/>| 按数据来源划分:<br/>FileChannle: 从文件读写数据<br/>DatagramChannel: 从UDP连接读写数据<br/>SocketChannel：从TCP连接读写数据<br/>ServerSocketChannel：TCP服务侧的连接读写数据 |
-|缓存区Buffer|缓存数据|适用于所有基础数据类型（除了boolean）|按类型类型划分：<br/> ByteBuffer<br/> ShortBuffer<br/>...<br/>不同的类型的Buffer可以相互换：提供asXxxBuffer()||
-|选择器Selector|异步IO的核心对象|实现异步、非阻塞操作|允许一个Selector线程管理与操作多个Channel<br/>事件驱动：监控多个Channel的事件，并对事件分发|向Selector注册Channel<br/>调用Selector的select方法监控|
+| 核心组件       | 定义                 | 作用            | 特点              | 使用                            |
+| :------------- | :------------- | :------------------ | :--------------- | :-------------------- |
+| 通道Channel    | 是数据的源头与目的地 | 给Buffer提供数据，从Buffer读取数据    | 双向读取<br/>异步读写   | 按数据来源划分:<br/>FileChannle: 从文件读写数据<br/>DatagramChannel: 从UDP连接读写数据<br/>SocketChannel：从TCP连接读写数据<br/>ServerSocketChannel：TCP服务侧的连接读写数据 |
+| 缓存区Buffer   | 缓存数据             | 适用于所有基础数据类型（除了boolean） | 按类型类型划分：<br/> ByteBuffer<br/> ShortBuffer<br/>...<br/>不同的类型的Buffer可以相互换：提供asXxxBuffer() |   |
+| 选择器Selector | 异步IO的核心对象     | 实现异步、非阻塞操作                  | 允许一个Selector线程管理与操作多个Channel<br/>事件驱动：监控多个Channel的事件，并对事件分发           | 向Selector注册Channel<br/>调用Selector的select方法监控        |
 
 #### Buffer
 
@@ -129,21 +129,21 @@ Buffer顾名思义：缓冲区，实际上是一个容器，一个连续数组�
 
 可以把Buffer简单地理解为一组基本数据类型的元素列表，它通过几个变量来保存这个数据的当前位置状态：capacity, position, limit, mark：
 
-|索引|说明|
-|:---|:---|
-|capacity|缓冲区数组的总长度|
-|position|下一个要操作的数据元素的位置|
-|limit|缓冲区数组中不可操作的下一个元素的位置：limit<=capacity|
-|mark|用于记录当前position的前一个位置或者默认是-1|
+| 索引     | 说明                                                    |
+| :------- | :------------------------------------------------------ |
+| capacity | 缓冲区数组的总长度                                      |
+| position | 下一个要操作的数据元素的位置                            |
+| limit    | 缓冲区数组中不可操作的下一个元素的位置：limit<=capacity |
+| mark     | 用于记录当前position的前一个位置或者默认是-1            |
 
 几个重要标识操作方法：clear，compact，mark，mark|
 
-|方法|说明|
-|:---|:---|
-|clear()|position将被设回0，limit设置成capacity，换句话说，Buffer被“清空”了，其实Buffer中的数据并未被清除，只是这些标记告诉我们可以从哪里开始往Buffer里读写数据|
-|compact()|将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面，limit设置成capacity，Buffer准备好写数据但不会覆盖未读的数据|
-|mark()|可以标记Buffer中的一个特定的position，之后可以通过调用reset()方法恢复到这个position|
-|rewind()|将position设回0，可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素|
+| 方法      | 说明  |
+| :-------- | :----------- |
+| clear()   | position将被设回0，limit设置成capacity，换句话说，Buffer被“清空”了，其实Buffer中的数据并未被清除，只是这些标记告诉我们可以从哪里开始往Buffer里读写数据 |
+| compact() | 将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面，limit设置成capacity，Buffer准备好写数据但不会覆盖未读的数据             |
+| mark()    | 可以标记Buffer中的一个特定的position，之后可以通过调用reset()方法恢复到这个position      |
+| rewind()  | 将position设回0，可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素         |
 
 #### Selector
 

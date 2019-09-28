@@ -11,37 +11,37 @@ toc: true
 
 # Java字节码
 
-Java源文件编译之后，生成的class文件，它供虚拟机解释执行的二进制字节码文件。
+Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。
 
 其结构如下：
 
-|类型|名称|说明|长度|
-|:--|:--|:--|:--|
-|u4|magic|魔数，识别Class文件格式，0XCAFEBABE|4个字节|
-|u2|minor_version|副版本号，如0x0000|2个字节|
-|u2|major_version|主版本号，如0x0034|2个字节|
-|u2|constant_pool_count|常量池计数|2个字节|
-|cp_info|constant_pool|常量池|n个字节|
-|u2|access_flags|访问标志|2个字节|
-|u2|this_class|类索引|2个字节|
-|u2|super_class|父类索引|2个字节|
-|u2|interfaces_count|接口计数|2个字节|
-|u2|interfaces|接口索引集合|2个字节|
-|u2|fields_count|字段个数|2个字节|
-|field_info|fields|字段集合|n个字节|
-|u2|methods_count|方法计数器|2个字节|
-|method_info|methods|方法集合|n个字节|
-|u2|attributes_count|附加属性计数|2个字节|
-|attribute_info|attributes|附加属性集合|n个字节|
+| 类型           | 名称                | 说明                                | 长度    |
+| :------------- | :------------------ | :---------------------------------- | :------ |
+| u4             | magic               | 魔数，识别Class文件格式，0XCAFEBABE | 4个字节 |
+| u2             | minor_version       | 副版本号，如0x0000                  | 2个字节 |
+| u2             | major_version       | 主版本号，如0x0034                  | 2个字节 |
+| u2             | constant_pool_count | 常量池计数                          | 2个字节 |
+| cp_info        | constant_pool       | 常量池                              | n个字节 |
+| u2             | access_flags        | 访问标志                            | 2个字节 |
+| u2             | this_class          | 类索引                              | 2个字节 |
+| u2             | super_class         | 父类索引                            | 2个字节 |
+| u2             | interfaces_count    | 接口计数                            | 2个字节 |
+| u2             | interfaces          | 接口索引集合                        | 2个字节 |
+| u2             | fields_count        | 字段个数                            | 2个字节 |
+| field_info     | fields              | 字段集合                            | n个字节 |
+| u2             | methods_count       | 方法计数器                          | 2个字节 |
+| method_info    | methods             | 方法集合                            | n个字节 |
+| u2             | attributes_count    | 附加属性计数                        | 2个字节 |
+| attribute_info | attributes          | 附加属性集合                        | n个字节 |
 
 <!--more-->
 
 class文件只有两种数据类型：无符号数和表。
 
-|数据类型|定义|说明|
-|:--|:--|
-|无符号数|无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值|其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节|
-|表|表是由多个无符号数或其他表构成的复合数据结构|所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明|
+| 数据类型 | 定义                          | 说明                                                     |
+| :------- | :----------------------------- | :--------------------------------------------------- |
+| 无符号数 | 无符号数可以用来描述数字、索引引用、数量值或按照utf-8编码构成的字符串值 | 其中无符号数属于基本的数据类型。以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节 |
+| 表       | 表是由多个无符号数或其他表构成的复合数据结构  | 所有的表都以“_info”结尾。由于表没有固定长度，所以通常会在其前面加上个数说明       |
 
 ## 常量池
 
@@ -67,7 +67,7 @@ class文件只有两种数据类型：无符号数和表。
 
 ## javap
 
-javap是jdk自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
+javap是JDK自带的反解析工具。它的作用就是根据class字节码文件，反解析出当前类对应的code区（汇编指令）、本地变量表、异常表和代码行偏移量映射表、常量池等等信息。
 
 ```
 -help  --help  -?         输出此用法消息
@@ -100,17 +100,17 @@ Java语言系统自带有三个类加载器:
 
  - Bootstrap ClassLoader：最顶层的加载类，主要加载核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等。另外需要注意的是可以通过启动JVM时指定-Xbootclasspath和路径来改变Bootstrap ClassLoader的加载目录。
  - Extention ClassLoader：扩展的类加载器，加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件。还可以加载-Djava.ext.dirs选项指定的目录。
- - Appclass Loader：也称为SystemAppClass 加载当前应用的classpath的所有类
+ - Application ClassLoader：也称为System ClassLoader 加载当前应用的classpath的所有类
 
 ## 加载器特点
 
 ### 传递性
 
-虚拟机的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 AppClassLoader。
+JVM的策略是使用调用者 Class 对象的 ClassLoader 来加载当前未知的类。所有延迟加载的类都会由初始调用 main 方法的这个 ClassLoader 全全负责，它就是 App ClassLoader。
 
 ### 双亲委派
 
-每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。
+每个 ClassLoader 实例都有一个父类加载器的引用（不是继承的关系，是一个组合的关系），每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。
 
 ### 动态性
 
@@ -118,7 +118,7 @@ Java语言系统自带有三个类加载器:
 
 ### 类与加载器
 
-对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。
+对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否”相等”，只有再这两个类是有同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个 Class 文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。
 
 ## 自定义加载器
 
