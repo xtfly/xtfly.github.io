@@ -6,10 +6,43 @@
     <description>Recent content in Java on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 29 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java基础知识点6</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1003_java_base_6/</link>
+      <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/1003_java_base_6/</guid>
+      <description>&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
+
+&lt;p&gt;泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。&lt;/p&gt;
+
+&lt;p&gt;泛型使类型（类和接口）在定义类、接口和方法时成为参数，好处在于：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常&lt;/li&gt;
+&lt;li&gt;提高代码复用，泛型能减少重复逻辑，编写更简洁的代码&lt;/li&gt;
+&lt;li&gt;类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;实现&#34;&gt;实现&lt;/h2&gt;
+
+&lt;p&gt;Java 5推出了泛型，也就是在原本的基础上加上了编译时类型检查的语法糖。泛型对于JVM来说是透明的，有泛型的和没有泛型的代码，通过编译器编译后所生成的二进制代码是完全相同的。这个语法糖的实现被称为擦除。Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。&lt;/p&gt;
+
+&lt;p&gt;无论何时定义一个泛型类型，都自动提供一个相应的原始类型(Raw Type，这里的原始类型并不是指int、boolean等基本数据类型)，原始类型的类名称就是带有泛型参数的类删去泛型参数后的类型名称，而原始类型会擦除(Erased)类型变量，并且把它们替换为限定类型(如果没有指定限定类型，则擦除为Object类型)。&lt;/p&gt;
+
+&lt;p&gt;泛型变量的类型的使用：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在调用泛型方法的时候，可以指定泛型，也可以不指定泛型&lt;/li&gt;
+&lt;li&gt;在不指定泛型的情况下，泛型变量的类型为 该方法中的几种类型的同一个父类的最小级，直到Object&lt;/li&gt;
+&lt;li&gt;在指定泛型的时候，该方法中的几种类型必须是该泛型实例类型或者其子类&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>Java基础知识点5</title>
