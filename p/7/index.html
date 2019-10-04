@@ -106,6 +106,88 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0904_go_map/" itemprop="url">
+        Go map key类型分析
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-09-04">
+    2016-09-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1947 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。</p>
+
+<h2 id="map的key类型">map的key类型</h2>
+
+<p>map中的key可以是任何的类型，只要它的值能比较是否相等，Go的<a href="http://golang.org/ref/spec#Comparison_operators">语言规范</a>已精确定义，Key的类型可以是：</p>
+
+<ul>
+<li>布尔值</li>
+<li>数字</li>
+<li>字符串</li>
+<li>指针</li>
+<li>通道</li>
+<li>接口类型</li>
+<li>结构体</li>
+<li>只包含上述类型的数组。</li>
+</ul>
+
+<p>但不能是：</p>
+
+<ul>
+<li>slice</li>
+<li>map</li>
+<li>function</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0904_go_map/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0903_vim/" itemprop="url">
         Go VIM开发环境
         </a>
@@ -598,76 +680,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0723_why_go/" itemprop="url">
-        为什么是Go
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-23">
-    2016-07-23
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3234 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。</p>
-
-<h2 id="背景">背景</h2>
-
-<p>Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：</p>
-
-<ul>
-<li>主要继承了C(func, struct，指针)</li>
-<li>包管理吸取自Java（package, import）</li>
-<li>多态吸取自Python与Ruby(duck type)</li>
-<li>并发吸取自<a href="http://doc.cat-v.org/inferno/4th_edition/limbo_language/">Limbo</a>(<a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">CSP</a>模型)。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0723_why_go/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -784,7 +796,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">118</span>
+        <span class="site-state-item-count">119</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4752 字 ~10分钟</span>
+<span class="leancloud-visitors-count">1820 字 ~4分钟</span>
 </span>
       </div>
     </header>
@@ -275,247 +275,100 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
 </ul></li>
 </ul>
 
-<h1 id="集合体系">集合体系</h1>
+<h1 id="正则表达式">正则表达式</h1>
 
-<p>集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：</p>
+<p>正则表达式定义了字符串的模式，可以用来搜索、编辑或处理文本。并不仅限于某一种语言，但是在每种语言中有细微的差别。</p>
+
+<p>Java 正则表达式和 Perl 的是最为相似的。</p>
 
 <ul>
-<li>长度可变</li>
-<li>存储元素可以是引用类型</li>
-<li>可以存储多种类型的对象
+<li>Pattern 类：是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</li>
+<li>Matcher 类： Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</li>
+</ul>
+
+<h2 id="捕获组">捕获组</h2>
+
+<p>捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。</p>
+
+<p>捕获组是通过从左至右计算其开括号来编号。例如，在表达式<code>（（A）（B（C）））</code>，有四个这样的组：</p>
+
+<ul>
+<li><code>((A)(B(C)))</code></li>
+<li><code>(A)</code></li>
+<li><code>(B(C))</code></li>
+<li><code>(C)</code></li>
+</ul>
+
+<p>可以通过调用 matcher 对象的 groupCount 方法来查看表达式有多少个分组。groupCount 方法返回一个 int 值，表示matcher对象当前有多个捕获组。 还有一个特殊的组（group(0)），它总是代表整个表达式。该组不包括在 groupCount 的返回值中。</p>
+
+<h2 id="语法">语法</h2>
+
+<p><strong>元字符</strong></p>
+
+<ul>
+<li>`. : 匹配除换行符以外的任意字符</li>
+<li><code>\w</code>: 匹配字母或数字或下划线或汉字</li>
+<li><code>\s</code>: 匹配任意的空白符</li>
+<li><code>\d</code>: 匹配数字</li>
+<li><code>^</code>: 匹配字符串的开始</li>
+<li><code>$</code>: 匹配字符串的结束</li>
+<li><code>\b</code>: 匹配字符串的结束</li>
+</ul>
+
+<p><strong>重复</strong></p>
+
+<ul>
+<li><code>*</code> : 重复零次或更多次</li>
+<li><code>+</code> : 重复一次或更多次</li>
+<li><code>?</code> : 重复零次或一次</li>
+<li><code>{n}</code> : 重复n次</li>
+<li><code>{n,}</code> : 重复n次或更多次</li>
+<li><code>{n,m}</code> : 重复n到m次</li>
+</ul>
+
+<p><strong>反义</strong></p>
+
+<ul>
+<li><code>[^x]</code> : 匹配除了x以外的任意字符</li>
+<li><code>[^aeiou]</code> : 匹配除了aeiou这几个字母以外的任意字符</li>
+<li><code>\W</code> : 匹配任意不是字母，数字，下划线，汉字的字符</li>
+<li><code>\S</code> : 匹配任意不是空白符的字符</li>
+<li><code>\D</code> : 匹配任意非数字的字符</li>
+<li><code>\B</code> : 匹配不是单词开头或结束的位置</li>
+</ul>
+
+<p><strong>零宽断言</strong></p>
+
+<ul>
+<li><code>(?=exp)</code> : 匹配exp前面的位置</li>
+<li><code>(?&lt;=exp)</code> : 匹配exp后面的位置</li>
+<li><code>(?!exp)</code> : 匹配后面跟的不是exp的位置</li>
+<li><code>(?&lt;!exp)</code> : 匹配前面不是exp的位置
 <br /></li>
 </ul>
 
-<h2 id="iterator">Iterator</h2>
-
-<p>Iterator接口：</p>
+<p><strong>注释</strong></p>
 
 <ul>
-<li>对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。</li>
-<li>提供<code>boolean hasNext()</code>和<code>E next()</code>两个方法</li>
+<li><code>(?#comment)</code> : 注释</li>
 </ul>
 
-<p>ListIterator：</p>
+<p><strong>贪婪与懒惰</strong></p>
 
 <ul>
-<li>只能用于List的迭代器。</li>
-<li>在使用迭代器迭代的过程中需要使用集合中的方法操作元素，出现ConcurrentModificationException异常时，可以使用ListIterator避免</li>
+<li><code>*?</code> : 重复任意次，但尽可能少重复</li>
+<li><code>+?</code> : 重复1次或更多次，但尽可能少重复</li>
+<li><code>??</code> : 重复0次或1次，但尽可能少重复</li>
+<li><code>{n,m}?</code> : 重复n到m次，但尽可能少重复</li>
+<li><code>{n,}?</code> : 重复n次以上，但尽可能少重复</li>
 </ul>
 
-<h2 id="collection">Collection</h2>
-
-<p>Collection接口：</p>
+<p><strong>其他</strong></p>
 
 <ul>
-<li>List接口：有序(存入和取出的顺序一致),元素都有索引(下标)，元素可以重复。
-
-<ul>
-<li>Vector：内部是 数组 数据结构，是同步的。增删，查询都很慢！100%延长（几乎不用了）<br /></li>
-<li>ArrayList：内部是 数组 数据结构，是不同步的。替代了Vector，查询的速度快，增删速度慢。50%延长。查询时是从容器的第一个元素往后找，由于数组的内存空间是连续的，所以查询快；增删的话所有元素内存地址都要改变，所以增删慢。</li>
-<li>LinkedList：内部是 链表 数据结构，是不同步的。增删元素的速度很快。同理，链表的内存空间是不连续的，所以查询慢；增删时只需改变单个指针的指向，所以快。</li>
-</ul></li>
-<li>Set接口：无序，元素不能重复。Set接口中的方法和Collection一致。
-
-<ul>
-<li>HashSet：内部数据结构是哈希表 ，是不同步的。</li>
-<li>LinkedHashSet：内部数据结构是哈希表和链表，是有顺序的HashSet。</li>
-<li>TreeSet：内部数据结构是有序的二叉树，它的作用是提供有序的Set集合，是不同步的。
+<li>POSIX 字符类: 如<code>\p{Lower}</code>表示小写字母字符：[a-z]</li>
+<li>引用： <code>\</code>, <code>\Q</code>, <code>\E</code>
 <br /></li>
-</ul></li>
-</ul>
-
-<p>List接口：</p>
-
-<ul>
-<li>有一个最大的共性特点就是都可以操作角标，所以LinkedList也是有索引的。list集合可以完成对元素的增删改查。</li>
-</ul>
-
-<p>Set和List的区别：</p>
-
-<ul>
-<li>Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素。</li>
-<li>Set检索效率低下，删除和插入效率高，插入和删除不会引起元素位置改变 。</li>
-<li>List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变。</li>
-</ul>
-
-<h2 id="map">Map</h2>
-
-<p>Map接口：</p>
-
-<ul>
-<li>一次添加一对元素，Collection 一次添加一个元素。</li>
-<li>Map也称为双列集合，Collection集合也称为单列集合。</li>
-<li>map集合中存储的就是键值对，map集合中必须保证键的唯一性
-<br /></li>
-</ul>
-
-<p>Map常用的子类：</p>
-
-<ul>
-<li>Hashtable :内部结构是哈希表，是同步的。不允许null作为键，null作为值。
-
-<ul>
-<li>Properties：用来存储键值对型的配置文件的信息，可以和IO技术相结合。</li>
-</ul></li>
-<li>HashMap : 内部结构是哈希表，不是同步的。允许null作为键，null作为值。</li>
-<li>TreeMap : 内部结构是二叉树，不是同步的。可以对Map集合中的键进行排序。</li>
-</ul>
-
-<p>Map的迭代方法（Map本身没有迭代器）：</p>
-
-<ul>
-<li>利用Map接口的values()方法,返回此映射中包含的值的 Collection（值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候）</li>
-<li>通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。</li>
-<li>利用Map的内部接口Map.Entry<K,V>使用iterator。</li>
-</ul>
-
-<h2 id="queue">Queue</h2>
-
-<p>Queue接口:</p>
-
-<ul>
-<li>继承Collection</li>
-<li>boolean add(E e)，队列满，抛IllegalStateException / boolean offer(E e)，当容量限制时，与add相同抛IllegalStateException</li>
-<li>E remove()，抛NoSuchElementException / E poll()，不抛，返回null</li>
-<li>E element()，抛NoSuchElementException / E peek()，不抛，返回null</li>
-</ul>
-
-<p>Deque接口，是一个实现了双端队列数据结构的队列，即在头尾都可进行删除和新增操作；</p>
-
-<ul>
-<li>继承Queue</li>
-<li>依旧保持着“先进先出”的本质</li>
-<li>增加 xxxFirst与xxxLast方法</li>
-<li>可以被当做“栈”来使用，即“后进先出”，添加元素、删除元素都在队头进行通过push/pop两个方法来实现</li>
-<li>主要两个实现LinkedList与ArrayDeque</li>
-</ul>
-
-<p>PriorityQueue:</p>
-
-<ul>
-<li>不同于先进先出，它可以通过比较器控制元素的输出顺序（优先级）</li>
-<li>本质上就是一个最小堆存储结构数组了</li>
-<li>通过“极大优先级堆”实现的，即堆顶元素是优先级最大的元素。算是集成了大根堆和小根堆的功能。</li>
-<li>堆的操作，主要就是两个：siftUp和siftDown，一个是向上调整堆，一个是向下调整堆。</li>
-</ul>
-
-<h2 id="工具类collections">工具类Collections</h2>
-
-<p>根据字符串长度的正序和倒序排序：</p>
-
-<ul>
-<li><code>Collections.reverse(List&lt;?&gt; list)</code> 反转指定列表中元素的顺序。</li>
-<li><code>&lt;T&gt; Comparator&lt;T&gt; Collections.reverseOrder()</code> 返回一个比较器，它强行逆转实现了 Comparable 接口的对象 collection 的自然顺序。</li>
-<li><code>&lt;T&gt; Comparator&lt;T&gt; reverseOrder(Comparator&lt;T&gt; cmp)</code>  返回一个比较器，它强行逆转指定比较器的顺序。</li>
-</ul>
-
-<p>排序</p>
-
-<ul>
-<li><code>Collections.sort(List&lt;?&gt; list)</code></li>
-<li><code>Collections.sort(List&lt;?&gt; list, Collections.reverseOrder())</code></li>
-</ul>
-
-<p>同步视图</p>
-
-<ul>
-<li><code>&lt;T&gt; Collection&lt;T&gt; synchronizedCollection(Collection&lt;T&gt; c)</code></li>
-<li><code>&lt;T&gt; Collection&lt;T&gt; synchronizedCollection(Collection&lt;T&gt; c, Object mutex)</code>
-<br /></li>
-</ul>
-
-<p>只读视图</p>
-
-<ul>
-<li><code>&lt;T&gt; Collection&lt;T&gt; unmodifiableCollection(Collection&lt;? extends T&gt; c)</code></li>
-</ul>
-
-<p>其它工具</p>
-
-<ul>
-<li><code>&lt;T&gt; int binarySearch(List&lt;? extends Comparable&lt;? super T&gt;&gt; list, T key)</code></li>
-<li><code>&lt;T&gt; int indexedBinarySearch(List&lt;? extends Comparable&lt;? super T&gt;&gt; list, T key)</code></li>
-<li><code>&lt;T&gt; T max(Collection&lt;? extends T&gt; coll, Comparator&lt;? super T&gt; comp)</code></li>
-<li><code>&lt;T&gt; T min(Collection&lt;? extends T&gt; coll, Comparator&lt;? super T&gt; comp)</code></li>
-<li><code>&lt;T&gt; void fill(List&lt;? super T&gt; list, T obj)</code></li>
-<li><code>&lt;T&gt; List&lt;T&gt; nCopies(int n, T o)</code></li>
-</ul>
-
-<h2 id="并发集合">并发集合</h2>
-
-<p>List接口:</p>
-
-<ul>
-<li>CopyOnWriteArrayList,线程安全的ArrayList
-
-<ul>
-<li>适用于读操作远远多于写操作，并且数据量较小的情况</li>
-<li>修改容器的代价是昂贵的，因此建议批量增加addAll、批量删除removeAll</li>
-<li>CopyOnWrite机制
-
-<ul>
-<li>使用volatile修饰数组引用：确保数组引用的内存可见性</li>
-<li>对容器修改操作进行同步：从而确保同一时刻只能有一条线程修改容器（因为修改容器都会产生一个新的容器，增加同步可避免同一时刻复制生成多个容器，从而无法保证数组数据的一致性）</li>
-<li>修改时复制容器：确保所有修改操作都作用在新数组上，原本的数组在创建过后就用不变化，从而其他线程可以放心地读。</li>
-</ul></li>
-</ul></li>
-</ul>
-
-<p>Set接口:</p>
-
-<ul>
-<li>CopyOnWriteArraySet是线程安全的Set，它内部包含了一个CopyOnWriteArrayList，因此本质上是由CopyOnWriteArrayList实现的。</li>
-<li>ConcurrentSkipListSet相当于线程安全的TreeSet。它是有序的Set。它由ConcurrentSkipListMap实现。
-
-<ul>
-<li>它是一个有序的、线程安全的Set，相当于线程安全的TreeSet。</li>
-<li></li>
-</ul></li>
-</ul>
-
-<p>Map接口：</p>
-
-<ul>
-<li>ConcurrentHashMap线程安全的HashMap。采用分段锁实现高效并发。
-
-<ul>
-<li>ConcurrentHashMap由多个Segment构成，每个Segment都包含一张哈希表。每次操作只将操作数据所属的Segment锁起来，从而避免将整个锁住。</li>
-</ul></li>
-<li>ConcurrentSkipListMap线程安全的有序Map。使用跳表实现高效并发。
-
-<ul>
-<li>它是一个有序的Map，相当于TreeMap。TreeMap采用红黑树实现排序，而ConcurrentHashMap采用跳表实现有序。</li>
-<li>跳表是条有序的单链表，它的每个节点都有多个指向后继节点的引用。</li>
-</ul></li>
-</ul>
-
-<p>Queue：</p>
-
-<ul>
-<li>ConcurrentLinkedQueue线程安全的无界队列。底层采用单链表。支持FIFO。
-
-<ul>
-<li>head、tail、next、item均使用volatile修饰，保证其内存可见性，并未使用锁，从而提高并发效率。</li>
-</ul></li>
-<li>ConcurrentLinkedDeque线程安全的无界双端队列。底层采用双向链表。支持FIFO和FILO。</li>
-<li>ArrayBlockingQueue数组实现的阻塞队列。
-
-<ul>
-<li>内部由Object数组存储元素，构造时必须要指定队列容量。</li>
-<li>由ReentrantLock实现队列的互斥访问，并由notEmpty、notFull这两个Condition分别实现队空、队满的阻塞。</li>
-<li>ReentrantLock分为公平锁和非公平锁，可以在构造ArrayBlockingQueue时指定。默认为非公平锁。</li>
-<li>队满阻塞：当添加元素时，若队满，则调用notFull.await()阻塞当前线程；当移除一个元素时调用notFull.signal()唤醒在notFull上等待的线程。</li>
-<li>队空阻塞：当删除元素时，若队为空，则调用notEmpty.await()阻塞当前线程；当队首添加元素时，调用notEmpty.signal()唤醒在notEmpty上等待的线程。</li>
-</ul></li>
-<li>LinkedBlockingQueue链表实现的阻塞队列。
-
-<ul>
-<li>由单链表实现，因此是个无限队列。但为了方式无限膨胀，构造时可以加上容量加以限制。</li>
-<li>分别采用读取锁和插入锁控制读取/删除 和 插入过程的并发访问，并采用notEmpty和notFull两个Condition实现队满队空的阻塞与唤醒。</li>
-<li>队满阻塞：若要插入元素，首先需要获取putLock；在此基础上，若此时队满，则调用notFull.await()，阻塞当前线程；当移除一个元素后调用notFull.signal()唤醒在notFull上等待的线程；最后，当插入操作完成后释放putLock。</li>
-<li>若要删除/获取元素，首先要获取takeLock；在此基础上，若队为空，则调用notEmpty.await()，阻塞当前线程；当插入一个元素后调用notEmpty.signal()唤醒在notEmpty上等待的线程；最后，当删除操作完成后释放takeLock。</li>
-</ul></li>
-<li>LinkedBlockingDeque双向链表实现的双端阻塞队列。</li>
 </ul>
 
 <hr />
@@ -538,8 +391,8 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/" rel="next" title="Java基础知识点2">
-        <i class="fa fa-chevron-left"></i> Java基础知识点2
+        <a href="http://lanlingzi.cn/post/technical/2019/0923_java_base_3/" rel="next" title="Java基础知识点3">
+        <i class="fa fa-chevron-left"></i> Java基础知识点3
         </a>
     
     </div>
@@ -597,7 +450,7 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">118</span>
+        <span class="site-state-item-count">119</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -661,14 +514,10 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
 <li><a href="#labeled-loop">labeled loop</a></li>
 </ul></li>
 <li><a href="#异常体系">异常体系</a></li>
-<li><a href="#集合体系">集合体系</a>
+<li><a href="#正则表达式">正则表达式</a>
 <ul>
-<li><a href="#iterator">Iterator</a></li>
-<li><a href="#collection">Collection</a></li>
-<li><a href="#map">Map</a></li>
-<li><a href="#queue">Queue</a></li>
-<li><a href="#工具类collections">工具类Collections</a></li>
-<li><a href="#并发集合">并发集合</a></li>
+<li><a href="#捕获组">捕获组</a></li>
+<li><a href="#语法">语法</a></li>
 </ul></li>
 </ul>
 </nav></div>

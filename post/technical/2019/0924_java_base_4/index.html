@@ -1,0 +1,837 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Java基础知识点4 - 蘭陵N散記</title>
+    <meta name="keywords" content="蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Java基础知识点4">
+    <meta property="og:site_name" content="蘭陵N散記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Java基础知识点4 - 蘭陵N散記" />
+    <meta name="description" content="蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N散記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0924_java_base_4/" itemprop="url">
+        Java基础知识点4
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-23">
+    2019-09-23
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3829 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="io体系">IO体系</h1>
+
+<h2 id="普通io">普通IO</h2>
+
+<p>整个Java.io包主要分为两大部分</p>
+
+<ul>
+<li>文件特征对象</li>
+<li>文件内容操作对象</li>
+</ul>
+
+<h3 id="文件对象">文件对象</h3>
+
+<p>在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。</p>
+
+<p>文件特征对象主要有如下：</p>
+
+<ul>
+<li>文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等</li>
+<li>文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象</li>
+<li>文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统</li>
+<li>文件特征，包括Closeable，Flushable，FileFilter，Serializable</li>
+</ul>
+
+<p>文件内容操作对象主要有两大类：流式操作与数据转换。</p>
+
+<h3 id="io操作">IO操作</h3>
+
+<h4 id="流式操作组件">流式操作组件</h4>
+
+<p>流式操作又分类(byte)字节流，与字符(char)流</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">分类</th>
+<th align="left">字节输入流</th>
+<th align="left">字节输出流</th>
+<th align="left">字符输入流</th>
+<th align="left">字符输出流</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">接口</td>
+<td align="left">InputStream</td>
+<td align="left">OutputStream</td>
+<td align="left">Reader</td>
+<td align="left">Writer</td>
+</tr>
+
+<tr>
+<td align="left">Filter</td>
+<td align="left">FilterInputStream</td>
+<td align="left">FilterOutputStream</td>
+<td align="left">FilterReader</td>
+<td align="left">FilterWriter</td>
+</tr>
+
+<tr>
+<td align="left">访问文件</td>
+<td align="left">FileInputStream</td>
+<td align="left">FileOutputStream</td>
+<td align="left">FileReader</td>
+<td align="left">FileWriter</td>
+</tr>
+
+<tr>
+<td align="left">访问数组</td>
+<td align="left">ByteArrayInputStream</td>
+<td align="left">ByteArrayOutputStream</td>
+<td align="left">CharArrayReader</td>
+<td align="left">CharArrayWriter</td>
+</tr>
+
+<tr>
+<td align="left">访问管道</td>
+<td align="left">PipedInputStream</td>
+<td align="left">PipedOutputStream</td>
+<td align="left">PipedReader</td>
+<td align="left">PipedWriter</td>
+</tr>
+
+<tr>
+<td align="left">访问字符串</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">StringReader</td>
+<td align="left">StringWriter</td>
+</tr>
+
+<tr>
+<td align="left">缓冲流</td>
+<td align="left">BufferedInputStream</td>
+<td align="left">BufferedOutputStream</td>
+<td align="left">BufferedReader</td>
+<td align="left">BufferedWriter</td>
+</tr>
+
+<tr>
+<td align="left">转换流</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">InputStreamReader</td>
+<td align="left">OutputStreamWriter</td>
+</tr>
+
+<tr>
+<td align="left">打印流</td>
+<td align="left"></td>
+<td align="left">PrintStream</td>
+<td align="left"></td>
+<td align="left">PrintWriter</td>
+</tr>
+
+<tr>
+<td align="left">推回输入流</td>
+<td align="left">PushbackInputStream</td>
+<td align="left"></td>
+<td align="left">PushbackReader</td>
+<td align="left"></td>
+</tr>
+
+<tr>
+<td align="left">数据流</td>
+<td align="left">DataInputStream</td>
+<td align="left">DataOutputStream</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+
+<tr>
+<td align="left">对象流</td>
+<td align="left">ObjectInputStream</td>
+<td align="left">ObjectOutputStream</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="数据转换组件">数据转换组件</h4>
+
+<p>数据转换，支持把字节流与Java基本数据类型间相互转换</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">分类</th>
+<th align="left">数据输入</th>
+<th align="left">数据输出</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">抽象基类</td>
+<td align="left">DataInput</td>
+<td align="left">DataInput</td>
+</tr>
+
+<tr>
+<td align="left">数据操作</td>
+<td align="left">DataInputStream</td>
+<td align="left">DataOutputStream</td>
+</tr>
+
+<tr>
+<td align="left">对象操作</td>
+<td align="left">ObjectInput</td>
+<td align="left">ObjectOut</td>
+</tr>
+
+<tr>
+<td align="left">对象操作</td>
+<td align="left">ObjectInputStream</td>
+<td align="left">ObjectOutputStream</td>
+</tr>
+
+<tr>
+<td align="left">文件操作</td>
+<td align="left">RandomAccessFile</td>
+<td align="left">RandomAccessFile</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="nio">NIO</h2>
+
+<p>NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。</p>
+
+<h3 id="区别">区别</h3>
+
+<p>NIO和普通IO（后简称IO）之间第一个最大的区别是：</p>
+
+<ul>
+<li>IO是面向流的。面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。</li>
+<li>NIO是面向缓冲区的。NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。</li>
+</ul>
+
+<p>另一个区别是是否阻塞：</p>
+
+<ul>
+<li>IO是阻塞的。意味着当一个线程调用read() 或 write()时，该线程被阻塞，直到有一些数据被读取，或数据完全写入。该线程在此期间不能再干任何事情了</li>
+<li>NIO可以是非阻塞的。 NIO的非阻塞模式，使一个线程从某通道发送请求读取数据，但是它仅能得到目前可用的数据，如果目前没有数据可用时，就什么都不会获取。而不是保持线程阻塞，所以直至数据变得可以读取之前，该线程可以继续做其他的事情。 非阻塞写也是如此。一个线程请求写入一些数据到某通道，但不需要等待它完全写入，这个线程同时可以去做别的事情。 线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。</li>
+</ul>
+
+<h3 id="特性">特性</h3>
+
+<p>基于通道（Channel）与缓冲区（Buffer）操作：</p>
+
+<ul>
+<li>Channel：为所有IO提供Input/Output抽象,就像普通IO中的Stream一样原始IO操作</li>
+<li>Buffer：为所有基础类型提供缓冲操作</li>
+<li>操作：数据从Channel读到Buffer，从Buffer写入到Channel</li>
+</ul>
+
+<p>基于非阻塞（Non-Blocking）:</p>
+
+<ul>
+<li>提供 多路 非阻塞的I/O 抽象
+<br /></li>
+</ul>
+
+<p>IO选择器（Selector）:</p>
+
+<ul>
+<li>用于监控多个Channel的事件，如连接打开，数据到达</li>
+<li>单个线程可以监控多个数据通道</li>
+</ul>
+
+<p>其它：</p>
+
+<ul>
+<li>提供字符编码/解码方案，java.nio.charset</li>
+<li>支持内存映射文件，锁文件的访问接口</li>
+</ul>
+
+<h3 id="核心组件">核心组件</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">核心组件</th>
+<th align="left">定义</th>
+<th align="left">作用</th>
+<th align="left">特点</th>
+<th align="left">使用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">通道Channel</td>
+<td align="left">是数据的源头与目的地</td>
+<td align="left">给Buffer提供数据，从Buffer读取数据</td>
+<td align="left">双向读取<br/>异步读写</td>
+<td align="left">按数据来源划分:<br/>FileChannle: 从文件读写数据<br/>DatagramChannel: 从UDP连接读写数据<br/>SocketChannel：从TCP连接读写数据<br/>ServerSocketChannel：TCP服务侧的连接读写数据</td>
+</tr>
+
+<tr>
+<td align="left">缓存区Buffer</td>
+<td align="left">缓存数据</td>
+<td align="left">适用于所有基础数据类型（除了boolean）</td>
+<td align="left">按类型类型划分：<br/> ByteBuffer<br/> ShortBuffer<br/>&hellip;<br/>不同的类型的Buffer可以相互换：提供asXxxBuffer()</td>
+<td align="left"></td>
+</tr>
+
+<tr>
+<td align="left">选择器Selector</td>
+<td align="left">异步IO的核心对象</td>
+<td align="left">实现异步、非阻塞操作</td>
+<td align="left">允许一个Selector线程管理与操作多个Channel<br/>事件驱动：监控多个Channel的事件，并对事件分发</td>
+<td align="left">向Selector注册Channel<br/>调用Selector的select方法监控</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="buffer">Buffer</h4>
+
+<p>Buffer顾名思义：缓冲区，实际上是一个容器，一个连续数组。Channel提供从文件、网络读取数据的渠道，但是读写的数据都必须经过Buffer。</p>
+
+<p>向Buffer中写数据：</p>
+
+<ul>
+<li>从Channel写到Buffer (fileChannel.read(buf))</li>
+<li>通过Buffer的put()方法 （buf.put(…)）</li>
+</ul>
+
+<p>从Buffer中读取数据：</p>
+
+<ul>
+<li>从Buffer读取到Channel (channel.write(buf))</li>
+<li>使用get()方法从Buffer中读取数据 （buf.get()）</li>
+</ul>
+
+<p>可以把Buffer简单地理解为一组基本数据类型的元素列表，它通过几个变量来保存这个数据的当前位置状态：capacity, position, limit, mark：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">索引</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">capacity</td>
+<td align="left">缓冲区数组的总长度</td>
+</tr>
+
+<tr>
+<td align="left">position</td>
+<td align="left">下一个要操作的数据元素的位置</td>
+</tr>
+
+<tr>
+<td align="left">limit</td>
+<td align="left">缓冲区数组中不可操作的下一个元素的位置：limit&lt;=capacity</td>
+</tr>
+
+<tr>
+<td align="left">mark</td>
+<td align="left">用于记录当前position的前一个位置或者默认是-1</td>
+</tr>
+</tbody>
+</table>
+
+<p>几个重要标识操作方法：clear，compact，mark，mark|</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">clear()</td>
+<td align="left">position将被设回0，limit设置成capacity，换句话说，Buffer被“清空”了，其实Buffer中的数据并未被清除，只是这些标记告诉我们可以从哪里开始往Buffer里读写数据</td>
+</tr>
+
+<tr>
+<td align="left">compact()</td>
+<td align="left">将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面，limit设置成capacity，Buffer准备好写数据但不会覆盖未读的数据</td>
+</tr>
+
+<tr>
+<td align="left">mark()</td>
+<td align="left">可以标记Buffer中的一个特定的position，之后可以通过调用reset()方法恢复到这个position</td>
+</tr>
+
+<tr>
+<td align="left">rewind()</td>
+<td align="left">将position设回0，可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="selector">Selector</h4>
+
+<p>Selector可以监控的四种不同类型的事件：</p>
+
+<ul>
+<li>Connect：某个channel成功连接到另一个服务器称为“连接就绪”</li>
+<li>Accept：一个server socket channel准备好接收新进入的连接称为“接收就绪”</li>
+<li>Read：一个有数据可读的通道可以说是“读就绪”</li>
+<li>Write：等待写数据的通道可以说是“写就绪”</li>
+</ul>
+
+<p>通过Selector选择通道，有几种方法</p>
+
+<ul>
+<li>int select()：阻塞到至少有一个通道在你注册的事件上就绪了</li>
+<li>int select(long timeout)：和select()一样，除了最长会阻塞timeout毫秒(参数)</li>
+<li>int selectNow()：不会阻塞，不管什么通道就绪都立刻返回</li>
+</ul>
+
+<p>select()方法返回的int值表示有多少通道已经就绪。然后可以通过调用selector的selectedKeys()方法，访问“ 已选择键集（selected key set）”中的就绪通道。</p>
+
+<h3 id="其它">其它</h3>
+
+<h4 id="内存映射文件">内存映射文件</h4>
+
+<p>处理大文件，一般用BufferedReader,BufferedInputStream这类带缓冲的IO类，不过如果文件超大的话，更快的方式是采用MappedByteBuffer。</p>
+
+<p>ByteBuffer有两种模式:直接/间接。间接模式最典型(也只有这么一种)的就是HeapByteBuffer,即操作堆内存 (byte[])。</p>
+
+<p>ByteBuffer.MappedByteBuffer 只是一种特殊的ByteBuffer MappedByteBuffer 将文件直接映射到内存（这里的内存指的是虚拟内存，并不是物理内存）。通常，可以映射整个文件，如果文件比较大的话可以分段进行映射，只要指定文件的那个部分就可以。</p>
+
+<p>FileChannel提供了map方法（<code>MappedByteBuffer map(int mode,long position,long size)</code>）来把文件影射为内存映像文件。 可以把文件的从position开始的size大小的区域映射为内存映像文件，mode指出了 可访问该内存映像文件的方式：</p>
+
+<ul>
+<li>READ_ONLY,（只读）： 试图修改得到的缓冲区将导致抛出 ReadOnlyBufferException</li>
+<li>READ_WRITE（读/写）： 对得到的缓冲区的更改最终将传播到文件；该更改对映射到同一文件的其他程序不一定是可见的</li>
+<li>PRIVATE（专用）： 对得到的缓冲区的更改不会传播到文件，并且该更改对映射到同一文件的其他程序也不是可见的；相反，会创建缓冲区已修改部分的专用副本</li>
+</ul>
+
+<h4 id="工具">工具</h4>
+
+<p>Scatter/Gatter</p>
+
+<ul>
+<li>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中</li>
+<li>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel</li>
+</ul>
+
+<p>Pipe是两个线程之间的单向数据连接</p>
+
+<ul>
+<li>Pipe有一个source通道和一个sink通道</li>
+<li>数据会被写到sink通道，从source通道读取</li>
+</ul>
+
+<p>Path表示文件系统中的路径</p>
+
+<ul>
+<li>一个路径可以指向一个文件或一个目录。路径可以是绝对路径，也可以是相对路径</li>
+<li>绝对路径包含从文件系统的根目录到它指向的文件或目录的完整路径</li>
+<li>相对路径包含相对于其他路径的文件或目录的路径</li>
+</ul>
+
+<p>Files提供一些工具，它依赖于Path</p>
+
+<ul>
+<li>Files.exists()</li>
+<li>Files.createDirectory()</li>
+<li>Files.copy()</li>
+<li>Files.move()</li>
+<li>Files.delete()</li>
+<li>Files.walkFileTree()
+<br /></li>
+</ul>
+
+<hr />
+
+<p>注：以上内容收集于互联网多篇文章，在此感谢原作者们。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/java" rel="tag" title="Java">#Java#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2019/0928_java_base_5/" rel="next" title="Java基础知识点5">
+        <i class="fa fa-chevron-left"></i> Java基础知识点5
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/" rel="prev" title="Java基础知识点2">
+        Java基础知识点2 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">119</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">56</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+<ul>
+<li><a href="#io体系">IO体系</a>
+<ul>
+<li><a href="#普通io">普通IO</a>
+<ul>
+<li><a href="#文件对象">文件对象</a></li>
+<li><a href="#io操作">IO操作</a>
+<ul>
+<li><a href="#流式操作组件">流式操作组件</a></li>
+<li><a href="#数据转换组件">数据转换组件</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#nio">NIO</a>
+<ul>
+<li><a href="#区别">区别</a></li>
+<li><a href="#特性">特性</a></li>
+<li><a href="#核心组件">核心组件</a>
+<ul>
+<li><a href="#buffer">Buffer</a></li>
+<li><a href="#selector">Selector</a></li>
+</ul></li>
+<li><a href="#其它">其它</a>
+<ul>
+<li><a href="#内存映射文件">内存映射文件</a></li>
+<li><a href="#工具">工具</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N散記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.57.2</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

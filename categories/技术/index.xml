@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Java基础知识点7</title>
-      <link>http://lanlingzi.cn/post/technical/2019/1004_java_base_7/</link>
+      <title>Java基础知识点8</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</link>
       <pubDate>Fri, 04 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/1004_java_base_7/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</guid>
       <description>&lt;h1 id=&#34;内存模型&#34;&gt;内存模型&lt;/h1&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34; /&gt;&lt;/p&gt;
@@ -34,11 +34,11 @@
     </item>
     
     <item>
-      <title>Java基础知识点6</title>
-      <link>http://lanlingzi.cn/post/technical/2019/1003_java_base_6/</link>
+      <title>Java基础知识点7</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</link>
       <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/1003_java_base_6/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</guid>
       <description>&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
 
 &lt;p&gt;泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。&lt;/p&gt;
@@ -67,11 +67,11 @@
     </item>
     
     <item>
-      <title>Java基础知识点5</title>
-      <link>http://lanlingzi.cn/post/technical/2019/0929_java_base_5/</link>
+      <title>Java基础知识点6</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/0929_java_base_5/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</guid>
       <description>&lt;h1 id=&#34;java反射&#34;&gt;Java反射&lt;/h1&gt;
 
 &lt;p&gt;Java的反射机制是在编译并不确定是哪个类被加载了，而是在程序运行的时候才加载、探知、自审，使用在编译期并不知道的类。这样的特点就是反射。&lt;/p&gt;
@@ -100,11 +100,11 @@
     </item>
     
     <item>
-      <title>Java基础知识点4</title>
-      <link>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</link>
+      <title>Java基础知识点5</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</guid>
       <description>&lt;h1 id=&#34;java字节码&#34;&gt;Java字节码&lt;/h1&gt;
 
 &lt;p&gt;Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。&lt;/p&gt;
@@ -238,11 +238,11 @@
     </item>
     
     <item>
-      <title>Java基础知识点3</title>
-      <link>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</link>
+      <title>Java基础知识点4</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</link>
       <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</guid>
       <description>&lt;h1 id=&#34;io体系&#34;&gt;IO体系&lt;/h1&gt;
 
 &lt;h2 id=&#34;普通io&#34;&gt;普通IO&lt;/h2&gt;
@@ -276,6 +276,15 @@
       <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</guid>
+      <description>集合体系 集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点： 长度可变 存储元素可以是引用类型 可以存储多种类型的对象 Iterator Ite</description>
+    </item>
+    
+    <item>
+      <title>Java基础知识点3</title>
+      <link>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</link>
+      <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</guid>
       <description>&lt;h1 id=&#34;并发体系&#34;&gt;并发体系&lt;/h1&gt;
 
 &lt;h2 id=&#34;线程&#34;&gt;线程&lt;/h2&gt;

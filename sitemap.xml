@@ -1,8 +1,8 @@
 <search>
     
      <entry>
-        <title>Java基础知识点7</title>
-        <url>http://lanlingzi.cn/post/technical/2019/1004_java_base_7/</url>
+        <title>Java基础知识点8</title>
+        <url>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</url>
         <categories>
           <category>技术</category>
         </categories>
@@ -72,8 +72,8 @@ Minor GC:
     </entry>
     
      <entry>
-        <title>Java基础知识点6</title>
-        <url>http://lanlingzi.cn/post/technical/2019/1003_java_base_6/</url>
+        <title>Java基础知识点7</title>
+        <url>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</url>
         <categories>
           <category>技术</category>
         </categories>
@@ -112,8 +112,8 @@ public interface GenericArrayType extends Type { Type getGenericComponentType();
     </entry>
     
      <entry>
-        <title>Java基础知识点5</title>
-        <url>http://lanlingzi.cn/post/technical/2019/0929_java_base_5/</url>
+        <title>Java基础知识点6</title>
+        <url>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</url>
         <categories>
           <category>技术</category>
         </categories>
@@ -151,8 +151,8 @@ Instrumentation是的个接口定义，主要提供如下方法：
     </entry>
     
      <entry>
-        <title>Java基础知识点4</title>
-        <url>http://lanlingzi.cn/post/technical/2019/0928_java_base_4/</url>
+        <title>Java基础知识点5</title>
+        <url>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</url>
         <categories>
           <category>技术</category>
         </categories>
@@ -189,8 +189,8 @@ contextClassLoader是线程上下文类加载器，是从父线程那里继承�
     </entry>
     
      <entry>
-        <title>Java基础知识点3</title>
-        <url>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</url>
+        <title>Java基础知识点4</title>
+        <url>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</url>
         <categories>
           <category>技术</category>
         </categories>
@@ -239,6 +239,48 @@ FileChannel提供了map方法（MappedByteBuffer map(int mode,long position,long
         <tags>
           <tag>软件开发</tag><tag>Java</tag>
         </tags>
+        <content type="html">  集合体系 集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：
+ 长度可变 存储元素可以是引用类型 可以存储多种类型的对象   Iterator Iterator接口：
+ 对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。 提供boolean hasNext()和E next()两个方法  ListIterator：
+ 只能用于List的迭代器。 在使用迭代器迭代的过程中需要使用集合中的方法操作元素，出现ConcurrentModificationException异常时，可以使用ListIterator避免  Collection Collection接口：
+ List接口：有序(存入和取出的顺序一致),元素都有索引(下标)，元素可以重复。  Vector：内部是 数组 数据结构，是同步的。增删，查询都很慢！100%延长（几乎不用了）
+ ArrayList：内部是 数组 数据结构，是不同步的。替代了Vector，查询的速度快，增删速度慢。50%延长。查询时是从容器的第一个元素往后找，由于数组的内存空间是连续的，所以查询快；增删的话所有元素内存地址都要改变，所以增删慢。 LinkedList：内部是 链表 数据结构，是不同步的。增删元素的速度很快。同理，链表的内存空间是不连续的，所以查询慢；增删时只需改变单个指针的指向，所以快。  Set接口：无序，元素不能重复。Set接口中的方法和Collection一致。  HashSet：内部数据结构是哈希表 ，是不同步的。 LinkedHashSet：内部数据结构是哈希表和链表，是有顺序的HashSet。 TreeSet：内部数据结构是有序的二叉树，它的作用是提供有序的Set集合，是不同步的。    List接口：
+ 有一个最大的共性特点就是都可以操作角标，所以LinkedList也是有索引的。list集合可以完成对元素的增删改查。  Set和List的区别：
+ Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素。 Set检索效率低下，删除和插入效率高，插入和删除不会引起元素位置改变 。 List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变。  Map Map接口：
+ 一次添加一对元素，Collection 一次添加一个元素。 Map也称为双列集合，Collection集合也称为单列集合。 map集合中存储的就是键值对，map集合中必须保证键的唯一性   Map常用的子类：
+ Hashtable :内部结构是哈希表，是同步的。不允许null作为键，null作为值。  Properties：用来存储键值对型的配置文件的信息，可以和IO技术相结合。  HashMap : 内部结构是哈希表，不是同步的。允许null作为键，null作为值。 TreeMap : 内部结构是二叉树，不是同步的。可以对Map集合中的键进行排序。  Map的迭代方法（Map本身没有迭代器）：
+ 利用Map接口的values()方法,返回此映射中包含的值的 Collection（值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候） 通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。 利用Map的内部接口Map.Entry使用iterator。  Queue Queue接口:
+ 继承Collection boolean add(E e)，队列满，抛IllegalStateException / boolean offer(E e)，当容量限制时，与add相同抛IllegalStateException E remove()，抛NoSuchElementException / E poll()，不抛，返回null E element()，抛NoSuchElementException / E peek()，不抛，返回null  Deque接口，是一个实现了双端队列数据结构的队列，即在头尾都可进行删除和新增操作；
+ 继承Queue 依旧保持着“先进先出”的本质 增加 xxxFirst与xxxLast方法 可以被当做“栈”来使用，即“后进先出”，添加元素、删除元素都在队头进行通过push/pop两个方法来实现 主要两个实现LinkedList与ArrayDeque  PriorityQueue:
+ 不同于先进先出，它可以通过比较器控制元素的输出顺序（优先级） 本质上就是一个最小堆存储结构数组了 通过“极大优先级堆”实现的，即堆顶元素是优先级最大的元素。算是集成了大根堆和小根堆的功能。 堆的操作，主要就是两个：siftUp和siftDown，一个是向上调整堆，一个是向下调整堆。  工具类Collections 根据字符串长度的正序和倒序排序：
+ Collections.reverse(List&amp;lt;?&amp;gt; list) 反转指定列表中元素的顺序。 &amp;lt;T&amp;gt; Comparator&amp;lt;T&amp;gt; Collections.reverseOrder() 返回一个比较器，它强行逆转实现了 Comparable 接口的对象 collection 的自然顺序。 &amp;lt;T&amp;gt; Comparator&amp;lt;T&amp;gt; reverseOrder(Comparator&amp;lt;T&amp;gt; cmp) 返回一个比较器，它强行逆转指定比较器的顺序。  排序
+ Collections.sort(List&amp;lt;?&amp;gt; list) Collections.sort(List&amp;lt;?&amp;gt; list, Collections.reverseOrder())  同步视图
+ &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; synchronizedCollection(Collection&amp;lt;T&amp;gt; c) &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; synchronizedCollection(Collection&amp;lt;T&amp;gt; c, Object mutex)   只读视图
+ &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; unmodifiableCollection(Collection&amp;lt;? extends T&amp;gt; c)  其它工具
+ &amp;lt;T&amp;gt; int binarySearch(List&amp;lt;? extends Comparable&amp;lt;? super T&amp;gt;&amp;gt; list, T key) &amp;lt;T&amp;gt; int indexedBinarySearch(List&amp;lt;? extends Comparable&amp;lt;? super T&amp;gt;&amp;gt; list, T key) &amp;lt;T&amp;gt; T max(Collection&amp;lt;? extends T&amp;gt; coll, Comparator&amp;lt;? super T&amp;gt; comp) &amp;lt;T&amp;gt; T min(Collection&amp;lt;? extends T&amp;gt; coll, Comparator&amp;lt;? super T&amp;gt; comp) &amp;lt;T&amp;gt; void fill(List&amp;lt;? super T&amp;gt; list, T obj) &amp;lt;T&amp;gt; List&amp;lt;T&amp;gt; nCopies(int n, T o)  并发集合 List接口:
+ CopyOnWriteArrayList,线程安全的ArrayList  适用于读操作远远多于写操作，并且数据量较小的情况 修改容器的代价是昂贵的，因此建议批量增加addAll、批量删除removeAll CopyOnWrite机制  使用volatile修饰数组引用：确保数组引用的内存可见性 对容器修改操作进行同步：从而确保同一时刻只能有一条线程修改容器（因为修改容器都会产生一个新的容器，增加同步可避免同一时刻复制生成多个容器，从而无法保证数组数据的一致性） 修改时复制容器：确保所有修改操作都作用在新数组上，原本的数组在创建过后就用不变化，从而其他线程可以放心地读。    Set接口:
+ CopyOnWriteArraySet是线程安全的Set，它内部包含了一个CopyOnWriteArrayList，因此本质上是由CopyOnWriteArrayList实现的。 ConcurrentSkipListSet相当于线程安全的TreeSet。它是有序的Set。它由ConcurrentSkipListMap实现。  它是一个有序的、线程安全的Set，相当于线程安全的TreeSet。    Map接口：
+ ConcurrentHashMap线程安全的HashMap。采用分段锁实现高效并发。  ConcurrentHashMap由多个Segment构成，每个Segment都包含一张哈希表。每次操作只将操作数据所属的Segment锁起来，从而避免将整个锁住。  ConcurrentSkipListMap线程安全的有序Map。使用跳表实现高效并发。  它是一个有序的Map，相当于TreeMap。TreeMap采用红黑树实现排序，而ConcurrentHashMap采用跳表实现有序。 跳表是条有序的单链表，它的每个节点都有多个指向后继节点的引用。   Queue：
+ ConcurrentLinkedQueue线程安全的无界队列。底层采用单链表。支持FIFO。  head、tail、next、item均使用volatile修饰，保证其内存可见性，并未使用锁，从而提高并发效率。  ConcurrentLinkedDeque线程安全的无界双端队列。底层采用双向链表。支持FIFO和FILO。 ArrayBlockingQueue数组实现的阻塞队列。  内部由Object数组存储元素，构造时必须要指定队列容量。 由ReentrantLock实现队列的互斥访问，并由notEmpty、notFull这两个Condition分别实现队空、队满的阻塞。 ReentrantLock分为公平锁和非公平锁，可以在构造ArrayBlockingQueue时指定。默认为非公平锁。 队满阻塞：当添加元素时，若队满，则调用notFull.await()阻塞当前线程；当移除一个元素时调用notFull.signal()唤醒在notFull上等待的线程。 队空阻塞：当删除元素时，若队为空，则调用notEmpty.await()阻塞当前线程；当队首添加元素时，调用notEmpty.signal()唤醒在notEmpty上等待的线程。  LinkedBlockingQueue链表实现的阻塞队列。  由单链表实现，因此是个无限队列。但为了方式无限膨胀，构造时可以加上容量加以限制。 分别采用读取锁和插入锁控制读取/删除 和 插入过程的并发访问，并采用notEmpty和notFull两个Condition实现队满队空的阻塞与唤醒。 队满阻塞：若要插入元素，首先需要获取putLock；在此基础上，若此时队满，则调用notFull.await()，阻塞当前线程；当移除一个元素后调用notFull.signal()唤醒在notFull上等待的线程；最后，当插入操作完成后释放putLock。 若要删除/获取元素，首先要获取takeLock；在此基础上，若队为空，则调用notEmpty.await()，阻塞当前线程；当插入一个元素后调用notEmpty.signal()唤醒在notEmpty上等待的线程；最后，当删除操作完成后释放takeLock。  LinkedBlockingDeque双向链表实现的双端阻塞队列。  Stream Stream 是对集合（Collection）对象功能的增强，它专注于对集合对象进行各种非常便利、高效的聚合操作（aggregate operation），或者大批量数据操作 (bulk data operation)。
+对 Stream 的使用就是实现一个 filter-map-reduce 过程，产生一个最终结果，或者导致一个副作用（side effect）。Stream 不是集合元素，它不是数据结构并不保存数据，它是有关算法和计算的，它更像一个高级版本的 Iterator。
+操作类型  Intermediate（中间操作）: 可以后面跟随零个或多个 intermediate 操作。这类操作都是惰性化的（lazy）。map (mapToInt, flatMap 等)、 filter、 distinct、 sorted、 peek、 limit、 skip、 parallel、 sequential、 unordered等 Terminal（终止操作）: 只能有一个 terminal 操作, Terminal 操作的执行，才会真正开始流的遍历，并且会生成一个结果。forEach、 forEachOrdered、 toArray、 reduce、 collect、 min、 max、 count、 anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 iterator等  还有一种操作被称为 short-circuiting（短路操作）：
+ 对于一个 intermediate 操作，如果它接受的是一个无限流，它可以返回一个有限的新 Stream。 对于一个 terminal 操作，如果它接受的是一个无限流，但能在有限的时间计算出结果。anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 limit  构造  Stream.of(T… values)：需要注意的是，不能全是null Stream.empty()：构造一个空流 Stream.iterate(BigInteger.ONE, n-&amp;gt;n.add(BigInteger.ONE)) Stream.generate(new Random()::nextInt) Stream.concat(list1.stream(),list2.stream()) IntStream.range(1, 3) IntStream.rangeClosed(1, 3)  reduce reduce的作用是把stream中的元素给组合起来。至于怎么组合起来：它需要我们首先提供一个起始种子，然后依照某种运算规则使其与stream的第一个元素发生关系产生一个新的种子，这个新的种子再紧接着与stream的第二个元素发生关系产生又一个新的种子，就这样依次递归执行，最后产生的结果就是reduce的最终产出。
+运用reduce我们可以做sum,min,max,average，这些常用的reduce，stream api已经为我们封装了对应的方法。
+ reduce(T iden, BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 T reduce(BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 Optional reduce(U identity, BiFunction a, BinaryOperator combiner)： 可以将流中元素反复结合起来，得到一个值，返回 Optional  三个参数时是最难以理解的。 分析下它的三个参数：
+ identity: 一个初始化的值；这个初始化的值其类型是泛型U，与Reduce方法返回的类型一致；注意此时Stream中元素的类型是T，与U可以不一样也可以一样，这样的话操作空间就大了；不管Stream中存储的元素是什么类型，U都可以是任何类型，如U可以是一些基本数据类型的包装类型Integer、Long等；或者是String，又或者是一些集合类型ArrayList等 accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的 combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作  collect Collectors里常用搜集器
+ toList：list.stream().collect(Collectors.toList()) toSet：list.stream().collect(Collectors.toSet()) toCollection：list.stream().collect(Collectors.toCollection()) counting：计算流中元素的个数， list.stream().collect(Collectors.counting()) summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary)) averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary)) summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage() joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(&amp;ldquo;,&amp;rdquo;)) maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary))) minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary))) reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum)) collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size)) groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status)) partitiongBy：根据true/fase对流分组，返回Map, toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream() .collect(toMap(t -&amp;gt; t.getId(), Function.identity(), (k1, k2) -&amp;gt; k1, LinkedHashMap::new)) toConcurrentMap: 线程安全的Map  注：以上内容收集于互联网多篇文章，在此感谢原作者们。
+</content>
+    </entry>
+    
+     <entry>
+        <title>Java基础知识点3</title>
+        <url>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag><tag>Java</tag>
+        </tags>
         <content type="html"> 并发体系 线程 线程安全 线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。
  原子性 可见性 顺序的  线程实现：
  Runnable：函数没有返回值 Callable：函数有返回值 Future：对于具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果、设置结果操作。 FutureTask：是Future也是Runnable，又是包装了的Callable Thread：代表JVM一个线程  线程状态  NEW：至今尚未启动的线程处于该状态，通俗来讲，该状态是线程实例化后还从未执行start()方法的状态； RUNNABLE：正在java虚拟机中执行的线程处于这种状态； BLOCKED：受阻塞并等待某个监视器锁的线程处于这种状态； WAITING：无限期地等待另一个线程来执行某一特定操作的线程处于这种状态； TIMED_WAITING：等待另一个线程来执行取决于指定等待时间的操作的线程处于这种状态； TERMINATED：已退出的线程处于这种状态，线程被销毁。  方法：
@@ -251,6 +293,13 @@ FileChannel提供了map方法（MappedByteBuffer map(int mode,long position,long
  控制线程数量，避免因为创建大量的线程导致的系统崩溃 重用线程，避免频繁地创建销毁线程  Java 1.5引入Executor与ExecutorService：
  Executor： 提交普通的可执行任务 ExecutorService： 在Executor的基础上增强了对任务的控制，同时包括对自身生命周期的管理 ScheduledExecutorService： 在ExecutorService基础上，提供对任务的周期性执行支持  Executors，是生产Executor的工厂：
  固定线程数的线程池：newFixedThreadPool 单个线程的线程池：newSingleThreadExecutor 可缓存的线程池：newCachedThreadPool 可延时/周期调度的线程池：newScheduledThreadPool Fork/Join线程池：newWorkStealingPool，在Java 1.7时才引入，其核心实现就是ForkJoinPool类  工作窃取算法 由于线程处理不同任务的速度不同，这样就可能存在某个线程先执行完了自己队列中的任务的情况，这时为了提升效率，我们可以让该线程去“窃取”其它任务队列中的任务，这就是所谓的工作窃取算法。ForkJoinPool是一种实现了工作窃取算法的线程池。
+与OS线程关系 Java线程在JDK1.2之前，是基于称为“绿色线程”（Green Threads）的用户线程实现的，而在JDK1.2中，线程模型替换为基于操作系统原生线程模型来实现。也就是说，现在的Java中线程的本质，其实就是操作系统中的线程，Linux下是基于pthread库实现的NPTL，Windows下是原生的系统Win32 API提供系统调用从而实现多线程。
+轻量级进程（LWP）与内核线程之间1:1的关系称为一对一的线程模型。NPTL（ Native POSIX Thread Library），内核2.6开始有了新的线程实现方式NPTL。NPTL同样使用的是1:1模型，但此时对应内核的管理结构不再是LWP了：
+ LWP： 调度实体都是进程，内核并没有真正支持线程。它是能过一个系统调用clone()来实现的，这个调用创建了一份调用进程的拷贝，跟fork()不同的是,这份进程拷贝完全共享了调用进程的地址空间。 NPTL：在内核里面线程仍然被当作是一个进程，并且仍然使用了clone()系统调用(在NPTL库里调用)。但是，NPTL需要内核级的特殊支持来实现，比如需要挂起然后再唤醒线程的线程同步原语futex。
+  简言之，他们之间的关系：java线程（N）&amp;lt;-&amp;gt; 用户线程/C线程（N）&amp;lt;-&amp;gt; 内核线程/OS线程（N）&amp;lt;-&amp;gt; CPU核（1）
+状态关系 从实际意义上来讲，操作系统中的线程除去new和terminated状态，一个线程真实存在的状态，只有：
+ ready：表示线程已经被创建，正在等待系统调度分配CPU使用权。 running：表示线程获得了CPU使用权，正在进行运算 waiting：表示线程等待（或者说挂起），让出CPU资源给其他线程使用  对于Java中的线程状态：无论是Timed Waiting ，Waiting还是Blocked，对应的都是操作系统线程的waiting（等待）状态。而Runnable状态，则对应了操作系统中的ready和running状态。
+而对不同的操作系统，由于本身设计思路不一样，对于线程的设计也存在种种差异，所以JVM在设计上，就已经声明：虚拟机中的线程状态，不反应任何操作系统线程状态。只是作为理解模型，Java线程和操作系统线程，实际上同根同源，但又相差甚远。
 锁 乐观锁/悲观锁 乐观锁与悲观锁概念：
  悲观锁：认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。 乐观锁：认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。一般会使用“数据版本机制”或“CAS操作”来实现。  乐观锁与悲观锁使用场景：
  悲观锁适合写操作多的场景，先加锁可以保证写操作时数据正确 乐观锁适合读操作多的场景，不加锁的特点能够使其读操作的性能大幅提升  数据版本机制 实现数据版本一般有两种，第一种是使用版本号，第二种是使用时间戳。
@@ -283,29 +332,19 @@ AQS定义两种资源共享方式：
         <content type="html"> 基本数据类型    数据类型 大小 范围 默认值     byte(字节) 8 -128 - 127 0   shot(短整型) 16 -2^15 - 2^15-1 0   int(整型) 32 -2^31 - 2^31-1 0   long(长整型) 64 -2^63 - 2^63-1 0   float(浮点型) 32 1.4013E-45 - 3.4028E&#43;38 0.0f   double(双精度) 64 -1.7976E&#43;308 - 1.79769E&#43;308 0.0d   char(字符型) 16 \u0000 - u\ffff \u0000   boolean(布尔型) 1 true/false false    控制语句 swith语句 switch(A)括号中A的取值类型如下：
  byte short int char 枚举 String(Java 7)  注意不能是long
 case B:C
- case是常量表达式， case后的语句可以不用大括号，也就是说C不需要使用大括号； default没有符合的case就执行它，default并不是必须的。  for语法  无限循环： for（；；） index for: for(int i = 0; i &amp;lt; MAX; i&#43;&#43;) for each: for（a : iterator） Java 5  labeled loop vectorLoop: for( int idx = 0; idx &amp;lt; vectorLength; idx&#43;&#43;) { if( conditionAtVectorPosition( v, idx ) ) continue vectorLoop; matrixLoop: for( rowIdx = 0; rowIdx &amp;lt; n; rowIdx&#43;&#43; ) { if( anotherConditionAtVector( v, rowIdx ) ) continue matrixLoop; if( conditionAtMatrixRowCol( m, rowIdx, idx ) ) continue vectorLoop; } setValueInVector( v, idx ); }  异常体系  Throwable作为所有异常的超类 Error（错误）：是程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。 Exception（异常）：程序本身可以捕获并且可以处理的异常。  运行时异常(不受检异常)：RuntimeException类极其子类表示JVM在运行期间可能出现的错误。比如说试图使用空值对象的引用（NullPointerException）、数组下标越界（ArrayIndexOutBoundException）。此类异常属于不可查异常，一般是由程序逻辑错误引起的，在程序中可以选择捕获处理，也可以不处理。 编译异常(受检异常)：Exception中除RuntimeException极其子类之外的异常。如果程序中出现此类异常，比如说IOException，必须对该异常进行处理，否则编译不通过。在程序中，通常不会自定义该类异常，而是直接使用系统提供的异常类。   集合体系 集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：
- 长度可变 存储元素可以是引用类型 可以存储多种类型的对象   Iterator Iterator接口：
- 对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。 提供boolean hasNext()和E next()两个方法  ListIterator：
- 只能用于List的迭代器。 在使用迭代器迭代的过程中需要使用集合中的方法操作元素，出现ConcurrentModificationException异常时，可以使用ListIterator避免  Collection Collection接口：
- List接口：有序(存入和取出的顺序一致),元素都有索引(下标)，元素可以重复。  Vector：内部是 数组 数据结构，是同步的。增删，查询都很慢！100%延长（几乎不用了）
- ArrayList：内部是 数组 数据结构，是不同步的。替代了Vector，查询的速度快，增删速度慢。50%延长。查询时是从容器的第一个元素往后找，由于数组的内存空间是连续的，所以查询快；增删的话所有元素内存地址都要改变，所以增删慢。 LinkedList：内部是 链表 数据结构，是不同步的。增删元素的速度很快。同理，链表的内存空间是不连续的，所以查询慢；增删时只需改变单个指针的指向，所以快。  Set接口：无序，元素不能重复。Set接口中的方法和Collection一致。  HashSet：内部数据结构是哈希表 ，是不同步的。 LinkedHashSet：内部数据结构是哈希表和链表，是有顺序的HashSet。 TreeSet：内部数据结构是有序的二叉树，它的作用是提供有序的Set集合，是不同步的。    List接口：
- 有一个最大的共性特点就是都可以操作角标，所以LinkedList也是有索引的。list集合可以完成对元素的增删改查。  Set和List的区别：
- Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素。 Set检索效率低下，删除和插入效率高，插入和删除不会引起元素位置改变 。 List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变。  Map Map接口：
- 一次添加一对元素，Collection 一次添加一个元素。 Map也称为双列集合，Collection集合也称为单列集合。 map集合中存储的就是键值对，map集合中必须保证键的唯一性   Map常用的子类：
- Hashtable :内部结构是哈希表，是同步的。不允许null作为键，null作为值。  Properties：用来存储键值对型的配置文件的信息，可以和IO技术相结合。  HashMap : 内部结构是哈希表，不是同步的。允许null作为键，null作为值。 TreeMap : 内部结构是二叉树，不是同步的。可以对Map集合中的键进行排序。  Map的迭代方法（Map本身没有迭代器）：
- 利用Map接口的values()方法,返回此映射中包含的值的 Collection（值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候） 通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。 利用Map的内部接口Map.Entry使用iterator。  Queue Queue接口:
- 继承Collection boolean add(E e)，队列满，抛IllegalStateException / boolean offer(E e)，当容量限制时，与add相同抛IllegalStateException E remove()，抛NoSuchElementException / E poll()，不抛，返回null E element()，抛NoSuchElementException / E peek()，不抛，返回null  Deque接口，是一个实现了双端队列数据结构的队列，即在头尾都可进行删除和新增操作；
- 继承Queue 依旧保持着“先进先出”的本质 增加 xxxFirst与xxxLast方法 可以被当做“栈”来使用，即“后进先出”，添加元素、删除元素都在队头进行通过push/pop两个方法来实现 主要两个实现LinkedList与ArrayDeque  PriorityQueue:
- 不同于先进先出，它可以通过比较器控制元素的输出顺序（优先级） 本质上就是一个最小堆存储结构数组了 通过“极大优先级堆”实现的，即堆顶元素是优先级最大的元素。算是集成了大根堆和小根堆的功能。 堆的操作，主要就是两个：siftUp和siftDown，一个是向上调整堆，一个是向下调整堆。  工具类Collections 根据字符串长度的正序和倒序排序：
- Collections.reverse(List&amp;lt;?&amp;gt; list) 反转指定列表中元素的顺序。 &amp;lt;T&amp;gt; Comparator&amp;lt;T&amp;gt; Collections.reverseOrder() 返回一个比较器，它强行逆转实现了 Comparable 接口的对象 collection 的自然顺序。 &amp;lt;T&amp;gt; Comparator&amp;lt;T&amp;gt; reverseOrder(Comparator&amp;lt;T&amp;gt; cmp) 返回一个比较器，它强行逆转指定比较器的顺序。  排序
- Collections.sort(List&amp;lt;?&amp;gt; list) Collections.sort(List&amp;lt;?&amp;gt; list, Collections.reverseOrder())  同步视图
- &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; synchronizedCollection(Collection&amp;lt;T&amp;gt; c) &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; synchronizedCollection(Collection&amp;lt;T&amp;gt; c, Object mutex)   只读视图
- &amp;lt;T&amp;gt; Collection&amp;lt;T&amp;gt; unmodifiableCollection(Collection&amp;lt;? extends T&amp;gt; c)  其它工具
- &amp;lt;T&amp;gt; int binarySearch(List&amp;lt;? extends Comparable&amp;lt;? super T&amp;gt;&amp;gt; list, T key) &amp;lt;T&amp;gt; int indexedBinarySearch(List&amp;lt;? extends Comparable&amp;lt;? super T&amp;gt;&amp;gt; list, T key) &amp;lt;T&amp;gt; T max(Collection&amp;lt;? extends T&amp;gt; coll, Comparator&amp;lt;? super T&amp;gt; comp) &amp;lt;T&amp;gt; T min(Collection&amp;lt;? extends T&amp;gt; coll, Comparator&amp;lt;? super T&amp;gt; comp) &amp;lt;T&amp;gt; void fill(List&amp;lt;? super T&amp;gt; list, T obj) &amp;lt;T&amp;gt; List&amp;lt;T&amp;gt; nCopies(int n, T o)  并发集合 List接口:
- CopyOnWriteArrayList,线程安全的ArrayList  适用于读操作远远多于写操作，并且数据量较小的情况 修改容器的代价是昂贵的，因此建议批量增加addAll、批量删除removeAll CopyOnWrite机制  使用volatile修饰数组引用：确保数组引用的内存可见性 对容器修改操作进行同步：从而确保同一时刻只能有一条线程修改容器（因为修改容器都会产生一个新的容器，增加同步可避免同一时刻复制生成多个容器，从而无法保证数组数据的一致性） 修改时复制容器：确保所有修改操作都作用在新数组上，原本的数组在创建过后就用不变化，从而其他线程可以放心地读。    Set接口:
- CopyOnWriteArraySet是线程安全的Set，它内部包含了一个CopyOnWriteArrayList，因此本质上是由CopyOnWriteArrayList实现的。 ConcurrentSkipListSet相当于线程安全的TreeSet。它是有序的Set。它由ConcurrentSkipListMap实现。  它是一个有序的、线程安全的Set，相当于线程安全的TreeSet。    Map接口：
- ConcurrentHashMap线程安全的HashMap。采用分段锁实现高效并发。  ConcurrentHashMap由多个Segment构成，每个Segment都包含一张哈希表。每次操作只将操作数据所属的Segment锁起来，从而避免将整个锁住。  ConcurrentSkipListMap线程安全的有序Map。使用跳表实现高效并发。  它是一个有序的Map，相当于TreeMap。TreeMap采用红黑树实现排序，而ConcurrentHashMap采用跳表实现有序。 跳表是条有序的单链表，它的每个节点都有多个指向后继节点的引用。   Queue：
- ConcurrentLinkedQueue线程安全的无界队列。底层采用单链表。支持FIFO。  head、tail、next、item均使用volatile修饰，保证其内存可见性，并未使用锁，从而提高并发效率。  ConcurrentLinkedDeque线程安全的无界双端队列。底层采用双向链表。支持FIFO和FILO。 ArrayBlockingQueue数组实现的阻塞队列。  内部由Object数组存储元素，构造时必须要指定队列容量。 由ReentrantLock实现队列的互斥访问，并由notEmpty、notFull这两个Condition分别实现队空、队满的阻塞。 ReentrantLock分为公平锁和非公平锁，可以在构造ArrayBlockingQueue时指定。默认为非公平锁。 队满阻塞：当添加元素时，若队满，则调用notFull.await()阻塞当前线程；当移除一个元素时调用notFull.signal()唤醒在notFull上等待的线程。 队空阻塞：当删除元素时，若队为空，则调用notEmpty.await()阻塞当前线程；当队首添加元素时，调用notEmpty.signal()唤醒在notEmpty上等待的线程。  LinkedBlockingQueue链表实现的阻塞队列。  由单链表实现，因此是个无限队列。但为了方式无限膨胀，构造时可以加上容量加以限制。 分别采用读取锁和插入锁控制读取/删除 和 插入过程的并发访问，并采用notEmpty和notFull两个Condition实现队满队空的阻塞与唤醒。 队满阻塞：若要插入元素，首先需要获取putLock；在此基础上，若此时队满，则调用notFull.await()，阻塞当前线程；当移除一个元素后调用notFull.signal()唤醒在notFull上等待的线程；最后，当插入操作完成后释放putLock。 若要删除/获取元素，首先要获取takeLock；在此基础上，若队为空，则调用notEmpty.await()，阻塞当前线程；当插入一个元素后调用notEmpty.signal()唤醒在notEmpty上等待的线程；最后，当删除操作完成后释放takeLock。  LinkedBlockingDeque双向链表实现的双端阻塞队列。  注：以上内容收集于互联网多篇文章，在此感谢原作者们。
+ case是常量表达式， case后的语句可以不用大括号，也就是说C不需要使用大括号； default没有符合的case就执行它，default并不是必须的。  for语法  无限循环： for（；；） index for: for(int i = 0; i &amp;lt; MAX; i&#43;&#43;) for each: for（a : iterator） Java 5  labeled loop vectorLoop: for( int idx = 0; idx &amp;lt; vectorLength; idx&#43;&#43;) { if( conditionAtVectorPosition( v, idx ) ) continue vectorLoop; matrixLoop: for( rowIdx = 0; rowIdx &amp;lt; n; rowIdx&#43;&#43; ) { if( anotherConditionAtVector( v, rowIdx ) ) continue matrixLoop; if( conditionAtMatrixRowCol( m, rowIdx, idx ) ) continue vectorLoop; } setValueInVector( v, idx ); }  异常体系  Throwable作为所有异常的超类 Error（错误）：是程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。 Exception（异常）：程序本身可以捕获并且可以处理的异常。  运行时异常(不受检异常)：RuntimeException类极其子类表示JVM在运行期间可能出现的错误。比如说试图使用空值对象的引用（NullPointerException）、数组下标越界（ArrayIndexOutBoundException）。此类异常属于不可查异常，一般是由程序逻辑错误引起的，在程序中可以选择捕获处理，也可以不处理。 编译异常(受检异常)：Exception中除RuntimeException极其子类之外的异常。如果程序中出现此类异常，比如说IOException，必须对该异常进行处理，否则编译不通过。在程序中，通常不会自定义该类异常，而是直接使用系统提供的异常类。   正则表达式 正则表达式定义了字符串的模式，可以用来搜索、编辑或处理文本。并不仅限于某一种语言，但是在每种语言中有细微的差别。
+Java 正则表达式和 Perl 的是最为相似的。
+ Pattern 类：是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。 Matcher 类： Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。  捕获组 捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。
+捕获组是通过从左至右计算其开括号来编号。例如，在表达式（（A）（B（C））），有四个这样的组：
+ ((A)(B(C))) (A) (B(C)) (C)  可以通过调用 matcher 对象的 groupCount 方法来查看表达式有多少个分组。groupCount 方法返回一个 int 值，表示matcher对象当前有多个捕获组。 还有一个特殊的组（group(0)），它总是代表整个表达式。该组不包括在 groupCount 的返回值中。
+语法 元字符
+ `. : 匹配除换行符以外的任意字符 \w: 匹配字母或数字或下划线或汉字 \s: 匹配任意的空白符 \d: 匹配数字 ^: 匹配字符串的开始 $: 匹配字符串的结束 \b: 匹配字符串的结束  重复
+ * : 重复零次或更多次 &#43; : 重复一次或更多次 ? : 重复零次或一次 {n} : 重复n次 {n,} : 重复n次或更多次 {n,m} : 重复n到m次  反义
+ [^x] : 匹配除了x以外的任意字符 [^aeiou] : 匹配除了aeiou这几个字母以外的任意字符 \W : 匹配任意不是字母，数字，下划线，汉字的字符 \S : 匹配任意不是空白符的字符 \D : 匹配任意非数字的字符 \B : 匹配不是单词开头或结束的位置  零宽断言
+ (?=exp) : 匹配exp前面的位置 (?&amp;lt;=exp) : 匹配exp后面的位置 (?!exp) : 匹配后面跟的不是exp的位置 (?&amp;lt;!exp) : 匹配前面不是exp的位置   注释
+ (?#comment) : 注释  贪婪与懒惰
+ *? : 重复任意次，但尽可能少重复 &#43;? : 重复1次或更多次，但尽可能少重复 ?? : 重复0次或1次，但尽可能少重复 {n,m}? : 重复n到m次，但尽可能少重复 {n,}? : 重复n次以上，但尽可能少重复  其他
+ POSIX 字符类: 如\p{Lower}表示小写字母字符：[a-z] 引用： \, \Q, \E   注：以上内容收集于互联网多篇文章，在此感谢原作者们。
 </content>
     </entry>
     
