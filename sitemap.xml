@@ -1,7 +1,19 @@
 <search>
     
      <entry>
-        <title>Java基础知识点8</title>
+        <title>Posts</title>
+        <url>http://lanlingzi.cn/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
+    </entry>
+    
+     <entry>
+        <title>跟我一起复习Java-8</title>
         <url>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</url>
         <categories>
           <category>技术</category>
@@ -60,19 +72,7 @@ Minor GC:
     </entry>
     
      <entry>
-        <title>Posts</title>
-        <url>http://lanlingzi.cn/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
-    </entry>
-    
-     <entry>
-        <title>Java基础知识点7</title>
+        <title>跟我一起复习Java-7</title>
         <url>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</url>
         <categories>
           <category>技术</category>
@@ -112,7 +112,7 @@ public interface GenericArrayType extends Type { Type getGenericComponentType();
     </entry>
     
      <entry>
-        <title>Java基础知识点6</title>
+        <title>跟我一起复习Java-6</title>
         <url>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</url>
         <categories>
           <category>技术</category>
@@ -151,7 +151,7 @@ Instrumentation是的个接口定义，主要提供如下方法：
     </entry>
     
      <entry>
-        <title>Java基础知识点5</title>
+        <title>跟我一起复习Java-5</title>
         <url>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</url>
         <categories>
           <category>技术</category>
@@ -189,7 +189,7 @@ contextClassLoader是线程上下文类加载器，是从父线程那里继承�
     </entry>
     
      <entry>
-        <title>Java基础知识点3</title>
+        <title>跟我一起复习Java-3</title>
         <url>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</url>
         <categories>
           <category>技术</category>
@@ -237,7 +237,7 @@ AQS定义两种资源共享方式：
     </entry>
     
      <entry>
-        <title>Java基础知识点4</title>
+        <title>跟我一起复习Java-4</title>
         <url>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</url>
         <categories>
           <category>技术</category>
@@ -279,7 +279,7 @@ FileChannel提供了map方法（MappedByteBuffer map(int mode,long position,long
     </entry>
     
      <entry>
-        <title>Java基础知识点2</title>
+        <title>跟我一起复习Java-2</title>
         <url>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</url>
         <categories>
           <category>技术</category>
@@ -321,7 +321,7 @@ FileChannel提供了map方法（MappedByteBuffer map(int mode,long position,long
     </entry>
     
      <entry>
-        <title>Java基础知识点1</title>
+        <title>跟我一起复习Java-1</title>
         <url>http://lanlingzi.cn/post/technical/2019/0921_java_base_1/</url>
         <categories>
           <category>技术</category>
