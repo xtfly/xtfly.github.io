@@ -1,6 +1,6 @@
 ---
 title: "Java基础知识点3"
-date: "2019-09-23"
+date: "2019-09-22"
 categories:
  - "技术"
 tags:
@@ -9,204 +9,226 @@ tags:
 toc: true
 ---
 
-# IO体系
+# 并发体系
 
-## 普通IO
+## 线程
 
-整个Java.io包主要分为两大部分
+### 线程安全
 
- - 文件特征对象
- - 文件内容操作对象
+线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。
 
-### 文件对象
+  - 原子性
+  - 可见性
+  - 顺序的
 
-在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。
+线程实现：
 
-文件特征对象主要有如下：
-
-  - 文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等
-  - 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象
-  - 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统
-  - 文件特征，包括Closeable，Flushable，FileFilter，Serializable
-
-文件内容操作对象主要有两大类：流式操作与数据转换。
+ - Runnable：函数没有返回值
+ - Callable：函数有返回值
+ - Future：对于具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果、设置结果操作。
+ - FutureTask：是Future也是Runnable，又是包装了的Callable
+ - Thread：代表JVM一个线程
 
 <!--more-->
 
-### IO操作
+### 线程状态
 
-#### 流式操作组件
+- NEW：至今尚未启动的线程处于该状态，通俗来讲，该状态是线程实例化后还从未执行start()方法的状态；
+- RUNNABLE：正在java虚拟机中执行的线程处于这种状态；
+- BLOCKED：受阻塞并等待某个监视器锁的线程处于这种状态；
+- WAITING：无限期地等待另一个线程来执行某一特定操作的线程处于这种状态；
+- TIMED_WAITING：等待另一个线程来执行取决于指定等待时间的操作的线程处于这种状态；
+- TERMINATED：已退出的线程处于这种状态，线程被销毁。
 
-流式操作又分类(byte)字节流，与字符(char)流
+![thread_status](/images/java/thread_status.jpeg)
 
-| 分类       | 字节输入流           | 字节输出流            | 字符输入流        | 字符输出流         |
-| :--------- | :------------------- | :-------------------- | :---------------- | :----------------- |
-| 接口       | InputStream          | OutputStream          | Reader            | Writer             |
-| Filter     | FilterInputStream    | FilterOutputStream    | FilterReader      | FilterWriter       |
-| 访问文件   | FileInputStream      | FileOutputStream      | FileReader        | FileWriter         |
-| 访问数组   | ByteArrayInputStream | ByteArrayOutputStream | CharArrayReader   | CharArrayWriter    |
-| 访问管道   | PipedInputStream     | PipedOutputStream     | PipedReader       | PipedWriter        |
-| 访问字符串 |                      |                       | StringReader      | StringWriter       |
-| 缓冲流     | BufferedInputStream  | BufferedOutputStream  | BufferedReader    | BufferedWriter     |
-| 转换流     |                      |                       | InputStreamReader | OutputStreamWriter |
-| 打印流     |                      | PrintStream           |                   | PrintWriter        |
-| 推回输入流 | PushbackInputStream  |                       | PushbackReader    |                    |
-| 数据流     | DataInputStream      | DataOutputStream      |                   |                    |
-| 对象流     | ObjectInputStream    | ObjectOutputStream    |                   |                    |
+方法：
 
-#### 数据转换组件
+ - sleep： 暂停阻塞等待一段时间，时间过了就继续。注意这个是不释放“锁”的 
+ - wait： 也是阻塞和等待，但是需要notify来唤醒。wait是需要释放“锁”的
+ - join： 在一个线程中调用other.join(),将等待other执行完后才继续本线程
+ - notify/notifyAll: 唤醒线程
+ - yield: 当前线程可转让cpu控制权，让别的就绪状态线程运行（切换），也会等待阻塞一段时间，但是时间不是由客户控制了
+ - interrupte: 打断线程，可代替过时方法stop
+ - setPriority： MIN_PRIORITY 最小优先级=1 ， NORM_PRIORITY 默认优先级=5 ，MAX_PRIORITY 最大优先级=10
 
-数据转换，支持把字节流与Java基本数据类型间相互转换
-  
-| 分类     | 数据输入          | 数据输出           |
-| :------- | :---------------- | :----------------- |
-| 抽象基类 | DataInput         | DataInput          |
-| 数据操作 | DataInputStream   | DataOutputStream   |
-| 对象操作 | ObjectInput       | ObjectOut         |
-| 对象操作 | ObjectInputStream | ObjectOutputStream |
-| 文件操作 | RandomAccessFile  | RandomAccessFile   |
+### 线程安全实现方法
 
-## NIO
+互斥同步：
 
-NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。
+  - synchronized关键字， Java 5 以前使用，独占锁是一种悲观锁，synchronized就是一种独占锁
+  - 锁：重量型，消耗内存较多，原子性，可见的，顺序：公平锁 、非顺序：非公平锁
 
-### 区别
+非阻塞同步：
 
-NIO和普通IO（后简称IO）之间第一个最大的区别是：
+ - volatile 变量：轻量级的线程同步，不会引起线程调度，提供可见性，但是不提供原子性
+ - CAS 原子指令：轻量级线程同步，不会引起线程调度，提供可见性和原子性
 
- - IO是面向流的。面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。
- - NIO是面向缓冲区的。NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。
+无锁方案：
 
-另一个区别是是否阻塞：
+ - 不共享对象
+ - 线程本地变量
+ - 不可变对象
+
+synchronized与volatile：
+
+ - volatile是线程安全的轻量级实现，volatile性能比synchronized好，且volatile只能修饰于变量，synchronized可以修饰方法，以及代码块
+ - 多线程访问volatile不会发生阻塞，而synchronized会发生阻塞
+ - volatile能保证数据可见性，但不能保证原子性；而synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公有内存中的数据做同步。
+
+##3 线程池
+
+线程池的两个主要作用：
+
+- 控制线程数量，避免因为创建大量的线程导致的系统崩溃
+- 重用线程，避免频繁地创建销毁线程
+
+Java 1.5引入Executor与ExecutorService：
+
+- Executor： 提交普通的可执行任务
+- ExecutorService： 在Executor的基础上增强了对任务的控制，同时包括对自身生命周期的管理
+- ScheduledExecutorService： 在ExecutorService基础上，提供对任务的周期性执行支持
+
+Executors，是生产Executor的工厂：
+
+ - 固定线程数的线程池：newFixedThreadPool
+ - 单个线程的线程池：newSingleThreadExecutor
+ - 可缓存的线程池：newCachedThreadPool
+ - 可延时/周期调度的线程池：newScheduledThreadPool
+ - Fork/Join线程池：newWorkStealingPool，在Java 1.7时才引入，其核心实现就是ForkJoinPool类
+
+#### 工作窃取算法
+
+由于线程处理不同任务的速度不同，这样就可能存在某个线程先执行完了自己队列中的任务的情况，这时为了提升效率，我们可以让该线程去“窃取”其它任务队列中的任务，这就是所谓的工作窃取算法。ForkJoinPool是一种实现了工作窃取算法的线程池。
+
+### 与OS线程关系
+
+Java线程在JDK1.2之前，是基于称为“绿色线程”（Green Threads）的用户线程实现的，而在JDK1.2中，线程模型替换为基于操作系统原生线程模型来实现。也就是说，现在的Java中线程的本质，其实就是操作系统中的线程，Linux下是基于pthread库实现的NPTL，Windows下是原生的系统Win32 API提供系统调用从而实现多线程。
+
+轻量级进程（LWP）与内核线程之间1:1的关系称为一对一的线程模型。NPTL（ Native POSIX Thread Library），内核2.6开始有了新的线程实现方式NPTL。NPTL同样使用的是1:1模型，但此时对应内核的管理结构不再是LWP了：
  
- - IO是阻塞的。意味着当一个线程调用read() 或 write()时，该线程被阻塞，直到有一些数据被读取，或数据完全写入。该线程在此期间不能再干任何事情了
- - NIO可以是非阻塞的。 NIO的非阻塞模式，使一个线程从某通道发送请求读取数据，但是它仅能得到目前可用的数据，如果目前没有数据可用时，就什么都不会获取。而不是保持线程阻塞，所以直至数据变得可以读取之前，该线程可以继续做其他的事情。 非阻塞写也是如此。一个线程请求写入一些数据到某通道，但不需要等待它完全写入，这个线程同时可以去做别的事情。 线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。
+  - LWP： 调度实体都是进程，内核并没有真正支持线程。它是能过一个系统调用clone()来实现的，这个调用创建了一份调用进程的拷贝，跟fork()不同的是,这份进程拷贝完全共享了调用进程的地址空间。
+  - NPTL：在内核里面线程仍然被当作是一个进程，并且仍然使用了clone()系统调用(在NPTL库里调用)。但是，NPTL需要内核级的特殊支持来实现，比如需要挂起然后再唤醒线程的线程同步原语futex。  
+
+简言之，他们之间的关系：java线程（N）<-> 用户线程/C线程（N）<-> 内核线程/OS线程（N）<-> CPU核（1）
+
+### 状态关系
+
+从实际意义上来讲，操作系统中的线程除去new和terminated状态，一个线程真实存在的状态，只有：
+
+ - ready：表示线程已经被创建，正在等待系统调度分配CPU使用权。
+ - running：表示线程获得了CPU使用权，正在进行运算
+ - waiting：表示线程等待（或者说挂起），让出CPU资源给其他线程使用
+
+对于Java中的线程状态：无论是Timed Waiting ，Waiting还是Blocked，对应的都是操作系统线程的**waiting（等待）**状态。而Runnable状态，则对应了操作系统中的ready和running状态。
+
+而对不同的操作系统，由于本身设计思路不一样，对于线程的设计也存在种种差异，所以JVM在设计上，就已经声明：虚拟机中的线程状态，不反应任何操作系统线程状态。只是作为理解模型，Java线程和操作系统线程，实际上同根同源，但又相差甚远。
 
 
-### 特性
+## 锁
 
-基于通道（Channel）与缓冲区（Buffer）操作：
+![lock_sys.png](/images/java/lock_sys.png)
 
- - Channel：为所有IO提供Input/Output抽象,就像普通IO中的Stream一样原始IO操作
- - Buffer：为所有基础类型提供缓冲操作
- - 操作：数据从Channel读到Buffer，从Buffer写入到Channel
+### 乐观锁/悲观锁
 
-基于非阻塞（Non-Blocking）:
+乐观锁与悲观锁概念：
 
- - 提供 多路 非阻塞的I/O 抽象
-  
-IO选择器（Selector）:
+ - 悲观锁：认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。
+ - 乐观锁：认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。一般会使用“数据版本机制”或“CAS操作”来实现。
+
+乐观锁与悲观锁使用场景：
  
- - 用于监控多个Channel的事件，如连接打开，数据到达
- - 单个线程可以监控多个数据通道
+ - 悲观锁适合写操作多的场景，先加锁可以保证写操作时数据正确
+ - 乐观锁适合读操作多的场景，不加锁的特点能够使其读操作的性能大幅提升
 
-其它：
+#### 数据版本机制
 
- - 提供字符编码/解码方案，java.nio.charset
- - 支持内存映射文件，锁文件的访问接口
+实现数据版本一般有两种，第一种是使用版本号，第二种是使用时间戳。
 
-### 核心组件
+版本号方式：一般是在数据表中加上一个数据版本号version字段，表示数据被修改的次数，当数据被修改时，version值会加一。当线程A要更新数据值时，在读取数据的同时也会读取version值，在提交更新时，若刚才读取到的version值为当前数据库中的version值相等时才更新，否则重试更新操作，直到更新成功。
 
-| 核心组件       | 定义                 | 作用            | 特点              | 使用                            |
-| :------------- | :------------- | :------------------ | :--------------- | :-------------------- |
-| 通道Channel    | 是数据的源头与目的地 | 给Buffer提供数据，从Buffer读取数据    | 双向读取<br/>异步读写   | 按数据来源划分:<br/>FileChannle: 从文件读写数据<br/>DatagramChannel: 从UDP连接读写数据<br/>SocketChannel：从TCP连接读写数据<br/>ServerSocketChannel：TCP服务侧的连接读写数据 |
-| 缓存区Buffer   | 缓存数据             | 适用于所有基础数据类型（除了boolean） | 按类型类型划分：<br/> ByteBuffer<br/> ShortBuffer<br/>...<br/>不同的类型的Buffer可以相互换：提供asXxxBuffer() |   |
-| 选择器Selector | 异步IO的核心对象     | 实现异步、非阻塞操作                  | 允许一个Selector线程管理与操作多个Channel<br/>事件驱动：监控多个Channel的事件，并对事件分发           | 向Selector注册Channel<br/>调用Selector的select方法监控        |
+#### CAS 
 
-#### Buffer
+CAS全称Compare And Swap（比较与交换），在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent包中的原子类就是通过CAS来实现了乐观锁。
 
-Buffer顾名思义：缓冲区，实际上是一个容器，一个连续数组。Channel提供从文件、网络读取数据的渠道，但是读写的数据都必须经过Buffer。
+CAS算法涉及到三个操作数：
 
-向Buffer中写数据：
+ - 需要读写的内存值 V
+ - 进行比较的值 A
+ - 要写入的新值 B
 
-- 从Channel写到Buffer (fileChannel.read(buf))
-- 通过Buffer的put()方法 （buf.put(…)）
+问题：
 
-从Buffer中读取数据：
+ - ABA问题： CAS需要在操作值的时候检查内存值是否发生变化，没有发生变化才会更新内存值。但是如果内存值原来是A，后来变成了B，然后又变成了A，那么CAS进行检查时会发现值没有发生变化，但是实际上是有变化的。Java 1.5的实现是compareAndSet()首先检查当前引用和当前标志与预期引用和预期标志是否相等，如果都相等，则以原子方式将引用值和标志的值设置为给定的更新值。
+ - 循环时间长开销大： CAS操作如果长时间不成功，会导致其一直自旋，给CPU带来非常大的开销。
+ - 只能保证一个共享变量的原子操作： 对一个共享变量执行操作时，CAS能够保证原子操作，但是对多个共享变量操作时，CAS是无法保证操作的原子性的。
 
- - 从Buffer读取到Channel (channel.write(buf))
- - 使用get()方法从Buffer中读取数据 （buf.get()）
+Java从1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。
 
-可以把Buffer简单地理解为一组基本数据类型的元素列表，它通过几个变量来保存这个数据的当前位置状态：capacity, position, limit, mark：
+### 独享锁/共享锁
 
-| 索引     | 说明                                                    |
-| :------- | :------------------------------------------------------ |
-| capacity | 缓冲区数组的总长度                                      |
-| position | 下一个要操作的数据元素的位置                            |
-| limit    | 缓冲区数组中不可操作的下一个元素的位置：limit<=capacity |
-| mark     | 用于记录当前position的前一个位置或者默认是-1            |
+- 独享锁：指该锁一次只能被一个线程所持有。ReentrantLock是独享锁，Synchronized是独享锁。
+- 共享锁：指该锁可被多个线程所持有。ReadWriteLock其读锁是共享锁，其写锁是独享锁。
 
-几个重要标识操作方法：clear，compact，mark，mark|
+#### AQS
 
-| 方法      | 说明  |
-| :-------- | :----------- |
-| clear()   | position将被设回0，limit设置成capacity，换句话说，Buffer被“清空”了，其实Buffer中的数据并未被清除，只是这些标记告诉我们可以从哪里开始往Buffer里读写数据 |
-| compact() | 将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面，limit设置成capacity，Buffer准备好写数据但不会覆盖未读的数据             |
-| mark()    | 可以标记Buffer中的一个特定的position，之后可以通过调用reset()方法恢复到这个position      |
-| rewind()  | 将position设回0，可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素         |
+独享锁与共享锁也是通过AQS（AbstractQueuedSynchronized）来实现的，通过实现不同的方法，来实现独享或者共享。
 
-#### Selector
+AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch。AQS维护了一个volatile int state(代表共享资源)和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。
 
-Selector可以监控的四种不同类型的事件：
+AQS定义两种资源共享方式：
 
- - Connect：某个channel成功连接到另一个服务器称为“连接就绪”
- - Accept：一个server socket channel准备好接收新进入的连接称为“接收就绪”
- - Read：一个有数据可读的通道可以说是“读就绪”
- - Write：等待写数据的通道可以说是“写就绪”
+ - Exclusive：独占，只有一个线程能执行，如ReentrantLock
+ - Share：共享，多个线程可同时执行，如Semaphore/CountDownLatch
 
-通过Selector选择通道，有几种方法
+AQS支持中断、超时：
 
- - int select()：阻塞到至少有一个通道在你注册的事件上就绪了
- - int select(long timeout)：和select()一样，除了最长会阻塞timeout毫秒(参数)
- - int selectNow()：不会阻塞，不管什么通道就绪都立刻返回
+ - 阻塞和非阻塞（例如tryLock）同步
+ - 可选的超时设置，让调用者可以放弃等待
+ - 可中断的阻塞操作
 
-select()方法返回的int值表示有多少通道已经就绪。然后可以通过调用selector的selectedKeys()方法，访问“ 已选择键集（selected key set）”中的就绪通道。
+### 自旋锁/适应性自旋锁
 
-### 其它
+- 自旋锁：指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU。
+  - 自旋等待的时间必须要有一定的限度，如果自旋超过了限定次数（默认是10次，可以使用-XX:PreBlockSpin来更改）没有成功获得锁，就应当挂起线程。
+  - 自旋锁的实现原理同样也是CAS，AtomicInteger中调用unsafe进行自增操作的源码中的do-while循环就是一个自旋操作，如果修改数值失败则通过循环来执行自旋，直至修改成功。
+- 适应性自旋锁：自适应意味着自旋的时间（次数）不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。
+  - 在自旋锁中 另有三种常见的锁形式:TicketLock、CLHlock和MCSlock。
 
-#### 内存映射文件
+### 公平锁/非公平锁
 
-处理大文件，一般用BufferedReader,BufferedInputStream这类带缓冲的IO类，不过如果文件超大的话，更快的方式是采用MappedByteBuffer。
-
-ByteBuffer有两种模式:直接/间接。间接模式最典型(也只有这么一种)的就是HeapByteBuffer,即操作堆内存 (byte[])。
-
-ByteBuffer.MappedByteBuffer 只是一种特殊的ByteBuffer MappedByteBuffer 将文件直接映射到内存（这里的内存指的是虚拟内存，并不是物理内存）。通常，可以映射整个文件，如果文件比较大的话可以分段进行映射，只要指定文件的那个部分就可以。
-
-FileChannel提供了map方法（`MappedByteBuffer map(int mode,long position,long size)`）来把文件影射为内存映像文件。 可以把文件的从position开始的size大小的区域映射为内存映像文件，mode指出了 可访问该内存映像文件的方式：
-
- - READ_ONLY,（只读）： 试图修改得到的缓冲区将导致抛出 ReadOnlyBufferException
- - READ_WRITE（读/写）： 对得到的缓冲区的更改最终将传播到文件；该更改对映射到同一文件的其他程序不一定是可见的
- - PRIVATE（专用）： 对得到的缓冲区的更改不会传播到文件，并且该更改对映射到同一文件的其他程序也不是可见的；相反，会创建缓冲区已修改部分的专用副本
-
-#### 工具
-
-Scatter/Gatter
-
- - 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中
- - 聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel
-
-Pipe是两个线程之间的单向数据连接
-
- - Pipe有一个source通道和一个sink通道
- - 数据会被写到sink通道，从source通道读取
+- 公平锁：指多个线程按照申请锁的顺序来获取锁。ReetrantLock通过构造函数指定该锁是否是公平锁，默认是非公平锁。非公平锁的优点在于吞吐量比公平锁大。
+- 非公平锁：指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。有可能，会造成优先级反转或者饥饿现象。Synchronized是非公平锁。
 
 
-Path表示文件系统中的路径
+### 无锁/偏向锁/轻量级锁/重量级锁
 
-- 一个路径可以指向一个文件或一个目录。路径可以是绝对路径，也可以是相对路径
-- 绝对路径包含从文件系统的根目录到它指向的文件或目录的完整路径
-- 相对路径包含相对于其他路径的文件或目录的路径
+后三种锁是指锁的状态，并且是针对Synchronized。
+
+- 无锁：没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。
+- 偏向锁：指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。
+- 轻量级锁：是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。
+- 重量级锁：是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让他申请的线程进入阻塞，性能降低。
+
+| 锁状态   | 存储内容                                                | 标识位 |
+| :------- | :------------------------------------------------------ | :----- |
+| 无锁     | 对象的hashcode、对象分代年龄、是否是偏向锁（0）         | 01     |
+| 偏向锁   | 偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1） | 01     |
+| 轻量级锁 | 指向栈中锁记录的指针                                    | 00     |
+| 重量级锁 | 指向互斥量的指针                                        | 10     |
+
+偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。
+
+整体的锁状态升级流程如下：
+
+无锁 ---> 偏向锁 ---> 轻量级锁 ---> 重量级锁
+
+### 可重入锁/非可重入锁
+
+- 可重入锁：又名递归锁，表示该锁能够支持 一个线程对资源的重复加锁，不会因为之前已经获取过还没释放而阻塞。ReentrantLock和synchronized都是重入锁。可重入锁的一个优点是可一定程度避免死锁。
+- 非可重入锁：表示该锁**不**支持 一个线程 对资源的重复加锁，同一线程重入会导致死锁。
 
 
-Files提供一些工具，它依赖于Path
-
- - Files.exists()
- - Files.createDirectory()
- - Files.copy()
- - Files.move()
- - Files.delete()
- - Files.walkFileTree()
-  
 ----- 
 
-注：以上内容收集于互联网多篇文章，在此感谢原作者们。  
+注：以上内容收集于互联网多篇文章，在此感谢原作者们。 

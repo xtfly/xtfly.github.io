@@ -1,5 +1,5 @@
 ---
-title: "Java基础知识点5"
+title: "Java基础知识点6"
 date: "2019-09-29"
 categories:
  - "技术"

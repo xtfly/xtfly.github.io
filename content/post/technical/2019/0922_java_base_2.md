@@ -9,200 +9,233 @@ tags:
 toc: true
 ---
 
-# 并发体系
+# 集合体系
 
-## 线程
+集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：
 
-### 线程安全
+ - 长度可变
+ - 存储元素可以是引用类型
+ - 可以存储多种类型的对象
+  
+## Iterator
+Iterator接口：
 
-线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。
+ - 对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。
+ - 提供`boolean hasNext()`和`E next()`两个方法
 
-  - 原子性
-  - 可见性
-  - 顺序的
+ListIterator：
 
-线程实现：
+ - 只能用于List的迭代器。
+ - 在使用迭代器迭代的过程中需要使用集合中的方法操作元素，出现ConcurrentModificationException异常时，可以使用ListIterator避免
 
- - Runnable：函数没有返回值
- - Callable：函数有返回值
- - Future：对于具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果、设置结果操作。
- - FutureTask：是Future也是Runnable，又是包装了的Callable
- - Thread：代表JVM一个线程
+## Collection
 
-<!--more-->
+Collection接口：
 
-### 线程状态
+- List接口：有序(存入和取出的顺序一致),元素都有索引(下标)，元素可以重复。
+  - Vector：内部是 数组 数据结构，是同步的。增删，查询都很慢！100%延长（几乎不用了）  
+  - ArrayList：内部是 数组 数据结构，是不同步的。替代了Vector，查询的速度快，增删速度慢。50%延长。查询时是从容器的第一个元素往后找，由于数组的内存空间是连续的，所以查询快；增删的话所有元素内存地址都要改变，所以增删慢。
+  - LinkedList：内部是 链表 数据结构，是不同步的。增删元素的速度很快。同理，链表的内存空间是不连续的，所以查询慢；增删时只需改变单个指针的指向，所以快。
+- Set接口：无序，元素不能重复。Set接口中的方法和Collection一致。
+  - HashSet：内部数据结构是哈希表 ，是不同步的。
+  - LinkedHashSet：内部数据结构是哈希表和链表，是有顺序的HashSet。
+  - TreeSet：内部数据结构是有序的二叉树，它的作用是提供有序的Set集合，是不同步的。
+  
+List接口：
 
-- NEW：至今尚未启动的线程处于该状态，通俗来讲，该状态是线程实例化后还从未执行start()方法的状态；
-- RUNNABLE：正在java虚拟机中执行的线程处于这种状态；
-- BLOCKED：受阻塞并等待某个监视器锁的线程处于这种状态；
-- WAITING：无限期地等待另一个线程来执行某一特定操作的线程处于这种状态；
-- TIMED_WAITING：等待另一个线程来执行取决于指定等待时间的操作的线程处于这种状态；
-- TERMINATED：已退出的线程处于这种状态，线程被销毁。
+ - 有一个最大的共性特点就是都可以操作角标，所以LinkedList也是有索引的。list集合可以完成对元素的增删改查。 
 
-![thread_status](/images/java/thread_status.webp)
+Set和List的区别：
 
-方法：
+ - Set 接口实例存储的是无序的，不重复的数据。List 接口实例存储的是有序的，可以重复的元素。
+ - Set检索效率低下，删除和插入效率高，插入和删除不会引起元素位置改变 。
+ - List和数组类似，可以动态增长，根据实际存储的数据的长度自动增长List的长度。查找元素效率高，插入删除效率低，因为会引起其他元素位置改变。
 
- - sleep： 暂停阻塞等待一段时间，时间过了就继续。注意这个是不释放“锁”的 
- - wait： 也是阻塞和等待，但是需要notify来唤醒。wait是需要释放“锁”的
- - join： 在一个线程中调用other.join(),将等待other执行完后才继续本线程
- - notify/notifyAll: 唤醒线程
- - yield: 当前线程可转让cpu控制权，让别的就绪状态线程运行（切换），也会等待阻塞一段时间，但是时间不是由客户控制了
- - interrupte: 打断线程，可代替过时方法stop
- - setPriority： MIN_PRIORITY 最小优先级=1 ， NORM_PRIORITY 默认优先级=5 ，MAX_PRIORITY 最大优先级=10
+## Map
 
-### 线程安全实现方法
+Map接口：
 
-互斥同步：
+ -  一次添加一对元素，Collection 一次添加一个元素。
+ -  Map也称为双列集合，Collection集合也称为单列集合。
+ -  map集合中存储的就是键值对，map集合中必须保证键的唯一性
+  
+Map常用的子类：
 
-  - synchronized关键字， Java 5 以前使用，独占锁是一种悲观锁，synchronized就是一种独占锁
-  - 锁：重量型，消耗内存较多，原子性，可见的，顺序：公平锁 、非顺序：非公平锁
+- Hashtable :内部结构是哈希表，是同步的。不允许null作为键，null作为值。
+  - Properties：用来存储键值对型的配置文件的信息，可以和IO技术相结合。 
+- HashMap : 内部结构是哈希表，不是同步的。允许null作为键，null作为值。
+- TreeMap : 内部结构是二叉树，不是同步的。可以对Map集合中的键进行排序。 
 
-非阻塞同步：
+Map的迭代方法（Map本身没有迭代器）：
 
- - volatile 变量：轻量级的线程同步，不会引起线程调度，提供可见性，但是不提供原子性
- - CAS 原子指令：轻量级线程同步，不会引起线程调度，提供可见性和原子性
+ - 利用Map接口的values()方法,返回此映射中包含的值的 Collection（值不唯一），然后通过Collecion的迭代器进行迭代。（只需要Value，不需要Key的时候）
+ - 通过keySet方法获取map中所有的键所在的Set集合（Key和Set的都具有唯一性），再通过Set的迭代器获取到每一个键，再对每一个键通过Map集合的get方法获取其对应的值即可。
+ - 利用Map的内部接口Map.Entry<K,V>使用iterator。
 
-无锁方案：
+## Queue
 
- - 不共享对象
- - 线程本地变量
- - 不可变对象
+Queue接口:
 
-synchronized与volatile：
+  - 继承Collection
+  - boolean add(E e)，队列满，抛IllegalStateException / boolean offer(E e)，当容量限制时，与add相同抛IllegalStateException
+  - E remove()，抛NoSuchElementException / E poll()，不抛，返回null
+  - E element()，抛NoSuchElementException / E peek()，不抛，返回null
 
- - volatile是线程安全的轻量级实现，volatile性能比synchronized好，且volatile只能修饰于变量，synchronized可以修饰方法，以及代码块
- - 多线程访问volatile不会发生阻塞，而synchronized会发生阻塞
- - volatile能保证数据可见性，但不能保证原子性；而synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公有内存中的数据做同步。
+Deque接口，是一个实现了双端队列数据结构的队列，即在头尾都可进行删除和新增操作；
 
-##3 线程池
+  - 继承Queue
+  - 依旧保持着“先进先出”的本质
+  - 增加 xxxFirst与xxxLast方法
+  - 可以被当做“栈”来使用，即“后进先出”，添加元素、删除元素都在队头进行通过push/pop两个方法来实现
+  - 主要两个实现LinkedList与ArrayDeque
 
-线程池的两个主要作用：
+PriorityQueue:
 
-- 控制线程数量，避免因为创建大量的线程导致的系统崩溃
-- 重用线程，避免频繁地创建销毁线程
+  - 不同于先进先出，它可以通过比较器控制元素的输出顺序（优先级）
+  - 本质上就是一个最小堆存储结构数组了
+  - 通过“极大优先级堆”实现的，即堆顶元素是优先级最大的元素。算是集成了大根堆和小根堆的功能。
+  - 堆的操作，主要就是两个：siftUp和siftDown，一个是向上调整堆，一个是向下调整堆。
 
-Java 1.5引入Executor与ExecutorService：
 
-- Executor： 提交普通的可执行任务
-- ExecutorService： 在Executor的基础上增强了对任务的控制，同时包括对自身生命周期的管理
-- ScheduledExecutorService： 在ExecutorService基础上，提供对任务的周期性执行支持
-
-Executors，是生产Executor的工厂：
-
- - 固定线程数的线程池：newFixedThreadPool
- - 单个线程的线程池：newSingleThreadExecutor
- - 可缓存的线程池：newCachedThreadPool
- - 可延时/周期调度的线程池：newScheduledThreadPool
- - Fork/Join线程池：newWorkStealingPool，在Java 1.7时才引入，其核心实现就是ForkJoinPool类
-
-#### 工作窃取算法
-
-由于线程处理不同任务的速度不同，这样就可能存在某个线程先执行完了自己队列中的任务的情况，这时为了提升效率，我们可以让该线程去“窃取”其它任务队列中的任务，这就是所谓的工作窃取算法。ForkJoinPool是一种实现了工作窃取算法的线程池。
-
-## 锁
-
-![lock_sys.png](/images/java/lock_sys.png)
-
-### 乐观锁/悲观锁
-
-乐观锁与悲观锁概念：
-
- - 悲观锁：认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。
- - 乐观锁：认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。一般会使用“数据版本机制”或“CAS操作”来实现。
-
-乐观锁与悲观锁使用场景：
+## 工具类Collections
  
- - 悲观锁适合写操作多的场景，先加锁可以保证写操作时数据正确
- - 乐观锁适合读操作多的场景，不加锁的特点能够使其读操作的性能大幅提升
+根据字符串长度的正序和倒序排序：
 
-#### 数据版本机制
+ - `Collections.reverse(List<?> list) ` 反转指定列表中元素的顺序。
+ - `<T> Comparator<T> Collections.reverseOrder()` 返回一个比较器，它强行逆转实现了 Comparable 接口的对象 collection 的自然顺序。
+ - `<T> Comparator<T> reverseOrder(Comparator<T> cmp) `  返回一个比较器，它强行逆转指定比较器的顺序。
 
-实现数据版本一般有两种，第一种是使用版本号，第二种是使用时间戳。
+排序
 
-版本号方式：一般是在数据表中加上一个数据版本号version字段，表示数据被修改的次数，当数据被修改时，version值会加一。当线程A要更新数据值时，在读取数据的同时也会读取version值，在提交更新时，若刚才读取到的version值为当前数据库中的version值相等时才更新，否则重试更新操作，直到更新成功。
+ - `Collections.sort(List<?> list)`
+ - `Collections.sort(List<?> list, Collections.reverseOrder())`
 
-#### CAS 
+同步视图
 
-CAS全称Compare And Swap（比较与交换），在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent包中的原子类就是通过CAS来实现了乐观锁。
+ - `<T> Collection<T> synchronizedCollection(Collection<T> c)`
+ - `<T> Collection<T> synchronizedCollection(Collection<T> c, Object mutex)`
+  
+只读视图
 
-CAS算法涉及到三个操作数：
+ - `<T> Collection<T> unmodifiableCollection(Collection<? extends T> c)`
 
- - 需要读写的内存值 V
- - 进行比较的值 A
- - 要写入的新值 B
+其它工具
 
-问题：
+  - `<T> int binarySearch(List<? extends Comparable<? super T>> list, T key)`
+  - `<T> int indexedBinarySearch(List<? extends Comparable<? super T>> list, T key)`
+  - `<T> T max(Collection<? extends T> coll, Comparator<? super T> comp)`
+  - `<T> T min(Collection<? extends T> coll, Comparator<? super T> comp)`
+  - `<T> void fill(List<? super T> list, T obj)`
+  - `<T> List<T> nCopies(int n, T o)`
 
- - ABA问题： CAS需要在操作值的时候检查内存值是否发生变化，没有发生变化才会更新内存值。但是如果内存值原来是A，后来变成了B，然后又变成了A，那么CAS进行检查时会发现值没有发生变化，但是实际上是有变化的。Java 1.5的实现是compareAndSet()首先检查当前引用和当前标志与预期引用和预期标志是否相等，如果都相等，则以原子方式将引用值和标志的值设置为给定的更新值。
- - 循环时间长开销大： CAS操作如果长时间不成功，会导致其一直自旋，给CPU带来非常大的开销。
- - 只能保证一个共享变量的原子操作： 对一个共享变量执行操作时，CAS能够保证原子操作，但是对多个共享变量操作时，CAS是无法保证操作的原子性的。
+## 并发集合
 
-Java从1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。
+List接口:
 
-### 独享锁/共享锁
+ - CopyOnWriteArrayList,线程安全的ArrayList
+    - 适用于读操作远远多于写操作，并且数据量较小的情况
+    - 修改容器的代价是昂贵的，因此建议批量增加addAll、批量删除removeAll
+    - CopyOnWrite机制
+      - 使用volatile修饰数组引用：确保数组引用的内存可见性
+      - 对容器修改操作进行同步：从而确保同一时刻只能有一条线程修改容器（因为修改容器都会产生一个新的容器，增加同步可避免同一时刻复制生成多个容器，从而无法保证数组数据的一致性）
+      - 修改时复制容器：确保所有修改操作都作用在新数组上，原本的数组在创建过后就用不变化，从而其他线程可以放心地读。
 
-- 独享锁：指该锁一次只能被一个线程所持有。ReentrantLock是独享锁，Synchronized是独享锁。
-- 共享锁：指该锁可被多个线程所持有。ReadWriteLock其读锁是共享锁，其写锁是独享锁。
+Set接口: 
 
-#### AQS
+ - CopyOnWriteArraySet是线程安全的Set，它内部包含了一个CopyOnWriteArrayList，因此本质上是由CopyOnWriteArrayList实现的。
+ - ConcurrentSkipListSet相当于线程安全的TreeSet。它是有序的Set。它由ConcurrentSkipListMap实现。
+   - 它是一个有序的、线程安全的Set，相当于线程安全的TreeSet。
+   - 
 
-独享锁与共享锁也是通过AQS（AbstractQueuedSynchronized）来实现的，通过实现不同的方法，来实现独享或者共享。
+Map接口：
 
-AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch。AQS维护了一个volatile int state(代表共享资源)和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。
+ - ConcurrentHashMap线程安全的HashMap。采用分段锁实现高效并发。
+   - ConcurrentHashMap由多个Segment构成，每个Segment都包含一张哈希表。每次操作只将操作数据所属的Segment锁起来，从而避免将整个锁住。
+ - ConcurrentSkipListMap线程安全的有序Map。使用跳表实现高效并发。
+   - 它是一个有序的Map，相当于TreeMap。TreeMap采用红黑树实现排序，而ConcurrentHashMap采用跳表实现有序。
+   - 跳表是条有序的单链表，它的每个节点都有多个指向后继节点的引用。
 
-AQS定义两种资源共享方式：
+Queue：
 
- - Exclusive：独占，只有一个线程能执行，如ReentrantLock
- - Share：共享，多个线程可同时执行，如Semaphore/CountDownLatch
+ - ConcurrentLinkedQueue线程安全的无界队列。底层采用单链表。支持FIFO。
+   - head、tail、next、item均使用volatile修饰，保证其内存可见性，并未使用锁，从而提高并发效率。
+ - ConcurrentLinkedDeque线程安全的无界双端队列。底层采用双向链表。支持FIFO和FILO。
+ - ArrayBlockingQueue数组实现的阻塞队列。
+   - 内部由Object数组存储元素，构造时必须要指定队列容量。
+   - 由ReentrantLock实现队列的互斥访问，并由notEmpty、notFull这两个Condition分别实现队空、队满的阻塞。
+   - ReentrantLock分为公平锁和非公平锁，可以在构造ArrayBlockingQueue时指定。默认为非公平锁。
+   - 队满阻塞：当添加元素时，若队满，则调用notFull.await()阻塞当前线程；当移除一个元素时调用notFull.signal()唤醒在notFull上等待的线程。
+   - 队空阻塞：当删除元素时，若队为空，则调用notEmpty.await()阻塞当前线程；当队首添加元素时，调用notEmpty.signal()唤醒在notEmpty上等待的线程。
+ - LinkedBlockingQueue链表实现的阻塞队列。
+   - 由单链表实现，因此是个无限队列。但为了方式无限膨胀，构造时可以加上容量加以限制。
+   - 分别采用读取锁和插入锁控制读取/删除 和 插入过程的并发访问，并采用notEmpty和notFull两个Condition实现队满队空的阻塞与唤醒。
+   - 队满阻塞：若要插入元素，首先需要获取putLock；在此基础上，若此时队满，则调用notFull.await()，阻塞当前线程；当移除一个元素后调用notFull.signal()唤醒在notFull上等待的线程；最后，当插入操作完成后释放putLock。
+   - 若要删除/获取元素，首先要获取takeLock；在此基础上，若队为空，则调用notEmpty.await()，阻塞当前线程；当插入一个元素后调用notEmpty.signal()唤醒在notEmpty上等待的线程；最后，当删除操作完成后释放takeLock。
+ - LinkedBlockingDeque双向链表实现的双端阻塞队列。
 
-AQS支持中断、超时：
+# Stream
 
- - 阻塞和非阻塞（例如tryLock）同步
- - 可选的超时设置，让调用者可以放弃等待
- - 可中断的阻塞操作
+Stream 是对集合（Collection）对象功能的增强，它专注于对集合对象进行各种非常便利、高效的聚合操作（aggregate operation），或者大批量数据操作 (bulk data operation)。
 
-### 自旋锁/适应性自旋锁
+对 Stream 的使用就是实现一个 filter-map-reduce 过程，产生一个最终结果，或者导致一个副作用（side effect）。Stream 不是集合元素，它不是数据结构并不保存数据，它是有关算法和计算的，它更像一个高级版本的 Iterator。
 
-- 自旋锁：指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU。
-  - 自旋等待的时间必须要有一定的限度，如果自旋超过了限定次数（默认是10次，可以使用-XX:PreBlockSpin来更改）没有成功获得锁，就应当挂起线程。
-  - 自旋锁的实现原理同样也是CAS，AtomicInteger中调用unsafe进行自增操作的源码中的do-while循环就是一个自旋操作，如果修改数值失败则通过循环来执行自旋，直至修改成功。
-- 适应性自旋锁：自适应意味着自旋的时间（次数）不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。
-  - 在自旋锁中 另有三种常见的锁形式:TicketLock、CLHlock和MCSlock。
+## 操作类型
 
-### 公平锁/非公平锁
+ - Intermediate（中间操作）: 可以后面跟随零个或多个 intermediate 操作。这类操作都是惰性化的（lazy）。map (mapToInt, flatMap 等)、 filter、 distinct、 sorted、 peek、 limit、 skip、 parallel、 sequential、 unordered等
+ - Terminal（终止操作）: 只能有一个 terminal 操作, Terminal 操作的执行，才会真正开始流的遍历，并且会生成一个结果。forEach、 forEachOrdered、 toArray、 reduce、 collect、 min、 max、 count、 anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 iterator等
 
-- 公平锁：指多个线程按照申请锁的顺序来获取锁。ReetrantLock通过构造函数指定该锁是否是公平锁，默认是非公平锁。非公平锁的优点在于吞吐量比公平锁大。
-- 非公平锁：指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。有可能，会造成优先级反转或者饥饿现象。Synchronized是非公平锁。
+还有一种操作被称为 short-circuiting（短路操作）：
 
+ - 对于一个 intermediate 操作，如果它接受的是一个无限流，它可以返回一个有限的新 Stream。
+ - 对于一个 terminal 操作，如果它接受的是一个无限流，但能在有限的时间计算出结果。anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 limit
 
-### 无锁/偏向锁/轻量级锁/重量级锁
+## 构造
 
-后三种锁是指锁的状态，并且是针对Synchronized。
+ - Stream.of(T… values)：需要注意的是，不能全是null
+ - Stream.<Integer>empty()：构造一个空流
+ - Stream.iterate(BigInteger.ONE, n->n.add(BigInteger.ONE))
+ - Stream.generate(new Random()::nextInt)
+ - Stream.concat(list1.stream(),list2.stream())
+ - IntStream.range(1, 3)
+ - IntStream.rangeClosed(1, 3)
 
-- 无锁：没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。
-- 偏向锁：指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。
-- 轻量级锁：是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。
-- 重量级锁：是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让他申请的线程进入阻塞，性能降低。
+## reduce
 
-| 锁状态   | 存储内容                                                | 标识位 |
-| :------- | :------------------------------------------------------ | :----- |
-| 无锁     | 对象的hashcode、对象分代年龄、是否是偏向锁（0）         | 01     |
-| 偏向锁   | 偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1） | 01     |
-| 轻量级锁 | 指向栈中锁记录的指针                                    | 00     |
-| 重量级锁 | 指向互斥量的指针                                        | 10     |
+reduce的作用是把stream中的元素给组合起来。至于怎么组合起来：它需要我们首先提供一个起始种子，然后依照某种运算规则使其与stream的第一个元素发生关系产生一个新的种子，这个新的种子再紧接着与stream的第二个元素发生关系产生又一个新的种子，就这样依次递归执行，最后产生的结果就是reduce的最终产出。
 
-偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。
+运用reduce我们可以做sum,min,max,average，这些常用的reduce，stream api已经为我们封装了对应的方法。
 
-整体的锁状态升级流程如下：
+ -  reduce(T iden, BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 T
+ -  reduce(BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 Optional
+ -  reduce(U identity, BiFunction a, BinaryOperator combiner)： 可以将流中元素反复结合起来，得到一个值，返回 Optional
 
-无锁 ---> 偏向锁 ---> 轻量级锁 ---> 重量级锁
+三个参数时是最难以理解的。 分析下它的三个参数：
 
-### 可重入锁/非可重入锁
+ - identity: 一个初始化的值；这个初始化的值其类型是泛型U，与Reduce方法返回的类型一致；注意此时Stream中元素的类型是T，与U可以不一样也可以一样，这样的话操作空间就大了；不管Stream中存储的元素是什么类型，U都可以是任何类型，如U可以是一些基本数据类型的包装类型Integer、Long等；或者是String，又或者是一些集合类型ArrayList等
+ - accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的
+ - combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作
 
-- 可重入锁：又名递归锁，表示该锁能够支持 一个线程对资源的重复加锁，不会因为之前已经获取过还没释放而阻塞。ReentrantLock和synchronized都是重入锁。可重入锁的一个优点是可一定程度避免死锁。
-- 非可重入锁：表示该锁**不**支持 一个线程 对资源的重复加锁，同一线程重入会导致死锁。
+## collect
+
+Collectors里常用搜集器
+
+ -  toList：list.stream().collect(Collectors.toList())
+ -  toSet：list.stream().collect(Collectors.toSet())
+ -  toCollection：list.stream().collect(Collectors.toCollection())
+ -  counting：计算流中元素的个数， list.stream().collect(Collectors.counting())
+ -  summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary))
+ -  averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary))
+ -  summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage()
+ -  joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(","))
+ -  maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary)))
+ -  minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary)))
+ -  reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum))
+ -  collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size))
+ -  groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status))
+ -  partitiongBy：根据true/fase对流分组，返回Map, 
+ -  toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream()
+                .collect(toMap(t -> t.getId(), Function.identity(), (k1, k2) -> k1, LinkedHashMap::new))
+ -  toConcurrentMap: 线程安全的Map
 
 
 ----- 
