@@ -1,5 +1,5 @@
 ---
-title: "Java基础知识点8"
+title: "跟我一起复习Java-8"
 date: "2019-10-04"
 categories:
  - "技术"

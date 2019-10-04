@@ -1,5 +1,5 @@
 ---
-title: "Java基础知识点9"
+title: "跟我一起复习Java-9"
 date: "2019-10-05"
 categories:
  - "技术"
@@ -184,4 +184,7 @@ Java本身包括了一些 Permission类，如下:
  - javax.net.ssl.SSLPermission：安全连接权限
  - javax.security.auth.AuthPermission：认证权限
  - javax.sound.sampled.AudioPermission：音频系统资源的访问权限
-  
+
+----- 
+
+注：以上内容收集于互联网多篇文章，在此感谢原作者们。 
