@@ -106,6 +106,78 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1004_java_base_7/" itemprop="url">
+        Java基础知识点7
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-10-04">
+    2019-10-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">6816 字 ~14分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="内存模型">内存模型</h1>
+
+<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png" /></p>
+
+<h2 id="堆">堆</h2>
+
+<p>堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。</p>
+
+<p>通过下两个参数来分配堆使用的内存大小：</p>
+
+<ul>
+<li>-Xms：最小堆容量，默认是物理内存的1/64。</li>
+<li>-Xmx：最大堆容量，默认是物理内存的1/4。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/1004_java_base_7/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1003_java_base_6/" itemprop="url">
         Java基础知识点6
         </a>
@@ -825,81 +897,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0615_execption/" itemprop="url">
-        优雅地使用异常
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-15">
-    2019-06-15
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2757 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="异常与错误码">异常与错误码</h1>
-
-<p>在开发业务系统代码，我们会经常与异常与错误码打交道，但有时傻傻地分不清楚。编写代码时，到底是使用异常还是返回错误码，一直以来都被程序员们广泛争论。</p>
-
-<p>我们先来看看他们的区别，在编程语言上区别：</p>
-
-<ul>
-<li>异常：与面向对象编程结合紧密，它是一个类型系统，表示程序运行时发生错误的信号，一种识别及响应错误情况的一致性机制。</li>
-<li>错误码：与面向过程编程结合紧密，它通常是一串数字，表示处理函数返回业务流程错误的结果，错误码很容易被忽略且经常被忽略。</li>
-</ul>
-
-<p>在接口定义上区别：</p>
-
-<ul>
-<li>异常： 面向代码开发者，通常用于在代码实现层，尤其是在面对象语言中，接口定义异常需要方法签名，以强制要求接口使用都处理异常。</li>
-<li>错误码：面向客户界面，通常用于对外接口响应非正常结果定义，自定义错误码以增加接口的交互体验与问题定位。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0615_execption/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -1015,7 +1012,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">117</span>
+        <span class="site-state-item-count">118</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

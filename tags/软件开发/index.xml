@@ -6,10 +6,32 @@
     <description>Recent content in 软件开发 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 03 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java基础知识点7</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1004_java_base_7/</link>
+      <pubDate>Fri, 04 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/1004_java_base_7/</guid>
+      <description>&lt;h1 id=&#34;内存模型&#34;&gt;内存模型&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;堆&#34;&gt;堆&lt;/h2&gt;
+
+&lt;p&gt;堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。&lt;/p&gt;
+
+&lt;p&gt;通过下两个参数来分配堆使用的内存大小：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;-Xms：最小堆容量，默认是物理内存的1/64。&lt;/li&gt;
+&lt;li&gt;-Xmx：最大堆容量，默认是物理内存的1/4。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>Java基础知识点6</title>
