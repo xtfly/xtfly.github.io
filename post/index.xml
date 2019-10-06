@@ -6,10 +6,32 @@
     <description>Recent content in Posts on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 04 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 05 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>跟我一起复习Java-9</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</link>
+      <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</guid>
+      <description>&lt;h1 id=&#34;jni&#34;&gt;JNI&lt;/h1&gt;
+
+&lt;p&gt;JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互。JNI一开始是为了本地已编译语言，尤其是C和C++而设计的，但是它并不妨碍你使用其他编程语言，只要调用约定受支持就可以了。&lt;/p&gt;
+
+&lt;p&gt;JNI开发流程主要分为以下6步：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;编写声明了native方法的Java类&lt;/li&gt;
+&lt;li&gt;将Java源代码编译成class字节码文件&lt;/li&gt;
+&lt;li&gt;用javah -jni命令生成.h头文件（javah是jdk自带的一个命令，-jni参数表示将class中用native声明的函数生成jni规则的函数）&lt;/li&gt;
+&lt;li&gt;用本地代码实现.h头文件中的函数&lt;/li&gt;
+&lt;li&gt;将本地代码编译成动态库（&lt;code&gt;windows：*.dll，linux/unix：*.so，mac os x：*.jnilib&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;拷贝动态库至 java.library.path 本地库搜索目录下，并运行Java程序&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
     
     <item>
       <title>跟我一起复习Java-8</title>
