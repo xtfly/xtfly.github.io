@@ -19,9 +19,9 @@ JVMTI Agent启动方式： `-agentlib:<agent-lib-name>=<options>`
 
 JVMTI Agent回调函数：
 
- - OnLoad阶段： 调用静态库的Agent_OnLoad函数
- - Live阶段： 调用静态库的Agent_OnAttach函数
- - 关闭阶段：调用静态库的Agent_OnUnload函数
+ - OnLoad阶段： 调用动态库的Agent_OnLoad函数
+ - Live阶段： 调用动态库的Agent_OnAttach函数
+ - 关闭阶段：调用动态库的Agent_OnUnload函数
 
 <!--more-->
 
@@ -29,8 +29,8 @@ JVMTI 并不一定在所有的 Java 虚拟机上都有实现，不同的虚拟�
 
 ## JVMTI用途
 
- -  使用JVMTI对class文件加密：使用一些常规的手段（例如使用混淆器或者自定义类加载器）来对class文件进行加密很容易被反编译。使用JVMTI我们可以将解密的代码封装成.dll,或.so 文件。这些文件想要反编译就很麻烦了，另外还能加壳。解密代码不能被破解，从而也就保护了我们想要加密的class文件。
- -  使用JVMTI实现应用性能监控(APM)：基于JVMTI的APM能够解决分布式架构和微服务带来的监控和运维上的挑战。APM通过汇聚业务系统各处理环节的实时数据，分析业务系统各事务处理的交易路径和处理时间，实现对应用的全链路性能监测。开源的Pinpoint, ZipKin, Hawkular,商业的AppDynamics，OneAPM，Google Dapper等都是个中好手。
+ -  对class文件加密：使用一些常规的手段（例如使用混淆器或者自定义类加载器）来对class文件进行加密很容易被反编译。使用JVMTI我们可以将解密的代码封装成.dll,或.so 文件。这些文件想要反编译就很麻烦了，另外还能加壳。解密代码不能被破解，从而也就保护了我们想要加密的class文件。
+ -  实现应用性能监控(APM)：基于JVMTI的APM能够解决分布式架构和微服务带来的监控和运维上的挑战。APM通过汇聚业务系统各处理环节的实时数据，分析业务系统各事务处理的交易路径和处理时间，实现对应用的全链路性能监测。开源的Pinpoint，ZipKin，Hawkular；商业的AppDynamics，OneAPM，Google Dapper等都是个中好手。
  -  产品运行时错误监测及调试：基于JVMTI可以开发出一款工具来时事监控生产环境的异常。这方面有一款成熟的商业软件OverOps，其有三个主要的功能：1. 采集到所有的异常，包括try catch之后没有打印出来的异常；2. 可以采集到异常发生时上下文所有变量的值；3. 可以将异常发生的堆栈对应的源代码采集展示出来，从而在一个系统上就可以看代码定位问题，不需要打开ide调试源代码。
  -  JAVA程序的调试(debug)：google甚至推出了云端调试工具cloud debugger。它时一个web应用，可以直接对生产环境进行远程调试，不需要重启或者中断服务。阿里也有类似的工具Zdebugger。
  -  JAVA程序的诊断(profile)：当出现cpu使用率过高、线程死锁等问题时，需要使用一些JAVA性能剖析或者诊断工具来分析具体的原因。例如Alibaba开源的Java诊断工具Arthas，它可以查看或者动态修改某个变量的值、统计某个方法调用链上的耗时、拦截方法前后，打印参数值和返回值，以及异常信息等。
@@ -39,6 +39,8 @@ JVMTI 并不一定在所有的 Java 虚拟机上都有实现，不同的虚拟�
 ## Instrumention
 
 Java虽然提供了JVMTI，但是对应的Agent需要用C/C++开发，对Java开发者而言并不是非常友好。因此在Java 5的新特性中加入了Instrumentation机制。有了 Instrumentation，开发者可以构建一个基于Java编写的Agent来监控或者操作JVM了，比如替换或者修改某些类的定义等。
+
+使用参考：[跟我一起复习Java-6](/post/technical/2019/0929_java_base_6/#instrumentation)
 
 ## Attach
 
