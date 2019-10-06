@@ -22,6 +22,7 @@ Iterator接口：
 
  - 对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。
  - 提供`boolean hasNext()`和`E next()`两个方法
+<!--more-->
 
 ListIterator：
 
