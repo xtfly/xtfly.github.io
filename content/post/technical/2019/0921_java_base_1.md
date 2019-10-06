@@ -26,7 +26,9 @@ toc: true
 
 # 控制语句
 
-## swith语句
+主要例举一些需要注意的点
+
+## swith
 
 switch(A)括号中A的取值类型如下：
 
@@ -44,13 +46,15 @@ case B:C
  - case是常量表达式， case后的语句可以不用大括号，也就是说C不需要使用大括号；
  - default没有符合的case就执行它，default并不是必须的。
 
-## for语法
+## for
 
  - 无限循环： for（；；）
  - index for: for(int i = 0; i < MAX; i++)
  - for each: for（a : iterator）  Java 5
 
 ## labeled loop
+
+对循环打标签，用于控制语句跳到不同层次的循环。
 
 ```
 vectorLoop:
