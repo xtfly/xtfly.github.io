@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4289 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4342 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -295,10 +295,10 @@
 <p>主要用于打印指定java进程的共享对象内存映射或堆内存细节。</p>
 
 <ul>
-<li>jmap pid : 输出的信息分别为：共享对象的起始地址、映射大小、共享对象路径的全程。</li>
-<li>jmap -heap pid : 输出堆使用情况</li>
-<li>jmap -histo pid：输出堆中对象数量和大小</li>
-<li>jmap -dump:format=b,file=heapdump pid：将内存使用的详细情况输出到文件，然后使用jhat命令查看该文件：jhat -port 4000 文件名 ，在浏览器中访问http:localhost:4000/</li>
+<li><code>jmap pid</code>： 输出的信息分别为：共享对象的起始地址、映射大小、共享对象路径的全程。</li>
+<li><code>jmap -heap pid</code>： 输出堆使用情况</li>
+<li><code>jmap -histo pid</code>：输出堆中对象数量和大小</li>
+<li><code>jmap -dump:format=b,file=heapdump pid</code>：将内存使用的详细情况输出到文件，然后使用jhat命令查看该文件：jhat -port 4000 文件名 ，在浏览器中访问http:localhost:4000/</li>
 </ul>
 
 <h2 id="jstat">jstat</h2>
@@ -317,8 +317,8 @@
 <p>样例：</p>
 
 <ul>
-<li>jstat -gc PID 5000 20： 输出堆中各分代的使用容量与GC的次数与所用时间</li>
-<li>jstat -gcutil PID 5000 20：输出堆中各分代的使用容量百分比</li>
+<li><code>jstat -gc PID 5000 20</code>： 输出堆中各分代的使用容量与GC的次数与所用时间</li>
+<li><code>jstat -gcutil PID 5000 20</code>：输出堆中各分代的使用容量百分比</li>
 </ul>
 
 <h2 id="jinfo">jinfo</h2>
@@ -328,9 +328,9 @@
 <p><code>jinfo -&lt;option&gt; &lt;pid&gt;</code></p>
 
 <ul>
-<li>-flag <name>: 打印指定java虚拟机的参数值</li>
-<li>-flag [+|-]<name>：设置或取消指定java虚拟机参数的布尔值</li>
-<li>-flag <name>=<value>：设置指定java虚拟机的参数的值</li>
+<li><code>-flag &lt;name&gt;</code>：打印指定java虚拟机的参数值</li>
+<li><code>-flag [+|-]&lt;name&gt;</code>：设置或取消指定java虚拟机参数的布尔值</li>
+<li><code>-flag &lt;name&gt;=&lt;value&gt;</code>：设置指定java虚拟机的参数的值</li>
 </ul>
 
 <h2 id="jcmd">jcmd</h2>
