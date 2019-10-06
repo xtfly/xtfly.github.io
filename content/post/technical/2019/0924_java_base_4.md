@@ -20,7 +20,7 @@ toc: true
 
 ### 文件对象
 
-在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。
+在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。
 
 文件特征对象主要有如下：
 
@@ -62,7 +62,7 @@ toc: true
 | :------- | :---------------- | :----------------- |
 | 抽象基类 | DataInput         | DataInput          |
 | 数据操作 | DataInputStream   | DataOutputStream   |
-| 对象操作 | ObjectInput       | ObjectOut         |
+| 对象操作 | ObjectInput       | ObjectOut         |
 | 对象操作 | ObjectInputStream | ObjectOutputStream |
 | 文件操作 | RandomAccessFile  | RandomAccessFile   |
 
