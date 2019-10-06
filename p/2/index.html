@@ -106,6 +106,83 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/" itemprop="url">
+        跟我一起复习Java-2
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-22">
+    2019-09-22
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">6263 字 ~13分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="集合体系">集合体系</h1>
+
+<p>集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：</p>
+
+<ul>
+<li>长度可变</li>
+<li>存储元素可以是引用类型</li>
+<li>可以存储多种类型的对象
+<br /></li>
+</ul>
+
+<h2 id="iterator">Iterator</h2>
+
+<p>Iterator接口：</p>
+
+<ul>
+<li>对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。</li>
+<li>提供<code>boolean hasNext()</code>和<code>E next()</code>两个方法</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0921_java_base_1/" itemprop="url">
         跟我一起复习Java-1
         </a>
@@ -668,89 +745,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0529_function/" itemprop="url">
-        编写短小的函数/方法
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-29">
-    2019-05-29
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2426 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="函数与方法">函数与方法</h1>
-
-<p>我们经常会遇到两个词，函数（Function）与方法（Method），简言之：</p>
-
-<ul>
-<li>函数不属于任何对象</li>
-<li>方法是关联到对象内的函数</li>
-</ul>
-
-<p>他们的区别：</p>
-
-<ul>
-<li>函数是面向过程编程中，为解决问题划分每个步骤的体现</li>
-<li>方法是面向对象编程中，对象能提供的能力或行为的体现
-<br /></li>
-</ul>
-
-<p>方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的叙述，方法与函数统一称函数，不再区分。</p>
-
-<p>他们的必要性：</p>
-
-<ul>
-<li>让代码可以重复使用，他们是”积木“</li>
-<li>函数黑盒特性，有效封装，隐藏细节</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0529_function/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -866,7 +860,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">120</span>
+        <span class="site-state-item-count">121</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
