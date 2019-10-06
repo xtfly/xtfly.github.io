@@ -1,9 +1,0 @@
-<div class="post-list group">
-  {{ $paginate := (.Paginate (where .Data.Pages "Section" "!=" "page") 30 )  }}
-  {{ range $index,$data := $paginate.Pages }}
-  <div class="post-row">
-    {{ partial "postItem.html" $data }}
-  </div>
-  {{ end}}
-</div>
-{{ partial "pagination.html" . }}
