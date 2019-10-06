@@ -28,9 +28,9 @@
 &lt;p&gt;JVMTI Agent回调函数：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;OnLoad阶段： 调用静态库的Agent_OnLoad函数&lt;/li&gt;
-&lt;li&gt;Live阶段： 调用静态库的Agent_OnAttach函数&lt;/li&gt;
-&lt;li&gt;关闭阶段：调用静态库的Agent_OnUnload函数&lt;/li&gt;
+&lt;li&gt;OnLoad阶段： 调用动态库的Agent_OnLoad函数&lt;/li&gt;
+&lt;li&gt;Live阶段： 调用动态库的Agent_OnAttach函数&lt;/li&gt;
+&lt;li&gt;关闭阶段：调用动态库的Agent_OnUnload函数&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

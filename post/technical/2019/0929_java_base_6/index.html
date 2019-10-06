@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3002 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2994 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -266,9 +266,9 @@
 
 <h2 id="instrumentation">Instrumentation</h2>
 
-<p>Instrumentation是可以独立于应用程序之外的代理程序，可以用来监控和扩展JVM上运行的应用程序，相当于是JVM层面的AOP。Instrumentation需要借助JVM的Javaagent机制。</p>
+<p>Instrumentation是可以独立于应用程序之外的代理程序，可以用来监控和扩展JVM上运行的应用程序，相当于是JVM层面的AOP。Instrumentation需要借助JVM的JavaAgent机制。</p>
 
-<p>Javaagent相当于一个插件，在JVM启动的时候可以添加 javaagent 配置指定启动之前需要启动的agent jar包。这个agent包中需要有MANIFEST.MF文件必须指定Premain-Class配置，且Premain-Class配置指定的Class必须实现premain()方法。</p>
+<p>JavaAgent 相当于一个插件，在JVM启动的时候可以添加 JavaAgent 配置指定启动之前需要启动的agent jar包。这个Agent包中需要有MANIFEST.MF文件必须指定Premain-Class配置，且Premain-Class配置指定的Class必须实现premain()方法。</p>
 
 <p>premain方法有两种：</p>
 
