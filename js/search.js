@@ -16,6 +16,9 @@ $(document).ready(function () {
             url: path,
             dataType: "xml",
             async: true,
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(textStatus);
+            },
             success: function( xmlResponse ) {
                 // get the contents from search data
                 console.log("xxxx");

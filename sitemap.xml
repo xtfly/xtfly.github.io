@@ -1,18 +1,6 @@
 <search>
     
      <entry>
-        <title>Posts</title>
-        <url>http://lanlingzi.cn/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
-    </entry>
-    
-     <entry>
         <title>跟我一起复习Java-10</title>
         <url>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</url>
         <categories>
@@ -283,12 +271,12 @@ contextClassLoader是线程上下文类加载器，是从父线程那里继承�
           <tag>软件开发</tag><tag>Java</tag>
         </tags>
         <content type="html"> IO体系 普通IO 整个Java.io包主要分为两大部分
- 文件特征对象 文件内容操作对象  文件对象 在类Unix系统中，一切对象皆文件，文件是OS中最为基本的对象。Java API提供了最为基本的文件对象。
+ 文件特征对象 文件内容操作对象  文件对象 在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。
 文件特征对象主要有如下：
  文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等 文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象 文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统 文件特征，包括Closeable，Flushable，FileFilter，Serializable  文件内容操作对象主要有两大类：流式操作与数据转换。
 IO操作 流式操作组件 流式操作又分类(byte)字节流，与字符(char)流
    分类 字节输入流 字节输出流 字符输入流 字符输出流     接口 InputStream OutputStream Reader Writer   Filter FilterInputStream FilterOutputStream FilterReader FilterWriter   访问文件 FileInputStream FileOutputStream FileReader FileWriter   访问数组 ByteArrayInputStream ByteArrayOutputStream CharArrayReader CharArrayWriter   访问管道 PipedInputStream PipedOutputStream PipedReader PipedWriter   访问字符串   StringReader StringWriter   缓冲流 BufferedInputStream BufferedOutputStream BufferedReader BufferedWriter   转换流   InputStreamReader OutputStreamWriter   打印流  PrintStream  PrintWriter   推回输入流 PushbackInputStream  PushbackReader    数据流 DataInputStream DataOutputStream     对象流 ObjectInputStream ObjectOutputStream      数据转换组件 数据转换，支持把字节流与Java基本数据类型间相互转换
-   分类 数据输入 数据输出     抽象基类 DataInput DataInput   数据操作 DataInputStream DataOutputStream   对象操作 ObjectInput ObjectOut   对象操作 ObjectInputStream ObjectOutputStream   文件操作 RandomAccessFile RandomAccessFile    NIO NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。
+   分类 数据输入 数据输出     抽象基类 DataInput DataInput   数据操作 DataInputStream DataOutputStream   对象操作 ObjectInput ObjectOut   对象操作 ObjectInputStream ObjectOutputStream   文件操作 RandomAccessFile RandomAccessFile    NIO NIO是Java 1.4推出，提供一种更主高效的IO操作API，可以代替部分普通IO操作API。
 区别 NIO和普通IO（后简称IO）之间第一个最大的区别是：
  IO是面向流的。面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。 NIO是面向缓冲区的。NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。  另一个区别是是否阻塞：
  IO是阻塞的。意味着当一个线程调用read() 或 write()时，该线程被阻塞，直到有一些数据被读取，或数据完全写入。该线程在此期间不能再干任何事情了 NIO可以是非阻塞的。 NIO的非阻塞模式，使一个线程从某通道发送请求读取数据，但是它仅能得到目前可用的数据，如果目前没有数据可用时，就什么都不会获取。而不是保持线程阻塞，所以直至数据变得可以读取之前，该线程可以继续做其他的事情。 非阻塞写也是如此。一个线程请求写入一些数据到某通道，但不需要等待它完全写入，这个线程同时可以去做别的事情。 线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。  特性 基于通道（Channel）与缓冲区（Buffer）操作：
@@ -770,7 +758,7 @@ Schizophrenic Class 紊乱类，一个类本应该一种抽象，完成一类责
 清淅明确的代码结构，是软件项目成功的重要开始。
 代码结构不应该仅仅归纳为 “代码编码风格” 一类，它是架构在代码层次的真实反应，架构是否能落地，代码结构的良好设计起着至关重要的作用。软件是有生命力的，需要考虑其可持续性发展。一个结构层次非常不好软件，它的逻辑可能并不一定复杂，但随着时间的推移，需要花费非常长的时间去理解它表达的的意思。同样不好的代码结构，让构建变得困难或效率低下，进一步降低了它的生命力。
 目的 当然，代码层次结构在软件质量属性方面，还是归于开发态的 “可读性和可维护性” 的范畴，我们设计一个层次清晰的代码结构，就是为了达到以下几点目的：
- 代码即架构：同样也是架构即代码，源码就可以解析软件架构，软件的组成，软件系统之间的依赖关系。也正如12因子中提到的CodeBase，一份代码能构建出不同的形态的软件，部署在不同的环境。背后的根因是代码能真实地反映出软件的运行与部署架构，构建都能通过代码来跟踪，由良好的代码结构来承载软件的不同形态的运行组成。 可读性：代码不仅仅是编译给机器来读，更重要是软件人员参与其中，代码让人读懂，它才能更好的生命力。接手这个软件代码的人，一眼就能看懂目录结构，知道软件由什么功能组成，他们的依赖关系是什么；软件启动入口在哪里，测试目录在哪儿，配置文件在哪儿等等，从而非常快速的了解这个项目。 可维护性：清晰明确的代码结构划分，也是软件各功能模块的边界划分，一旦定义好组织规则后，维护者就能很明确地知道，新的功能能增加在哪里，新增的文件能放在什么目录下，好处是随着时间的推移，代码与配置的规模增加，代码结构不会那么快的腐烂，变更导致乱麻一团。  代码层次结构大到子系统、服务（组件）的划分，中到模块工程目录的划分，小到工程内的各个package（Java/Go）目录的划分。无论何种层次，重要还是保持一个层次清晰的目录结构。组织一个良好的目录结构也是设计思想直接体现，其实也并不是那么的简单能设计出来，实际需要根据软件的功能划分不断地调整。
+ 代码即架构：同样也是架构即代码，源码就可以解析软件架构，软件的组成，软件系统之间的依赖关系。也正如12因子中提到的CodeBase，一份代码能构建出不同的形态的软件，部署在不同的环境。背后的根因是代码能真实地反映出软件的运行与部署架构，构建都能通过代码来跟踪，由良好的代码结构来承载软件的不同形态的运行组成。 可读性：代码不仅仅是编译给机器来读，更重要是软件人员参与其中，代码让人读懂，它才能更好的生命力。接手这个软件代码的人，一眼就能看懂目录结构，知道软件由什么功能组成，他们的依赖关系是什么；软件启动入口在哪里，测试目录在哪儿，配置文件在哪儿等等，从而非常快速的了解这个项目。 可维护性：清晰明确的代码结构划分，也是软件各功能模块的边界划分，一旦定义好组织规则后，维护者就能很明确地知道，新的功能能增加在哪里，新增的文件能放在什么目录下，好处是随着时间的推移，代码与配置的规模增加，代码结构不会那么快的腐烂，变更导致乱麻一团。  代码层次结构大到子系统、服务（组件）的划分，中到模块工程目录的划分，小到工程内的各个package（Java/Go）目录的划分。无论何种层次，重要还是保持一个层次清晰的目录结构。组织一个良好的目录结构也是设计思想直接体现，其实也并不是那么的简单能设计出来，实际需要根据软件的功能划分不断地调整。
 模块结构 系统结构的划分是对系统逐步分解的一个过程。设计软件结构的具体任务是将一个复杂系统按功能进行模块划分、建立模块的层次结构及调用关系、确定模块间的接口和人机界面等。模块的划发也是第一层项目工程目录结构划分，只要是模块划分是清晰的，还是较容易映射到代码工程结构。
 模块的划分方法论很多，模块往往是将由一个或多个功能(或目标)密切相关或相似的应用程序所组成的程序集合抽象出来组成在一起。这本质是对业务需求深入了解之后的功能与数据层面的分解。之前的SOA，以及现在微服务都是一种软件架构工程上的优秀实践，但它不能给出业务系统中是按什么维度来划分多少个服务或微服务的答案。
 大的道理与原则还是有一些：
