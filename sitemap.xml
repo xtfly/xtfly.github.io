@@ -322,7 +322,7 @@ AQS定义两种资源共享方式：
         <tags>
           <tag>软件开发</tag><tag>Java</tag>
         </tags>
-        <content type="html">  集合体系 集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：
+        <content type="html"> 集合体系 集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：
  长度可变 存储元素可以是引用类型 可以存储多种类型的对象   Iterator Iterator接口：
  对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。 提供boolean hasNext()和E next()两个方法  ListIterator：
  只能用于List的迭代器。 在使用迭代器迭代的过程中需要使用集合中的方法操作元素，出现ConcurrentModificationException异常时，可以使用ListIterator避免  Collection Collection接口：
