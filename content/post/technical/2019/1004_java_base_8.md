@@ -210,7 +210,7 @@ JVM的GC日志的主要参数包括如下几个：
  - -XX:+PrintGCDateStamps 输出GC的时间戳（以日期的形式，如 2013-05-04T21:53:59.234+0800）
  - -XX:+PrintHeapAtGC 在进行GC的前后打印出堆的信息
  - -XX:+PrintGCApplicationStoppedTime // 输出GC造成应用暂停的时间
- - -Xloggc: logs/gc.log 日志文件的输出路径
+ - -Xloggc:logs/gc.log 日志文件的输出路径
 
 GC日志样例：
 

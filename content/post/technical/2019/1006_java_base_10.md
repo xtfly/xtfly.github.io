@@ -148,10 +148,10 @@ java程序启动后，会在目录/tmp/hsperfdata_{userName}/下生成几个文�
 
 主要用于打印指定java进程的共享对象内存映射或堆内存细节。
 
- - jmap pid : 输出的信息分别为：共享对象的起始地址、映射大小、共享对象路径的全程。
- - jmap -heap pid : 输出堆使用情况
- - jmap -histo pid：输出堆中对象数量和大小
- - jmap -dump:format=b,file=heapdump pid：将内存使用的详细情况输出到文件，然后使用jhat命令查看该文件：jhat -port 4000 文件名 ，在浏览器中访问http:localhost:4000/
+ - `jmap pid`： 输出的信息分别为：共享对象的起始地址、映射大小、共享对象路径的全程。
+ - `jmap -heap pid`： 输出堆使用情况
+ - `jmap -histo pid`：输出堆中对象数量和大小
+ - `jmap -dump:format=b,file=heapdump pid`：将内存使用的详细情况输出到文件，然后使用jhat命令查看该文件：jhat -port 4000 文件名 ，在浏览器中访问http:localhost:4000/
 
 ## jstat
 
@@ -166,8 +166,8 @@ java程序启动后，会在目录/tmp/hsperfdata_{userName}/下生成几个文�
 
 样例：
 
- - jstat -gc PID 5000 20： 输出堆中各分代的使用容量与GC的次数与所用时间 
- - jstat -gcutil PID 5000 20：输出堆中各分代的使用容量百分比
+ - `jstat -gc PID 5000 20`： 输出堆中各分代的使用容量与GC的次数与所用时间 
+ - `jstat -gcutil PID 5000 20`：输出堆中各分代的使用容量百分比
 
 ## jinfo
 
@@ -175,9 +175,9 @@ java程序启动后，会在目录/tmp/hsperfdata_{userName}/下生成几个文�
 
 `jinfo -<option> <pid>`
 
- - -flag <name>: 打印指定java虚拟机的参数值
- - -flag [+|-]<name>：设置或取消指定java虚拟机参数的布尔值
- - -flag <name>=<value>：设置指定java虚拟机的参数的值
+ - `-flag <name>`：打印指定java虚拟机的参数值
+ - `-flag [+|-]<name>`：设置或取消指定java虚拟机参数的布尔值
+ - `-flag <name>=<value>`：设置指定java虚拟机的参数的值
 
 ## jcmd
 
