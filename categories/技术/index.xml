@@ -6,10 +6,33 @@
     <description>Recent content in 技术 on 蘭陵N散記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 06 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 13 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>开源软件知识</title>
+      <link>http://lanlingzi.cn/post/technical/2019/1013_opensource/</link>
+      <pubDate>Sun, 13 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2019/1013_opensource/</guid>
+      <description>&lt;h1 id=&#34;什么是开源软件&#34;&gt;什么是开源软件&lt;/h1&gt;
+
+&lt;p&gt;开放源代码促进会（OSI：Open Source Initiative），是一个致力于推动开源软件发展的非盈利组织。&lt;/p&gt;
+
+&lt;p&gt;开源软件（OSS：Open Source Softwar）即开放源代码软件，其定义首先起源于自由软件（FS：Free Software）。OSI将开放源码定义为：“开放源码，通过支持源代码的独立同行评议和快速发展演变，提高了软件的可靠性和质量。要通过 OSI 认证，软件必须在获得许可证的情况下发布，该许可证可保证免费读取、重新发布、修改和使用该软件的权利。&lt;/p&gt;
+
+&lt;p&gt;开源软件的特点：可自由使用、无任何担保、无许可费、可获得源代码、享有版本、有特定License&lt;/p&gt;
+
+&lt;p&gt;开源软件的三大组成要素；&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;License：是游戏规则 ，有严密的组织监管遵守&lt;/li&gt;
+&lt;li&gt;社区是组织方式：是其发展的核心学问所在，主要特征：无明确路径、子项目充分竞争、充分的对等评审、用户充分参与、源码发布、经常发布，Internet发布。&lt;/li&gt;
+&lt;li&gt;商业模式是本质：很多并不是其独有的，主要包括：捐赠、技术服务、广告、增值产品，双重授权、软硬件结合等。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>跟我一起复习Java-10</title>

@@ -106,6 +106,71 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0813_go_gls/" itemprop="url">
+        Goroutine Local Storage
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-08-13">
+    2016-08-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2992 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h2 id="背景">背景</h2>
+
+<p>最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称<code>GoId</code>）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。</p>
+
+<p>在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。</p>
+
+<p>在Java中，JDK库提供<code>Thread.CurrentThread()</code>来获取当前线程对象，提供<code>ThreadLocal</code>来存储与获取线程局部变量。由于Java能通过<code>Thread.CurrentThread()</code>获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0813_go_gls/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0803_go_interface/" itemprop="url">
         理解Go Interface
         </a>
@@ -592,75 +657,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" itemprop="url">
-        第八届中国云计算大会简纪
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-05-18">
-    2016-05-18
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3399 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>第一次参加由电子协会举办的云计算大会，这届是在北京国家会议中心举行，据说这一届参加的人数有1.4W人。主题为“技术融合 应用创新”。云计算走到今天，已不在是什么新概念，在中国已大规格地使用起来。作为一名技术从业者，有幸参加，虽可能得不到干货，但可听一听，看一看，启发思路。</p>
-
-<h2 id="云计算是产业变革的推进器">云计算是产业变革的推进器</h2>
-
-<p>第一场是来自工业和信息化部副部长怀（进鹏）部长致辞，领导果然是领导，带病撑着拐杖登台。整个过程是滔滔不绝地精彩分享，作一名学术官员，能脱稿是我发挥，说明他这个领域的真正专家。核心观点：</p>
-
-<ul>
-<li>云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整</li>
-<li>云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用</li>
-<li>云计算提供低成本便捷的IT资源，提供数字均衡发展，降低数字鸿沟，大幅度降低创业门槛</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -747,6 +743,8 @@
     
         
     
+        
+    
     <a class="extend next" rel="next" href="http://lanlingzi.cn/p/9/"><i class="fa fa-angle-right"></i></a>
 </nav>
 
@@ -777,7 +775,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">120</span>
+        <span class="site-state-item-count">121</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -794,7 +792,7 @@
     <div class="site-state-item site-state-tags">
         <a href="http://lanlingzi.cn/tags/">
          
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         
         <span class="site-state-item-name">标签</span>
         </a>
