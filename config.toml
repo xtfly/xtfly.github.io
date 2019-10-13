@@ -1,4 +1,4 @@
-Title =  "蘭陵N散記"
+Title =  "蘭陵N梓記"
 LanguageCode = "zh-CN"
 BaseUrl = "http://lanlingzi.cn/"
 Theme =  "next"
@@ -18,8 +18,8 @@ DefaultContentLanguage = "zh"
 
 [Params]
   Introduce = "Programmer & Architect"
-  Description = "蘭陵N散記 | 博客 | 软件 | 架构 | Java | Golang"
-  Keywords =  "蘭陵N散記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang"
+  Description = "蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"
+  Keywords =  "蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang"
   Subtitle = "一指流沙，程序年华"
   Imglogo = "/img/logo.png"
   AuthorImg = "/img/author.jpg"
