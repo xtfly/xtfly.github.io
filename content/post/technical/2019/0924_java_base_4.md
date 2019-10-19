@@ -60,7 +60,7 @@ toc: true
   
 | 分类     | 数据输入          | 数据输出           |
 | :------- | :---------------- | :----------------- |
-| 抽象基类 | DataInput         | DataInput          |
+| 抽象基类 | DataInput         | DataOut        |
 | 数据操作 | DataInputStream   | DataOutputStream   |
 | 对象操作 | ObjectInput       | ObjectOut         |
 | 对象操作 | ObjectInputStream | ObjectOutputStream |
