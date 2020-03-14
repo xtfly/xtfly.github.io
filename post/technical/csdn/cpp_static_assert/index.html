@@ -142,33 +142,25 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">939 字 ~2分钟</span>
+<span class="leancloud-visitors-count">955 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。</p>
-
 <h2 id="动态断言">动态断言：</h2>
-
-<p>assert宏的原型定义在<assert.h>中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#include &lt;assert.h&gt;  
-void assert( int expression );</pre></div>
-<p><code>assert</code>的作用是先计算表达式<code>expression</code> ，如果其值为假（即为0），那么它先向<code>stderr</code>打印一条出错信息，然后通过调用<code>abort</code> 来终止程序运行。</p>
-
+<p>assert宏的原型定义在&lt;assert.h&gt;中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#include &lt;assert.h&gt;  
+void assert( int expression );
+</code></pre></div><p><code>assert</code>的作用是先计算表达式<code>expression</code> ，如果其值为假（即为0），那么它先向<code>stderr</code>打印一条出错信息，然后通过调用<code>abort</code> 来终止程序运行。</p>
 <p>大家要注意是，其中的表达式为假时，会终止程序运行，包括我在内经常会写错代码，断言一个指针是否为空，往往写成了
 <code>assert(!p);</code>其实应该写成<code>assert(p);</code>。</p>
-
 <p><code>assert</code>是运行期的判断，并且会强制终止程序，一般要求只能用于<code>debug</code>版本中，是为了尽可能快的发现问题。尤其在我所从事的电信软件产品中，<code>assert</code>是要从<code>release</code>版本中去掉。所以一般开发会重新定义<code>assert</code>宏。</p>
-
 <h2 id="静态断言">静态断言：</h2>
-
 <p>在新的<code>C++</code>标准中<code>C++0x</code>中，加了对静态断言的支持，引入了新的关键字<code>static_assert</code>来表示静态断言。</p>
-
 <p>使用静态断言，我们可以在程序的编译时期检测一些条件是否成立。但这个关键字太新了，没有几个编译器是支持的(好像VC2008支持，我用VC很少，主要是在linux下C++编程)。</p>
-
 <p>于是可以使用C++现有的模板特性来实现静态断言的功能。<code>boost</code>中也已有<code>BOOST_STATIC_ASSERT</code>宏的实现，有兴趣的同学可以down下来仔细研究一下，它的断言信息更丰富，下面为我的简单实现：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">// declare a tempalte class StaticAssert.  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// declare a tempalte class StaticAssert.  
 template &lt;bool assertion&gt; struct StaticAssert;  
 
 // only partial specializate parameter&#39;s value is true.  
@@ -177,11 +169,11 @@ template &lt;&gt; struct StaticAssert&lt;true&gt;
   enum { VALUE = 1 };  
 };
 
-#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  </pre></div>
-<p>原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到<code>StaticAssert&lt;false&gt;::VALUE</code>类型。举例如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK  
-STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节</pre></div>
-<p>静态断言在编译时进行处理，不会产生任何运行时刻空间和时间上的开销，这就使得它比assert宏具有更好的效率。另外比较重要的一个特性是如果断言失败，它会产生有意义且充分的诊断信息，帮助程序员快速解决问题。</p>
+#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  
+</code></pre></div><p>原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到<code>StaticAssert&lt;false&gt;::VALUE</code>类型。举例如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK  
+STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节
+</code></pre></div><p>静态断言在编译时进行处理，不会产生任何运行时刻空间和时间上的开销，这就使得它比assert宏具有更好的效率。另外比较重要的一个特性是如果断言失败，它会产生有意义且充分的诊断信息，帮助程序员快速解决问题。</p>
     </div>
     <footer class="post-footer">
      
@@ -219,6 +211,23 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节</pre></d
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：C&#43;&#43;技巧之断言Assert
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -309,12 +318,12 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 64bit机上NG，long为8字节</pre></d
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

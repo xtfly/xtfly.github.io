@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>MySQL on 蘭陵N梓記</title>
@@ -17,16 +17,15 @@
       <pubDate>Sat, 03 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2017/0603_mac_mysql/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/mysql.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/mysql.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;安装：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;➜  ~ brew info mysql
+&lt;pre&gt;&lt;code&gt;➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;</description>
+➜  ~ brew install mysql
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
   </channel>

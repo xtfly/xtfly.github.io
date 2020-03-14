@@ -148,51 +148,32 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/0311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
-
 <h2 id="security-manager">Security Manager</h2>
-
 <p>Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（<code>SecurityManager</code>）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。</p>
-
 <p><code>SecurityManager</code>是一个API级别的，可自定义的安全策略管理器，它深入到Java API中，在各处都可以见到它的身影。默认情况下，Java应用程序是不设置<code>SecurityManager</code>实例的（意味着不会起到安全检查），这个实例需要我们在程序启动时通过<code>System.setSecurityManager</code>来设置。一般情况下，检查权限是通过<code>SecurityManager.checkPermission(Permission perm)</code>来完成的。外部程序通过创建<code>Permission</code>实例，传递给前面的<code>check</code>方法。<code>Permission</code>是一个抽象类，需要继承它实现不同的权限验证，比如<code>FilePermission</code>，代表对某个文件的读写权限。<code>new FilePermission(&quot;test.txt&quot;, &quot;read&quot;)；</code>将这个实例传给<code>SecurityManager</code>，检查是否要读test.txt这个文件。</p>
-
 <p>但<code>SecurityManager</code>也是一个全局管理类，一旦设置，则同容器中所有代码将会受到影响。但我们需要仅仅是对WebApp运行期的资源安全访问控制检查。</p>
-
 <h2 id="检查permission时机">检查Permission时机</h2>
-
 <p>所以在设计方案时必须考虑对WebApp进行的资源授权只针对WebApp，不能影响Web容器其它代码运行。由于检查权限是通过<code>SecurityManager.checkPermission(Permission perm)</code>来完成的，如果在<code>checkPermission</code>实现很复杂的逻辑会对性能造成影响。所以需要分二个层次来设计Security Manager的设置：</p>
-
 <ul>
 <li>当Web容器启动时不设置任何的<code>SecurityManager</code></li>
 <li>WebApp支行时采用新的<code>SecurityManager</code>类，在部署它时指定新<code>SecurityManager</code>类与<code>Policy</code>,在自定义的Filter中init方法中实现</li>
 </ul>
-
 <p>重载<code>java.security.SecurityManager</code>(假定子类名定为<code>CustomSecurityManager</code>)。它主要是重载如下几个方法：</p>
-
 <ul>
 <li><code>checkPermission(Permission perm)</code></li>
 <li><code>checkPermission(Permission perm, Object context)</code></li>
 <li><code>checkAccess(ThreadGroup g)</code></li>
 <li><code>checkAccess(Threa t)</code></li>
 </ul>
-
 <p>在两个<code>checkPermission</code>方法中主要是判断不是不WebApp的工作线程，如果是再做授权检查，使用自定义的Permissions。否则不做任何的处理.</p>
-
 <p>在两个<code>checkAccess</code>方法中，对Thread权限如创建做一些检查特殊处理,如检查 <code>RuntimePermission(&quot;modifyThread&quot;)</code>与<code>RuntimePermission(&quot;modifyThreadGroup&quot;)</code>。</p>
-
 <p>如果判断WebApp执行线程？由于不允许WebApp创建新的线程，那一个WebApp的一次http请求在Servlet的service方法实现的逻辑肯定只会在一个线程调用栈中。在Servlet的service方法入口前设置当前线程名到系统环境量Value为true，在service方法出口后设置当前线程名到系统环境量Value为false，为了能把上面的<code>Permission</code>只限制在WebApp中使用。需要在<code>CustomSecurityManager.checkPermission</code>根据当前线程名在系统环境量Value是否为true来判断是否需要做<code>Permission</code>检查。</p>
-
 <p>如何在Servlet的service方法入口设置环境变量？Servlet规范中的Filter机制可以使得Web请求在交给Web Servlet处理前进行对请求的预先处理，以及Web Servlet处理完成之后响应后处理。也就是说在相同的URL请求下，容器会优先由Filter处理，再给Web Servlet处理，利用这个特性完成对当前线程名在系统环境变量中的设置。</p>
-
 <p>同样，在Filter的init方法也就可以对<code>CustomSecurityManager</code>注册到系统全局的<code>SecurityManager</code>中。</p>
-
 <h2 id="自定义permission">自定义Permission</h2>
-
 <p>配置WebApp安全策略的<code>Permission</code>，可以基于Policy文件配置，以不同的CodeBase来区分不同的权限。由于配置Policy文件时，并不知道WebApp war包解压的具体目录。以Jetty为例，默认会把War解压在java.io.tmpdir目录下，那对WebApp的CodeBase可设置为java.io.tmpdir，否则根据部署实际目录来调整。</p>
-
 <p>另外，需要对容器的其它jar文件的代码权限授权。由于类动态加载的原因，WebApp ClassLoder会委托它的双亲加载。如果不设置，也会在WebApp的工作线程中，会导致在Servlet运行时报一些权限禁止，如<code>SecurityPermission</code>。通过不同的CodeBase来进行不同的授权，除WebApp的Class之外，假定可以考虑是AllPermission。</p>
-
 <p>那如果WebApp的工作线程调用系统平台提供一些API，而平台API要求可以读写文件，开启特定的端口等，这也与WebApp在同一个线程调用栈中，同样也没有权限，那就又何处理？需要两步来完成对平台API的权限授权：</p>
-
 <ul>
 <li>平台的API Jar包不能放在WebApps目录下，应用与WebApp的War属于不现的保护域（ProtectionDomain）</li>
 <li>在平台的API的入口需要加上对<code>AccessController.doPrivileged</code>设置，这样是在调用<code>doPrivileged</code>的方法相关联的保护域拥有执行被请求的操作的权限，<code>AccessController</code>将立即返回，不再在栈的下层继续检查操作权限（也就是说它的代码主休是享受“privileged”特权），它单独负责对它的可使用的资源的访问请求，而不管这个请求是由什么代码所引发的。</li>
@@ -234,6 +215,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：[WebApp沙箱]SecurityManager运用
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -326,14 +324,11 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#security-manager">Security Manager</a></li>
-<li><a href="#检查permission时机">检查Permission时机</a></li>
-<li><a href="#自定义permission">自定义Permission</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#security-manager">Security Manager</a></li>
+    <li><a href="#检查permission时机">检查Permission时机</a></li>
+    <li><a href="#自定义permission">自定义Permission</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -348,12 +343,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

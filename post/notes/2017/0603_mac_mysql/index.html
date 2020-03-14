@@ -147,23 +147,23 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/y17/mysql.jpg" alt="" /></p>
-
+    <p><img src="http://lanlingzi.cn/images/y17/mysql.jpg" alt=""></p>
 <p>最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：<a href="https://brew.sh/index_zh-cn.html">brew官网</a></p>
-
 <p>安装：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">➜  ~ brew info mysql
+<pre><code>➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql</pre></div>
+➜  ~ brew install mysql
+</code></pre>
 <p>mysql的安装过程会显示，注，我安装的5.7.18，目录为<code>/usr/local/Cellar/mysql/5.7.18_1</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">==&gt; /usr/local/Cellar/mysql/5.7.18_1/bin/mysqld –initialize-insecure –user=xiao –basedir=/usr/local/Cellar/mysql/5.7.18_1 –datadir=/usr/local/var/mysql –t
+<pre><code>==&gt; /usr/local/Cellar/mysql/5.7.18_1/bin/mysqld –initialize-insecure –user=xiao –basedir=/usr/local/Cellar/mysql/5.7.18_1 –datadir=/usr/local/var/mysql –t
 ..... 
 We’ve installed your MySQL database without a root password. To secure it run: 
-mysql_secure_installation</pre></div>
+mysql_secure_installation
+</code></pre>
 <p>这说明MySQL已安装成功，必需要使用mysql_secure_installation来初始化用户密码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">➜  ~ mysql.server start
+<pre><code>➜  ~ mysql.server start
 Starting MySQL
 SUCCESS!
 ➜  ~ mysql_secure_installation
@@ -171,28 +171,29 @@ Securing the MySQL server deployment.
 
 Connecting to MySQL using a blank password.
 
-......</pre></div>
+......
+</code></pre>
 <p>按英文提示一步步设置password validation policy与password等。</p>
-
 <p>测试，输入mysql_secure_installation设置过程的密码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">➜  ~ mysql -u root –p
+<pre><code>➜  ~ mysql -u root –p
 Enter password:
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 6
 Server version: 5.7.18 Homebrew
-......</pre></div>
+......
+</code></pre>
 <p>新增用户xiao，密码为123456，并赋所有权限给他：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">mysql&gt;use mysql;
-mysql&gt;GRANT ALL PRIVILEGES ON *.* TO &#39;xiao&#39;@&#39;%&#39; IDENTIFIED BY &#39;123456&#39; WITH GRANT OPTION;
-mysql&gt;flush privileges;</pre></div>
+<pre><code>mysql&gt;use mysql;
+mysql&gt;GRANT ALL PRIVILEGES ON *.* TO 'xiao'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+mysql&gt;flush privileges;
+</code></pre>
 <p>如果想设置开机启动MySQL，执行如下命令：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">➜  ~ mkdir -p ~/Library/LaunchAgents
+<pre><code>➜  ~ mkdir -p ~/Library/LaunchAgents
 ➜  ~ cp /usr/local/Cellar/mysql/5.7.18_1/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/  
-➜  ~ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist</pre></div>
+➜  ~ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+</code></pre>
 <p>使用命令行来操作MySQL不方便，推荐使用Navicat MySQL/Preminum软件。软件安装包在网上搜索吧。</p>
-
 <p>参考：</p>
-
 <p>[1] <a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html">https://dev.mysql.com/doc/refman/5.7/en/mysql-secure-installation.html</a></p>
     </div>
     <footer class="post-footer">
@@ -233,6 +234,23 @@ mysql&gt;flush privileges;</pre></div>
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Install MySQL on MacOS
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -323,12 +341,12 @@ mysql&gt;flush privileges;</pre></div>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

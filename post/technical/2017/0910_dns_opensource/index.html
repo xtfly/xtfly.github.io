@@ -154,33 +154,22 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/y17/dns.jpg" alt="" /></p>
-
+    <p><img src="http://lanlingzi.cn/images/y17/dns.jpg" alt=""></p>
 <p>DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：</p>
-
 <h2 id="bind9">Bind9</h2>
-
 <p>ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自<code>Berkeley Internet Name Domain</code>。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。</p>
-
 <p>Bind9可以作为权威与递归DNS。主要特性如下：</p>
-
 <p>作为权威DNS时：</p>
-
 <ul>
-<li>Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击
-
-<ul>
+<li>Response Rate Limiting (RRL)：对DNS增强，以减少放大攻击</li>
 <li>Dynamically-Loadable Zones (DLZ)：支持从外部数据库获取Zone数据，但不建议使用在高性的权威DNS。</li>
 <li>Minimum Re-load Time：支持配置文件动态加载。</li>
 <li>HSM Support：支持通过原生的 PKCS#11接口或OpenSSL PKCS#11的接口的HSM（ Hardware Security Modules）。</li>
 <li>DNSSEC with In-line Signing：支持NSEC与NSEC3的安全协议的签名。</li>
 <li>Catalog Zones：支持多Zone的目录管理。</li>
 <li>Scalable Master/Slave Hierarchy：支持Master+多Slave组网，Slave从Master同步Zone配置。</li>
-</ul></li>
 </ul>
-
 <p>作为递归DNS时：</p>
-
 <ul>
 <li>NXDOMAIN Redirect：当查询一个不存在域名时，转向一个Web页面，它依赖于DLZ特征。</li>
 <li>Flexible Cache Controls：对于不正确或过期的域名记录，灵活的缓存控制。</li>
@@ -191,79 +180,49 @@
 <li>GeoIP：支持基于来源不同的递归DNS的请求给出不同的响应。</li>
 <li>Response Policy Zone（RPZ）：通过响应策略的Zone来减少对被认为是滥用或非法目的Zone的访问。</li>
 </ul>
-
 <p>双License：ISC 与Mozilla Public 2.0。</p>
-
 <p>开发语言：C。</p>
-
-<p>官方网站：<a href="https://www.isc.org/">https://www.isc.org/</a></p>
-
+<p>官方网站：https://www.isc.org/</p>
 <h2 id="powerdns">PowerDNS</h2>
-
 <p>PownerDNS发起于1999年，也是一个老牌的开源DNS了。它可以作为权威（最新版本3.4.11）与递归DNS（最新版本3.7.4）。2011年07月23日，PowerDNS 3.0 正式版发布，主要特性如下：</p>
-
 <ul>
 <li>完全支持 DNSSEC ，包括自动签名、rollovers 和密钥维护</li>
 <li>TSIG，兼容 MyDNS 的后端</li>
 <li>基于 IPv6 的主从结构，并行从节点引擎，MongoDB 支持和 Lua 的区域编辑</li>
 </ul>
-
 <p>欧洲30%+的域名采用PownerDNS，以及全世界75%+的DNSSEC应用。</p>
-
 <p>作为权威DNS时：</p>
-
 <ul>
-<li>Standards compliant serving of DNS information from all relevant databases
-
-<ul>
+<li>Standards compliant serving of DNS information from all relevant databases</li>
 <li>Text files, dynamic scripts in various languages</li>
 <li>Native support for legacy BIND zonefiles</li>
-</ul></li>
-<li>Leading DNSSEC implementation
-
-<ul>
+<li>Leading DNSSEC implementation</li>
 <li>worldwide, hosting &gt;75% of all DNSSEC domains</li>
-</ul></li>
-<li>Powerful dynamic abilities
-
-<ul>
+<li>Powerful dynamic abilities</li>
 <li>Geographical load balancing</li>
 <li>Content redirection, &lsquo;best answer&rsquo; generation</li>
-</ul></li>
 <li>Supported on generic hardware running generic operating systems</li>
 </ul>
-
 <p>作为递归DNS时：</p>
-
 <ul>
-<li>Standards compliant resolution of domain names
-
-<ul>
+<li>Standards compliant resolution of domain names</li>
 <li>Strive for maximum resolution percentage</li>
 <li>or conversely, least customer complaints</li>
-</ul></li>
-<li>Powerful dynamic abilities
-
-<ul>
+<li>Powerful dynamic abilities</li>
 <li>Content redirection</li>
 <li>&lsquo;best answer&rsquo; generation</li>
 <li>query &amp; answer modification</li>
 <li>Filtering</li>
-</ul></li>
 <li>Supported on generic hardware running generic operating systems</li>
 </ul>
-
 <p>提供相关的工具：</p>
-
 <ul>
 <li>dnsscope: query/answer latency time statistics</li>
 <li>dnsreplay: replay existing traffic against reference nameservers</li>
 <li>dnsgram: per-time period sampling of traffic to determine overloads</li>
 <li>dnswash: anonimize PCAP traces, hiding IP addresses, for third party analysis</li>
 </ul>
-
-<p>支持API，承载在（Local socket，&rdquo;raw&rdquo; TCP/IP，RESTful API direct，）</p>
-
+<p>支持API，承载在（Local socket，&ldquo;raw&rdquo; TCP/IP，RESTful API direct，）</p>
 <ul>
 <li>Statistics</li>
 <li>Provisioning</li>
@@ -273,47 +232,31 @@
 <li>Configuration (updates)</li>
 <li>Stop/Start/Upgrade/Restart</li>
 </ul>
-
 <p>License：GPL 2.0。</p>
-
 <p>开发语言：C++，扩展：Lua。</p>
-
-<p>官方网站：<a href="https://www.powerdns.com/">https://www.powerdns.com/</a></p>
-
+<p>官方网站：https://www.powerdns.com/</p>
 <h2 id="coredns">CoreDNS</h2>
-
 <p>CoreDNS去年8月份发起新的开源项目，目前已纳入开源基金会CNCF（Cloud Native Computing Foundation，云端原生计算基金会），它归属于Linux基金会。</p>
-
 <p>CoreDNS的前身是SkyDNS，它的主要目的是构建一个快速灵活的DNS服务器，让用户可以通过不同方式访问和使用DNS内的数据。它被设计为Caddy网络服务的一个服务器插件。CoreDNS的每个特性都可以被实现为可插拔的中间件，如，日志、基于文件的DNS以及多种后端技术，进而可以拼接多个插件来创建定制化的管道。CoreDNS已经得到扩展，可以直接被Kubernetes访问服务数据，并以KubeDNS的形式提供给用户使用。</p>
-
 <p>CoreDNS同样可以权威与递归DNS，目前官方的中间件已有31个：</p>
-
 <ul>
 <li>bind: Serve zone data from a file; both DNSSEC (NSEC only) and DNS are supported (file).</li>
 <li>dnssec: Sign zone data on-the-fly</li>
 <li>cache: Caching</li>
 <li>etcd: Use etcd as a backend, i.e., a 101.5% replacement for SkyDNS</li>
 <li>kubernetes: Use k8s (kubernetes) as a backend</li>
-<li>proxy: Serve as a proxy to forward queries to some other (recursive) nameserver<br /></li>
+<li>proxy: Serve as a proxy to forward queries to some other (recursive) nameserver</li>
 <li>loadbalance:Load balancing of responses</li>
 <li>rewrite: Rewrite queries (qtype, qclass and qname)</li>
 <li>&hellip;</li>
 </ul>
-
 <p>License： Apache-2.0。</p>
-
 <p>开发语言：GO。</p>
-
-<p>官方网站：<a href="https://coredns.io/">https://coredns.io/</a></p>
-
+<p>官方网站：https://coredns.io/</p>
 <h2 id="其它">其它</h2>
-
 <h3 id="dnspod-sr">DNSPod-SR</h3>
-
 <p>dnspod-sr是中国最大域名解析服务商DNSPod官方于2012年6月1日开源的一款递归DNS服务器软件。</p>
-
 <p>主要特性：</p>
-
 <ul>
 <li>CNAME解析加速</li>
 <li>A记录组包缓存</li>
@@ -321,72 +264,43 @@
 <li>缓存刷新功能</li>
 <li>HASH表缓存</li>
 </ul>
-
 <p>License：BSD。</p>
-
 <p>开发语言：C。</p>
-
-<p>官方网站：<a href="https://github.com/DNSPod/dnspod-sr">https://github.com/DNSPod/dnspod-sr</a></p>
-
+<p>官方网站：https://github.com/DNSPod/dnspod-sr</p>
 <h3 id="dnsmasq">Dnsmasq</h3>
-
 <p>DNSmasq是一个小巧且方便地用于配置DNS和DHCP的工具，适用于小型网络，它提供了DNS功能和可选择的DHCP功能。</p>
-
 <p>作为域名解析服务器(DNS)，dnsmasq可以通过缓存 DNS 请求来提高对访问过的网址的连接速度。</p>
-
 <p>License： GPL-2.0。</p>
-
 <p>开发语言：C。</p>
-
-<p>官方网站：<a href="http://www.thekelleys.org.uk/dnsmasq/">http://www.thekelleys.org.uk/dnsmasq/</a></p>
-
+<p>官方网站：http://www.thekelleys.org.uk/dnsmasq/</p>
 <h3 id="atomia-dns">Atomia DNS</h3>
-
 <p>Atomia DNS是一个多租户DNS<strong>管理系统</strong>，通过编程接口处理大量的DNS数据。Atomia DNS支持对PowerDNS和BIND-DLZ DNS服务器的代理，PowerDNS是默认代理选项。</p>
-
 <p>主要特性：</p>
-
 <ul>
 <li>支持DNSSEC</li>
 <li>完整，易于使用的API</li>
 </ul>
-
 <p>Atomia DNS License：ISC。</p>
-
 <p>开发语言：PHP。</p>
-
-<p>官方网站：<a href="http://atomiadns.com/">http://atomiadns.com/</a></p>
-
+<p>官方网站：http://atomiadns.com/</p>
 <h3 id="smartdns">SmartDNS</h3>
-
 <p>smartdns是python语言编写，基于twisted框架实现的dns server，能够支持针对不同的dns请求根据配置返回不同的解析结果。smartdns获取dns请求的源IP或者客户端IP（支持edns协议的请求可以获取客户端IP），根据本地的静态IP库获取请求IP的特性，包括所在的国家、省份、城市、ISP等，然后根据我们的调度配置返回解析结果。</p>
-
 <p>smartdns的使用场景：</p>
-
 <ol>
 <li>服务的多机房流量调度，比如电信流量调度到电信机房、联通流量调度到联通机房；</li>
 <li>用户访问控制，将用户调度到离用户最近或者链路质量最好的节点上。</li>
 </ol>
-
 <p>主要特性：</p>
-
 <ul>
 <li>支持A、SOA、NS记录的查询</li>
 <li>支持DNS forward功能</li>
 </ul>
-
 <p>License：未注名</p>
-
 <p>开发语言：Python。</p>
-
-<p>官方网站：<a href="https://github.com/xiaomi-sa/smartdns">https://github.com/xiaomi-sa/smartdns</a></p>
-
+<p>官方网站：https://github.com/xiaomi-sa/smartdns</p>
 <h2 id="总结">总结</h2>
-
 <p>Bind9是最为成熟的DNS Server，代表了DNS的标准，它特性丰富，License友好，使用者众多，是作为权威与递归DNS的首先，缺点是扩展性一般（相对于CoreDNS），安全漏洞相对比较多（也说明使用者多，被研究与攻击多）。</p>
-
 <p>CoreDNS是开源DNS Server的新星，它的架构优秀，扩展性非常好，是非常有前途的DNS；又在Linux基金会下，有Google带头大哥，主创人员为安全公司Infoblox，所谓是背影深厚。但由于项目时间太短，使用未经大规模考验，待它成熟之后，不排除它可能代替Bind9，成为互联网的基础设施。</p>
-
 <p>PowerDNS它有成熟的管理控制系统，相比于Bind9，它提供基于REST API以及基于Lua脚本的扩展能力。但它的License商用不友好。在商用产品中集成或使用它要注意边界，避免使整个产品开源。</p>
     </div>
     <footer class="post-footer">
@@ -425,6 +339,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：开源DNS Server
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -517,22 +448,20 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#bind9">Bind9</a></li>
-<li><a href="#powerdns">PowerDNS</a></li>
-<li><a href="#coredns">CoreDNS</a></li>
-<li><a href="#其它">其它</a>
-<ul>
-<li><a href="#dnspod-sr">DNSPod-SR</a></li>
-<li><a href="#dnsmasq">Dnsmasq</a></li>
-<li><a href="#atomia-dns">Atomia DNS</a></li>
-<li><a href="#smartdns">SmartDNS</a></li>
-</ul></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#bind9">Bind9</a></li>
+    <li><a href="#powerdns">PowerDNS</a></li>
+    <li><a href="#coredns">CoreDNS</a></li>
+    <li><a href="#其它">其它</a>
+      <ul>
+        <li><a href="#dnspod-sr">DNSPod-SR</a></li>
+        <li><a href="#dnsmasq">Dnsmasq</a></li>
+        <li><a href="#atomia-dns">Atomia DNS</a></li>
+        <li><a href="#smartdns">SmartDNS</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -547,12 +476,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

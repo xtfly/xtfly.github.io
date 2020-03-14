@@ -148,20 +148,16 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。</p>
-
 <p>正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本<a href="https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh">mkimage-arch.sh</a>，于是把它做了些改造，制作过程记录一下：</p>
-
 <ul>
 <li>源修改为国内的阿里Archlinux镜像源，这个速度快，超赞。
-
 <ul>
 <li>默认安装<code>openssh</code>软件，可以通过ssh来连接Container。</li>
 <li>增加一个入口脚本<code>run.sh</code>，在此脚本主配置<code>sshd</code>，并启动<code>sshd</code>。</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>这个过程看似简单，不过还是遇到一些坑，毕竟Archlinux最小系统与自己已安装的Archlinux在使用<code>sshd</code>上有些区别，不得不反复修改脚本，Build Image与Run Container来验证：</p>
-
 <ul>
 <li>先是采用systemd来启动sshd，在<code>run.sh</code>使用<code>systemctl enable sshd</code>是OK的，但<code>systemctl start sshd</code>却无法启动报找不到文件。</li>
 <li>是systemd的配置问题，也没有再去深究，放弃<code>systemd</code>，于是又直接使用<code>/usr/bin/sshd -D</code>来启动<code>sshd</code>，发现还启动失败报没有sshkey。</li>
@@ -169,29 +165,30 @@
 <li>终于<code>sshd</code>可以正常启动了，但使用<code>ssh -p &lt;port&gt; root@&lt;host&gt;</code>来连接Container，发现报无权限。</li>
 <li>于是又得修改<code>/etc/ssh/sshd_config</code>，让<code>root</code>可以ssh登陆。</li>
 </ul>
-
 <p>修改之后的脚本已提交到个人github上，可以在<a href="https://github.com/xtfly/dockerimage">这里</a>下载，使用方式如下：</p>
-
 <ul>
-<li><p>前提Archlinux中也安装了docker引擎</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman -S docker
-# systemctl enable docker
-# systemctl start docker</pre></div></li>
-
-<li><p>以root用户执行mkimage.sh脚本</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># ./mkimage.sh</pre></div></li>
-
-<li><p>制作完成之后，使用<code>docker images</code>查看，生成一个名为<code>archlinux</code>的images</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># docker images
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB</pre></div></li>
-
-<li><p>使用如下命令生成一个container，容器名为<code>arch1</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># docker run -d --name -arch1 -p 2222:22 archlinux /run.sh</pre></div></li>
-
-<li><p>使用ssh登陆验证，<code>ssh -p &lt;port&gt; root@127.0.0.1</code>，默认密码是<code>123456</code>。</p></li>
-
-<li><p>也可以使用命令<code>docker exec -it arch1 bash</code>来执行<code>bash</code>进入container操作。</p></li>
+<li>前提Archlinux中也安装了docker引擎</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # pacman -S docker
+  # systemctl enable docker
+  # systemctl start docker
+</code></pre></div><ul>
+<li>以root用户执行mkimage.sh脚本</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # ./mkimage.sh
+</code></pre></div><ul>
+<li>制作完成之后，使用<code>docker images</code>查看，生成一个名为<code>archlinux</code>的images</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker images
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
+</code></pre></div><ul>
+<li>使用如下命令生成一个container，容器名为<code>arch1</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
+</code></pre></div><ul>
+<li>使用ssh登陆验证，<code>ssh -p &lt;port&gt; root@127.0.0.1</code>，默认密码是<code>123456</code>。</li>
+<li>也可以使用命令<code>docker exec -it arch1 bash</code>来执行<code>bash</code>进入container操作。</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -232,6 +229,23 @@ archlinux           latest              dc54036acaa4        About an hour ago   
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：制作Archlinux Docker基础Image
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -322,12 +336,12 @@ archlinux           latest              dc54036acaa4        About an hour ago   
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

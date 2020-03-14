@@ -148,28 +148,20 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="背景">背景</h2>
-
 <p>个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：</p>
-
 <ul>
 <li>VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改</li>
 <li>配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换</li>
 <li>有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便</li>
 </ul>
-
 <h2 id="截图">截图</h2>
-
 <p>第一张是自己截的，后两张是使用各插件官方的：</p>
-
-<p><img src="http://lanlingzi.cn/images/vim/vim-snapshot.png" alt="snapshot" /></p>
-
-<p><img src="https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67" alt="vim-go" />
-<img src="https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966" alt="unite" /></p>
-
+<p><img src="http://lanlingzi.cn/images/vim/vim-snapshot.png" alt="snapshot"></p>
+<p><img src="https://camo.githubusercontent.com/916aef7dc813e1da4c644ee8b9eb60fb266e7e25/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f3137343430342f76696d2d676f2d322e706e67" alt="vim-go">
+<img src="https://camo.githubusercontent.com/3c58da05b4e3ccf2f717007c4d1c0bee415d670d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622d63736578746f6e2f756e6974652d30312e676966" alt="unite"></p>
 <h2 id="插件">插件</h2>
-
 <p>我配置VIM主要用于Go语言开发，所以对VIM的配置是主要是集中于代码编写，Go语言的代码提示，格式化等。使用了如下主要插件:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Plugin &#39;honza/vim-snippets&#39;                 &#34;快速插入代码片段snippets
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Plugin &#39;honza/vim-snippets&#39;                 &#34;快速插入代码片段snippets
 Plugin &#39;scrooloose/nerdtree&#39;                &#34;文件浏览，文件树目录
 Plugin &#39;scrooloose/nerdcommenter&#39;           &#34;快速加减注释
 Plugin &#39;scrooloose/syntastic&#39;               &#34;代码错误检测，其它应该也类似
@@ -193,19 +185,16 @@ Plugin &#39;Yggdroot/indentLine&#39;                &#34;缩进虚线
 Plugin &#39;Shougo/neocomplete.vim&#39;             &#34;自动补全
 Plugin &#39;Shougo/unite.vim&#39;                   &#34;文件或Buffer列表
 Plugin &#39;Lokaltog/vim-easymotion&#39;            &#34;快速移动,杀手锏，跳转到光标后任意位置
-Plugin &#39;Raimondi/delimitMate&#39;               &#34;自动括号补全</pre></div>
-<ul>
+Plugin &#39;Raimondi/delimitMate&#39;               &#34;自动括号补全
+</code></pre></div><ul>
 <li>vim-go：已把Go的开发工具大包大揽了，非常省事。可以通过运行:GoInstallBinaries来自行安装</li>
 <li>neocomplete.vim：非常轻量的基于缓存的代码补全，vim-go中已集成gocode来做代码联想，并能与neocomplete配合使用。</li>
 <li>unite.vim：又一个神器，使用类似于SublimeText与VSCode的<code>Go to xxx</code>(快捷键:<code>CMD+P</code>/<code>Ctrl+Shift+P</code>)功能，能快速列出最使用打开文件，当前目录下文件，Buffer列表等。</li>
 <li>tagbar：标签列表，需要ctags，而Go的各元素能正常展示，则需要依赖于gotags，vim-go中已集成。</li>
 </ul>
-
 <h2 id="分享">分享</h2>
-
 <p>个人的VIM的配置，已放入在Github上，若有需要的朋友尽管拿去使用，有问题欢迎反馈。</p>
-
-<p>GitHub地址：<a href="https://github.com/xtfly/xvim">https://github.com/xtfly/xvim</a></p>
+<p>GitHub地址：https://github.com/xtfly/xvim</p>
     </div>
     <footer class="post-footer">
      
@@ -245,6 +234,23 @@ Plugin &#39;Raimondi/delimitMate&#39;               &#34;自动括号补全</pre
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Go VIM开发环境
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -337,15 +343,12 @@ Plugin &#39;Raimondi/delimitMate&#39;               &#34;自动括号补全</pre
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#截图">截图</a></li>
-<li><a href="#插件">插件</a></li>
-<li><a href="#分享">分享</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#截图">截图</a></li>
+    <li><a href="#插件">插件</a></li>
+    <li><a href="#分享">分享</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -360,12 +363,12 @@ Plugin &#39;Raimondi/delimitMate&#39;               &#34;自动括号补全</pre
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

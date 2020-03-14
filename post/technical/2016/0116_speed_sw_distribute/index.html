@@ -147,72 +147,50 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg" alt="balance" /></p>
-
+    <p><img src="http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg" alt="balance"></p>
 <h2 id="背景">背景</h2>
-
 <p>在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。</p>
-
 <h2 id="常用技术">常用技术</h2>
-
 <h3 id="组播">组播</h3>
-
 <p>传统的IP通信有如下三种方式：</p>
-
 <ul>
 <li>单播（Unicast）：源主机与目的主机之间点对点的通信。</li>
 <li>广播（Broadcast）：源主机与同一网段中所有其它主机之间一点对多点的通信。</li>
 <li>组播（Multicast）：源主机与一组目的主机之间一点对多点的通信。与广播不同的是组播组中的所有接收者都可收到同样的数据拷贝，并且只有组播组内的主机可以接收该数据，而其它主机则不能收到。</li>
 </ul>
-
 <p>组播技术有效地解决了单点发送、多点接收的问题。所以组播非常适合运用在云环境下的软件分发场景，单点到多点的高效数据传送，能够大量节约网络带宽、降低网络负载。</p>
-
 <p>一般情况下，在二层网络中，交换机会默认开启组播，但会对组播带宽进行抑制，防止网络风暴造成的影响。在实现应用中可以在交换机上设置合适的组播带宽。如果组播需要跨二层网络，需要在路由器上开启组播路由协议。</p>
-
 <p>组播组内的所有主机共享同一个地址，这种地址称为组播地址。组播地址是范围在224.0.0.0~239.255.255.255之间的IP地址。此范围内的所有地址的前4个二进制为都是“1110“。组播地址也被称为D类IP地址，与其它的A类、B类和C类地址相区别。组播组是开放的，主机可以在任何时候进入或离开组。
 IANA(Internet Assigned Numbers Authority)组织负责分发永久组播地址。</p>
-
 <p>由于组播地址是开放的，在实现组播服务，需要在上层设计加入组播的认证机制，如采用IP白名单，或在自定义上层协议，会话协商时进做登录认证。</p>
-
 <p>组播是采有UDP，与单播UDP不同，前者必须考虑TTL(Time to live)值，它用IP数据包的头部的一个字节表示。
 TTL通过限制IP包被丢弃前通过的路由器数目，来决定IP包的生存时间。IP包每通过一个路由器，TTL就减一，当TTL变为0，这个包就被丢弃。
 TTL的一个作用是防止配置有误的路由器把包在路由器之间无限的来回传递，还有一个作用是限制组播的地理范围。</p>
-
 <p>由于UDP不可靠，会存在丢包的情况，在设计组播服务需要考虑对传包个数与内容的校验，以及重传机制，或者在最坏的情况，采用TCP的补偿传输。通常的做法是在另开TCP连接来控制组播的传输质量，而UDP是负责数据流。</p>
-
 <p>Java在1.7中，已支持MulticastSocket API。API比较低层，需要结合NIO一起使用，另外JGroup与Netty也对组播有更高层的封装。</p>
-
 <h3 id="p2p">P2P</h3>
-
 <p>P2P(Peer to Peer)端到端传输模型，与传统的C/S（Client-Server）模型相对应的。P2P与C/S都是单播。但C/S是集中由Server端来分发中转，所以当多个节点从Server下载软件时，对Server的流量与性能影响最大。而在P2P网络中，每个节点都是对等的。网络中的每个节点既能充当网络服务的请求者，又对其它节点的请求作出响应，提供资源和服务。</p>
-
 <p>P2P组网按是否有中心索引节点来分有三种：</p>
-
 <ul>
 <li>集中式P2P：存在中心服务器，保存所有节点信息与资源信息，其它节点通过它找到需要连接的节点与资源。</li>
 <li>无结构化P2P：节点同时作为客户端和服务器端，无中心服务器，无中心路由器。</li>
 <li>结构化P2P： 将网络中所有资源整理成一张巨大的表，表内包含资源的关键字与存入节点地址，这张表裸眼分割分别存储到网络中每个节点中。结构化组网常见有三种：
-
 <ul>
 <li>DHT结构</li>
 <li>树形结构</li>
 <li>网状结构</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>在实现P2P技术中，需要考虑如下几点：</p>
-
 <ul>
 <li>可控性：由于P2P流量特征具有上下行流量对称的特性，这使得直接面向用户的接入网络需要相应提高所能承载上行流量的能力。</li>
 <li>安全性：P2P相对随机的端口号，难以实话实行有效地监测和管理，加大了日常维护的难度。</li>
 <li>效率性：对等的节点需要尽快地得到所需要文件块，需要有机制查找出节点已有文件块信息。</li>
 <li>可靠性：不能存在文件块永久丢失的情况，必须存在源节点是可靠的。</li>
 </ul>
-
 <p>所以，在私有云环境下的软件分发，需要同时考虑安全与可靠性。一般是采用集中式P2P，存在中心服务器，只不过这个中心服务器可以是集群的。每个节点与中心服务器建立控制连接，什么节点下载什么软件，从哪些节点来下载软件，由中心服务器根据不同节点的负载来做出决策。利用近播原则、分域调度的思想来尽可能控制P2P流程对网络节点的影响。</p>
-
 <h2 id="实施建议">实施建议</h2>
-
 <p>在我们的实际测试中，一个400M软件包，100个节点的分发场景下，组播速度大约是P2P的5倍右右。但组播只能在一个二层网络中，如果跨二层网络需要在路由器上开启组播功能。而一般出于安全等多因素考虑，路由器会禁掉。P2P在安全与可靠性更难以控制，以及会对网络节点的产生影响，甚到会影响节点的业务正常的性能。所以优先是选择组播，如果存在跨二层网络，可以部署多套软件仓库。P2P可以运用在组播不能使用，以及节点并发初始部署软件时，而节点上已运行业务时，则需要从P2P网络退出，不能长期做来提供服务的节点。</p>
     </div>
     <footer class="post-footer">
@@ -255,6 +233,23 @@ TTL的一个作用是防止配置有误的路由器把包在路由器之间无�
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件分发加速
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -347,18 +342,16 @@ TTL的一个作用是防止配置有误的路由器把包在路由器之间无�
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#常用技术">常用技术</a>
-<ul>
-<li><a href="#组播">组播</a></li>
-<li><a href="#p2p">P2P</a></li>
-</ul></li>
-<li><a href="#实施建议">实施建议</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#常用技术">常用技术</a>
+      <ul>
+        <li><a href="#组播">组播</a></li>
+        <li><a href="#p2p">P2P</a></li>
+      </ul>
+    </li>
+    <li><a href="#实施建议">实施建议</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -373,12 +366,12 @@ TTL的一个作用是防止配置有误的路由器把包在路由器之间无�
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

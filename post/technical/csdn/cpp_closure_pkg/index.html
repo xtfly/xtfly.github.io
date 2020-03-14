@@ -148,29 +148,24 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sum = 0  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
 10.times{|n| sum += n}   
-print sum</pre></div>
-<p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
-
+print sum
+</code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 <p>我们还来看看<code>Python</code>写的闭包：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def addx(x):      
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)</pre></div>
-<p>用Python写就没有那么好看。</p>
-
+print add8(100)
+</code></pre></div><p>用Python写就没有那么好看。</p>
 <p>闭包（Closure）是词法闭包（Lexical Closure）的简称。对闭包的具体定义有很多种说法，这些说法大体可以分为两类：</p>
-
 <ul>
 <li>一种说法认为闭包是符合一定条件的函数，闭包是在其词法上下文中引用了自由变量的函数。</li>
 <li>另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。比如参考资源中就有这样的的定义：在实现深约束时，需要创建一个能显式表示引用环境的东西，并将它与相关的子程序捆绑在一起，这样捆绑起来的整体被称为闭包。</li>
 </ul>
-
 <p>这两种定义在某种意义上是对立的，一个认为闭包是函数，另一个认为闭包是函数和引用环境组成的整体。虽然有些咬文嚼字，但可以肯定第二种说法更确切。闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。</p>
-
 <p>什么是仿函数，我们先用C++来写个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">struct comparer {  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">struct comparer {  
   bool operator()(int a, int b) const {  
      return a &gt; b;  
   }  
@@ -181,8 +176,8 @@ int main(int, char**)
    std::vector&lt;int&gt; vec;  
    std::sort(vec.begin(), vec.end(), comparer());  
    return 0;  
-}</pre></div>
-<p>函数(functor)之所以称为仿函数，是因为这是一种利用某些类对象支持<code>operator()</code>的特性，来达到模拟函数调用效果的技术。从上面你也可以看出来，仿函数实现的内容其实就像动态语言闭包实现的方式差不多，形式不一样，效果是一样的。至于语言本质是什么，就让语言学家去争论吧。</p>
+}
+</code></pre></div><p>函数(functor)之所以称为仿函数，是因为这是一种利用某些类对象支持<code>operator()</code>的特性，来达到模拟函数调用效果的技术。从上面你也可以看出来，仿函数实现的内容其实就像动态语言闭包实现的方式差不多，形式不一样，效果是一样的。至于语言本质是什么，就让语言学家去争论吧。</p>
     </div>
     <footer class="post-footer">
      
@@ -220,6 +215,23 @@ int main(int, char**)
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：C&#43;&#43;的仿函数与动态语言的闭包
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -310,12 +322,12 @@ int main(int, char**)
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

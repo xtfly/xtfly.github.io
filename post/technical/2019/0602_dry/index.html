@@ -142,117 +142,82 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2208 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2228 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="拒绝重复">拒绝重复</h1>
-
 <p>软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。</p>
-
 <p>但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。</p>
-
 <p><code>Robert C.Martin</code>在他的代码整洁之道一书中写道:</p>
-
 <blockquote>
 <p>重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。</p>
 </blockquote>
-
 <h1 id="重复类型">重复类型</h1>
-
 <p>何谓重复代码，简言之，就是指重复或近似的代码。</p>
-
 <p>重复代码都有哪些类型？最为简单明了的是完全一样的代码片段，其它的有如下，可让我们更好识别重复:</p>
-
 <ul>
-<li>类型Ⅰ，代码片段中除了空格、注释以及换行以外的内容<strong>完全一致</strong></li>
-<li>类型Ⅱ，代码片段中除了空格、注释、换行以及<strong>变量名以外</strong>的内容完全一致</li>
-<li>类型Ⅲ，代码片段中除了空格、注释、换行以及变量名以外的语句可能有<strong>增删改，功能不变</strong></li>
-<li>类型Ⅳ，两个或更多个代码段执行<strong>相同的运算</strong>，但通过<strong>不同的语法和变量</strong>来实现。</li>
+<li>类型Ⅰ，代码片段中除了空格、注释以及换行以外的内容__完全一致__</li>
+<li>类型Ⅱ，代码片段中除了空格、注释、换行以及__变量名以外__的内容完全一致</li>
+<li>类型Ⅲ，代码片段中除了空格、注释、换行以及变量名以外的语句可能有__增删改，功能不变__</li>
+<li>类型Ⅳ，两个或更多个代码段执行__相同的运算__，但通过__不同的语法和变量__来实现。</li>
 </ul>
-
 <h1 id="重复原因">重复原因</h1>
-
 <p>消除复杂代码除了需要技巧之外，个人觉得存在重复代码主观上更多是一种工作态度的反映，需要我们有责任心，兴趣与热情。</p>
-
 <ul>
 <li>懒惰，能够容忍不好的代码
-
 <ul>
 <li>打一份工的心态，做完这份就去做其它的，哪管生死</li>
 <li>进度很紧，以完成任务为优先，后续没有再进行优化</li>
-</ul></li>
+</ul>
+</li>
 <li>技能不足，出现不必要的重复代码
-
 <ul>
 <li>老人留下的祖传代码，又缺少文档说明与测试用例，根本不敢随便动</li>
 <li>新人进来，一是对整体代码不熟悉，二是从模仿开发，Ctrl+C/Ctrl+V</li>
-</ul></li>
+</ul>
+</li>
 <li>缺乏沟通，团队之间协作不够
-
 <ul>
 <li>没有 code review 机制，缺少代码持续看护</li>
 <li>团队成员间缺少交流，每个人自扫门前雪</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>除主观原因之外，在软件架构与设计上不恰当，也会导致重复代码（更多情况是相似代码）：</p>
-
 <ul>
 <li>模块的职责分离不清晰：职责的分配不准确，就可能导致代码结构不清晰，也就可能导致代码的重复。比如说，每个模块都需要访问数据库，都会涉及到数据库的映射，事务管理等，如果能把数据访问层分离出单独一层，就可能避免数据操作的重复代码。也就是我们需要在设计上就抽取公共的模块。</li>
 <li>模块内抽象的粒度过大：重用的关键是保持合适的粒度，以及对关系的解耦。粒度表现类一级，缺少可复用的辅助类或模板类，可以通过寻找共性，以泛化的方式提取共性特征。粒度表现在方法级，需要编写许多小的方法，找到类中可以重复调用的职责，抽取为单独的方法。</li>
 </ul>
-
 <h1 id="重复层次">重复层次</h1>
-
 <p>像Java/C/C++语言，我们一般采用工具 <code>Simian</code> 或 <code>PMD</code> 集成到CI来自动检查代码重复率。根据重复所在范围，我们通常可以分为如下几种：</p>
-
 <p><strong>在同一个类中重复</strong></p>
-
 <p>在同一个类中存在重复代码，通过走读代码就可以识别出来，也最容易解决。解决办法也相当简单，通常是采用 <code>提取方法</code> 来消除。</p>
-
 <p><strong>在同一个类树下重复</strong></p>
-
 <p>在同一个类树下的不同子类中重复，也比较能容易识别出来。可以通过 <code>上移方法</code> 和 <code>模板方法</code> 将公共部分上移到共同的父类。如果方法中没有操作成员变量，可以提到辅助类。</p>
-
 <p><strong>在不相干的类中重复</strong></p>
-
 <p>在两个完全不相干的类中，如果不是专门地寻找很难发现，借助工具一般能扫描出来。 可以先 <code>提取方法</code> ，然后 <code>移动方法</code> 到新建的类，来消除重复。</p>
-
 <p><strong>在不同的模块中重复</strong></p>
-
 <p>在不同的模块中存在重复代码，一般考虑提供公共的模块。提取公共模块可以消除重复，但也带来了依赖，提到公共横块中的代码应该是稳定的。公共模块通常需要从整个软件设计来思考，合理的模块划分能有效地消除大量的重复。</p>
-
 <p><strong>大量大段重复代码</strong></p>
-
 <p>如果出现大量大段重复的代码，如相似的配置项解释代码，当超过几百行时，我们可以考虑采用代码自动生成，虽没有消除重复代码，但消除重复劳动。有些语言提供代码宏机制，合理的使用宏也可以消除大段重复代码。</p>
-
 <h1 id="重复轮子">重复轮子</h1>
-
 <p>还有一种重复，是工具扫描不出来的，就是与其它项目的重复。在开源的世界里，提供了非常多并且成熟的轮子。有人说，软件工程师写多少代码不重要，重要的是解决问题的效率，而提升效率之一就是懂得使用已有的轮子。好的软件工程师，要善用前人打下的基础，站在成功的肩膀上。</p>
-
 <p>最大的问题是我们不知有轮子存在，那我们怎么解决呢？开源社区总是存在非常多有热心的人，他们整理各个 <code>awesome</code> 项目，首先是要善用搜索与社区：</p>
-
 <ul>
 <li>Java: <a href="https://github.com/akullpp/awesome-java">https://github.com/akullpp/awesome-java</a></li>
 <li>Java: <a href="https://github.com/jobbole/awesome-java-cn">https://github.com/jobbole/awesome-java-cn</a></li>
 <li>Go: <a href="https://github.com/avelino/awesome-go">https://github.com/avelino/awesome-go</a></li>
 </ul>
-
 <p>上面只是简单列出有哪些项目，还需要我们进一步的选型分析。对于Java软件工程师来说，已有足够多的工具库，常用他们也可以大量降低我们代码量：</p>
-
 <ul>
 <li>Apache Commons： 最为常用的是<a href="http://commons.apache.org/proper/commons-lang/">Lang</a>，<a href="http://commons.apache.org/proper/commons-collections/">Collections</a>，<a href="http://commons.apache.org/proper/commons-io/">IO</a>，<a href="http://commons.apache.org/proper/commons-math/">Math</a>库</li>
 <li>Guava： <a href="https://www.yiibai.com/guava/">Guava教程</a></li>
 </ul>
-
 <h1 id="结语">结语</h1>
-
 <p>消除重复代码的技能，没有什么特别的复杂的东西，无非就是提取函数，提取类，提取公共模块、复用现有的轮子。</p>
-
 <p>消除重复代码，其实就是解放软件工程师自己的时间，只有正确的心态去面对，自己才会有更大的收获，而不是在无意义地重复地劳动。</p>
-
 <p>解决重复并不困难，困难的是发现重复。发现重复并不困难，困难是培养发现重复的习惯。当我们开始习惯性地向内看看同组的代码，向看外看看开源代码，只有看得多才能有更开阔的眼界，消除重复就是轻而易举。</p>
     </div>
     <footer class="post-footer">
@@ -291,6 +256,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：拒绝重复代码
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -382,16 +364,7 @@
     
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
-        <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li><a href="#拒绝重复">拒绝重复</a></li>
-<li><a href="#重复类型">重复类型</a></li>
-<li><a href="#重复原因">重复原因</a></li>
-<li><a href="#重复层次">重复层次</a></li>
-<li><a href="#重复轮子">重复轮子</a></li>
-<li><a href="#结语">结语</a></li>
-</ul>
-</nav></div>
+        <div class="post-toc-content"><nav id="TableOfContents"></nav></div>
     </div>
 </section>
 
@@ -405,12 +378,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

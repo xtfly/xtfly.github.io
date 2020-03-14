@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>软件开发 on 蘭陵N梓記</title>
@@ -18,15 +18,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1013_opensource/</guid>
       <description>&lt;h1 id=&#34;什么是开源软件&#34;&gt;什么是开源软件&lt;/h1&gt;
-
 &lt;p&gt;开放源代码促进会（OSI：Open Source Initiative），是一个致力于推动开源软件发展的非盈利组织。&lt;/p&gt;
-
 &lt;p&gt;开源软件（OSS：Open Source Softwar）即开放源代码软件，其定义首先起源于自由软件（FS：Free Software）。OSI将开放源码定义为：“开放源码，通过支持源代码的独立同行评议和快速发展演变，提高了软件的可靠性和质量。要通过 OSI 认证，软件必须在获得许可证的情况下发布，该许可证可保证免费读取、重新发布、修改和使用该软件的权利。&lt;/p&gt;
-
 &lt;p&gt;开源软件的特点：可自由使用、无任何担保、无许可费、可获得源代码、享有版本、有特定License&lt;/p&gt;
-
 &lt;p&gt;开源软件的三大组成要素；&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;License：是游戏规则 ，有严密的组织监管&lt;/li&gt;
 &lt;li&gt;社区是组织方式：是其发展的核心学问所在，主要特征：无明确路标、子项目充分竞争、充分的对等评审、用户充分参与、源码发布、经常发布，Internet发布。&lt;/li&gt;
@@ -41,15 +36,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</guid>
       <description>&lt;h1 id=&#34;jvmti&#34;&gt;JVMTI&lt;/h1&gt;
-
 &lt;p&gt;JVMTI（Java VM Tool Interface）就是JVM对外暴露的接口。&lt;/p&gt;
-
 &lt;p&gt;JVMTI 本质上是在JVM内部的许多事件进行了埋点。通过这些埋点可以给外部提供当前上下文的一些信息。甚至可以接受外部的命令来改变下一步的动作。外部程序一般利用C/C++实现一个JVMTI Agent，在Agent里面注册一些JVM事件的回调。当事件发生时JVMTI调用这些回调方法。Agent可以在回调方法里面实现自己的逻辑。JVMTI Agent是以动态链接库的形式被虚拟机加载的。&lt;/p&gt;
-
 &lt;p&gt;JVMTI Agent启动方式： &lt;code&gt;-agentlib:&amp;lt;agent-lib-name&amp;gt;=&amp;lt;options&amp;gt;&lt;/code&gt;&lt;/p&gt;
-
 &lt;p&gt;JVMTI Agent回调函数：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;OnLoad阶段： 调用动态库的Agent_OnLoad函数&lt;/li&gt;
 &lt;li&gt;Live阶段： 调用动态库的Agent_OnAttach函数&lt;/li&gt;
@@ -64,11 +54,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</guid>
       <description>&lt;h1 id=&#34;jni&#34;&gt;JNI&lt;/h1&gt;
-
 &lt;p&gt;JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互。JNI一开始是为了本地已编译语言，尤其是C和C++而设计的，但是它并不妨碍你使用其他编程语言，只要调用约定受支持就可以了。&lt;/p&gt;
-
 &lt;p&gt;JNI开发流程主要分为以下6步：&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;编写声明了native方法的Java类&lt;/li&gt;
 &lt;li&gt;将Java源代码编译成class字节码文件&lt;/li&gt;
@@ -86,15 +73,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</guid>
       <description>&lt;h1 id=&#34;内存模型&#34;&gt;内存模型&lt;/h1&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;堆&#34;&gt;堆&lt;/h2&gt;
-
 &lt;p&gt;堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。&lt;/p&gt;
-
 &lt;p&gt;通过下两个参数来分配堆使用的内存大小：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;-Xms：最小堆容量，默认是物理内存的1/64。&lt;/li&gt;
 &lt;li&gt;-Xmx：最大堆容量，默认是物理内存的1/4。&lt;/li&gt;
@@ -108,25 +90,17 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</guid>
       <description>&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
-
 &lt;p&gt;泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。&lt;/p&gt;
-
 &lt;p&gt;泛型使类型（类和接口）在定义类、接口和方法时成为参数，好处在于：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常&lt;/li&gt;
 &lt;li&gt;提高代码复用，泛型能减少重复逻辑，编写更简洁的代码&lt;/li&gt;
 &lt;li&gt;类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;实现&#34;&gt;实现&lt;/h2&gt;
-
 &lt;p&gt;Java 5推出了泛型，也就是在原本的基础上加上了编译时类型检查的语法糖。泛型对于JVM来说是透明的，有泛型的和没有泛型的代码，通过编译器编译后所生成的二进制代码是完全相同的。这个语法糖的实现被称为擦除。Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。&lt;/p&gt;
-
 &lt;p&gt;无论何时定义一个泛型类型，都自动提供一个相应的原始类型(Raw Type，这里的原始类型并不是指int、boolean等基本数据类型)，原始类型的类名称就是带有泛型参数的类删去泛型参数后的类型名称，而原始类型会擦除(Erased)类型变量，并且把它们替换为限定类型(如果没有指定限定类型，则擦除为Object类型)。&lt;/p&gt;
-
 &lt;p&gt;泛型变量的类型的使用：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;在调用泛型方法的时候，可以指定泛型，也可以不指定泛型&lt;/li&gt;
 &lt;li&gt;在不指定泛型的情况下，泛型变量的类型为 该方法中的几种类型的同一个父类的最小级，直到Object&lt;/li&gt;
@@ -141,26 +115,18 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</guid>
       <description>&lt;h1 id=&#34;java反射&#34;&gt;Java反射&lt;/h1&gt;
-
 &lt;p&gt;Java的反射机制是在编译并不确定是哪个类被加载了，而是在程序运行的时候才加载、探知、自审，使用在编译期并不知道的类。这样的特点就是反射。&lt;/p&gt;
-
 &lt;p&gt;Java的反射就是利用加载到JVM中的.class文件来进行操作的。.class文件中包含Java类的所有信息，当你不知道某个类具体信息时，可以使用反射获取Class，然后进行各种操作。反射就是把Java类中的各种成分映射成一个个的Java对象，并且可以进行操作。&lt;/p&gt;
-
 &lt;p&gt;反射提供的主要功能：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;在运行时判断任意一个对象所属的类&lt;/li&gt;
 &lt;li&gt;在运行时构造任意一个类的对象&lt;/li&gt;
 &lt;li&gt;在运行时判断任意一个类所具有的成员变量和方法&lt;/li&gt;
 &lt;li&gt;在运行时调用任意一个对象的方法&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;rtti&#34;&gt;RTTI&lt;/h2&gt;
-
 &lt;p&gt;RTTI(RunTime Type Information)，所有的类型信息都必须在编译时已知。会在所有类第一次使用的时候，将class对象(保存在.class文件)动态加载到JVM。&lt;/p&gt;
-
 &lt;p&gt;RTTI与反射区别：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;编译器在编译时打开和检查.class文件&lt;/li&gt;
 &lt;li&gt;运行时打开和检查.class文件&lt;/li&gt;
@@ -174,11 +140,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</guid>
       <description>&lt;h1 id=&#34;java字节码&#34;&gt;Java字节码&lt;/h1&gt;
-
 &lt;p&gt;Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。&lt;/p&gt;
-
 &lt;p&gt;其结构如下：&lt;/p&gt;
-
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -188,7 +151,6 @@
 &lt;th align=&#34;left&#34;&gt;长度&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
-
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u4&lt;/td&gt;
@@ -196,105 +158,90 @@
 &lt;td align=&#34;left&#34;&gt;魔数，识别Class文件格式，0XCAFEBABE&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;4个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;minor_version&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;副版本号，如0x0000&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;major_version&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;主版本号，如0x0034&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;constant_pool_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;常量池计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;cp_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;constant_pool&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;常量池&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;access_flags&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;访问标志&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;this_class&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;类索引&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;super_class&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;父类索引&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;interfaces_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;接口计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;interfaces&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;接口索引集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;fields_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;字段个数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;field_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;fields&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;字段集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;methods_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;方法计数器&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;method_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;methods&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;方法集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;attributes_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;附加属性计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;attribute_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;attributes&lt;/td&gt;
@@ -312,29 +259,21 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</guid>
       <description>&lt;h1 id=&#34;io体系&#34;&gt;IO体系&lt;/h1&gt;
-
 &lt;h2 id=&#34;普通io&#34;&gt;普通IO&lt;/h2&gt;
-
 &lt;p&gt;整个Java.io包主要分为两大部分&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;文件特征对象&lt;/li&gt;
 &lt;li&gt;文件内容操作对象&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h3 id=&#34;文件对象&#34;&gt;文件对象&lt;/h3&gt;
-
 &lt;p&gt;在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。&lt;/p&gt;
-
 &lt;p&gt;文件特征对象主要有如下：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等&lt;/li&gt;
 &lt;li&gt;文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象&lt;/li&gt;
 &lt;li&gt;文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统&lt;/li&gt;
 &lt;li&gt;文件特征，包括Closeable，Flushable，FileFilter，Serializable&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;文件内容操作对象主要有两大类：流式操作与数据转换。&lt;/p&gt;</description>
     </item>
     
@@ -345,21 +284,15 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</guid>
       <description>&lt;h1 id=&#34;并发体系&#34;&gt;并发体系&lt;/h1&gt;
-
 &lt;h2 id=&#34;线程&#34;&gt;线程&lt;/h2&gt;
-
 &lt;h3 id=&#34;线程安全&#34;&gt;线程安全&lt;/h3&gt;
-
 &lt;p&gt;线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;原子性&lt;/li&gt;
 &lt;li&gt;可见性&lt;/li&gt;
 &lt;li&gt;顺序的&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;线程实现：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Runnable：函数没有返回值&lt;/li&gt;
 &lt;li&gt;Callable：函数有返回值&lt;/li&gt;
@@ -376,20 +309,14 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</guid>
       <description>&lt;h1 id=&#34;集合体系&#34;&gt;集合体系&lt;/h1&gt;
-
 &lt;p&gt;集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;长度可变&lt;/li&gt;
 &lt;li&gt;存储元素可以是引用类型&lt;/li&gt;
-&lt;li&gt;可以存储多种类型的对象
-&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;可以存储多种类型的对象&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;iterator&#34;&gt;Iterator&lt;/h2&gt;
-
 &lt;p&gt;Iterator接口：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。&lt;/li&gt;
 &lt;li&gt;提供&lt;code&gt;boolean hasNext()&lt;/code&gt;和&lt;code&gt;E next()&lt;/code&gt;两个方法&lt;/li&gt;
@@ -403,7 +330,6 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0921_java_base_1/</guid>
       <description>&lt;h1 id=&#34;基本数据类型&#34;&gt;基本数据类型&lt;/h1&gt;
-
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -413,7 +339,6 @@
 &lt;th align=&#34;left&#34;&gt;默认值&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
-
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;byte(字节)&lt;/td&gt;
@@ -421,49 +346,42 @@
 &lt;td align=&#34;left&#34;&gt;-128 - 127&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;shot(短整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^15 - 2^15-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;int(整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^31 - 2^31-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;long(长整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^63 - 2^63-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;float(浮点型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1.4013E-45 - 3.4028E+38&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0.0f&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;double(双精度)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-1.7976E+308 - 1.79769E+308&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0.0d&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;char(字符型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000 - u\ffff&lt;/code&gt;&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000&lt;/code&gt;&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;boolean(布尔型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
@@ -481,19 +399,14 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0706_logging/</guid>
       <description>&lt;h1 id=&#34;日志种类&#34;&gt;日志种类&lt;/h1&gt;
-
 &lt;p&gt;软件记录日志非常重要，公司已积累了非常多的日志输出经验，也制定了不少的规范。通常会把业务软件系统的日志分为如下几种：&lt;/p&gt;
-
 &lt;p&gt;用于软件问题定界定位的日志：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;调试日志：其目的是为了快速定位问题的根源，主要记录程序的执行轨迹，充当软件的调试器。&lt;/li&gt;
 &lt;li&gt;运行日志：其目的是为了跟踪程序的指标变化，主要记录程序各种关键指标数据统计，运行环境数据。&lt;/li&gt;
 &lt;li&gt;接口日志：其目的是为了快速对问题边界排查，主要记录接口的输入信息，以及处理结果。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;用于用户行为安全审计的日志：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;操作日志：其目的是为了跟踪用户操作安全审计，主要记录用户操作行为轨迹，操作什么资源内容，其结果是什么。&lt;/li&gt;
 &lt;li&gt;安全日志：其目的是为了跟踪用户安全变更审计，主要记录用户的登录录出事件，权限修改等安全事件或行为。&lt;/li&gt;
@@ -507,18 +420,13 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0615_execption/</guid>
       <description>&lt;h1 id=&#34;异常与错误码&#34;&gt;异常与错误码&lt;/h1&gt;
-
 &lt;p&gt;在开发业务系统代码，我们会经常与异常与错误码打交道，但有时傻傻地分不清楚。编写代码时，到底是使用异常还是返回错误码，一直以来都被程序员们广泛争论。&lt;/p&gt;
-
 &lt;p&gt;我们先来看看他们的区别，在编程语言上区别：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;异常：与面向对象编程结合紧密，它是一个类型系统，表示程序运行时发生错误的信号，一种识别及响应错误情况的一致性机制。&lt;/li&gt;
 &lt;li&gt;错误码：与面向过程编程结合紧密，它通常是一串数字，表示处理函数返回业务流程错误的结果，错误码很容易被忽略且经常被忽略。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;在接口定义上区别：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;异常： 面向代码开发者，通常用于在代码实现层，尤其是在面对象语言中，接口定义异常需要方法签名，以强制要求接口使用都处理异常。&lt;/li&gt;
 &lt;li&gt;错误码：面向客户界面，通常用于对外接口响应非正常结果定义，自定义错误码以增加接口的交互体验与问题定位。&lt;/li&gt;
@@ -532,13 +440,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0609_comment/</guid>
       <description>&lt;h1 id=&#34;注释是什么&#34;&gt;注释是什么&lt;/h1&gt;
-
 &lt;p&gt;注释是否有用一直以来都被程序员们广泛争论。也有人说，良好的编程习惯从写注释开始；有的人说，注释是恶魔，它将我们的代码变得很难理解。那什么才是注释？&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;注释就是对代码的解释和说明，其目的是让人们能够更加轻松地了解代码。注释是编写程序时，写程序的人给一个语句、程序段、函数等的解释或提示，能提高程序代码的可读性。 &amp;ndash; 百度百科&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;注释主要是给人看的，其目的是增加代码的可读性。不同的公司、项目，对代码注释要求不同，他们被写入到编程规范中。而大多的规范中对注释关注的是格式，却难以说明如何正确地写注释，什么样的注释不应该写，什么地方需要写注释。&lt;/p&gt;</description>
     </item>
     
@@ -549,24 +454,17 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0608_inmutable/</guid>
       <description>&lt;h1 id=&#34;可变与不可变&#34;&gt;可变与不可变&lt;/h1&gt;
-
 &lt;p&gt;在JVM系统语言如Scala与Kotlin中有两个关键字定义变量&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;var是一个&lt;strong&gt;可变&lt;/strong&gt;变量，可以通过重新分配来更改为另一个值的变量&lt;/li&gt;
-&lt;li&gt;val是一个&lt;strong&gt;只读&lt;/strong&gt;变量，创建的时候必须初始化，以后不能再被改变
-&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;val是一个&lt;strong&gt;只读&lt;/strong&gt;变量，创建的时候必须初始化，以后不能再被改变&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;为什么新的语言需要强调变量&lt;code&gt;不可改变&lt;/code&gt;？ 我再来看一下Rust语言中的变量不可改变。&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;let，采用此关键字来绑定变量，变量默认不可变&lt;/li&gt;
 &lt;li&gt;let mut，采用此关键字来绑定可以变更的变量&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Rust在mutable（可变）与immutable（不可变）上相比Scala上更进了一步：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Scala的val只能约束了同一个变量名不可再重新赋值，变量绑定的对象是可以改变的（如val的list对象，可以调用它的append方法修改对象内容）&lt;/li&gt;
 &lt;li&gt;Rust通过借用（borrow）语义与mut关键字，约束了只有声明为 mut 的变量，才能对绑定的对象是进变更（如只有是mut的vec对象，才能调用它的push方法修改其内容）&lt;/li&gt;
@@ -580,13 +478,9 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0602_dry/</guid>
       <description>&lt;h1 id=&#34;拒绝重复&#34;&gt;拒绝重复&lt;/h1&gt;
-
 &lt;p&gt;软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。&lt;/p&gt;
-
 &lt;p&gt;但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。&lt;/p&gt;
-
 &lt;p&gt;&lt;code&gt;Robert C.Martin&lt;/code&gt;在他的代码整洁之道一书中写道:&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
@@ -599,11 +493,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0531_layer/</guid>
       <description>&lt;h1 id=&#34;书的目录&#34;&gt;书的目录&lt;/h1&gt;
-
 &lt;p&gt;现在的软件类的书籍是越来越厚，尤其是语言类书籍很多通篇都是代码，需要花费很长的时间去阅读，久而之对厚厚的书就有一种莫名的恐惧感。个人看书喜欢先看一本书的目录，快速了解整本书的内容，挑选自己最感兴趣的章节直接开始阅读。&lt;/p&gt;
-
 &lt;p&gt;目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;让人清楚地知道书所讲的框架内容，一目了然&lt;/li&gt;
 &lt;li&gt;让人知道章节之间的逻辑关系，主次之分&lt;/li&gt;
@@ -618,26 +509,18 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0529_function/</guid>
       <description>&lt;h1 id=&#34;函数与方法&#34;&gt;函数与方法&lt;/h1&gt;
-
 &lt;p&gt;我们经常会遇到两个词，函数（Function）与方法（Method），简言之：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;函数不属于任何对象&lt;/li&gt;
 &lt;li&gt;方法是关联到对象内的函数&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;他们的区别：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;函数是面向过程编程中，为解决问题划分每个步骤的体现&lt;/li&gt;
-&lt;li&gt;方法是面向对象编程中，对象能提供的能力或行为的体现
-&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;方法是面向对象编程中，对象能提供的能力或行为的体现&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的叙述，方法与函数统一称函数，不再区分。&lt;/p&gt;
-
 &lt;p&gt;他们的必要性：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;让代码可以重复使用，他们是”积木“&lt;/li&gt;
 &lt;li&gt;函数黑盒特性，有效封装，隐藏细节&lt;/li&gt;
@@ -651,13 +534,9 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0526_class/</guid>
       <description>&lt;h1 id=&#34;理解类&#34;&gt;理解类&lt;/h1&gt;
-
 &lt;p&gt;类（实例化产生对象）是面向对象编程中最基本的组成单元，将逻辑和数据封装其中，以提高软件的重用性、灵活性和扩展性等。它相比人类社会组成，系统/子系统、组件/（微）服务、模块/包这些相当于社会中不同层次的实体或虚拟的组织机构；而类则相当于一类自然人，一个对象相当一个自然人。一个类在系统中承担着一种的 ”角色“ ，从事一种职业。&lt;/p&gt;
-
 &lt;h1 id=&#34;单一职责&#34;&gt;单一职责&lt;/h1&gt;
-
 &lt;p&gt;大多数人只从事一种职业，也就是单一职责原则。若一个类只关注的就是自身职责的完成，也就是单一职责原则。&lt;/p&gt;
-
 &lt;p&gt;面向对象设计的五个基本原则（SOLID），排在第一就是单一职责原则（SRP：Single responsibility principle）。SRP的原话解释是：There should never be more than one reason for a class to change。应该有且仅有一个原因引起类的变更。&lt;/p&gt;</description>
     </item>
     
@@ -668,22 +547,15 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0523_dep_couple/</guid>
       <description>&lt;p&gt;提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。&lt;/p&gt;
-
 &lt;h1 id=&#34;依赖&#34;&gt;依赖&lt;/h1&gt;
-
 &lt;p&gt;模块依赖指模块之间发生了关系，如模块A调用了模块B的接口，则模块A依赖了模块B。依赖的英语是Dependency。&lt;/p&gt;
-
 &lt;p&gt;模块依赖是系统内不可避免的，复杂的系统都是分而治之，软件架构活动中最重要的事就是如何正确把系统分解，并定义他们之间关系。存在关系就会存在依赖，依赖是系统分解的必然产物。如果一个系统内的模块间不存在任何的关联，那他们应该划分为不同的系统；一个模块没有与其它的模块发生关联，那这个模块就应该不存在这个系统中。&lt;/p&gt;
-
 &lt;p&gt;模块的依赖关系，按生命周期阶段可分为：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;开发态依赖&lt;/strong&gt;：如开发模块A时，需要依赖其它模块提供的接口，数据结构等文件依赖；还有一种如测试依赖，仅仅发生在开发阶段，在测试时，需要依赖测试数据，测试框架等，测试完成就不需要了。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;运行态依赖&lt;/strong&gt;：在系统运行时，模块A必须依赖其它模块提供能力才能完成某种完整的功能或服务，依赖的形态可能是本地或远程接口，集中配置数据，模型数据信息等。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;开发态依赖可能引发运行态依赖，但运行态依赖不一定需要在开发态就依赖。我们经常关注的是运行态依赖导致的问题，目前的微服务架构设计，减少了开发态的依赖，把依赖导致的问题后移到运行态。&lt;/p&gt;
-
 &lt;p&gt;模块之间最好还是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是系统整体拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。&lt;/p&gt;</description>
     </item>
     
@@ -694,11 +566,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0519_structure/</guid>
       <description>&lt;h1 id=&#34;问题&#34;&gt;问题&lt;/h1&gt;
-
 &lt;p&gt;架构设计中常常关注几个视图，如功能视图、逻辑视图、运行视图与部署视图。但架构师们由于层次较高，长期缺少代码编写能力，往往就直接忽视了开发视图。开发视图主要描述软件的开发工程结构、代码规范，以及构建技术等。代码结构和构建关系到项目的可持续维护以及维护的周期，非常重要。但实现开发活动，架构到开发中间层的GAP，真正重视并落地的很少很少。&lt;/p&gt;
-
 &lt;p&gt;清淅明确的代码结构，是软件项目成功的重要开始。&lt;/p&gt;
-
 &lt;p&gt;代码结构不应该仅仅归纳为 “代码编码风格” 一类，它是架构在代码层次的真实反应，架构是否能落地，代码结构的良好设计起着至关重要的作用。软件是有生命力的，需要考虑其可持续性发展。一个结构层次非常不好软件，它的逻辑可能并不一定复杂，但随着时间的推移，需要花费非常长的时间去理解它表达的的意思。同样不好的代码结构，让构建变得困难或效率低下，进一步降低了它的生命力。&lt;/p&gt;</description>
     </item>
     
@@ -709,9 +578,7 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2019/0511_study/</guid>
       <description>&lt;h1 id=&#34;忽视的差距&#34;&gt;忽视的差距&lt;/h1&gt;
-
 &lt;p&gt;公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。&lt;/p&gt;
-
 &lt;p&gt;软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。&lt;/p&gt;</description>
     </item>
     
@@ -722,7 +589,6 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0501_clean_code/</guid>
       <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
-
 &lt;p&gt;我司强执行力，很容易把事情做得极致，但有时过于极致反而带来不好的意外结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是见仁见智。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死记硬背的规范。&lt;/p&gt;</description>
     </item>
     
@@ -733,9 +599,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/</guid>
       <description>&lt;h2 id=&#34;rxjava&#34;&gt;RxJava&lt;/h2&gt;
-
 &lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
-
 &lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
     </item>
     
@@ -745,14 +609,10 @@
       <pubDate>Thu, 16 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0216_dff/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/dff/dff.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/dff/dff.jpeg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;故有的思维会影响创新，在传统的软件设计考虑高可靠性，主要方法论是”防“，处处保护，让系统的每一处能长时间运行，不中断地提供服务。事实上电信级高可用性（HA）也只能宣称达到5个9，这意味着一年也就只有5分半钟的中断时间。但每增加一个9却实施成本非常地高，有些是建立在硬件可靠基础之上，并且不少是实验数据或理论上支持。传统的思维认识，在泥沙上建房子不可靠的。但软件架构设计，即完全不一样，在不可靠的基础设施上构建上可靠的系统，那才是真正NB的。&lt;/p&gt;
-
 &lt;p&gt;依稀记得云计算刚出来时，大家都是持怀疑态度：性能下降的虚拟化技术、安全不可控的网络、变化复杂的资源管理，在其上如何构建可靠稳定的软件系统？事实上，Netflix完全基于AWS云基础设施，认为都有可能发生任何的故障（Failure），更何况资源也不掌握在自己手上。Netflix基于&lt;code&gt;Design for Failure&lt;/code&gt;理念却构建出用户无感知的高可用系统，支撑他的业务飞速发展。事实上，故障无所不在，尤其是在云计算环境中：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;资源层次：电能失效，整个数据中心不可用；部分计算失效，网络不通，存储IO高等&lt;/li&gt;
 &lt;li&gt;应用层次：资源泄露；软件Bug；系统处理能力不足等&lt;/li&gt;
@@ -766,12 +626,9 @@
       <pubDate>Tue, 07 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0207_msa_think/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/msa/timg.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/msa/timg.jpeg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;why&#34;&gt;Why&lt;/h2&gt;
-
 &lt;p&gt;我司从15年开始学习互联网的微服务构架，到今16年的全云化战略，微服务已作为架构体系的重要工作。但微服务看似美好，在IT界应用非常的成熟与成功，但这个本质没有革命性的技术架构，在我司却非常地难以落地。主要原因：传统的CT应用太过厚重，面临着软件交付模式完全不一样，历史包袱改造面临短期看不到收益的成本投入：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。&lt;/li&gt;
 &lt;li&gt;我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。&lt;/li&gt;
@@ -785,25 +642,23 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/0203_go_optimize/</guid>
       <description>&lt;h2 id=&#34;内存优化&#34;&gt;内存优化&lt;/h2&gt;
-
-&lt;h3 id=&#34;小对象合并成结构体一次分配-减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
-
+&lt;h3 id=&#34;小对象合并成结构体一次分配减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
 &lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
-
 &lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
     k, v := k, v // copy for capturing by the goroutine
     go func() {
         // using k &amp;amp; v
     }()
-}&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;替换为：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;for k, v := range m {
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;替换为：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
     x := struct {k , v string} {k, v} // copy for capturing by the goroutine
     go func() {
         // using x.k &amp;amp; x.v
     }()
-}&lt;/pre&gt;&lt;/div&gt;</description>
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -813,17 +668,11 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/</guid>
       <description>&lt;p&gt;无论何种语言，依赖管理都是一个比较复杂的问题。而Go语言中的依赖管理机制目前还是让人比较失望的。在1.6版本之前，官方只有把依赖放在GOPATH中，并没有多版本管理机制；1.6版本（1.5版本是experimental feature）引入vendor机制，是包依赖管理对一次重要尝试。他在Go生态系统中依然是一个热门的争论话题，还没有想到完美的解决方案。&lt;/p&gt;
-
 &lt;h2 id=&#34;看其它&#34;&gt;看其它&lt;/h2&gt;
-
 &lt;p&gt;我们先来看看其它语言怎么解决，例举两种典型的管理方式：&lt;/p&gt;
-
 &lt;h3 id=&#34;java&#34;&gt;Java&lt;/h3&gt;
-
 &lt;p&gt;开发态，可以通过maven和gradle工具编辑依赖清单列表/脚本，指定依赖库的位置/版本等信息，这些可以帮助你在合适的时间将项目固化到一个可随时随地重复编译发布的状态。这些工具对我来说已经足够优雅有效。但maven中也有不同依赖库的内部依赖版本冲突等令人心烦的问题。尤其是在大型项目中的依赖传递问题，若团队成员对maven机制没有足够了解下，依赖scope的滥用，会让整个项目工程的依赖树变得特别的巨大而每次编译效率低下。运行态，目前Java也没有很好的依赖管理机制，虽有classloader可以做一定的隔离，但像OSGi那种严格的版本管理，会让使用者陷入多版本相互冲突的泥潭。&lt;/p&gt;
-
-&lt;h3 id=&#34;node-js&#34;&gt;Node.js&lt;/h3&gt;
-
+&lt;h3 id=&#34;nodejs&#34;&gt;Node.js&lt;/h3&gt;
 &lt;p&gt;npm是Node.js的首选模块依赖管理工具。npm通过一个当前目录的 package.json 文件来描述模块的依赖，在这个文件里你可以定义你的应用名称( name )、应用描述( description )、关键字( keywords )、版本号( version )等。npm会下载当前项目依赖模块到你项目中的一个叫做node_modules的文件夹内。与maven/gradle不同的是，maven最终会分析依赖树，把相同的软件默认扁平化取最高版本。而npm支持nested dependency tree。nested dependency tree是每个模块依赖自己目录下node_modules中的模块，这样能避免了依赖冲突, 但耗费了更多的空间和时间。由于Javascript是源码发布，所以开发态与运行态的依赖都是基于npm，优先从自己的node_modules搜索依赖的模块。&lt;/p&gt;</description>
     </item>
     
@@ -834,7 +683,6 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/</guid>
       <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
-
 &lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。&lt;/p&gt;</description>
     </item>
     
@@ -845,7 +693,6 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/</guid>
       <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
-
 &lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
     </item>
     
@@ -856,7 +703,6 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0123_refactor_death/</guid>
       <description>&lt;p&gt;上周在食堂吃饭，遇到同事聊起最近的系统重构，她说这一批的新员工不如13年的一批，就一个看似简单的问题也是折腾很久，重构的周期越拉越长。我作为这次的重构的特性SE，可以说也是硬着头皮上。我是越来越反感重构，尤其是涉及到多个模块的重构。在新年的聚餐上，我说我给你挖了坑，你来填坑，让我感到非常惭愧的，即又不得做这些事。&lt;/p&gt;
-
 &lt;p&gt;在现阶段项目交付变得越来越难，一方面我们面对众多的需求，做还是不做并不是你能轻易决定的；而另一方面我们又想从架构上解决可以快速满足需求。但本质的是这几个月内，人的技能与意识没有根本性的变化。在大家没有主人翁的精神下，说来说去也是为了需求在垒代码。即使你想从代码结构上重新设计，让系统更松的耦合性，更好的扩展性。受于项目进度冲击，以及代码实现者的被动，最终也会变得让你不想回头多看一眼。&lt;/p&gt;</description>
     </item>
     
@@ -866,12 +712,9 @@
       <pubDate>Sun, 27 Dec 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/1227_bj_archsummit/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://q.infoqstatic.com/ASSZ2015/LOGO/AS-LOGO358x146.png&#34; alt=&#34;ArchSummit&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://q.infoqstatic.com/ASSZ2015/LOGO/AS-LOGO358x146.png&#34; alt=&#34;ArchSummit&#34;&gt;&lt;/p&gt;
 &lt;p&gt;参加ArchSummit北京站已有一周时间，一直没有时间来梳理一下。整体来说，这次的北京之行，不是很满意，可能是这类会议听多的原因，感觉ArchSummit的质量是越来越差了，没有什么新鲜感，觉得不值那6K的价格。&lt;/p&gt;
-
 &lt;h2 id=&#34;组织不足&#34;&gt;组织不足&lt;/h2&gt;
-
 &lt;p&gt;12月份的北京已是非常的干冷，可能由于我在南方呆久了，一到北京是极其地不适应，在北京三天多的时间，嘴唇开裂，到现在还没有完全好干净。离开北京的那一天，正好又感受了一下北京正宗的霾，帝都的人们活得真不容易啊。&lt;/p&gt;</description>
     </item>
     
@@ -881,12 +724,9 @@
       <pubDate>Fri, 13 Nov 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/1113_why_love_go/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://img3.imgtn.bdimg.com/it/u=3850601748,68654193&amp;amp;fm=21&amp;amp;gp=0.jpg&#34; alt=&#34;gopher&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://img3.imgtn.bdimg.com/it/u=3850601748,68654193&amp;amp;fm=21&amp;amp;gp=0.jpg&#34; alt=&#34;gopher&#34;&gt;&lt;/p&gt;
 &lt;p&gt;从8月份到现在，一直在公司尝试用Go写点东西。虽然我们几乎是清一色的Java开发，但我还是愿意在同事之间推广Go，有时间还是学学Go吧。&lt;/p&gt;
-
 &lt;h2 id=&#34;认识go&#34;&gt;认识Go&lt;/h2&gt;
-
 &lt;p&gt;我大概是一个不太执着的语言控，什么语言喜欢玩玩，在大约在12年时，就开始自学Go，但仅仅是看看语法，写写Helloword之类的小程序而已。在13年底，我被抽去分析Cloud Foundry的架构与实现机制。当时的CF是V2版本，其中的GoRouter，HM9000已采用Go重写，另外消息总线NATS也有Go语言版本。而我又重点分析了NATS，HM，以及部分GoRouter的Go源码。发现居然Go能写出如此简练的代码。性能验证时，又发现Go版本的NATS比Ruby版本的强得不是一点点，我们在单板上测试出有50万+的QPS。14年做融合架构，又把我们原有的消息中间件RabbitMQ换成了NATS。当时的出发点主是能与CF通过NATS融合拉通，另外是看重它的高性能。而RabbitMQ是erlang写的，部门熟悉erlang人几乎没有，维护成本高。当然到现在来看，NATS太简单了，并不是个消息队列，很多的特性都没有。&lt;/p&gt;</description>
     </item>
     
@@ -897,11 +737,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2015/0813_cfg_vs_cus/</guid>
       <description>&lt;p&gt;作为一个软件人员，我们会经常遇到各种各样的需求，有时为了避免定制，通常的做法是提供更多的配置选项，以通过配置出满足不同的特定需求。&lt;/p&gt;
-
 &lt;p&gt;原因是而当你开发定制代码来修改或扩展一个功能需求时，有可能会导致软件不能正常的工作，必须通过严格的测试与验证。在重大的版本升级情况下，定制是苛刻的和耗时的。甚至会面临无法修复的功能可能会被重构，从零开始。因此，一些做法是通过采越来越多地选择配置，来解决由于开发定制代码引入的问题与软件带来的成本。&lt;/p&gt;
-
 &lt;p&gt;因此配置与定制之间的区别是：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;配置：使用现有的数据来配置系统以满足您的业务需求&lt;/li&gt;
 &lt;li&gt;定制：将定制或使系统适应业务需求，涉及到定制开发流程。&lt;/li&gt;
@@ -914,10 +751,8 @@
       <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/0516_microservice_soa/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://martinfowler.com/articles/microservices/images/sketch.png&#34; alt=&#34;microservices&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://martinfowler.com/articles/microservices/images/sketch.png&#34; alt=&#34;microservices&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我司学习一个新的技术，往往是搞得轰轰烈烈，比如数字化转型，向互联网技术学习。其中一个非常重要的方向就是学习互联网的服务化体系架构。国内的阿里，京东，腾讯在服务化，确切地说是微服务应用取得非常大的成功。而国外的Netflix的微服务架构更是成为我们必定的样板教材。你做设计，谈方案，不说说微服务都不好意思。如果你不说这样，说明你思维落后陈旧了。任何一项技术都有一段疯狂期，虽这近一次在搞架构重构，领导遇到你，总是关心地问到：“服务化进展怎么样了”。甚至还得跟一些不太懂的领导解释什么是微服务。&lt;/p&gt;
-
 &lt;p&gt;10年前差不到了SOA也像今天的微服务一样火爆。那微服务与SOA的关系或区别是什么？是不是SOA的旧洒换新瓶？软件界的大牛 Martinfowler的《&lt;a href=&#34;http://martinfowler.com/articles/microservices.html&#34;&gt;微服务&lt;/a&gt;》更是像一部微服务的圣经，无奈是E文，大家都有各自的理解。在我司更是大家对这个各抒己见，谁都可以说上几句服务化的原则是什么，微服务成了领导专家们口里的口头禅。如果我们的系统不是微服务化，都怀疑我们系统的先进性。想当初，大家也都谈SOA，也极力推广SOA。似乎到了今天，微服务与SOA两者是势不相容。SOA是传统的IT架构，而微服务是当今互联网架构，微服务似乎比SOA更“逼格”。甚至这样的争论成了不同兄弟的心头痛。&lt;/p&gt;</description>
     </item>
     
@@ -928,15 +763,11 @@
       
       <guid>http://lanlingzi.cn/post/technical/2015/0430_arch_refactor/</guid>
       <description>&lt;p&gt;最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。&lt;/p&gt;
-
 &lt;h2 id=&#34;什么是重构&#34;&gt;什么是重构&lt;/h2&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。&lt;/li&gt;
 &lt;li&gt;模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。&lt;/li&gt;
@@ -950,18 +781,13 @@
       <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg&#34; alt=&#34;osgi&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg&#34; alt=&#34;osgi&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;什么是osgi&#34;&gt;什么是OSGi&lt;/h2&gt;
-
 &lt;p&gt;维基百科：&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
-
 &lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
     </item>
     
@@ -972,7 +798,6 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2014/0901_soft_dev_dt_trace/</guid>
       <description>&lt;p&gt;在我司，我发现大家很擅长把一个东西到极致，但极致可能是过犹不及了，例如测试并不是发现越来越多的Bug就越好，如果把很多的时间消耗到一些不重要的点，反而不可取，软件只要你去测试，怎能发现一些Bug，如要面对这些就非常纠结。作一名开发，说这话肯定会被一批的测试人员拍砖死了。在此表达一下不同的观点，不一定正确，请轻拍。&lt;/p&gt;
-
 &lt;p&gt;在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。&lt;/p&gt;</description>
     </item>
     
@@ -983,7 +808,6 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2014/0804_soft_dev_tcm_theory/</guid>
       <description>&lt;p&gt;最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？&lt;/p&gt;
-
 &lt;p&gt;小儿已一岁多，现在回顾他做的一些体检。前三个月每月一次体检，一岁之前每3个月一次，一岁之后是每6个月一次。体检的项目有称体重、量身高、量头围、量胸围、验视力、测听力、检查动作发育、口腔检查、评价智能发育、验血、骨骼检查、心肺与心率检查、大便和血红蛋白。体检医生一上来就是开各个体检单，采用是西医的方式，看指标数据，再评测，体检应该是医院最好的生财路之一。个人也明白，正如我妈说的，我小时候哪有什么体检，也不是好好的吗？现在带小孩去体检，也是图个安心，提早预防。&lt;/p&gt;</description>
     </item>
     
@@ -994,7 +818,6 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2014/0729_better_developer/</guid>
       <description>&lt;p&gt;我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1+1&amp;lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。&lt;/p&gt;
-
 &lt;p&gt;减少沟通成本，我们需要全栈工程师，因为各种技术都懂，胸有成竹，自己就全做了。即使是在团队协作中，与不同技术人员的沟通也会容易得多。懂你的，你懂的，相互理解，也就少了很多的时间在扯。&lt;/p&gt;</description>
     </item>
     
@@ -1005,11 +828,11 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2013/1113_good_programmer/</guid>
       <description>&lt;p&gt;关于什么是一名合格的程序员，优秀的程序员，这些讨论从来没有停止过，标准各不相同。有人说优秀程序员追求简洁的代码，优秀的框架结构，新的技术技能。我们不是在讨论什么是业界大牛，我心中的一名优秀程序具备如下几个素质：&lt;/p&gt;
-
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;简洁高效&lt;/p&gt;
-
-&lt;p&gt;优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;简洁高效&lt;/p&gt;
+&lt;p&gt;优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     
@@ -1020,9 +843,7 @@
       
       <guid>http://lanlingzi.cn/post/thoughts/2013/0909_hw_8years/</guid>
       <description>&lt;p&gt;白驹过隙，进入公司已是八年，一路学习一路收获。往后回首，一些经历回想起来还历历在目：经历过一线比拼的激情，经历过产品上线的喜悦，经历过多个项目的变换，经历过持续熬夜的艰辛；写过不少的代码，带过一些徒弟，负责过团队开发，一直在公司从事基层的研发工作。一路走下来，也得到部门领导，公司同事的帮助、指导与鼓励，能让我一直坚持下去，过程中我也得到一些很高的认可，感触多，收获多。在此我先感谢大家！&lt;/p&gt;
-
 &lt;h2 id=&#34;团队成功才能成就个人&#34;&gt;团队成功才能成就个人&lt;/h2&gt;
-
 &lt;p&gt;还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 &lt;strong&gt;只有团队的成功，才能有个人的成就&lt;/strong&gt; 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，&lt;strong&gt;把分给我的工作尽自己最大的努力做好做实，做到问心无愧&lt;/strong&gt; 。&lt;/p&gt;</description>
     </item>
     

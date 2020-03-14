@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on 蘭陵N梓記</title>
@@ -18,7 +18,6 @@
       
       <guid>http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/</guid>
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
-
 &lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：&lt;/p&gt;</description>
     </item>
     
@@ -28,8 +27,7 @@
       <pubDate>Thu, 07 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2016/0107_docker/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/docker_ecosystem.jpg&#34; alt=&#34;docker ecosystem&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/docker_ecosystem.jpg&#34; alt=&#34;docker ecosystem&#34;&gt;&lt;/p&gt;
 &lt;p&gt;从国内来看，从14年的发迹，到15年的红火。基于Docker的国内创业公司不停的涌现，Docker的概念不断地炒作。软件界似乎人人在谈论Dcoker，给我的感觉就像中国大妈跳广场舞一样，歌声大，动作乱，到底有没有用，难说。毕竟Docker只是一项技术，技术是否能成功应用，给你的产品带来价值才是最重要的。下面是个人一些对Docke的看法与见解，可能有不对之处，望交流赐教：&lt;/p&gt;</description>
     </item>
     
@@ -48,14 +46,10 @@
       <pubDate>Wed, 02 Sep 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/0902_bj_cnutcon/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/cnut.png&#34; alt=&#34;cnutcon&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/docker/cnut.png&#34; alt=&#34;cnutcon&#34;&gt;&lt;/p&gt;
 &lt;p&gt;由于最近一直在从事Docker相关的工作，所以有机会参与这次的&lt;a href=&#34;http://cnutcon.com/&#34;&gt;CNUTCon全球容器大会&lt;/a&gt;。名字比较“高格”，虽有少量的外国人分享，大部分还是中国的互联网企业在宣传，忽悠。除去这些，整体来说这次大会还是非常不错的，门票也不算太贵，目前看来应该还是值的。我司还是这次大会的钻石赞助商，也说明我们在容器这一块的发力程度。&lt;/p&gt;
-
 &lt;h2 id=&#34;整体感受&#34;&gt;整体感受&lt;/h2&gt;
-
 &lt;p&gt;Docker是这这两年成长最快的技术，受到资本市场的热捧。Docker技术以势不可挡地席卷全球。参考这次大会，整体感受是：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Docker已不再是概念，已进入互联网企业的实际生产环境中&lt;/li&gt;
 &lt;li&gt;Docker的创业公司多，有远见的想在这次的浪潮中分享红利&lt;/li&gt;

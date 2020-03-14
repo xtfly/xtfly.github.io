@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -145,21 +145,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3806 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3804 字 ~8分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="什么是开源软件">什么是开源软件</h1>
-
 <p>开放源代码促进会（OSI：Open Source Initiative），是一个致力于推动开源软件发展的非盈利组织。</p>
-
 <p>开源软件（OSS：Open Source Softwar）即开放源代码软件，其定义首先起源于自由软件（FS：Free Software）。OSI将开放源码定义为：“开放源码，通过支持源代码的独立同行评议和快速发展演变，提高了软件的可靠性和质量。要通过 OSI 认证，软件必须在获得许可证的情况下发布，该许可证可保证免费读取、重新发布、修改和使用该软件的权利。</p>
-
 <p>开源软件的特点：可自由使用、无任何担保、无许可费、可获得源代码、享有版本、有特定License</p>
-
 <p>开源软件的三大组成要素；</p>
-
 <ul>
 <li>License：是游戏规则 ，有严密的组织监管</li>
 <li>社区是组织方式：是其发展的核心学问所在，主要特征：无明确路标、子项目充分竞争、充分的对等评审、用户充分参与、源码发布、经常发布，Internet发布。</li>
@@ -218,21 +213,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4342 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4343 字 ~9分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="jvmti">JVMTI</h1>
-
 <p>JVMTI（Java VM Tool Interface）就是JVM对外暴露的接口。</p>
-
 <p>JVMTI 本质上是在JVM内部的许多事件进行了埋点。通过这些埋点可以给外部提供当前上下文的一些信息。甚至可以接受外部的命令来改变下一步的动作。外部程序一般利用C/C++实现一个JVMTI Agent，在Agent里面注册一些JVM事件的回调。当事件发生时JVMTI调用这些回调方法。Agent可以在回调方法里面实现自己的逻辑。JVMTI Agent是以动态链接库的形式被虚拟机加载的。</p>
-
 <p>JVMTI Agent启动方式： <code>-agentlib:&lt;agent-lib-name&gt;=&lt;options&gt;</code></p>
-
 <p>JVMTI Agent回调函数：</p>
-
 <ul>
 <li>OnLoad阶段： 调用动态库的Agent_OnLoad函数</li>
 <li>Live阶段： 调用动态库的Agent_OnAttach函数</li>
@@ -297,11 +287,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="jni">JNI</h1>
-
 <p>JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互。JNI一开始是为了本地已编译语言，尤其是C和C++而设计的，但是它并不妨碍你使用其他编程语言，只要调用约定受支持就可以了。</p>
-
 <p>JNI开发流程主要分为以下6步：</p>
-
 <ol>
 <li>编写声明了native方法的Java类</li>
 <li>将Java源代码编译成class字节码文件</li>
@@ -363,21 +350,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">6815 字 ~14分钟</span>
+<span class="leancloud-visitors-count">6808 字 ~14分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="内存模型">内存模型</h1>
-
-<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png" /></p>
-
+<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png"></p>
 <h2 id="堆">堆</h2>
-
 <p>堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。</p>
-
 <p>通过下两个参数来分配堆使用的内存大小：</p>
-
 <ul>
 <li>-Xms：最小堆容量，默认是物理内存的1/64。</li>
 <li>-Xmx：最大堆容量，默认是物理内存的1/4。</li>
@@ -435,31 +417,23 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4470 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4348 字 ~9分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="泛型">泛型</h1>
-
 <p>泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。</p>
-
 <p>泛型使类型（类和接口）在定义类、接口和方法时成为参数，好处在于：</p>
-
 <ul>
 <li>强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常</li>
 <li>提高代码复用，泛型能减少重复逻辑，编写更简洁的代码</li>
 <li>类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性</li>
 </ul>
-
 <h2 id="实现">实现</h2>
-
 <p>Java 5推出了泛型，也就是在原本的基础上加上了编译时类型检查的语法糖。泛型对于JVM来说是透明的，有泛型的和没有泛型的代码，通过编译器编译后所生成的二进制代码是完全相同的。这个语法糖的实现被称为擦除。Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。</p>
-
 <p>无论何时定义一个泛型类型，都自动提供一个相应的原始类型(Raw Type，这里的原始类型并不是指int、boolean等基本数据类型)，原始类型的类名称就是带有泛型参数的类删去泛型参数后的类型名称，而原始类型会擦除(Erased)类型变量，并且把它们替换为限定类型(如果没有指定限定类型，则擦除为Object类型)。</p>
-
 <p>泛型变量的类型的使用：</p>
-
 <ul>
 <li>在调用泛型方法的时候，可以指定泛型，也可以不指定泛型</li>
 <li>在不指定泛型的情况下，泛型变量的类型为 该方法中的几种类型的同一个父类的最小级，直到Object</li>
@@ -518,32 +492,24 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2994 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2992 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="java反射">Java反射</h1>
-
 <p>Java的反射机制是在编译并不确定是哪个类被加载了，而是在程序运行的时候才加载、探知、自审，使用在编译期并不知道的类。这样的特点就是反射。</p>
-
 <p>Java的反射就是利用加载到JVM中的.class文件来进行操作的。.class文件中包含Java类的所有信息，当你不知道某个类具体信息时，可以使用反射获取Class，然后进行各种操作。反射就是把Java类中的各种成分映射成一个个的Java对象，并且可以进行操作。</p>
-
 <p>反射提供的主要功能：</p>
-
 <ul>
 <li>在运行时判断任意一个对象所属的类</li>
 <li>在运行时构造任意一个类的对象</li>
 <li>在运行时判断任意一个类所具有的成员变量和方法</li>
 <li>在运行时调用任意一个对象的方法</li>
 </ul>
-
 <h2 id="rtti">RTTI</h2>
-
 <p>RTTI(RunTime Type Information)，所有的类型信息都必须在编译时已知。会在所有类第一次使用的时候，将class对象(保存在.class文件)动态加载到JVM。</p>
-
 <p>RTTI与反射区别：</p>
-
 <ul>
 <li>编译器在编译时打开和检查.class文件</li>
 <li>运行时打开和检查.class文件</li>
@@ -607,11 +573,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="java字节码">Java字节码</h1>
-
 <p>Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。</p>
-
 <p>其结构如下：</p>
-
 <table>
 <thead>
 <tr>
@@ -621,7 +584,6 @@
 <th align="left">长度</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td align="left">u4</td>
@@ -629,105 +591,90 @@
 <td align="left">魔数，识别Class文件格式，0XCAFEBABE</td>
 <td align="left">4个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">minor_version</td>
 <td align="left">副版本号，如0x0000</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">major_version</td>
 <td align="left">主版本号，如0x0034</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">constant_pool_count</td>
 <td align="left">常量池计数</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">cp_info</td>
 <td align="left">constant_pool</td>
 <td align="left">常量池</td>
 <td align="left">n个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">access_flags</td>
 <td align="left">访问标志</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">this_class</td>
 <td align="left">类索引</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">super_class</td>
 <td align="left">父类索引</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">interfaces_count</td>
 <td align="left">接口计数</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">interfaces</td>
 <td align="left">接口索引集合</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">fields_count</td>
 <td align="left">字段个数</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">field_info</td>
 <td align="left">fields</td>
 <td align="left">字段集合</td>
 <td align="left">n个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">methods_count</td>
 <td align="left">方法计数器</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">method_info</td>
 <td align="left">methods</td>
 <td align="left">方法集合</td>
 <td align="left">n个字节</td>
 </tr>
-
 <tr>
 <td align="left">u2</td>
 <td align="left">attributes_count</td>
 <td align="left">附加属性计数</td>
 <td align="left">2个字节</td>
 </tr>
-
 <tr>
 <td align="left">attribute_info</td>
 <td align="left">attributes</td>
@@ -789,35 +736,27 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3825 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3834 字 ~8分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="io体系">IO体系</h1>
-
 <h2 id="普通io">普通IO</h2>
-
 <p>整个Java.io包主要分为两大部分</p>
-
 <ul>
 <li>文件特征对象</li>
 <li>文件内容操作对象</li>
 </ul>
-
 <h3 id="文件对象">文件对象</h3>
-
 <p>在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。</p>
-
 <p>文件特征对象主要有如下：</p>
-
 <ul>
 <li>文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等</li>
 <li>文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象</li>
 <li>文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统</li>
 <li>文件特征，包括Closeable，Flushable，FileFilter，Serializable</li>
 </ul>
-
 <p>文件内容操作对象主要有两大类：流式操作与数据转换。</p>
     </div>
     
@@ -1016,12 +955,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

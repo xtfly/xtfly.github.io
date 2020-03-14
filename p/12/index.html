@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -151,15 +151,11 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>最近一直在做系统架构上重构工作，理论不能不学习啊，只有在思想上把自己武装起来，才能减少我们工作上的错误。之前参加过或亲自操刀过多次的代码局部或模块重构，但这一次架构重构是范围波及最广，收获颇多。</p>
-
 <h2 id="什么是重构">什么是重构</h2>
-
 <blockquote>
 <p>重构是指在不修改代码外在行为的前提下，对代码做出的修改，以改进程序的内部结构，提高其可理解性，降低其修改成本。</p>
 </blockquote>
-
 <p>这是来自马大神的《重构》一书对重构释义。重构可以改进软件设计；使软件更容易理解；使软件更容易维护；帮助找到软件Bugs；帮助提高编程效率。重构按对系统修改的粒度层次可以分为如下：</p>
-
 <ul>
 <li>局部代码重构，操作与实施比较容易，《重构》一书中介绍了大量经典的方法。</li>
 <li>模块级代码重构，可能涉及到模块之间的接口重构，操作与实施难度相对适中。</li>
@@ -223,18 +219,13 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi" /></p>
-
+    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi"></p>
 <h2 id="什么是osgi">什么是OSGi</h2>
-
 <p>维基百科：</p>
-
 <blockquote>
 <p>OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。</p>
 </blockquote>
-
 <p>我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。</p>
-
 <p>2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。</p>
     </div>
     
@@ -295,7 +286,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>在我司，我发现大家很擅长把一个东西到极致，但极致可能是过犹不及了，例如测试并不是发现越来越多的Bug就越好，如果把很多的时间消耗到一些不重要的点，反而不可取，软件只要你去测试，怎能发现一些Bug，如要面对这些就非常纠结。作一名开发，说这话肯定会被一批的测试人员拍砖死了。在此表达一下不同的观点，不一定正确，请轻拍。</p>
-
 <p>在我司的各种度量工具很牛X，缺陷跟踪分析每个迭代阶段就会做，形成一些报告。对于软件质量来说，统计所有过去的Bugs是没有多大用的，相对来说，一些更实际的工作可能更重要，在Douglas Hubbard的《How to Measure Anything: Finding the Value of Intangibles in Business》(如何衡量任何事：寻找商业无形资产的价值)中，把这种现象解释成衡量倒置(Measurement Inversion)：衡量一个东西的经济价值与它通常所受到的关注度多少成反比。</p>
     </div>
     
@@ -356,7 +346,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>最近一段时间，看了些的版本迭代开发数据。有CI中QDI，FindBugs，重复率，复杂圈度；也有迭代的Story实现率，IR分解率，DI值;也有测试用例，覆盖率，执行时长，入门用例比等。反正各种度量数据多得是，从各个方面来反馈项目的质量。俗话说：有人的地方就有江湖。有江湖的地方就有纷争。有度量数据就有晒马排名，有排名的地方就有政治任务。我们的流程辅助度量工具多了，但这些真能带动我们的质量上去了吗？</p>
-
 <p>小儿已一岁多，现在回顾他做的一些体检。前三个月每月一次体检，一岁之前每3个月一次，一岁之后是每6个月一次。体检的项目有称体重、量身高、量头围、量胸围、验视力、测听力、检查动作发育、口腔检查、评价智能发育、验血、骨骼检查、心肺与心率检查、大便和血红蛋白。体检医生一上来就是开各个体检单，采用是西医的方式，看指标数据，再评测，体检应该是医院最好的生财路之一。个人也明白，正如我妈说的，我小时候哪有什么体检，也不是好好的吗？现在带小孩去体检，也是图个安心，提早预防。</p>
     </div>
     
@@ -411,13 +400,12 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2167 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2187 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>我在上一次的新员工交流会议上，问新员工对全栈工程师了解不，我们的目标是成为一名全栈工作师，而不是做一名只会写代码的码工。最近遇到一些不开心的事，可能是在华为呆久了，发现到底都要会学扯皮。而我性情不太喜欢做一些自认为这些是无意义的事情。虽然有前辈告诉我，扯皮可能的效果会让你少加班几个月。说着说着，有点偏了，扯皮其实是沟通成本。项目越大，沟通成本越高。带个项目的人都会意识到，项目中的人力是1+1&lt;2的，人越多效率越低。因为沟通是需要成本的，不同技术的人各说各话，前端和后端是一定会掐架的。每个人都会为自己的利益而战，毫不为已的人是不存在的。</p>
-
 <p>减少沟通成本，我们需要全栈工程师，因为各种技术都懂，胸有成竹，自己就全做了。即使是在团队协作中，与不同技术人员的沟通也会容易得多。懂你的，你懂的，相互理解，也就少了很多的时间在扯。</p>
     </div>
     
@@ -537,11 +525,11 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>关于什么是一名合格的程序员，优秀的程序员，这些讨论从来没有停止过，标准各不相同。有人说优秀程序员追求简洁的代码，优秀的框架结构，新的技术技能。我们不是在讨论什么是业界大牛，我心中的一名优秀程序具备如下几个素质：</p>
-
 <ul>
-<li><p>简洁高效</p>
-
-<p>优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。</p></li>
+<li>
+<p>简洁高效</p>
+<p>优秀的程序员会使用整洁，易于理解的方式解决实际的问题，任何不必要的复杂代码均不会出现，简单比复杂更具有价值。能通过简洁的方式把复杂的问题解决掉。</p>
+</li>
 </ul>
     </div>
     
@@ -602,9 +590,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>白驹过隙，进入公司已是八年，一路学习一路收获。往后回首，一些经历回想起来还历历在目：经历过一线比拼的激情，经历过产品上线的喜悦，经历过多个项目的变换，经历过持续熬夜的艰辛；写过不少的代码，带过一些徒弟，负责过团队开发，一直在公司从事基层的研发工作。一路走下来，也得到部门领导，公司同事的帮助、指导与鼓励，能让我一直坚持下去，过程中我也得到一些很高的认可，感触多，收获多。在此我先感谢大家！</p>
-
 <h2 id="团队成功才能成就个人">团队成功才能成就个人</h2>
-
 <p>还记得进入公司做的第一个项目，就是上海电信的XXX规范比拼项目，在上海一呆就是3个月之久。之后从09年开始到现在，我应该遇到一个不错的机遇，时逢部门的产品在欧洲开花结果，并且我非常有幸地参加了其中的多个项目，TLF比拼、VDF比拼、SFR比拼、O2的交付，DT比拼，有去一线出差现场操作，也有在家持续熬夜支撑。后又参与平台非常重要的新项目C3的构建，见证它从无到有，到多个局点的交付，目前C3在VDF交付。所以说是 <strong>只有团队的成功，才能有个人的成就</strong> 。我作为一个普普通通的软件工程师，有机会参加了这么多的高端比拼与交付，也可能实属我人生中为数不多，以后可能值得会拿出来说一下的事儿。当然参与这些项目对我自身也是一项非常大的挑战，尤其是在比拼项目中亦时候不知熬了多少个夜晚，甚至彻夜难眠，也不知当面对客户苛刻的验证时的紧张感，心跳加速多少次。但始终相信我是在做一件有意义的事情这就是对的，虽然过程肯是辛苦的，结果可能不理想的。有时甚至还害怕而抵触过，抱怨过。但只要一旦接受了也就始终没有放弃过，<strong>把分给我的工作尽自己最大的努力做好做实，做到问心无愧</strong> 。</p>
     </div>
     
@@ -804,12 +790,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

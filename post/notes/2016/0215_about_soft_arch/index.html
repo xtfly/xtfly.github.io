@@ -142,47 +142,34 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1939 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1936 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="什么是软件架构设计">什么是软件架构设计</h2>
-
 <p>依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的<a href="http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_">《软件架构设计》</a>才知道这只是其中一大阵营的观点。而软件架构在定义上分为<code>“组成派”</code>和<code>“决策派”</code>两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。</p>
-
 <p>“组成派”的两个明显的特点：</p>
-
 <ul>
 <li>关注架构实践的客体——软件，以软件本身作为描述对象。</li>
 <li>分析了软件的组成，说明软件不是一个‘原子’意义上的整体，而是有不同的部分经过特定的接口进行连接组成的一个整体，这对软件开发来说很重要。</li>
 </ul>
-
 <p>“决策派”的两个明显的特点：</p>
-
 <ul>
 <li>关注软件架构中的实体——人，以人的决策为描述对象。</li>
 <li>归纳了软件架构决策的类型，指出架构决策不仅包括关于软件系统的组织、元素、子系统和架构风格等几类决策，还包括关于众多非功能性需求的决策。</li>
 </ul>
-
 <p>按照“组成派”的观点，软件架构关注的是软件整体的分割和交互，之所以分割，是因为不同的部分在逻辑或物理上相对独立，通过“分而治之”的原则进行分割可以更好的理解整个系统，把握用户的需求，但是虽然整个软件可以分割成多个模块或子系统，但是模块和子系统之间的通信和交互也是很重要的。按照这种观点，架构师的主要任务是将软件分割成不同的模块，并定义模块之间的接口。</p>
-
 <p>按照“决策派”的观点，软件是一个在很多限制下产生的产品，这些限制包括用户和技术两方面，用户方面包括功能需求、性能需求、硬件需求等，技术方面包括技术选择、可扩展性、可重用性、可维护性等。按照这中观点，架构师的主要任务就是作出上述个各种限制作出选择或决策，是一系列的有层次的决策。</p>
-
 <h2 id="软件架构设计的质量属性">软件架构设计的质量属性</h2>
-
 <p>按照“决策派”的观点，软件架构并不仅仅关注软件本身的结构和行为，还注重其他特性：使用、功能性、性能、弹性、重用、可理解、经济以及技术的限制和权衡等。</p>
-
 <p>软件架构设计中需要考虑软件的质量属性，也是上述所说需要权衡与决策的。质量属性可归类为三类：</p>
-
 <ul>
 <li>软件系统本身的质量属性：可用性，可维护性，高性能，安全性，可测试性，易用性。</li>
 <li>软件系统的商用属性：上市时间，成本与收益，目标市场，生命周期，系统生态。</li>
 <li>架构本身的质量属性：概念完整性，正确性，可理解性，可构建性。</li>
 </ul>
-
 <p>如何描述质量属性需求呢？一般采用质量属性场景作为一种规范。 质量属性场景是一种面向特定的质量属性的需求。它由六部分组成：</p>
-
 <ul>
 <li>刺激源：这是某个生成该刺激的实体（人、计算机系统或者任何其他刺激器）。</li>
 <li>刺激：该刺激是当刺激到达系统时需要考虑的条件。</li>
@@ -191,9 +178,7 @@
 <li>响应：该响应是在刺激到达后所采取的行动。</li>
 <li>响应度量：当响应发生时，应当能够以某种方式对其进行度量，以对需求进行测试。</li>
 </ul>
-
 <h2 id="软件架构设计的原则">软件架构设计的原则</h2>
-
 <ul>
 <li>全面解耦合原则：对业务进行抽象建模，业务数据与业务逻辑解耦，软件件与硬件解耦，平台与产品解耦，系统各部件之间解耦。</li>
 <li>服务化、组件化原则：以服务，数据为中心，构建服务化，组件化的架构，具备灵活，按需组合的能力。</li>
@@ -203,12 +188,13 @@
 <li>高效开发原则：创建支持迭代、增量、持续交付的架构，支持部件可独立开发，自动化编译构建、测试、集成验证，并易于高效修改与持续优化；支持开发组织小型化、扁平化，支持小团队独立高效并行开发。</li>
 <li>持续演进原则：架构并非一蹴而就，需要有效地管理架构需求，持续构建和发展架构，适应业务需求变化，适时引入业界最佳实践，及时重构，确保架构生命力和竞争力。</li>
 </ul>
-
 <blockquote>
-<p>参考材料：<br />
-* 温昱的《软件架构设计》<br />
-* 软件体系结构的质量属性<br />
-* 华为产品架构设计原则</p>
+<p>参考材料：</p>
+<ul>
+<li>温昱的《软件架构设计》</li>
+<li>软件体系结构的质量属性</li>
+<li>华为产品架构设计原则</li>
+</ul>
 </blockquote>
     </div>
     <footer class="post-footer">
@@ -247,6 +233,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件架构设计
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -339,14 +342,11 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#什么是软件架构设计">什么是软件架构设计</a></li>
-<li><a href="#软件架构设计的质量属性">软件架构设计的质量属性</a></li>
-<li><a href="#软件架构设计的原则">软件架构设计的原则</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#什么是软件架构设计">什么是软件架构设计</a></li>
+    <li><a href="#软件架构设计的质量属性">软件架构设计的质量属性</a></li>
+    <li><a href="#软件架构设计的原则">软件架构设计的原则</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -361,12 +361,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

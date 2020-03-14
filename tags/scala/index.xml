@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Scala on 蘭陵N梓記</title>
@@ -18,42 +18,30 @@
       
       <guid>http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/</guid>
       <description>&lt;p&gt;Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
-
 &lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
-
-&lt;h2 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
-
+&lt;h2 id=&#34;heading&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
 &lt;p&gt;scala中泛型使用&lt;code&gt;[]&lt;/code&gt;指定泛型的类型参数，上下文界定是隐式参数的语法糖&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;:&lt;/code&gt; 表示上下文界定，如&lt;code&gt;A：B&lt;/code&gt; 表示 B 可以进行隐式转化的A类型&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;示例：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;T:A:B&lt;/code&gt; 表示即同时满足AT这种隐式值和BT这种隐式值&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;h2 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
-
+&lt;h2 id=&#34;-与-&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;lt;: A&lt;/code&gt; 表示T必须为A的子类&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&amp;gt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;gt;: A&lt;/code&gt; 表示T必须为A的父类&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt; 相当于java范型编程中的extends，super对泛型变量的限定。&lt;/p&gt;
-
 &lt;p&gt;示例：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;T &amp;lt;: A with B&lt;/code&gt; 表示A和B为T上界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A with B&lt;/code&gt; 表示A和B为T下界&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

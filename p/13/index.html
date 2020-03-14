@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -151,11 +151,13 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：</p>
-
 <ol>
-<li><p>线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。</p></li>
-
-<li><p>所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。</p></li>
+<li>
+<p>线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。</p>
+</li>
+<li>
+<p>所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。</p>
+</li>
 </ol>
     </div>
     
@@ -216,9 +218,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>在JRE类白名单能控制类的使用权限（<a href="http://lanlingzi.cn/post/technical/0311_java_sandbox_cl">请点击</a>），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。</p>
-
 <h2 id="security-manager">Security Manager</h2>
-
 <p>Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（<code>SecurityManager</code>）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。</p>
     </div>
     
@@ -279,13 +279,13 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="classloader">ClassLoader</h2>
-
 <p>JVM类加载器层次结构：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">   Bootstrap ClassLoader
+<pre><code>   Bootstrap ClassLoader
             |
    Extension ClassLoader
             |
-   System ClassLoader</pre></div>
+   System ClassLoader
+</code></pre>
 <p>JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。</p>
     </div>
     
@@ -405,7 +405,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>到达德国的Frankfurt法兰克福大约是19号早晨的６点半左右。这边的天还没有亮，取得托运行李，再过完签证检查之后已是７点左右，天还是没有亮。这次还好，去年过境德国，被安检人员问了一堆的问题。这次可能我事先跟海关检查人员打了声招呼“Morning”，他居然什么都没有问，直接盖上大章就说“Pass”。出了Airport，外面非常的冷清，11月的德国已经开始很冷，有点冬的味道。</p>
-
 <p>我要去的目的地是一个叫Darmstadt达姆斯塔特的小城。在Airport的外面bus stations逛了一圈，终天在Terminal 2 E8找到Darmstadt的air line。等了大约２分钟的时光，Bus准时到来，我向司机打了声招呼，示意让我上车。在车上他说了一堆的德语，可惜我一句也没有听明白，我只能用生硬的英语说“I want to go to Darmstadt, how much is the ticket?”或许大家都能听明白Darmstadt。于是他在电子售票机上打了一张票给我，电子屏上显示7.3欧。</p>
     </div>
     
@@ -466,7 +465,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>项目组由四地员工组成：深圳，南京，印度，土耳其。印度研究所设在班加罗尔（Bangalore），由于这次项目的重要性，把一堆的印度同事也拉到了深圳集中办公，也把部分的土耳其同事拉到了深圳。</p>
-
 <p>今天有两个印度同事说要回家结婚了，准备回印度，于是他们昨天发了一封mail说要我<code>join us for dinner</code>。盛情难却，于是我说<code>I'm glad to go</code>，我就参加了他们的一次聚会。</p>
     </div>
     
@@ -527,15 +525,15 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>今天晚上在部门的公告牌上看到一个另部门的项目做的总结，觉得后面几句话不错：</p>
-
 <ol>
-<li><p>树立团队荣誉感：</p>
-
-<p>如何树立团队荣誉感，没有什么好方法，我的理解就是带领团队不断地打胜仗，克服一个个困难，另外就是获得应该有的荣誉，这样你的团队才能有荣誉感。</p></li>
-
-<li><p>角色认知，系统化思考：</p>
-
-<p>你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。</p></li>
+<li>
+<p>树立团队荣誉感：</p>
+<p>如何树立团队荣誉感，没有什么好方法，我的理解就是带领团队不断地打胜仗，克服一个个困难，另外就是获得应该有的荣誉，这样你的团队才能有荣誉感。</p>
+</li>
+<li>
+<p>角色认知，系统化思考：</p>
+<p>你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。</p>
+</li>
 </ol>
     </div>
     
@@ -602,19 +600,18 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>日子就这一样日复一日地消逝着，<br />
-在不经意间，<br />
-时间滑到2010。<br />
-无意与时间赛跑，<br />
-在时间面前，<br />
+    <p>日子就这一样日复一日地消逝着，<br>
+在不经意间，<br>
+时间滑到2010。<br>
+无意与时间赛跑，<br>
+在时间面前，<br>
 我们永远都是一个输者。</p>
-
-<p><strong>回首2009</strong>，<br />
-一个充满辛苦的一年，<br />
-一个压力倍增的一年。<br />
-去了一趟欧洲，<br />
-去了一趟南京。<br />
-工作走到十字路口，<br />
+<p><strong>回首2009</strong>，<br>
+一个充满辛苦的一年，<br>
+一个压力倍增的一年。<br>
+去了一趟欧洲，<br>
+去了一趟南京。<br>
+工作走到十字路口，<br>
 有更多的人生盲点。</p>
     </div>
     
@@ -817,12 +814,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -147,24 +147,16 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi" /></p>
-
+    <p><img src="https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg" alt="osgi"></p>
 <h2 id="什么是osgi">什么是OSGi</h2>
-
 <p>维基百科：</p>
-
 <blockquote>
 <p>OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。</p>
 </blockquote>
-
 <p>我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。</p>
-
 <p>2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。</p>
-
 <h2 id="缘起">缘起</h2>
-
 <p>正好10年底开始转型做云计算，当时选型的开发语言是Java，这没有错，看看目前Java在云计算中应用程度，说明我们是选对了。同时我们也选型开发框架。我当时受到Eclipse的基于OSGi的插件机制成功影响，是极力推荐使用OSGi的。当然最终决策采用OSGi的不是我，但我的确在其中起了摧动作用。当时采用它的主要原因我想有如下：</p>
-
 <ul>
 <li>模块化，模块之间基于服务接口通讯。</li>
 <li>插件化，Bunlde可以动态加载。</li>
@@ -172,19 +164,12 @@
 <li>生命周期管理，相比普通Jar包，我们可以更细粒度的管理</li>
 <li>&hellip;</li>
 </ul>
-
 <p>我们使用OSGi，采用两种框架，一个是Apache的Felix，使用它主要是看重它很小，用于开发主机代理，在其上开发各种采集插件。一个是Spring的Spring DM，即后面的Eclipse Virgo。使用它主要是看重它集成了Spring，用于开发后端服务，采用Spring DM来简化OSGi的服务发布与引用，以及能较好地使用Spring的其它能力。</p>
-
 <p>可以说从11年到14年，我都是在基于OSGi做开发，从早期喜爱到最后的放弃，个中的滋味真不知怎么说。期间我在整个团队做了不少关于OSGi的推广，写过些文档介绍，规范要求，定位过稀奇的问题，最后大家都觉得我是这一方面的专家，只有搞不定的问题就来找我，我才逐渐意识到OSGi的理念虽好，但要真的把它使用得很好，真是不简单啊。</p>
-
 <p>OSGi虽解决了本地的服务访问的问题，但云系统是一个分布式的系统，所以在后面又折腾过DOSGi，使用是的CXF实现的DOSGi，这个更难使用。先只有少数一两个服务在尝试使用它，期间遇到的问题更多，最后也不得不在13年初就放弃了。我不得不搞出另一个RPC的框架出来。</p>
-
 <h2 id="缘灭">缘灭</h2>
-
 <p>在去年的时候就开始讨论是否去OSGi，连最早鼓吹使用OSGi的阿里，也花了很大精力去OSGi，不过他们的动作早在12年就开始了，Spring也在12年摒弃OSGi，把Spring DM捐献给Eclipse。我们更是受项目进度与人力不足限制，去OSGi也只是停留在讨论中，有点<code>“不破不修”</code>的意思，OSGi凑合着使用。</p>
-
 <p>15年软件界最火爆的两个词可能是：<code>微服务</code>，<code>Docker</code>。去年平台定位发生变化，从偏IaaS转型偏应用的PaaS，原有的架构存在些问题；而今年的<code>微服务</code>概念也直接点然了系统架构重构的火把，而我又是这次架构重构实施落地的组长。这真是有点戏剧性啊！<code>“出来混迟早要还的”</code>，当初我是团队中使用OSGi的带头人，今天又是团队中OSGi的埋葬人。老大们要求我们把架构重构，目标是系统解耦合，轻量化，利于团队分工。自然去掉OSGi，朝分布式微服务化演进在设计考虑的范围中。的确，微服务化与OSGi也不冲突，为什么要去OSGi呢：</p>
-
 <ul>
 <li>OSGi的门槛太高，学好用好它对程序员要求高，而团队新人比例高</li>
 <li>很多第三方组件不是Bundle，需要Bundle化，增加维护成本</li>
@@ -200,7 +185,6 @@
 <li>大环境下，OSGi已成明日黄华，不再是宠儿</li>
 <li>&hellip;</li>
 </ul>
-
 <p>从上面可以看出，OSGi的面向接口编程，服务化，模块化理念在单体应用来说虽不错，在面对分布式的应用时，它带的益处远比它的本身的机制带的问题更多。所以OSGi留得越久，越是技术债务，早去掉早解脱啊。</p>
     </div>
     <footer class="post-footer">
@@ -243,6 +227,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：OSGi的缘起缘灭
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -335,14 +336,11 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#什么是osgi">什么是OSGi</a></li>
-<li><a href="#缘起">缘起</a></li>
-<li><a href="#缘灭">缘灭</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#什么是osgi">什么是OSGi</a></li>
+    <li><a href="#缘起">缘起</a></li>
+    <li><a href="#缘灭">缘灭</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -357,12 +355,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

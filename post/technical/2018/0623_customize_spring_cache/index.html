@@ -148,14 +148,10 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。</p>
-
 <h2 id="背景">背景</h2>
-
 <p>Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。</p>
-
 <p>于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Data
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">@Data
 public class RoleAuthPO {
     String relId;  // primary key
     String roleId; // cache key
@@ -191,21 +187,15 @@ public class BatchCacheAspect {
   public void doBatchCache(JoinPoint point) {
     System.out.println(&#34;before batchCache&#34;);
   }
-}</pre></div>
-<p>笔者的项目是使用Spring Boot 1.5.12，Debug跟踪都无法进入doBatchCache方法。而项目也有采用@Aspect来实现其它的注解，这些注解能正常切入，他们的区别是这些注解是标注在具体类的方法上，而不是接口方法。</p>
-
+}
+</code></pre></div><p>笔者的项目是使用Spring Boot 1.5.12，Debug跟踪都无法进入doBatchCache方法。而项目也有采用@Aspect来实现其它的注解，这些注解能正常切入，他们的区别是这些注解是标注在具体类的方法上，而不是接口方法。</p>
 <h2 id="问题浮现">问题浮现</h2>
-
 <p>那为什么Spring Cache的注解可以切入？通过查看Cache的注解实现，它并没有采用@Aspect声明的切面，而是采用CacheOperationSourcePointcut。</p>
-
 <p>后又做了一个验证，把Spring Boot切换到2.X，奇迹发生了，居然是可以切入。那有一种可能就是这个问题就出在Spring Boot 1.5.X的@Aspect不支持对标识在接口方法的拦截。</p>
-
 <p>网上已有牛人对这个问题做了深入的分析，参见 <a href="http://www.importnew.com/28788.html">接口方法上的注解无法被 @Aspect 声明的切面拦截的原因分析</a> ，从他的分析来看，Mybatis的Mapper接口是通过JDK动态代理生成的逻辑，此问题在Spring Boot 1.5.X下是无解的，@Aspect不支持切入不受Spring Bean管理的对象。而我的项目中存在大量的Mapper，也不可能给每个Mapper定义一个FactoryBean来达到让Spring来管理。</p>
-
 <h2 id="另一解决思路">另一解决思路</h2>
-
 <p>既然Spring Cache的注解在接口方法上有效，那我们再来看看它的机制。当我们在Configuration类打上@EnableCaching注释时，除了启动Spring AOP机制,引入的另一个类ProxyCachingConfiguration就是SpringCache具体实现相关bean的配置类：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Configuration  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">@Configuration  
 public class ProxyCachingConfiguration extends AbstractCachingConfiguration {  
 
     @Bean(name = CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME)  
@@ -235,23 +225,21 @@ public class ProxyCachingConfiguration extends AbstractCachingConfiguration {
         .....
         return interceptor;  
     }  
-}  </pre></div>
-<ul>
+}  
+
+</code></pre></div><ul>
 <li>AnnotationCacheOperationSource的主要作用是获取定义在类和方法上的SpringCache相关的标注并将其转换为对应的CacheOperation属性。</li>
 <li>BeanFactoryCacheOperationSourceAdvisor是一个PointcutAdvisor，是SpringCache使用Spring AOP机制的关键所在，该advisor会织入到需要执行缓存操作的bean的增强代理中形成一个切面。并在方法调用时在该切面上执行拦截器CacheInterceptor的业务逻辑。</li>
 <li>CacheInterceptor是一个拦截器，当方法调用时碰到了BeanFactoryCacheOperationSourceAdvisor定义的切面，就会执行CacheInterceptor的业务逻辑，该业务逻辑就是缓存的核心业务逻辑。</li>
 </ul>
-
 <p>从Spring的AOP机制已知，要对一个方法或类切入需要实现如下：</p>
-
 <ul>
 <li>一个Advisor，它可以扩展Spring中AbstractBeanFactoryPointcutAdvisor</li>
 <li>一个Pointcut，它可以扩展Spring中StaticMethodMatcherPointcut</li>
 <li>一个MethodInterceptor，在此接口中实现拦截逻辑</li>
 </ul>
-
 <p>参考Spring Cache的ProxyCachingConfiguration，实现对@BatchCache拦截核心实现如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">@Configuration
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">@Configuration
 public class ProxyBatchCacheConfiguration {
 
     @Bean
@@ -297,11 +285,9 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
         // .... 省略BatchCache的逻辑
         return methodInvocation.proceed();
     }
-}</pre></div>
-<p><img src="http://lanlingzi.cn/images/2018/Snip20180623_3.png" alt="Snip20180623_3.png" /></p>
-
+}
+</code></pre></div><p><img src="http://lanlingzi.cn/images/2018/Snip20180623_3.png" alt="Snip20180623_3.png"></p>
 <p>从Debug调用栈来看，在Spring框架中，当调用是接口动态代理对象方法时，会生成JdkDynamicAopProxy，此对象会设置所有advisors。只要我们写的advisor以Bean方式注入到Spring框架，它会就生效，流程总结如下：</p>
-
 <p><code>声明advisor-&gt;Pointcut.matches-&gt;MethodInterceptor.invoke</code></p>
     </div>
     <footer class="post-footer">
@@ -340,6 +326,23 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：自定义扩展Spring Cache注解
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -432,14 +435,11 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#问题浮现">问题浮现</a></li>
-<li><a href="#另一解决思路">另一解决思路</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#问题浮现">问题浮现</a></li>
+    <li><a href="#另一解决思路">另一解决思路</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -454,12 +454,12 @@ public class BatchCacheInterceptor implements MethodInterceptor, Serializable {
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

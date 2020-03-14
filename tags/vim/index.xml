@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>vim on 蘭陵N梓記</title>
@@ -18,20 +18,15 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0903_vim/</guid>
       <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改&lt;/li&gt;
 &lt;li&gt;配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换&lt;/li&gt;
 &lt;li&gt;有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
-
 &lt;p&gt;第一张是自己截的，后两张是使用各插件官方的：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34; /&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/vim/vim-snapshot.png&#34; alt=&#34;snapshot&#34;&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

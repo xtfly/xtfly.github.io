@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -151,7 +151,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>前天公司HR找我聊天，聊到问我的成就感是什么。我想表达的观点是成就感是内心一直能处于心态平和，心里踏实，不为事情所扰。尤其是作为一名技术人员，当前的工作是希望是不被打扰，不要去呈现价值，不要去讲故事而去获取更多的资源；而是把自己手上的工作尽自己最大可能努力去做好，自己问心无愧，自己也收获成长。</p>
-
 <p>这似乎有点高大上，不食人间烟火；或者是一种上升到生活哲学的感悟。现实生活中，我们到处都有着功利心，成就感就是对功利的满足。人们更乐于朝着自己收益最大的方向努力，而不是原地享受安逸。个人很难超脱学古人淡泊名利，即使在相对单纯的技术体系，你也会发现人没有功利心的确是一种不容易的事情。</p>
     </div>
     
@@ -212,13 +211,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>时间就像指间握不住的流沙，静静从身边溜走。</p>
-
 <p>这些年来，我所从事的工作领域在变化，所使用的技术在变化，经历过一线比拼的激情，持续熬夜的艰辛，产品上线的喜悦，一直在公司从事基层研发工作。人生就像自己编写的程序，在程序化地运行着，但能在最好的年华，做自己最热爱的事，于我是一种幸福。</p>
-
-<h1 id="有了电脑后的-放飞">有了电脑后的“放飞”</h1>
-
+<h1 id="有了电脑后的放飞">有了电脑后的“放飞”</h1>
 <p>上世纪90年代，爸爸单位用电脑记账，我觉得很是神奇，买不起电脑就买了个学习机，按照说明书，用GBASIC语言输出满屏各种形状的图形，心中被巨大的喜悦填满，开始了编程的启蒙。高考那年，又被《第一次亲密接触》中互联网的桥段吸引，毫不犹豫报了计算机专业，但遗憾被调剂到信息管理专业，这两个专业之间关系不大，我与编程失之交臂了。</p>
-
 <p>大一下学期买了电脑后，我开始“放飞”自己，各种操作系统只要出新的版本，我就会重装体验，此外就是打游戏，或者“泡”论坛，渐渐发现编程的乐趣，之后就在编码的路上停不下来了。参加过学校计算机编程比赛获三等奖，和室友一起搭建系里的网站，大学毕业去了一家互联网公司做程序员，直到2005年，我有幸加入华为，一晃已经十三年了。</p>
     </div>
     
@@ -273,48 +268,36 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4989 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4979 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }</pre></div>
-<p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
+</code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
-
 <h1 id="泛型">泛型</h1>
-
-<h2 id="toc_1"><code>:</code></h2>
-
+<h2 id="heading"><code>:</code></h2>
 <p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
-
 <ul>
 <li><code>:</code> 表示上下文界定，如<code>A：B</code> 表示 B 可以进行隐式转化的A类型</li>
 </ul>
-
 <p>示例：</p>
-
 <ul>
 <li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
 </ul>
-
-<h2 id="与"><code>&lt;:</code> 与 <code>:&gt;</code></h2>
-
+<h2 id="-与-"><code>&lt;:</code> 与 <code>:&gt;</code></h2>
 <ul>
 <li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
 <li><code>&gt;:</code> 表示只限定子类，如 <code>T &gt;: A</code> 表示T必须为A的父类</li>
 </ul>
-
 <p><code>&lt;:</code> 与 <code>:&gt;</code> 相当于java范型编程中的extends，super对泛型变量的限定。</p>
-
 <p>示例：</p>
-
 <ul>
 <li><code>T &lt;: A with B</code> 表示A和B为T上界</li>
 <li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
-<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。<br /></li>
+<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。</li>
 </ul>
     </div>
     
@@ -369,22 +352,19 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1474 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1470 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：</p>
-
 <ul>
 <li>针对消息对象缓存，每个消息都非常小，要高效地使用内存</li>
 <li>存在定时消息，当定时到了，需要回到业务系统中去调度</li>
 <li>消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等）</li>
 <li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）</li>
 </ul>
-
 <p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。</p>
-
 <p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
     </div>
     
@@ -445,11 +425,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。</p>
-
 <h2 id="背景">背景</h2>
-
 <p>Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。</p>
-
 <p>于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：</p>
     </div>
     
@@ -504,19 +481,16 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1566 字 ~4分钟</span>
+<span class="leancloud-visitors-count">1565 字 ~4分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>最近利用周末时间来学习Rust编程，发现新发布的1.26版本，带来了<a href="https://github.com/rust-lang/rust/pull/49255"><code>impl Trait</code></a>，一时对它的写法难以理解，今天又找点资料再温习一下。</p>
-
 <blockquote>
-<p>impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&gt; impl Iterator<Item=u8> or fn open(path: impl AsRef<Path>).</p>
+<p>impl Trait is now stable allowing you to have abstract types in returns or in function parameters. e.g. fn foo() -&gt; impl Iterator&lt;Item=u8&gt; or fn open(path: impl AsRef<!-- raw HTML omitted -->).</p>
 </blockquote>
-
 <h2 id="既存类型">既存类型</h2>
-
 <p><code>impl Trait</code>是对<a href="https://en.wikipedia.org/wiki/Type_system#Existential_types"><code>既存类型(Existential types)</code></a>的支持，那什么是既存类型?</p>
     </div>
     
@@ -577,9 +551,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：</p>
-
-<p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="" />
-<img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt="" /></p>
+<p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="">
+<img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt=""></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -640,15 +613,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2895 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2896 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="rxjava">RxJava</h2>
-
 <p>最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了<a href="https://github.com/ReactiveX/RxJava">RxJava(Reactive Extension for Java)</a>。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的<a href="http://Rx.Net">Rx.Net</a>的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有<a href="http://projectreactor.io/">Project Reactor</a>, <a href="https://akka.io/">Akka</a>和<a href="https://github.com/google/agera">Agera</a>等等。</p>
-
 <p>传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的<code>Callback Hell</code>。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决<code>Callback Hell</code>。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。</p>
     </div>
     
@@ -844,12 +815,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cloud on 蘭陵N梓記</title>
@@ -17,14 +17,10 @@
       <pubDate>Sat, 15 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0715_cloud_design_pattern/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/azure.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/azure.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在云环境下，如何构建出可靠，弹性，安全的应用？有哪些挑战？面对这些挑战如何解决，微软Azure总结一系列的设计模式。本文是翻译&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/&#34;&gt;Azure架构中心&lt;/a&gt;在线资料中的&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/patterns/&#34;&gt;云设计模式&lt;/a&gt;，仅个人的笔记，借翻译学习一下，英文好的可以直接阅读原文。&lt;/p&gt;
-
 &lt;h2 id=&#34;挑战&#34;&gt;挑战&lt;/h2&gt;
-
 &lt;h3 id=&#34;可用性&#34;&gt;可用性&lt;/h3&gt;
-
 &lt;p&gt;可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。&lt;/p&gt;</description>
     </item>
     
@@ -35,11 +31,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/0106_cloudnative/</guid>
       <description>&lt;p&gt;随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考&lt;a href=&#34;http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst&#34;&gt;Cloud Native at Netflix&lt;/a&gt;）。那什么是CloudNative？&lt;/p&gt;
-
 &lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
-
 &lt;p&gt;目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。&lt;/p&gt;
-
 &lt;p&gt;早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出&lt;a href=&#34;http://wso2.com/library/articles/2010/05/blog-post-cloud-native/&#34;&gt;CloudNative，认为有如下几个关键特征&lt;/a&gt;：&lt;/p&gt;</description>
     </item>
     
@@ -50,11 +43,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0723_why_go/</guid>
       <description>&lt;p&gt;HW的执行力就是强，推广Go也是雷力风行，几乎目前是全员皆Go。作为一名其中的参与者，也知目前Go若大规模应用还是有很多的不成熟，风险也非常大。那为什么我司还是选择Go？也来谈谈我个人对为什么选择Go的认识，仅是个人拙见，不代表我司官方的观点。&lt;/p&gt;
-
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;Go语言主创人员之是C语言与Linux的发明人，所以Go的语法在C的基础之上取众家之精华：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;主要继承了C(func, struct，指针)&lt;/li&gt;
 &lt;li&gt;包管理吸取自Java（package, import）&lt;/li&gt;
@@ -70,11 +60,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0519_cie_cloud/</guid>
       <description>&lt;p&gt;第一次参加由电子协会举办的云计算大会，这届是在北京国家会议中心举行，据说这一届参加的人数有1.4W人。主题为“技术融合 应用创新”。云计算走到今天，已不在是什么新概念，在中国已大规格地使用起来。作为一名技术从业者，有幸参加，虽可能得不到干货，但可听一听，看一看，启发思路。&lt;/p&gt;
-
 &lt;h2 id=&#34;云计算是产业变革的推进器&#34;&gt;云计算是产业变革的推进器&lt;/h2&gt;
-
 &lt;p&gt;第一场是来自工业和信息化部副部长怀（进鹏）部长致辞，领导果然是领导，带病撑着拐杖登台。整个过程是滔滔不绝地精彩分享，作一名学术官员，能脱稿是我发挥，说明他这个领域的真正专家。核心观点：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;云计算是解决方案，助推产业变革。给我们日常生活变化，也给我们产业带来新结构调整&lt;/li&gt;
 &lt;li&gt;云计算与大数据互为孪生兄弟，助推企业、行业和信息化解决方案起到了特别的支撑作用&lt;/li&gt;
@@ -89,13 +76,11 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0414_oracle_cloud_day/</guid>
       <description>&lt;p&gt;今天有幸参加Oracle举办的cloud day。Oracle从开始对云计算不敏感，到后来的大力投入，并购与产品整合，目前Oracle在云计算领域已涵盖IaaS，PaaS，SaaS。Oracle正借助于云计算，把帮助企业把传统的应用产品搬迁到云计算上。Oracle应用产品发发展战略三个核心阶段：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;无极限的应用产品支持：对所有目前使用Oracle OP部署方式的应用产品客户提供持续支持。&lt;/li&gt;
 &lt;li&gt;下一代“云”应用产品的开发以及战略并购：基于统一标准的PaaS平台，并购整合并开发下一代的，最优的基于云的产品。&lt;/li&gt;
 &lt;li&gt;切实可行的”云”之路：为客户提供各种服务和商务方案使客户以最小的投资风险采用Oracle云服务。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;从上也可以看出Oracle在云计算野心，它虽相对起步晚，但它由于在传统IT领域的优势，通过整合基础设施，平台与中间件，以及社交资源，是在云计算领域内少数几个能针对企业各种业务提供一套完整的解决方案，涵盖如下领域：&lt;/p&gt;</description>
     </item>
     
@@ -105,10 +90,8 @@
       <pubDate>Sat, 16 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2016/0116_speed_sw_distribute/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg&#34; alt=&#34;balance&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg&#34; alt=&#34;balance&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。&lt;/p&gt;</description>
     </item>
     

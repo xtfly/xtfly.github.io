@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Shell on 蘭陵N梓記</title>
@@ -18,13 +18,9 @@
       
       <guid>http://lanlingzi.cn/post/notes/2016/0221_mac_tmux/</guid>
       <description>&lt;h2 id=&#34;什么是tmux&#34;&gt;什么是tmux&lt;/h2&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://tmux.github.io/&#34;&gt;tmux&lt;/a&gt;是一个支持多会话独立运行的优秀的终端复用软件。它类似&lt;a href=&#34;http://www.gnu.org/software/screen/&#34;&gt;GNU Screen&lt;/a&gt;，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。&lt;/p&gt;
-
 &lt;h2 id=&#34;tmux的使用场景&#34;&gt;tmux的使用场景&lt;/h2&gt;
-
 &lt;p&gt;Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。&lt;/li&gt;
 &lt;li&gt;提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。&lt;/li&gt;

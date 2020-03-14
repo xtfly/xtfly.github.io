@@ -147,37 +147,27 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/msa/timg.jpeg" alt="" /></p>
-
+    <p><img src="http://lanlingzi.cn/images/msa/timg.jpeg" alt=""></p>
 <h2 id="why">Why</h2>
-
 <p>我司从15年开始学习互联网的微服务构架，到今16年的全云化战略，微服务已作为架构体系的重要工作。但微服务看似美好，在IT界应用非常的成熟与成功，但这个本质没有革命性的技术架构，在我司却非常地难以落地。主要原因：传统的CT应用太过厚重，面临着软件交付模式完全不一样，历史包袱改造面临短期看不到收益的成本投入：</p>
-
 <ul>
 <li>IT界：软件是自运维，借助于微服务构架，DevOps工程化，以及相对扁平的组织结构。软件向微服务转变相对阻力比较小，按康威定律，组织决定架构，微服务构架与扁平化、轻小的、精英化的组织是完全匹配的。在微服务构架实施上可以快速迭代演进，同时形成回路反馈，架构更符合良性的发展。同时像BAT等公司，业务上爆发式的增涨，也会加速微服务构架软变与满足。</li>
 <li>我司：软件非自运维，做的是产品卖给运营商，DevOps当前无法直接打通。微服务构架对交付与运维来说，没有直接带来价值，反而会带来更多的问题。运营商是不可能像IT界每日构建灰度升级的。当然运营商自己也在改变，但这个改变是基础设施平台化，上层业务应用会拉入IT厂商，反而像我司这类传统的设备供应商会被旁落。说起来，这是另一个更大沉重的话题，不就再展开了。</li>
 </ul>
-
 <h2 id="what">What</h2>
-
 <p>微服务架构转变当前遇到的各种问题，不是我们不实施微服务架构的理由。软件全云化，微服务这是趋势。再说说微服务对我们目前软件开发的核心价值吧：</p>
-
 <ul>
 <li>设计：微服务架构下，设计上可以重用已有微服务，反哺微服务仓库，达到软件功能更好的复用；同时由于微服务具有9大特性，使架构师能更好的守护软件架构。</li>
 <li>开发：相比原来组件化架构，每个开发人员负责的代码量减少，更能把事件做精；微服务架构下，一般会有像JDF或HSF的服务框架，使开发难度降低；业务功能的细分，基于服务化接口契约，使并行开发变成可能，工期缩短；细粒度快速验证，单个微服务的更容易稳定。</li>
 <li>部署：基于微服务的功能组合，可以按不同的特性交付，特性独立上线，而不原有的通过License开关控制；容量上可以按小颗粒度，自动化地伸缩，系统拥有更好的弹性。</li>
 <li>运行：可以小颗粒度，自动化地故障隔离，故障影响范围可控；按服务的滚动升级。</li>
 </ul>
-
 <p>有上面的这些理由，难道我们还不选择微服务架构吗？架构上是OK的，但我司的矩阵性管理，有项目经理，有产品管理，有服务人员，有部门经理，有成本管理等，他们会看到，会认可吗？会有产品上收益来支撑吗？遗憾是目前没有，所以仅仅是研发体系上的隐性收益很难快速地推进。</p>
-
 <h2 id="how">How</h2>
-
 <p>在我司，那如何地渐进式地推进微服务架构，从四个维度架构视图展开：</p>
-
 <ul>
-<li><p>逻辑视图：</p>
-
+<li>
+<p>逻辑视图：</p>
 <ul>
 <li>存量代码按特性功能进行分析梳理，优先有商业价值的特性功能重构</li>
 <li>将老版本进程进行拆分与整合，对于相对稳定的原有组件尽量只服务化，而不微服务化</li>
@@ -185,10 +175,10 @@
 <li>服务独立自治，多实例集群负荷均衡，可靠性服务内完成，服务内性能并发，服务使用者性能透明</li>
 <li>去中心化治理，无全局控制节点，避免全局故障</li>
 <li>服务划分原则：数据私有化，功能实例化，接口标准化，依赖最小化</li>
-</ul></li>
-
-<li><p>部署视图：</p>
-
+</ul>
+</li>
+<li>
+<p>部署视图：</p>
 <ul>
 <li>独立进程承载服务功能，在部署形态上做到可分可合</li>
 <li>服务尽量部署独立数据库，在设计上考虑Schema的隔离</li>
@@ -196,24 +186,24 @@
 <li>服务可靠性，并发性统一由服务控制节点管理</li>
 <li>改造老进程新增服务接口，新老并存，调通后再去除老接口</li>
 <li>新服务新进程承载，调通后替换老进程</li>
-</ul></li>
-
-<li><p>开发视图：</p>
-
+</ul>
+</li>
+<li>
+<p>开发视图：</p>
 <ul>
 <li>按照服务构建开发视图</li>
 <li>按照服务构建测试工程</li>
 <li>按照服务适配个人构建</li>
-</ul></li>
-
-<li><p>能力视图：</p>
-
+</ul>
+</li>
+<li>
+<p>能力视图：</p>
 <ul>
 <li>配置能力完善，包括基础架构，研发工具，人员能力</li>
 <li>探索适合我司交付模式的微服务的开发模式</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>总之，微服务架构落地不可能一蹴而蹴，更不可能一场运行就能解决的。</p>
     </div>
     <footer class="post-footer">
@@ -256,6 +246,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：再说说微服务
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -348,14 +355,11 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#why">Why</a></li>
-<li><a href="#what">What</a></li>
-<li><a href="#how">How</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#why">Why</a></li>
+    <li><a href="#what">What</a></li>
+    <li><a href="#how">How</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -370,12 +374,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

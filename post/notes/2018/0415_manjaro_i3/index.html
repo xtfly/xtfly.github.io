@@ -148,38 +148,29 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：</p>
-
-<p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="" />
-<img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt="" /></p>
-
+<p><img src="http://lanlingzi.cn/images/screenshot/manjaro/1.png" alt="">
+<img src="http://lanlingzi.cn/images/screenshot/manjaro/2.png" alt=""></p>
 <p>本文是折腾之后的记录备份，也适合于目前是Archlinux，想把系统转成Manjaro的同学们参考。</p>
-
 <p>Manjaro安装软件列表与配置已归档到GitHub: <a href="https://github.com/xtfly/mydots">xtfly/mydots</a> 。</p>
-
 <h2 id="安装manjaro">安装Manjaro</h2>
-
 <p>修改/etc/pacman.d/mirrorlist</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch</pre></div>
-<p>修改/etc/pacman.conf，由于在Archlinux上安装Manjaro，签名key变化，先配置为对安装包不做签名检查，SigLevel配置为Optional TrustAll，等所有软件安装完成之后再恢复 。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch
+</code></pre></div><p>修改/etc/pacman.conf，由于在Archlinux上安装Manjaro，签名key变化，先配置为对安装包不做签名检查，SigLevel配置为Optional TrustAll，等所有软件安装完成之后再恢复 。</p>
 <p>并配置archlinuxcn，用于下载一些国人已打包的软件，如yaourt, vscode等。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">SigLevel    = Optional TrustAll  #Required DatabaseOptional
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">SigLevel    = Optional TrustAll  #Required DatabaseOptional
 LocalFileSigLevel = Optional TrustAll  #Optional
 
 ......
 
 [archlinuxcn]  
 SigLevel = Optional TrustAll  
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  </pre></div>
-<p>个人目前系统的安装包列表： <a href="https://github.com/xtfly/mydots/blob/master/manjaro_i3_packages.txt">mydots/files/manjaro_i3_packages.txt</a>。</p>
-
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  
+</code></pre></div><p>个人目前系统的安装包列表： <a href="https://github.com/xtfly/mydots/blob/master/manjaro_i3_packages.txt">mydots/files/manjaro_i3_packages.txt</a>。</p>
 <p>根据安装包列来安装所有包，大约有1000个包共1G的下载量，请耐心等待。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">pacman -Syu
-pacman -S `cat manjaro_i3_packages.txt` </pre></div>
-<h2 id="主要使用软件">主要使用软件</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">pacman -Syu
+pacman -S `cat manjaro_i3_packages.txt` 
+</code></pre></div><h2 id="主要使用软件">主要使用软件</h2>
 <p>下面这些软件已包含在manjaro_i3_packages.txt，部分介绍：</p>
-
 <ul>
 <li>桌面窗口管理：i3-wm，一种平铺风格的窗口管理，简单高效，适合于键盘党</li>
 <li>状态栏：i3pystatus，结合i3 bar使用，各种插件</li>
@@ -196,23 +187,17 @@ pacman -S `cat manjaro_i3_packages.txt` </pre></div>
 <li>多显示器: xrandr与arandr（配置界面）</li>
 <li>&hellip;&hellip;</li>
 </ul>
-
 <h2 id="i3pystatus">i3pystatus</h2>
-
 <p>i3pystatus是采用python写的i3stauts，它比原生的i3stauts有更多的插件，配置也更丰富</p>
-
 <p>配置python pip，在root目录下，打开<code>.pip/pip.conf</code>，修改为国内源</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ </pre></div>
-<p>执行安装，i3pystatus若显示网卡流量，需要安装netifaces等</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sudo pip install git+https://github.com/enkore/i3pystatus.git
-sudo pip install netifaces colour pypi</pre></div>
-<h2 id="配置">配置</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ 
+</code></pre></div><p>执行安装，i3pystatus若显示网卡流量，需要安装netifaces等</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo pip install git+https://github.com/enkore/i3pystatus.git
+sudo pip install netifaces colour pypi
+</code></pre></div><h2 id="配置">配置</h2>
 <p>本人参考了网上多个配置，形成自己的配置，已经上传到个人GitHub: <a href="https://github.com/xtfly/mydots">xtfly/mydots</a> ，供大家参考：</p>
-
 <p>下载之后，在某个用户下，直接执行install.sh可快速安装配置文件，则此用户即采用i3来做窗口管理，主要配置文件</p>
-
 <ul>
 <li>i3配置，快捷键参考: <a href="https://github.com/xtfly/mydots/blob/master/files/.i3/config">mydots/files/.i3</a></li>
 <li>i3pystatus配置: <a href="https://github.com/xtfly/mydots/blob/master/files/.config/i3pystatus/config.py">files/.config/i3pystatus</a></li>
@@ -257,6 +242,23 @@ sudo pip install netifaces colour pypi</pre></div>
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：从Archlinux到Manjaro&#43;i3 WM
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -347,12 +349,12 @@ sudo pip install netifaces colour pypi</pre></div>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -148,9 +148,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。</p>
-
 <p>公用的宏与异常类:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">#define NEW(var, T) do { /  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define NEW(var, T) do { /  
    try {                 /  
        var = new T;      /  
    }catch(...) {         /  
@@ -173,9 +172,9 @@ struct Error
    {  
      printf(&#34;/nThrow a error, Info :%s/n&#34;, pszInfo);  
    }  
-};</pre></div>
-<p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, size_t SIZE&gt;  
+};
+</code></pre></div><p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, size_t SIZE&gt;  
 class Stack  
 {  
 public:  
@@ -245,9 +244,9 @@ public:
 private:  
     T m_data[SIZE];  
     size_t m_size;  
-};  </pre></div>
-<p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;  
+};  
+</code></pre></div><p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;  
 struct SNode  
 {  
     T m_data;  
@@ -363,9 +362,9 @@ public:
 private:  
     TNode* m_pTop;  
     size_t m_size;  
-};</pre></div>
-<p>测试代码：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print_stack(int&amp; a)  
+};
+</code></pre></div><p>测试代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print_stack(int&amp; a)  
 {  
     printf(&#34;%d/t&#34;, a);  
 }  
@@ -404,7 +403,8 @@ void test_stack()
     stack.clear();  
     printf(&#34;/n5 : size: %d /n&#34;, stack.size());  
     stack.traverse(print_stack);  
-}  </pre></div>
+}  
+</code></pre></div>
     </div>
     <footer class="post-footer">
      
@@ -442,6 +442,23 @@ void test_stack()
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：[c&#43;&#43;]自己实现的stack
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -532,12 +549,12 @@ void test_stack()
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

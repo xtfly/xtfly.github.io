@@ -148,12 +148,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>五一放假正好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support&hellip;</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
-
 <h1 id="如何集成">如何集成</h1>
-
 <p>在主题文件<code>layouts/partials/script.html</code>中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
   MathJax.Hub.Config({
     extensions: [&#34;tex2jax.js&#34;],
     jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;],
@@ -165,36 +162,26 @@
     &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] }
   });
 &lt;/script&gt;
-&lt;script src=&#39;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML&#39; async&gt;&lt;/script&gt;</pre></div>
-<p>加上 <code>TeX-AMS-MML_HTMLorMML</code> 使得我们可以支持Tex和MathML公式，表示如果浏览器支持MathML解析，那么就使用它，否则会使用HTML-with-CSS来显示数学公式。</p>
-
+&lt;script src=&#39;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML&#39; async&gt;&lt;/script&gt;
+</code></pre></div><p>加上 <code>TeX-AMS-MML_HTMLorMML</code> 使得我们可以支持Tex和MathML公式，表示如果浏览器支持MathML解析，那么就使用它，否则会使用HTML-with-CSS来显示数学公式。</p>
 <h1 id="如何使用">如何使用</h1>
-
 <p>LaTeX 格式的公式使用主要有两种形式：</p>
-
 <ul>
 <li>包含在段落之中，见上面的inlineMath配置，采用以 <code>$...$</code> 引用</li>
 <li>独立于其他文字，见上面的displayMath配置，采用以 <code>$$...$$</code> 引用</li>
 </ul>
-
 <p>更多的使用请参考： <a href="http://docs.mathjax.org/en/latest/tex.html">http://docs.mathjax.org/en/latest/tex.html</a></p>
-
 <h2 id="样例">样例</h2>
-
 <h3 id="段落行内显示">段落行内显示</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are</pre></div>
-<p>将会生成</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are
+</code></pre></div><p>将会生成</p>
 <p>When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are</p>
-
 <h3 id="独立段落显示">独立段落显示</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"> $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$
 
- $$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</pre></div>
-<p>将会生成</p>
-
+ $$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$
+</code></pre></div><p>将会生成</p>
 <p>$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$</p>
-
 <p>$$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</p>
     </div>
     <footer class="post-footer">
@@ -233,6 +220,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：支持LateX
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -325,17 +329,14 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li><a href="#如何集成">如何集成</a></li>
-<li><a href="#如何使用">如何使用</a>
-<ul>
-<li><a href="#样例">样例</a>
-<ul>
-<li><a href="#段落行内显示">段落行内显示</a></li>
-<li><a href="#独立段落显示">独立段落显示</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#样例">样例</a>
+      <ul>
+        <li><a href="#段落行内显示">段落行内显示</a></li>
+        <li><a href="#独立段落显示">独立段落显示</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -350,12 +351,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

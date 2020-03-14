@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>安全 on 蘭陵N梓記</title>
@@ -17,16 +17,11 @@
       <pubDate>Sun, 30 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0730_4a/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/4a_security.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/4a_security.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;什么是4a&#34;&gt;什么是4A&lt;/h2&gt;
-
 &lt;p&gt;4A是指：账号Account、认证Authentication、授权Authorization、审计Audit，中文名称为统一安全管理平台解决方案。即将身份认证、授权、审计和账号(即不可否认性及数据完整性)定义为网络安全的四大组成部分，从而确立了身份认证在整个网络安全系统中的地位与作用。(来源百度百科)&lt;/p&gt;
-
 &lt;h2 id=&#34;账号account&#34;&gt;账号Account&lt;/h2&gt;
-
 &lt;p&gt;为用户提供统一集中的帐号管理，包括：用户身份信息的集中存储与统一管理。参考AWS等系统，涉及到概念包括：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;主账号：一般指管理资源的唯一身份标识，他为资源付费。也是自然人在4A中的唯一身份标识，一个用户只会有一个主账号，唯一标识了他的身份。&lt;/li&gt;
 &lt;li&gt;从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。&lt;/li&gt;

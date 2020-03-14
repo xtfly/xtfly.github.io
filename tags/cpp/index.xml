@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>cpp on 蘭陵N梓記</title>
@@ -18,7 +18,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;namespace outspname  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname  
 {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
@@ -31,7 +31,8 @@
       {  
       };  
    }  
-}&lt;/pre&gt;&lt;/div&gt;</description>
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -41,12 +42,12 @@
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
       <description>&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
-strmap.erase(iter);&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
+strmap.erase(iter);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -56,17 +57,16 @@ strmap.erase(iter);&lt;/pre&gt;&lt;/div&gt;
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
       <description>&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;sum = 0  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
 10.times{|n| sum += n}   
-print sum&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
-
+print sum
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
 &lt;p&gt;我们还来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;def addx(x):      
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
+print add8(100)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -112,14 +112,18 @@ print add8(100)&lt;/pre&gt;&lt;/div&gt;
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</guid>
       <description>&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;宏的展开是一行，所以宏中的注释不能使用&lt;code&gt;//&lt;/code&gt;，只能使用&lt;code&gt;/* */&lt;/code&gt;。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;宏的参数一般情况下使用时要用()括起来，如:
+&lt;li&gt;
+&lt;p&gt;宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;宏的展开是一行，所以宏中的注释不能使用&lt;code&gt;//&lt;/code&gt;，只能使用&lt;code&gt;/* */&lt;/code&gt;。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;宏的参数一般情况下使用时要用()括起来，如:
 &lt;code&gt;#define MAX(a, b) a /2 &amp;gt; b ? a /2  : b&lt;/code&gt;
 MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ol&gt;</description>
     </item>
     
@@ -139,14 +143,11 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</guid>
       <description>&lt;p&gt;C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;第一部分是与malloc功能相同，是从堆上面申请内存块&lt;/li&gt;
 &lt;li&gt;第二部是调用类的构造方法来初始化刚申请的内存。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。&lt;/p&gt;
-
 &lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。&lt;/p&gt;</description>
     </item>
     

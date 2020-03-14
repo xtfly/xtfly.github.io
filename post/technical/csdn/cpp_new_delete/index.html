@@ -148,29 +148,25 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:</p>
-
 <ul>
 <li>第一部分是与malloc功能相同，是从堆上面申请内存块</li>
 <li>第二部是调用类的构造方法来初始化刚申请的内存。</li>
 </ul>
-
 <p>delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。</p>
-
 <p>new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。</p>
-
 <p>下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void* operator new(std::size_t) throw (std::bad_alloc);
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void* operator new(std::size_t) throw (std::bad_alloc);
 void* operator new[](std::size_t) throw (std::bad_alloc);
 void operator delete(void*) throw();
-void operator delete[](void*) throw();</pre></div>
-<p>使用举例:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">int* p1 = new int();
+void operator delete[](void*) throw();
+</code></pre></div><p>使用举例:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">int* p1 = new int();
 delete p2;
 
 int* p2 = new int[5];
-delete [] p2;</pre></div>
-<p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">/**
+delete [] p2;
+</code></pre></div><p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">/**
  * A simulation of c++ new T() &amp; new T(param) operation
  */  
 struct NewObj
@@ -259,9 +255,9 @@ struct DeleteObjArray
         free ((void *) ((long *) pObj - 1));  
         pObj = NULL;  
     }  
-};  </pre></div>
-<p>测试代码:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">struct TestClass  
+};  
+</code></pre></div><p>测试代码:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">struct TestClass  
 {  
     TestClass() : mem1(0), mem2(0)  {}  
 
@@ -289,9 +285,8 @@ void test_new_delete()
     NewObjArray()(p3, 5);  
     printf(&#34;%p/n&#34;, p3);  
     DeleteObjArray()(p3);  
-}  </pre></div>
-<hr />
-
+}  
+</code></pre></div><hr>
 <blockquote>
 <p>测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要<code>#include&lt;new&gt;</code>，使用<code>#include&lt;stdlib.h&gt;</code>会导致编译不过，因为<code>in-place construtor</code>是C++中的新玩意。</p>
 </blockquote>
@@ -332,6 +327,23 @@ void test_new_delete()
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：用C&#43;&#43;模板来展示new与delete操作符原理
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -422,12 +434,12 @@ void test_new_delete()
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

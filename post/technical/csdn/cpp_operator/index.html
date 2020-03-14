@@ -148,11 +148,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得<code>operator</code>比较好玩。C++有时它的确是个耐玩的东东。<code>operator</code>它有两种用法，一种是<code>operator overloading</code>（操作符重载），一种是<code>operator casting</code>（操作隐式转换）。</p>
-
 <h2 id="operator-overloading">operator overloading</h2>
-
 <p>C++可以通过operator 重载操作符，格式如下：类型<code>T operator 操作符 ()</code>，如比重载<code>+</code>，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt; class A  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; class A  
 {  
 public:  
     const T operator + (const T&amp; rhs)  
@@ -161,16 +159,15 @@ public:
     }  
 private:  
     T m_;  
-};</pre></div>
-<p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt; struct A  
+};
+</code></pre></div><p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; struct A  
 {  
    T operator()(const T&amp; lhs, const T&amp; rhs){ return lhs-rhs;}  
-};  </pre></div>
-<h2 id="operator-casting">operator casting</h2>
-
+};  
+</code></pre></div><h2 id="operator-casting">operator casting</h2>
 <p>C++可以通过operator 重载隐式转换，格式如下： <code>operator</code> 类型<code>T ()</code>，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">class A  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">class A  
 {  
 public:  
    operator B* () { return this-&gt;b_;}   
@@ -180,8 +177,8 @@ public:
 
 private:  
    B* b_;  
-};  </pre></div>
-<p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
+};  
+</code></pre></div><p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
     </div>
     <footer class="post-footer">
      
@@ -219,6 +216,23 @@ private:
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：C&#43;&#43;技巧之operator操作符
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -309,12 +323,12 @@ private:
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Java on 蘭陵N梓記</title>
@@ -18,15 +18,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</guid>
       <description>&lt;h1 id=&#34;jvmti&#34;&gt;JVMTI&lt;/h1&gt;
-
 &lt;p&gt;JVMTI（Java VM Tool Interface）就是JVM对外暴露的接口。&lt;/p&gt;
-
 &lt;p&gt;JVMTI 本质上是在JVM内部的许多事件进行了埋点。通过这些埋点可以给外部提供当前上下文的一些信息。甚至可以接受外部的命令来改变下一步的动作。外部程序一般利用C/C++实现一个JVMTI Agent，在Agent里面注册一些JVM事件的回调。当事件发生时JVMTI调用这些回调方法。Agent可以在回调方法里面实现自己的逻辑。JVMTI Agent是以动态链接库的形式被虚拟机加载的。&lt;/p&gt;
-
 &lt;p&gt;JVMTI Agent启动方式： &lt;code&gt;-agentlib:&amp;lt;agent-lib-name&amp;gt;=&amp;lt;options&amp;gt;&lt;/code&gt;&lt;/p&gt;
-
 &lt;p&gt;JVMTI Agent回调函数：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;OnLoad阶段： 调用动态库的Agent_OnLoad函数&lt;/li&gt;
 &lt;li&gt;Live阶段： 调用动态库的Agent_OnAttach函数&lt;/li&gt;
@@ -41,11 +36,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</guid>
       <description>&lt;h1 id=&#34;jni&#34;&gt;JNI&lt;/h1&gt;
-
 &lt;p&gt;JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互。JNI一开始是为了本地已编译语言，尤其是C和C++而设计的，但是它并不妨碍你使用其他编程语言，只要调用约定受支持就可以了。&lt;/p&gt;
-
 &lt;p&gt;JNI开发流程主要分为以下6步：&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;编写声明了native方法的Java类&lt;/li&gt;
 &lt;li&gt;将Java源代码编译成class字节码文件&lt;/li&gt;
@@ -63,15 +55,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</guid>
       <description>&lt;h1 id=&#34;内存模型&#34;&gt;内存模型&lt;/h1&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/java/java_memory3.webp&#34; alt=&#34;java_memory3.png&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;堆&#34;&gt;堆&lt;/h2&gt;
-
 &lt;p&gt;堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。&lt;/p&gt;
-
 &lt;p&gt;通过下两个参数来分配堆使用的内存大小：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;-Xms：最小堆容量，默认是物理内存的1/64。&lt;/li&gt;
 &lt;li&gt;-Xmx：最大堆容量，默认是物理内存的1/4。&lt;/li&gt;
@@ -85,25 +72,17 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</guid>
       <description>&lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
-
 &lt;p&gt;泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。&lt;/p&gt;
-
 &lt;p&gt;泛型使类型（类和接口）在定义类、接口和方法时成为参数，好处在于：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常&lt;/li&gt;
 &lt;li&gt;提高代码复用，泛型能减少重复逻辑，编写更简洁的代码&lt;/li&gt;
 &lt;li&gt;类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;实现&#34;&gt;实现&lt;/h2&gt;
-
 &lt;p&gt;Java 5推出了泛型，也就是在原本的基础上加上了编译时类型检查的语法糖。泛型对于JVM来说是透明的，有泛型的和没有泛型的代码，通过编译器编译后所生成的二进制代码是完全相同的。这个语法糖的实现被称为擦除。Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。&lt;/p&gt;
-
 &lt;p&gt;无论何时定义一个泛型类型，都自动提供一个相应的原始类型(Raw Type，这里的原始类型并不是指int、boolean等基本数据类型)，原始类型的类名称就是带有泛型参数的类删去泛型参数后的类型名称，而原始类型会擦除(Erased)类型变量，并且把它们替换为限定类型(如果没有指定限定类型，则擦除为Object类型)。&lt;/p&gt;
-
 &lt;p&gt;泛型变量的类型的使用：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;在调用泛型方法的时候，可以指定泛型，也可以不指定泛型&lt;/li&gt;
 &lt;li&gt;在不指定泛型的情况下，泛型变量的类型为 该方法中的几种类型的同一个父类的最小级，直到Object&lt;/li&gt;
@@ -118,26 +97,18 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</guid>
       <description>&lt;h1 id=&#34;java反射&#34;&gt;Java反射&lt;/h1&gt;
-
 &lt;p&gt;Java的反射机制是在编译并不确定是哪个类被加载了，而是在程序运行的时候才加载、探知、自审，使用在编译期并不知道的类。这样的特点就是反射。&lt;/p&gt;
-
 &lt;p&gt;Java的反射就是利用加载到JVM中的.class文件来进行操作的。.class文件中包含Java类的所有信息，当你不知道某个类具体信息时，可以使用反射获取Class，然后进行各种操作。反射就是把Java类中的各种成分映射成一个个的Java对象，并且可以进行操作。&lt;/p&gt;
-
 &lt;p&gt;反射提供的主要功能：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;在运行时判断任意一个对象所属的类&lt;/li&gt;
 &lt;li&gt;在运行时构造任意一个类的对象&lt;/li&gt;
 &lt;li&gt;在运行时判断任意一个类所具有的成员变量和方法&lt;/li&gt;
 &lt;li&gt;在运行时调用任意一个对象的方法&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;rtti&#34;&gt;RTTI&lt;/h2&gt;
-
 &lt;p&gt;RTTI(RunTime Type Information)，所有的类型信息都必须在编译时已知。会在所有类第一次使用的时候，将class对象(保存在.class文件)动态加载到JVM。&lt;/p&gt;
-
 &lt;p&gt;RTTI与反射区别：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;编译器在编译时打开和检查.class文件&lt;/li&gt;
 &lt;li&gt;运行时打开和检查.class文件&lt;/li&gt;
@@ -151,11 +122,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</guid>
       <description>&lt;h1 id=&#34;java字节码&#34;&gt;Java字节码&lt;/h1&gt;
-
 &lt;p&gt;Java源文件编译之后生成的class文件，它是供JVM解释执行的二进制字节码文件。&lt;/p&gt;
-
 &lt;p&gt;其结构如下：&lt;/p&gt;
-
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -165,7 +133,6 @@
 &lt;th align=&#34;left&#34;&gt;长度&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
-
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u4&lt;/td&gt;
@@ -173,105 +140,90 @@
 &lt;td align=&#34;left&#34;&gt;魔数，识别Class文件格式，0XCAFEBABE&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;4个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;minor_version&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;副版本号，如0x0000&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;major_version&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;主版本号，如0x0034&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;constant_pool_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;常量池计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;cp_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;constant_pool&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;常量池&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;access_flags&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;访问标志&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;this_class&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;类索引&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;super_class&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;父类索引&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;interfaces_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;接口计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;interfaces&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;接口索引集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;fields_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;字段个数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;field_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;fields&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;字段集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;methods_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;方法计数器&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;method_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;methods&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;方法集合&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;attributes_count&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;附加属性计数&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;attribute_info&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;attributes&lt;/td&gt;
@@ -289,29 +241,21 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</guid>
       <description>&lt;h1 id=&#34;io体系&#34;&gt;IO体系&lt;/h1&gt;
-
 &lt;h2 id=&#34;普通io&#34;&gt;普通IO&lt;/h2&gt;
-
 &lt;p&gt;整个Java.io包主要分为两大部分&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;文件特征对象&lt;/li&gt;
 &lt;li&gt;文件内容操作对象&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h3 id=&#34;文件对象&#34;&gt;文件对象&lt;/h3&gt;
-
 &lt;p&gt;在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。&lt;/p&gt;
-
 &lt;p&gt;文件特征对象主要有如下：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等&lt;/li&gt;
 &lt;li&gt;文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象&lt;/li&gt;
 &lt;li&gt;文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统&lt;/li&gt;
 &lt;li&gt;文件特征，包括Closeable，Flushable，FileFilter，Serializable&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;文件内容操作对象主要有两大类：流式操作与数据转换。&lt;/p&gt;</description>
     </item>
     
@@ -322,21 +266,15 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</guid>
       <description>&lt;h1 id=&#34;并发体系&#34;&gt;并发体系&lt;/h1&gt;
-
 &lt;h2 id=&#34;线程&#34;&gt;线程&lt;/h2&gt;
-
 &lt;h3 id=&#34;线程安全&#34;&gt;线程安全&lt;/h3&gt;
-
 &lt;p&gt;线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;原子性&lt;/li&gt;
 &lt;li&gt;可见性&lt;/li&gt;
 &lt;li&gt;顺序的&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;线程实现：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Runnable：函数没有返回值&lt;/li&gt;
 &lt;li&gt;Callable：函数有返回值&lt;/li&gt;
@@ -353,20 +291,14 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</guid>
       <description>&lt;h1 id=&#34;集合体系&#34;&gt;集合体系&lt;/h1&gt;
-
 &lt;p&gt;集合是存储多个元素的容器，数组长度固定，不能满足长度变化的需求。其特点：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;长度可变&lt;/li&gt;
 &lt;li&gt;存储元素可以是引用类型&lt;/li&gt;
-&lt;li&gt;可以存储多种类型的对象
-&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;可以存储多种类型的对象&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;iterator&#34;&gt;Iterator&lt;/h2&gt;
-
 &lt;p&gt;Iterator接口：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;对 Collection 进行迭代的迭代器，即对所有的Collection容器进行元素取出的公共接口。&lt;/li&gt;
 &lt;li&gt;提供&lt;code&gt;boolean hasNext()&lt;/code&gt;和&lt;code&gt;E next()&lt;/code&gt;两个方法&lt;/li&gt;
@@ -380,7 +312,6 @@
       
       <guid>http://lanlingzi.cn/post/technical/2019/0921_java_base_1/</guid>
       <description>&lt;h1 id=&#34;基本数据类型&#34;&gt;基本数据类型&lt;/h1&gt;
-
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -390,7 +321,6 @@
 &lt;th align=&#34;left&#34;&gt;默认值&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
-
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;byte(字节)&lt;/td&gt;
@@ -398,49 +328,42 @@
 &lt;td align=&#34;left&#34;&gt;-128 - 127&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;shot(短整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^15 - 2^15-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;int(整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^31 - 2^31-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;long(长整型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-2^63 - 2^63-1&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;float(浮点型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1.4013E-45 - 3.4028E+38&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0.0f&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;double(双精度)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;-1.7976E+308 - 1.79769E+308&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0.0d&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;char(字符型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000 - u\ffff&lt;/code&gt;&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000&lt;/code&gt;&lt;/td&gt;
 &lt;/tr&gt;
-
 &lt;tr&gt;
 &lt;td align=&#34;left&#34;&gt;boolean(布尔型)&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
@@ -458,11 +381,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/</guid>
       <description>&lt;p&gt;昨天在公司发现采用@Aspect定义一个切面，对MyBatis的Mapper接口方法上标注自定义的注解，无法切入拦截。&lt;/p&gt;
-
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;Spring Cache提供了声明式的@Cacheable等注解，很方便地对Mapper接口方法来实现缓存。他们好用但简单，缓存的Key大多选择主键。但实际项目上有不少关系对象表（如下面的代码所示）；不能采用主键作为Key，因为大多数的查询场景是根据其关联的另一个字段查询。若以此字段作为Key，当存在批量插入，更新或删除时，都会影响缓存的数据。而Spring Cache的注解无法对参数为数组或List的生成Key。&lt;/p&gt;
-
 &lt;p&gt;于是想到自定义Cache注解来解决批量插入，更新或删除来刷新相应的缓存。对注解的拦截@Aspect声明的切面是最为简单的方式。核心实现代码如下：&lt;/p&gt;</description>
     </item>
     
@@ -473,9 +393,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/</guid>
       <description>&lt;h2 id=&#34;rxjava&#34;&gt;RxJava&lt;/h2&gt;
-
 &lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
-
 &lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
     </item>
     
@@ -485,18 +403,13 @@
       <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2015/0422_remove_osgi/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg&#34; alt=&#34;osgi&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;https://www.osgi.org/wp-content/uploads/bigpuzzle.jpg&#34; alt=&#34;osgi&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;什么是osgi&#34;&gt;什么是OSGi&lt;/h2&gt;
-
 &lt;p&gt;维基百科：&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;OSGi（Open Service Gateway Initiative）有双重含义。一方面它指OSGi Alliance组织；另一方面指该组织制定的一个基于Java语言的服务（业务）规范——OSGi服务平台（Service Platform）。&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;我们所说的OGSi，通常讲的是Java语言实现的OSGi，但也是有其它语言实现过OSGi，由于没有Killer应用，几乎是无人知晓。&lt;/p&gt;
-
 &lt;p&gt;2003年Eclipse选择OSGi作为其插件的底层运行时架构。Equinox project对该理念进行了实验，2004年6月在Eclipse3 R3中发布。Eclipse的成功让人认识到OSGi的优秀与魅力，也把OSGi带到众多的程序员面前。&lt;/p&gt;</description>
     </item>
     
@@ -507,11 +420,13 @@
       
       <guid>http://lanlingzi.cn/post/technical/2013/0424_java_thread_suggest/</guid>
       <description>&lt;p&gt;最近Review团队内一些的代码，发现不少地方在使用线程池，但使用比较乱，针对问题建议如下：&lt;/p&gt;
-
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;线程不能调用Thread.stop来停止它，我见过有新员工就这么干过哦，而是需要设置一个标识位，在run方法中判断此标识位退出循环。用interrupt也是可以考虑的，但线程的run方法中要捕获InterruptException。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;所有线程需要设置Name，主要是方便线程dump出来之后定位问题。这可是编程军规，我们很多的兄弟没有遵守。&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ol&gt;</description>
     </item>
     
@@ -522,9 +437,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2011/0212_java_sandbox_sm/</guid>
       <description>&lt;p&gt;在JRE类白名单能控制类的使用权限（&lt;a href=&#34;http://lanlingzi.cn/post/technical/0311_java_sandbox_cl&#34;&gt;请点击&lt;/a&gt;），但控制不了一些资源的访问权限。如默认情况下可访问机器下的任意资源，如读取、删除一些文件，网络操作，创建进程与线程等。必须对Web容器下的WebApp进行资源权限访问控制。&lt;/p&gt;
-
 &lt;h2 id=&#34;security-manager&#34;&gt;Security Manager&lt;/h2&gt;
-
 &lt;p&gt;Java从JDK 1.0开始就实现一套安全架构，主要用于Applet。在这种体系下Java Code的执行环境被严格划分为两部分，本地代码可以访问计算机的所有资源，而远端代码（Remote Code，主要是Applet）只能支行在严格限制的沙箱里面。安全管理器（&lt;code&gt;SecurityManager&lt;/code&gt;）作为一个子系统来决定哪些资源允许沙箱中程序访问。这是一种运行期的安全检查。&lt;/p&gt;</description>
     </item>
     
@@ -535,13 +448,13 @@
       
       <guid>http://lanlingzi.cn/post/technical/2011/0311_java_sandbox_cl/</guid>
       <description>&lt;h2 id=&#34;classloader&#34;&gt;ClassLoader&lt;/h2&gt;
-
 &lt;p&gt;JVM类加载器层次结构：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;   Bootstrap ClassLoader
+&lt;pre&gt;&lt;code&gt;   Bootstrap ClassLoader
             |
    Extension ClassLoader
             |
-   System ClassLoader&lt;/pre&gt;&lt;/div&gt;
+   System ClassLoader
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;JVM一启动，会先做一些初始化的动作。一旦初始化动作完成之后，就会产生第一个类加载器，即所谓的Bootstrap Loader, Bootstrap Loader是由C++写成，这个BootstrapLoader所做的初始化中，除了做一些基本的初始化动作之外，最重要的就是加载定义在sun.misc命名空间下的Launcher.java之中的ExtClassLoader(因为是innerclass，所以编译之后会变成Launcher$ExtCjassLoader.class)，并设定其Parent为null,代表其父加载器为BootstrapLoader。然后再加载定义于sun.misc命名空间下的Launcher.java之中的AppClassLoader(因为是InnerClass，所以编译之后会变成Launcher$AppClassLoader.class)，并设定其Parent为之前产生的ExtClassLoader实例。AppClassLoader这一层我们也称之为SystemLoader。AppClassLoader会加载CLASSPATH目录下定义的Class。&lt;/p&gt;</description>
     </item>
     

@@ -148,110 +148,81 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="书的目录">书的目录</h1>
-
 <p>现在的软件类的书籍是越来越厚，尤其是语言类书籍很多通篇都是代码，需要花费很长的时间去阅读，久而之对厚厚的书就有一种莫名的恐惧感。个人看书喜欢先看一本书的目录，快速了解整本书的内容，挑选自己最感兴趣的章节直接开始阅读。</p>
-
 <p>目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：</p>
-
 <ul>
 <li>让人清楚地知道书所讲的框架内容，一目了然</li>
 <li>让人知道章节之间的逻辑关系，主次之分</li>
 <li>让人了解体察作者写作该书的思想和行文脉络</li>
 </ul>
-
 <h1 id="画出整体框架">画出整体框架</h1>
-
 <p>大约在2007年，有幸接触过部门请的<a href="https://baike.baidu.com/item/%E4%BC%8A%E4%B8%87%C2%B7%E9%9B%85%E5%90%84%E5%B8%83%E6%A3%AE/17525680">雅各布森</a>咨询公司的顾问，他们给我们培训如何使用 <code>Use Case Driven</code> 方法论来做设计。当时感觉顾问没有说出的心里话是：在座的都是垃圾，连个UML时序图都不会画。对我映像最深是，他们竟然直接按时序图的流程映射到代码实现层。</p>
-
 <p>后来我就有一种习惯，当写代码时，喜欢先去编写整体的框架，先定义出有哪些类、方法，像UML的时序图一样把整个业务流程串起来。而这些类与方法先是空实现，就形成了基础骨架。初始的骨架能够避免陷入实现的细节而不能自拔，就像书籍的目录一样，清楚地呈现了流程的几个阶段或步骤。</p>
-
 <p>这个基础骨架的形成，与个人的思维习惯和对业务场景深入了解有一定的关系。当开始编写代码时，可能层次不够清晰；不过随着我们不断地深入写代码可以不断地去调整层次，最终代码也可能达到较理想的状态。</p>
-
 <p>搭建代码骨架就类似于编写一本书的目录，先有目录，再按目录的章节逐层展开，编写代码亦是如此。</p>
-
 <h1 id="单一抽象层次">单一抽象层次</h1>
-
 <p>单一抽象层次（ Single Level of Abstraction Principle，简称SLAP），指让一个方法中所有的操作处于<strong>相同</strong>的抽象层。从代码阅读与理解来看，不同的抽象层次跳跃的代码，就会破坏了代码的流畅性。</p>
-
 <p>什么是抽象层次，它需要与业务域结合一起来看：</p>
-
 <ul>
 <li>对一个问题进行一个粒度的划分</li>
 <li>代码对解决问题的一种抽象实现</li>
 <li>抽象层次是循序渐进，逐步分层</li>
 </ul>
-
 <p>例如，对某一个数据集进行分析，第一层抽象：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func AnalysisData()  {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func AnalysisData()  {
     // 1. 读取数据
     loadDataset() 
     // 2. 处理数据
     processDataset() 
     // 3. 输出结果
     outputResult()
-}</pre></div>
-<p>对处理数据进行第二层抽象：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func processDataset() {
+}
+</code></pre></div><p>对处理数据进行第二层抽象：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func processDataset() {
     // 2.1 转换数据
     transformData()
     // 2.2 选择算法，建立模型
     buildModel()
     // 2.3 评估模型
     evaluateModel()
-}</pre></div>
-<p>如果在 <code>AnalysisData</code> 函数中 <code>loadDataset</code> 与 <code>processDataset</code> 间插入一行代码，或直接把 <code>processDataset</code> 所有实现都展示在此函数中，则这种实现破环了抽象层次。</p>
-
+}
+</code></pre></div><p>如果在 <code>AnalysisData</code> 函数中 <code>loadDataset</code> 与 <code>processDataset</code> 间插入一行代码，或直接把 <code>processDataset</code> 所有实现都展示在此函数中，则这种实现破环了抽象层次。</p>
 <p>在抽象层次中存在一种规则：自顶向下。按业务的处理逻辑进行了一定粒度的拆分，把软件变成一个个不同层次的功能点。像UML时序图一样，我们按照先后顺序，从上往下一层层的组装。单一抽象层次原则使代码块在单一的抽象层，每个代码块也是就是函数的目录或章节，当我们去读这种代码时，就像阅读书本一样，层次清晰。</p>
-
 <h2 id="再说函数">再说函数</h2>
-
 <p>在上一篇 <a href="http://lanlingzi.cn/post/technical/2019/0529_function/">编写短小的函数/方法</a> 中，提到小函数的优点，以及通过度量指标来思考把函数如何变 ”小“。结合 单一职责原则（SRP） 与 单一抽象层次原则（SLAP），发现他们在编写函数时是相辅相成的。</p>
-
 <ul>
 <li>SRP，说函数只应该做一件事，那此函数应该不能再拆分出不在此函数层次上的新函数</li>
 <li>SLAP，说函数中的语句应该是一个抽象层上的步骤组合，也就是只做了一件事</li>
 </ul>
-
 <p>另外我们在写函数代码时，通常会通过空行或注释分割逻辑片段，就像文章的段落：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">//注释1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//注释1
 代码片段1
 
 //注释2
 代码片段2
 
 //注释3
-代码片段3</pre></div>
-<p>如果所有片段都是在同一个抽象层次上，只要方法不是过长（如有效性不超过25行），并不需要把每个片段抽取为函数。个人觉得这种做法不算违背SLAP，尽信书不如无书，我们需要有思考与权衡。当然若是一部分提取而一部分不提取那肯是不对的。</p>
-
+代码片段3
+</code></pre></div><p>如果所有片段都是在同一个抽象层次上，只要方法不是过长（如有效性不超过25行），并不需要把每个片段抽取为函数。个人觉得这种做法不算违背SLAP，尽信书不如无书，我们需要有思考与权衡。当然若是一部分提取而一部分不提取那肯是不对的。</p>
 <p>平铺的片段往往随着时间的推移，一是可能当增加需求会导致方法膨胀；二是新增的代码可能不在一个抽象层次上。个人建议对于新增小段代码时，优先考虑它是否可以独立为一个函数，而只在原有的代码地方去调用新增的函数。当新的内容打破了代码层次平衡，则需要及时地重构，原来的代码该提取函数就提取。</p>
-
 <h2 id="常见思路">常见思路</h2>
-
 <p>为达成SLAP，函数重构主要有两种方法：</p>
-
 <ul>
 <li>提取函数(Extract Method)</li>
 <li>分解函数(Compose Method)</li>
 </ul>
-
 <p><code>Extract Method</code> 来自 [重构&ndash;改善既有代码的设计] 一书，就是把在原来函数的内部的一些语句抽离出来，放到一个独立的目标小函数中，再在原来函数中的地方修改成对目标函数的调用。它解决函数过长的问题，只把大的拆成小的，似乎并不有考虑抽象层次。</p>
-
 <p><code>Compose Method</code> 来自 <a href="https://www.industriallogic.com/xp/refactoring/composeMethod.html">Industrial Logic</a> 的重构模式，说的是 <code>Transform the logic into a small number of intention-revealing steps at the same level of detail</code>。目的就是朝着单一抽象层次来组装函数。</p>
-
 <p>有哪些常见的场景，我们需要提取函数：</p>
-
 <ul>
 <li>函数名称上存在And或Or的语义，函数代码也不是几个函数的And与Or组装，而是大段代码</li>
 <li>For/While循环中存在较长的代码逻辑，循环体可以考虑抽取函数</li>
 <li>Switch/Case分支存在较长的代码逻辑，则Case块可以考虑抽取函数</li>
 <li>Try的代码块过多，或者Catch较多的异常，异常多说明分支多，则Try块可以考虑抽取函数</li>
 <li>函数中存在相似代码，如对Rest请求体的每个参数校验，则校验可抽取函数集中处理</li>
-<li>两个数据结构体间采用多个Setter与Geter语句来拷贝数据，则实现拷贝的代码可以提取到工具类或其中一个类上的一个函数
-<br /></li>
+<li>两个数据结构体间采用多个Setter与Geter语句来拷贝数据，则实现拷贝的代码可以提取到工具类或其中一个类上的一个函数</li>
 </ul>
-
 <h1 id="结语">结语</h1>
-
 <p>编写代码可以像编写一本书一样，先列出目录编出骨干代码，从抽象到具体，逐层分解细化；在函数实现上遵循单一抽象层次原则，在适当的抽象层次上做合适的事，代码就会显得层次分明，也就更好地理解与维护。</p>
     </div>
     <footer class="post-footer">
@@ -290,6 +261,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：逐层递进地编写代码
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -382,16 +370,10 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li><a href="#书的目录">书的目录</a></li>
-<li><a href="#画出整体框架">画出整体框架</a></li>
-<li><a href="#单一抽象层次">单一抽象层次</a>
-<ul>
-<li><a href="#再说函数">再说函数</a></li>
-<li><a href="#常见思路">常见思路</a></li>
-</ul></li>
-<li><a href="#结语">结语</a></li>
-</ul>
+  <ul>
+    <li><a href="#再说函数">再说函数</a></li>
+    <li><a href="#常见思路">常见思路</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -406,12 +388,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

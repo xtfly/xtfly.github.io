@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>PaaS on 蘭陵N梓記</title>
@@ -17,22 +17,17 @@
       <pubDate>Sat, 04 Mar 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0304_paas/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/paas/paas1.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/paas/paas1.jpeg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;云计算按提供服务层次，通常划分为三层：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;IaaS ：基础构架即服务。这一层主要是对基础设施进行管理以给用户提供资源使用，如提供计算服务、安全备份、负载管理等。&lt;/li&gt;
 &lt;li&gt;PaaS ：平台即服务。这一层主要是基于IaaS之上，简化应用的部署、维护等，提供一些通用平台软件能力，如数据挖掘、系统管理、编程模型等。&lt;/li&gt;
 &lt;li&gt;SaaS ：软件即服务。这一层主要是面向终端客户，提供一站式的解决方案。如提供CRM、HRM、SCM等，是可以直接使用其服务。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;个人一直从事PaaS的研发，而我们做的又是面向电信领域的PaaS。与外面的朋又交流发现，大家对PaaS的理解是不一样的，主要还是由于PaaS的本质是要解决的问题是：&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;简化开发，打通DevOps，实现业务应用的敏捷与弹性。&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;不同的业务领域，要面对是&lt;code&gt;不同的传统应用架构如何通过PaaS平台迁移到云上&lt;/code&gt;，这就会导致各自对PaaS的需求或多或少有着不同的差异，理解不一样也是正常的。&lt;/p&gt;</description>
     </item>
     

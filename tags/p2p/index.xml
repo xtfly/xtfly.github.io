@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>P2P on 蘭陵N梓記</title>
@@ -18,11 +18,8 @@
       
       <guid>http://lanlingzi.cn/post/technical/2016/0117_torrent_go/</guid>
       <description>&lt;p&gt;提到P2P，总会少不了BitTorrent。BitTorrent是一种P2P协议。BitTorrent协议是由程序员Bram Cohen在2001年四月份设计的，最终版本在2008年确定。&lt;/p&gt;
-
 &lt;h2 id=&#34;bittorrent协议简介&#34;&gt;BitTorrent协议简介&lt;/h2&gt;
-
 &lt;p&gt;一个BitTorrent的文件在网络传输过程，由以下几个部分组成：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;WEB服务器&lt;/li&gt;
 &lt;li&gt;文件元信息(metainfo)&lt;/li&gt;
@@ -39,10 +36,8 @@
       <pubDate>Sat, 16 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2016/0116_speed_sw_distribute/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg&#34; alt=&#34;balance&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://image.xinmin.cn/2011/04/06/20110406151112514943.jpg&#34; alt=&#34;balance&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;在云环境下，服务器（物理机）或虚拟机越来越多，存在同一个应用软件需要大规模地部署场景。传统的方式下是搭建一个软件仓库，由物理机或虚拟机节点直接从软件仓库下载。如果采用sftp或http协议，则只能做到从一个中心软件仓库分发软件包给其它的节点，若给上百台的节点同时分发同一软件包，则存在受带宽、负载限制等因素，导致分发的速度就会比较慢。&lt;/p&gt;</description>
     </item>
     

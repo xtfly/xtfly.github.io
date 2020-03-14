@@ -148,11 +148,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Go在语言层面通过Goroutine与channel来支持并发编程，使并发编程看似变得异常简单，但通过最近一段时间的编码，越来越觉得简单的东西，很容易会被滥用。Java的标准库也让多线程编程变得简单，但想当初在公司定位Java的问题，发现很多的同学由于没有深入了解Java Thread的机制，Thread直接New从不管理复用，那Goroutine肯定也要面临这类的问题。</p>
-
 <h2 id="goroutine泄漏问题">Goroutine泄漏问题</h2>
-
 <p>Rob Pike在2012年的Google I/O大会上所做的“Go Concurrency Patterns”的演讲上，说道过几种基础的并发模式。从一组目标中获取第一个结果就是其中之一。</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">First</span>(<span style="color:#a6e22e">query</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">replicas</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Search</span>) <span style="color:#a6e22e">Result</span> {  
     <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Result</span>)
     <span style="color:#a6e22e">searchReplica</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) { <span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">replicas</span>[<span style="color:#a6e22e">i</span>](<span style="color:#a6e22e">query</span>) }
@@ -160,8 +157,8 @@
         <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">searchReplica</span>(<span style="color:#a6e22e">i</span>)
     }
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>
-}</code></pre></div>
-<p>在First()函数中的结果channel是没缓存的。这意味着只有第一个goroutine返回。其他的goroutine会困在尝试发送结果的过程中，如果你有不止一个的重复时，每个调用将会泄露资源。为了避免泄露，你需要确保所有的goroutine退出。一个不错的方法是使用一个有足够保存所有缓存结果的channel。</p>
+}
+</code></pre></div><p>在First()函数中的结果channel是没缓存的。这意味着只有第一个goroutine返回。其他的goroutine会困在尝试发送结果的过程中，如果你有不止一个的重复时，每个调用将会泄露资源。为了避免泄露，你需要确保所有的goroutine退出。一个不错的方法是使用一个有足够保存所有缓存结果的channel。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">First</span>(<span style="color:#a6e22e">query</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">replicas</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Search</span>) <span style="color:#a6e22e">Result</span> {  
     <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Result</span>,len(<span style="color:#a6e22e">replicas</span>))
     <span style="color:#a6e22e">searchReplica</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) { <span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">replicas</span>[<span style="color:#a6e22e">i</span>](<span style="color:#a6e22e">query</span>) }
@@ -169,8 +166,8 @@
         <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">searchReplica</span>(<span style="color:#a6e22e">i</span>)
     }
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>
-}</code></pre></div>
-<p>另一个不错的解决方法是使用一个有default情况的select语句和一个保存一个缓存结果的channel。default情况保证了即使当结果channel无法收到消息的情况下，goroutine也不会堵塞。</p>
+}
+</code></pre></div><p>另一个不错的解决方法是使用一个有default情况的select语句和一个保存一个缓存结果的channel。default情况保证了即使当结果channel无法收到消息的情况下，goroutine也不会堵塞。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">First</span>(<span style="color:#a6e22e">query</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">replicas</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Search</span>) <span style="color:#a6e22e">Result</span> {  
     <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Result</span>,<span style="color:#ae81ff">1</span>)
     <span style="color:#a6e22e">searchReplica</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) { 
@@ -183,8 +180,8 @@
         <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">searchReplica</span>(<span style="color:#a6e22e">i</span>)
     }
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>
-}</code></pre></div>
-<p>你也可以使用特殊的取消channel来终止workers。</p>
+}
+</code></pre></div><p>你也可以使用特殊的取消channel来终止workers。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">First</span>(<span style="color:#a6e22e">query</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">replicas</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Search</span>) <span style="color:#a6e22e">Result</span> {  
     <span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">Result</span>)
     <span style="color:#a6e22e">done</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{})
@@ -199,11 +196,9 @@
         <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">searchReplica</span>(<span style="color:#a6e22e">i</span>)
     }
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>
-}</code></pre></div>
-<p>为何在演讲中会包含这些bug？Rob Pike仅仅是不想把演示复杂化。这么做是合理的，但对于Go新手而言，可能会直接使用类似代码，而不去思考它可能有问题。</p>
-
+}
+</code></pre></div><p>为何在演讲中会包含这些bug？Rob Pike仅仅是不想把演示复杂化。这么做是合理的，但对于Go新手而言，可能会直接使用类似代码，而不去思考它可能有问题。</p>
 <h2 id="goroutine-race问题">Goroutine Race问题</h2>
-
 <p>Go语言支持函数中定义函数，看下一个例子：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">saveRequest</span>(<span style="color:#a6e22e">request</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Request</span>) {
             <span style="color:#960050;background-color:#1e0010">…</span>.
@@ -213,11 +208,9 @@
                       <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">Save</span>(<span style="color:#a6e22e">request</span>)
             }
  
-}</code></pre></div>
-<p>很多情况下，由于程序员对goroutine了解不够深入，又由于goroutine使用很容易。为了性能，很容易把一个同步函数变成异步函数，但这违背了go”不要通过共享内存来通信，相反应该通过通信来共享内存“的原则。即上述的例子中起了一个goroutine，并修改了request指针指向的对象。即使对request只读，也可能不是安全，因为你无法保证request指针不在其它goroutine中修改。</p>
-
+}
+</code></pre></div><p>很多情况下，由于程序员对goroutine了解不够深入，又由于goroutine使用很容易。为了性能，很容易把一个同步函数变成异步函数，但这违背了go”不要通过共享内存来通信，相反应该通过通信来共享内存“的原则。即上述的例子中起了一个goroutine，并修改了request指针指向的对象。即使对request只读，也可能不是安全，因为你无法保证request指针不在其它goroutine中修改。</p>
 <p>在本质上讲，goroutine的使用会增加了函数的危险系数，尤其是函数参数传递指针时。任何一个对象的操作，如果没有加上锁，当项目比较庞大时，可能不知道这个对象是不是会引起多个goroutine竞争。</p>
-
 <p>什么是goroutine race（竞争）问题？官网的文章
 <a href="http://blog.golang.org/race-detector">Introducing the Go Race Detect</a>给出的例子如下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -240,10 +233,9 @@
 
 <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">randomDuration</span>() <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span> {
     <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Int63n</span>(<span style="color:#ae81ff">1e9</span>))
-}</code></pre></div>
-<p>这个例子看起来没任何问题，但是实际上，time.AfterFunc是会另外启动一个goroutine来进行计时和执行func()。由于func中有对t(Timer)进行操作(t.Reset)，而主goroutine也有对t进行操作(t=time.After)。
+}
+</code></pre></div><p>这个例子看起来没任何问题，但是实际上，time.AfterFunc是会另外启动一个goroutine来进行计时和执行func()。由于func中有对t(Timer)进行操作(t.Reset)，而主goroutine也有对t进行操作(t=time.After)。
 这个时候，其实有可能会造成两个goroutine对同一个变量进行竞争的情况。</p>
-
 <p>那什么才是goroutine的使用正确姿势，怎么理解“通过通信来共享内存”来避免Race问题？先看一个例子：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SimpleAccount</span> <span style="color:#66d9ef">struct</span>{
   <span style="color:#a6e22e">balance</span> <span style="color:#66d9ef">int</span>
@@ -319,8 +311,8 @@
       }
     }
   }()
-}</code></pre></div>
-<p>上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。</p>
+}
+</code></pre></div><p>上面的例子，SimpleAccount所有方法，当多goroutine操作是不安全的，而通过ConcurrentAccount封装，所有处理都统一通过channel通信到listen开启的goroutine，即只有一个goroutine能操作SimpleAccount中成员变量，那也就不会发现Goroutine Race问题。</p>
     </div>
     <footer class="post-footer">
      
@@ -358,6 +350,23 @@
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Goroutine陷阱
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -450,13 +459,10 @@
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#goroutine泄漏问题">Goroutine泄漏问题</a></li>
-<li><a href="#goroutine-race问题">Goroutine Race问题</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#goroutine泄漏问题">Goroutine泄漏问题</a></li>
+    <li><a href="#goroutine-race问题">Goroutine Race问题</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -471,12 +477,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

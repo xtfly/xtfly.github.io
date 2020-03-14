@@ -148,95 +148,96 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。</p>
-
 <h2 id="排序算法">排序算法</h2>
-
 <ul>
-<li><p>先来一个排序中的比较函数子，实现是左值小于右值。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
+<li>先来一个排序中的比较函数子，实现是左值小于右值。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> template&lt;typename T&gt;
 struct CmpFuctor
 {
-bool operator()(const T&amp; lhs, const T&amp; rhs)
-{
-return lhs &lt; rhs;
-}
-};</pre></div>
-<ul>
-<li><p>交换排序中用到的交换两个元素的函数。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
+  bool operator()(const T&amp; lhs, const T&amp; rhs)
+  {
+    return lhs &lt; rhs;
+  }
+};
+</code></pre></div><ul>
+<li>交换排序中用到的交换两个元素的函数。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
 void swap(T* lhs, T* rhs)
 {
-T tmp = *lhs;
-*lhs = *rhs;
-*rhs = tmp;
-}</pre></div></li>
-</ul></li>
-
-<li><p>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T&gt;
+  T tmp = *lhs;
+  *lhs = *rhs;
+  *rhs = tmp;
+}
+</code></pre></div><ul>
+<li>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
 void traverse(T* pArray, const int size, void (*func)(T&amp;) )
 {
-for(int idx =0; idx&lt; size; idx++)
-{
-func(pArray[idx]);
+  for(int idx =0; idx&lt; size; idx++)
+  {
+    func(pArray[idx]);
+  }
 }
-}</pre></div></li>
-
-<li><p>我们先来看一个最简单的插入排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP &gt;
+</code></pre></div><ul>
+<li>我们先来看一个最简单的插入排序。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP &gt;
 void insertsort(T* pArray, const int size, CMP cmp)
 {
-for(int idx =0; idx&lt; size; idx++)
-{
-T temp = pArray[idx];
-int pos = idx -1;
-while( pos &gt;= 0 &amp;&amp; cmp(temp, pArray[pos]) ) // &lt;
-{
-  pArray[pos+1] = pArray[pos];
-  pos--;
+  for(int idx =0; idx&lt; size; idx++)
+  {
+    T temp = pArray[idx];
+    int pos = idx -1;
+    while( pos &gt;= 0 &amp;&amp; cmp(temp, pArray[pos]) ) // &lt;
+    {
+      pArray[pos+1] = pArray[pos];
+      pos--;
+    }
+    pArray[pos+1] = temp;
+  }
 }
-pArray[pos+1] = temp;
-}
-}</pre></div></li>
-
-<li><p>再对上面的插入排序改进，查找为折半插入排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
+</code></pre></div><ul>
+<li>再对上面的插入排序改进，查找为折半插入排序。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void binaryinsertsort(T* pArray, const int size, CMP cmp)
 {
-for(int idx = 1; idx &lt; size; idx++)
-{
-int left = 0;
-int right = idx -1;
-T temp = pArray[idx];
-while( left &lt;= right)
-{
-  int middle = (left + right) / 2;
-
-  if ( cmp(temp, pArray[middle] )) // &lt;
+  for(int idx = 1; idx &lt; size; idx++)
   {
-    right = middle - 1;
+    int left = 0;
+    int right = idx -1;
+    T temp = pArray[idx];
+    while( left &lt;= right)
+    {
+      int middle = (left + right) / 2;
+
+      if ( cmp(temp, pArray[middle] )) // &lt;
+      {
+        right = middle - 1;
+      }
+      else
+      {
+        left = middle + 1;
+      }
+    }
+
+    int j = idx-1;
+    for(; j &gt;= right+1; j--)
+    {
+      pArray[j+1] = pArray[j];
+    }
+    pArray[right+1] = temp;
+
   }
-  else
-  {
-    left = middle + 1;
-  }
 }
-
-int j = idx-1;
-for(; j &gt;= right+1; j--)
-{
-  pArray[j+1] = pArray[j];
-}
-pArray[right+1] = temp;
-
-}
-}</pre></div></li>
-
-<li><p>再来一个改进版的插入排序。</p></li>
+</code></pre></div><ul>
+<li>再来一个改进版的插入排序。</li>
 </ul>
-
 <p>是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void shellsort(T* pArray, const int size, CMP cmp)
 {
   int j = 0;
@@ -264,61 +265,62 @@ void shellsort(T* pArray, const int size, CMP cmp)
     }
     d /= 2; //递减增量d
   }
-}</pre></div>
-<ul>
-<li><p>下面是一种简单选择排序算法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
+}
+</code></pre></div><ul>
+<li>下面是一种简单选择排序算法。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void selectsort(T* pArray, const int size, CMP cmp)
 {
-for(int idx = 0; idx &lt; size; idx++)
-{
-for(int pos = idx + 1; pos &lt; size; pos++)
-{
-  if( cmp(pArray[pos], pArray[idx]) ) // &lt;
+  for(int idx = 0; idx &lt; size; idx++)
   {
-    swap(&amp;pArray[pos], &amp;pArray[idx]);
+    for(int pos = idx + 1; pos &lt; size; pos++)
+    {
+      if( cmp(pArray[pos], pArray[idx]) ) // &lt;
+      {
+        swap(&amp;pArray[pos], &amp;pArray[idx]);
+      }
+    }
   }
 }
-}
-}</pre></div></li>
-
-<li><p>交换排序中最简单的冒泡排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
+</code></pre></div><ul>
+<li>交换排序中最简单的冒泡排序。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void bubblesort(T* pArray, const int size, CMP cmp)
 {
-for(int idx =0; idx &lt; size; idx++)
-{
-for(int pos = 0; pos &lt;= size - idx;pos++)
-{
-  if( cmp(pArray[pos+1], pArray[pos]) ) // &lt;
-  {
+ for(int idx =0; idx &lt; size; idx++)
+ {
+   for(int pos = 0; pos &lt;= size - idx;pos++)
+   {
+     if( cmp(pArray[pos+1], pArray[pos]) ) // &lt;
+     {
 
-    swap(&amp;pArray[pos], &amp;pArray[pos+1]);
-  }
+       swap(&amp;pArray[pos], &amp;pArray[pos+1]);
+     }
+   }
+ }
 }
-}
-}</pre></div></li>
-
-<li><p>交换排序中最简单的快速排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">template&lt;typename T, typename CMP&gt;
+</code></pre></div><ul>
+<li>交换排序中最简单的快速排序。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 int partition(T* pArray, int p, int r, CMP cmp)
 {
-int i = p - 1;
-int j = 0;
-for(j = p; j &lt; r; j++)
-{
-if(cmp(pArray[j], pArray[r])) //pArray[j] &gt;= pArray[r]
-{
-  i++;
-  swap(&amp;pArray[i], &amp;pArray[j]);
-}
-}
-swap(&amp;pArray[i + 1], &amp;pArray[r]);
-return i + 1;</pre></div></li>
-</ul>
-
-<h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void print(int&amp; a)
+  int i = p - 1;
+  int j = 0;
+  for(j = p; j &lt; r; j++)
+  {
+    if(cmp(pArray[j], pArray[r])) //pArray[j] &gt;= pArray[r]
+    {
+      i++;
+      swap(&amp;pArray[i], &amp;pArray[j]);
+    }
+  }
+  swap(&amp;pArray[i + 1], &amp;pArray[r]);
+  return i + 1;
+</code></pre></div><h2 id="测试代码">测试代码</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print(int&amp; a)
 {
   printf(&#34;%d/t&#34;, a);
 }
@@ -386,9 +388,8 @@ void sort_test()
   traverse(A, len, print);
   printf(&#34;/n&#34;);
 
-}</pre></div>
-<hr />
-
+}
+</code></pre></div><hr>
 <blockquote>
 <p>上面的函数有C风格的函数指针与C++风格函数子（Functor，有时也叫函数对象），函数使用了C++中模板的一些特性，测试环境为eclipse+cdt+gcc。</p>
 </blockquote>
@@ -429,6 +430,23 @@ void sort_test()
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：[c&#43;&#43;]常见的几个排序算法
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -519,12 +537,12 @@ void sort_test()
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

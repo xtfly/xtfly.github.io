@@ -142,226 +142,148 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">6815 字 ~14分钟</span>
+<span class="leancloud-visitors-count">6808 字 ~14分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="内存模型">内存模型</h1>
-
-<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png" /></p>
-
+<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png"></p>
 <h2 id="堆">堆</h2>
-
 <p>堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。</p>
-
 <p>通过下两个参数来分配堆使用的内存大小：</p>
-
 <ul>
 <li>-Xms：最小堆容量，默认是物理内存的1/64。</li>
 <li>-Xmx：最大堆容量，默认是物理内存的1/4。</li>
 </ul>
-
 <p>上下界调节的方式：</p>
-
 <ul>
 <li>默认空余堆内存小于40%时，JVM 就会增大堆直到-Xmx 的最大限制，可以由 -XX:MinHeapFreeRatio 指定。</li>
 <li>默认空余堆内存大于70%时，JVM 会减少堆直到-Xms的最小限制，可以由 -XX:MaxHeapFreeRatio 指定。</li>
 </ul>
-
 <p>堆分成两大块：新生代和老年代。对象产生之初在新生代，步入暮年时进入老年代，但是老年代也接纳在新生代无法容纳的超大对象。</p>
-
 <p>新生代：1个Eden区 + 2个Survivor区。绝大部分对象在Eden区生成，当Eden区装填满的时候，会触发Young GC。垃圾回收的时候，在Eden区实现清除策略，没有被引用的对象则直接回收。依然存活的对象会被移送到Survivor区，这个区真是名副其实的存在。</p>
-
 <h2 id="方法区">方法区</h2>
-
-<p>方法区（Method Area）也称&rdquo;永久代&rdquo;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。</p>
-
+<p>方法区（Method Area）也称&quot;永久代&rdquo;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。</p>
 <p>从JDK7开始移除永久代（但并没有移除，还是存在），贮存在永久代的一部分数据已经转移到了Java Heap或者是Native Heap：</p>
-
 <ul>
 <li>符号引用(Symbols)转移到了native heap</li>
 <li>字面量(interned strings)转移到了java heap</li>
 <li>类的静态变量(class statics)转移到了java heap</li>
 </ul>
-
 <p>从JDK8开始使用元空间（Metaspace），元空间的大小受本地内存限制。通过下面的参数可以设置：</p>
-
 <ul>
 <li>-XX:MetaspaceSize：class metadata的初始空间配额，以bytes为单位，达到该值就会触发垃圾收集进行类型卸载，同时GC会对该值进行调整：如果释放了大量的空间，就适当的降低该值；如果释放了很少的空间，那么在不超过MaxMetaspaceSize（如果设置了的话），适当的提高该值</li>
 <li>-XX:MaxMetaspaceSize：可以为class metadata分配的最大空间。默认是没有限制的</li>
 </ul>
-
 <p>上下界调节的方式：</p>
-
 <ul>
 <li>-XX:MinMetaspaceFreeRatio：在GC之后，最小的Metaspace剩余空间容量的百分比，减少为class metadata分配空间导致的垃圾收集</li>
 <li>-XX:MaxMetaspaceFreeRatio：在GC之后，最大的Metaspace剩余空间容量的百分比，减少为class metadata释放空间导致的垃圾收集</li>
 </ul>
-
 <p>由于类的元数据可以在本地内存(native memory)之外分配，所以其最大可利用空间是整个系统内存的可用空间。这样，你将不再会遇到OOM错误，溢出的内存会涌入到交换空间。最终用户可以为类元数据指定最大可利用的本地内存空间，JVM也可以增加本地内存空间来满足类元数据信息的存储。</p>
-
 <p>JVM使用一个块分配器(chunking allocator)来管理Metaspace空间的内存分配。块的大小依赖于类加载器的类型。其中有一个全局的可使用的块列表（a global free list of chunks）。当类加载器需要一个块的时候，类加载器从全局块列表中取出一个块，添加到它自己维护的块列表中。当类加载器死亡，它的块将会被释放，归还给全局的块列表。块（chunk）会进一步被划分成blocks,每个block存储一个元数据单元(a unit of metadata)。Chunk中Blocks的分配线性的（pointer bump）。这些chunks被分配在内存映射空间(memory mapped(mmapped) spaces)之外。在一个全局的虚拟内存映射空间（global virtual mmapped spaces）的链表，当任何虚拟空间变为空时，就将该虚拟空间归还回操作系统。</p>
-
 <h2 id="程序计数寄存器">程序计数寄存器</h2>
-
 <p>程序计数寄存器（Program Counter Register）是最小的一块内存区域，它的作用是当前线程所执行的字节码的行号指示器，在虚拟机的模型里，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、异常处理、线程恢复等基础功能都需要依赖计数器完成。</p>
-
 <p>它是线程私有。每条线程都有一个独立的程序计数器。生命周期随着线程的创建而创建，随着线程的结束而死亡。是唯一一个不会出现OOM的内存区域。</p>
-
 <h2 id="虚拟机栈">虚拟机栈</h2>
-
-<p>虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&rdquo;栈帧&rdquo;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。</p>
-
+<p>虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&quot;栈帧&rdquo;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。</p>
 <p>虚拟机栈通过压/出栈的方式，对每个方法对应的活动栈帧进行运算处理，方法正常执行结束，肯定会跳转到另一个栈帧上。在执行的过程中，如果出现异常，会进行异常回溯，返回地址通过异常处理表确定。</p>
-
 <p>栈帧由下面几部分组成：</p>
-
 <ul>
 <li>局部变量表：存放方法参数和局部变量</li>
 <li>操作数栈：是一个初始状态为空的桶式结构栈，在方法执行过程中，会有各种指令往栈中写入和提取信息</li>
 <li>动态连接：每个栈帧中包含一个在常量池中对当前方法的引用，目的是支持方法调用过程的动态连接</li>
-<li>方法返回地址：方法执行时有两种退出情况，正常退出（RETURN、IRETURN、ARETURN指令），异常退出
-<br /></li>
+<li>方法返回地址：方法执行时有两种退出情况，正常退出（RETURN、IRETURN、ARETURN指令），异常退出</li>
 </ul>
-
 <h2 id="本地方法栈">本地方法栈</h2>
-
 <p>本地方法栈(Native Stack)与虚拟机栈基本类似，区别在于虚拟机栈为虚拟机执行的java方法服务，而本地方法栈则是为Native方法服务。(栈的空间大小远远小于堆)。</p>
-
 <p>在JVM内存布局中，也是线程对象私有的，但是虚拟机栈“主内”，而本地方法栈“主外”。这个“内外”是针对JVM来说的，本地方法栈为Native方法服务。线程开始调用本地方法时，会进入一个不再受JVM约束的世界。本地方法可以通过JNI(Java Native Interface)来访问虚拟机运行时的数据区，甚至可以调用寄存器，具有和JVM相同的能力和权限。当大量本地方法出现时，势必会削弱JVM对系统的控制力，因为它的出错信息都比较黑盒。</p>
-
 <h2 id="直接内存">直接内存</h2>
-
 <p>直接内存（也称堆外内存）并不是虚拟机内存的一部分，也不是Java虚拟机规范中定义的内存区域。jdk1.4中新加入的NIO，引入了通道与缓冲区的IO方式，它可以调用Native方法直接分配堆外内存，这个堆外内存就是本机内存，不会影响到堆内存的大小。</p>
-
 <h2 id="总结">总结</h2>
-
 <p>JVM内存模型从线程维度归类分为：线程私有内存、线程共享内存、以及不在堆内的直接内存。如下图：</p>
-
-<p><img src="http://lanlingzi.cn/images/java/java_memory4.webp" alt="java_memory4.png" /></p>
-
+<p><img src="http://lanlingzi.cn/images/java/java_memory4.webp" alt="java_memory4.png"></p>
 <p>各空间的分配参数：</p>
-
-<p><img src="http://lanlingzi.cn/images/java/java_memory5.webp" alt="java_memory5.png" /></p>
-
+<p><img src="http://lanlingzi.cn/images/java/java_memory5.webp" alt="java_memory5.png"></p>
 <h1 id="gc">GC</h1>
-
 <p>GC(Garbage Collection)：即垃圾回收器，诞生于1960年MIT的Lisp语言，主要是用来回收，释放垃圾占用的空间。java GC泛指java的垃圾回收机制。</p>
-
 <p>Java堆是GC回收的“重点区域”。堆中基本存放着所有对象实例，gc进行回收前，第一件事就是确认哪些对象存活，哪些死去。</p>
-
 <p>为了高效的回收，Jvm将堆分为三个区域：</p>
-
 <ul>
 <li>新生代（Young Generation）NewSize和MaxNewSize分别可以控制年轻代的初始大小和最大的大小</li>
 <li>老年代（Old Generation）</li>
 <li>永久代（Permanent Generation）（1.8以后采用元空间，就不在堆中了）</li>
 </ul>
-
 <h2 id="对象是否存活算法">对象是否存活算法</h2>
-
 <p><strong>引用计数算法</strong></p>
-
 <p>早期判断对象是否存活大多都是以这种算法，这种算法判断很简单，简单来说就是给对象添加一个引用计数器，每当对象被引用一次就加1，引用失效时就减1。当为0的时候就判断对象不会再被引用。</p>
-
 <ul>
 <li>优点：实现简单效率高，被广泛使用与如python何游戏脚本语言上。</li>
 <li>缺点：难以解决循环引用的问题，就是假如两个对象互相引用已经不会再被其它其它引用，导致一直不会为0就无法进行回收。</li>
 </ul>
-
 <p><strong>可达性分析算法</strong></p>
-
 <p>目前主流的商用语言（如java、c#）采用的是可达性分析算法判断对象是否存活。这个算法有效解决了循环利用的弊端。它的基本思路是通过一个称为“GC Roots”的对象为起始点，搜索所经过的路径称为用链，当一个对象到GC Roots没有任何引用跟它连接则证明对象是不可用的。</p>
-
 <p>可作为GC Roots的对象有四种：</p>
-
 <ul>
 <li>虚拟机栈(栈桢中的本地变量表)中的引用的对象，就是平时所指的java对象，存放在堆中。</li>
 <li>方法区中的类静态属性引用的对象，一般指被static修饰引用的对象，加载类的时候就加载到内存中。</li>
 <li>方法区中的常量引用的对象</li>
 <li>本地方法栈中JNI（native方法)引用的对象</li>
 </ul>
-
 <p>要真正宣告对象死亡需经过两个过程：</p>
-
 <ul>
 <li>可达性分析后没有发现引用链</li>
 <li>查看对象是否有finalize方法，如果有重写且在方法内完成自救（比如再建立引用），还是可以抢救一下，注意这边一个类的finalize只执行一次，这就会出现一样的代码第一次自救成功第二次失败的情况。[如果类重写finalize且还没调用过，会将这个对象放到一个叫做F-Queue的序列里，这边finalize不承诺一定会执行，这么做是因为如果里面死循环的话可能会时F-Queue队列处于等待，严重会导致内存崩溃，这是我们不希望看到的。</li>
 </ul>
-
 <h2 id="垃圾收集算法">垃圾收集算法</h2>
-
 <p><strong>新生代采用复制算法</strong></p>
-
-<p>新生代中因为对象都是&rdquo;朝生夕死的&rdquo;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。</p>
-
+<p>新生代中因为对象都是&quot;朝生夕死的&rdquo;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。</p>
 <p>GC开始时，对象只会存于Eden和From Survivor区域，To Survivor（保留空间）为空。</p>
-
 <p>GC进行时，Eden区所有存活的对象都被复制到To Survivor区，而From Survivor区中，仍存活的对象会根据它们的年龄值决定去向，年龄值达到年龄阈值(默认15是因为对象头中年龄战4bit，新生代每熬过一次垃圾回收，年龄+1)，则移到老年代，没有达到则复制到To Survivor。</p>
-
 <p><strong>老年代采用标记/清除算法或标记/整理算法</strong></p>
-
 <p>由于老年代存活率高，没有额外空间给他做担保，必须使用这两种算法。</p>
-
 <p>标记/清除算法是几种GC算法中最基础的算法，分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。</p>
-
 <ul>
 <li>标记阶段：标记的过程其实就是前面介绍的可达性分析算法的过程，遍历所有的GC Roots对象，对从GC Roots对象可达的对象都打上一个标识，一般是在对象的header中，将其记录为可达对象；</li>
 <li>清除阶段：清除的过程是对堆内存进行遍历，如果发现某个对象没有被标记为可达对象（通过读取对象header信息），则将其回收。</li>
 </ul>
-
 <p>标记/整理算法，与标记/清除算法一样，但后续步骤不是直接对可回收对象进行回收，而是让所有存活的对象都向一端移动，然后直接清理掉端边线以外的内存。</p>
-
 <p><strong>三种算法的对比</strong></p>
-
 <ul>
 <li>效率：复制算法 &gt; 标记/整理算法 &gt; 标记/清除算法（标记/清除算法有内存碎片问题，给大对象分配内存时可能会触发新一轮垃圾回收）</li>
 <li>内存整齐率：复制算法 = 标记/整理算法 &gt; 标记/清除算法</li>
 <li>内存利用率：标记/整理算法 = 标记/清除算法 &gt; 复制算法</li>
 </ul>
-
 <h2 id="垃圾收集器">垃圾收集器</h2>
-
 <p><strong>新生代收集器</strong></p>
-
 <ul>
 <li>Serial：Serial是单线程收集器，Serial收集器只能使用一条线程进行收集工作，在收集的时候必须得停掉其它线程，等待收集工作完成其它线程才可以继续工作。对于Client模式下的jvm来说是个好的选择。</li>
 <li>ParNew收集器：可以认为是Serial的升级版，因为它支持多线程GC。运行在Server模式下新生代首选的收集器。</li>
-<li>Parallel Scavenge：采用复制算法的收集器，和ParNew一样支持多线程。该收集器重点关心的是吞吐量。也成为&rdquo;吞吐量优先&rdquo;收集器。</li>
+<li>Parallel Scavenge：采用复制算法的收集器，和ParNew一样支持多线程。该收集器重点关心的是吞吐量。也成为&quot;吞吐量优先&quot;收集器。</li>
 </ul>
-
 <p><strong>老年代收集器</strong></p>
-
 <ul>
-<li>Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&rdquo;标记-整理算法&rdquo;，这个模式主要是给Client模式下的JVM使用。</li>
-<li>Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&rdquo;标记-整理算法&rdquo;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。</li>
+<li>Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&quot;标记-整理算法&rdquo;，这个模式主要是给Client模式下的JVM使用。</li>
+<li>Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&quot;标记-整理算法&rdquo;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。</li>
 <li>CMS：CMS收集器(Concurrent Mark Sweep)是以一种获取最短回收停顿时间为目标的收集器。重视响应，可以带来好的用户体验，被sun称为并发低停顿收集器</li>
 <li>G1：G1(garbage first:尽可能多收垃圾，避免full gc)收集器是当前最为前沿的收集器之一(1.7以后才开始有)，同cms一样也是关注降低延迟，是用于替代cms功能更为强大的新型收集器，因为它解决了cms产生空间碎片等一系列缺陷。</li>
 </ul>
-
 <h2 id="gc分类">GC分类</h2>
-
 <ul>
 <li>Minor GC：在年轻代Young space(包括Eden区和Survivor区)中的垃圾回收称之为 Minor GC,Minor GC只会清理年轻代。</li>
 <li>Major GC：Major GC清理老年代(old GC)，但是通常也可以指和Full GC是等价，因为收集老年代的时候往往也会伴随着升级年轻代，收集整个Java堆。所以有人问的时候需问清楚它指的是full GC还是old GC。</li>
 <li>Full GC：Full GC是对新生代、老年代、永久代（jdk1.8后没有这个概念了）统一的回收。</li>
 <li>Mixed GC：只有G1有这个模式，收集整个young gen以及部分old gen的GC。</li>
 </ul>
-
 <h2 id="触发gc点">触发GC点</h2>
-
 <p>简单来说，触发的条件就是GC算法区域满了或将满了。</p>
-
 <p>Minor GC:</p>
-
 <ul>
 <li>当年轻代中eden区分配满的时候触发。</li>
 <li>值得一提的是因为Minor GC后部分存活的对象会已到老年代(比如对象熬过15轮)，所以过后old gen的占用量通常会变高。</li>
 </ul>
-
 <p>Full GC:</p>
-
 <ul>
 <li>手动调用System.gc()方法 ，增加了full GC频率，不建议使用而是让jvm自己管理内存，可以设置-XX:+ DisableExplicitGC来禁止RMI调用System.gc</li>
 <li>发现perm gen（如果存在永久代的话)需分配空间但已经没有足够空间</li>
@@ -369,11 +291,8 @@
 <li>CMS GC时出现Promotion Faield</li>
 <li>统计得到的Minor GC晋升到旧生代的平均大小大于老年代的剩余空间。这个比较难理解，这是HotSpot为了避免由于新生代晋升到老年代导致老年代空间不足而触发的FUll GC。比如程序第一次触发Minor GC后，有5m的对象晋升到老年代，姑且现在平均算5m，那么下次Minor GC发生时，先判断现在老年代剩余空间大小是否超过5m，如果小于5m，则HotSpot则会触发full GC</li>
 </ul>
-
 <h2 id="gc日志">GC日志</h2>
-
 <p>JVM的GC日志的主要参数包括如下几个：</p>
-
 <ul>
 <li>-XX:+PrintGC 输出GC日志</li>
 <li>-XX:+PrintGCDetails 输出GC的详细日志</li>
@@ -383,9 +302,8 @@
 <li>-XX:+PrintGCApplicationStoppedTime // 输出GC造成应用暂停的时间</li>
 <li>-Xloggc:logs/gc.log 日志文件的输出路径</li>
 </ul>
-
 <p>GC日志样例：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">0.070: [GC (Allocation Failure) [PSYoungGen: 7127K-&gt;616K(9216K)] 11223K-&gt;4720K(19456K), 0.0008663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">0.070: [GC (Allocation Failure) [PSYoungGen: 7127K-&gt;616K(9216K)] 11223K-&gt;4720K(19456K), 0.0008663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
 0.072: [GC (Allocation Failure) --[PSYoungGen: 6923K-&gt;6923K(9216K)] 11027K-&gt;15123K(19456K), 0.0016749 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] 
 0.073: [Full GC (Ergonomics) [PSYoungGen: 6923K-&gt;0K(9216K)] [ParOldGen: 8200K-&gt;6660K(10240K)] 15123K-&gt;6660K(19456K), [Metaspace: 2559K-&gt;2559K(1056768K)], 0.0044663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
 Heap
@@ -396,8 +314,8 @@ Heap
  ParOldGen       total 10240K, used 6660K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
   object space 10240K, 65% used [0x00000000fec00000,0x00000000ff281398,0x00000000ff600000)
  Metaspace       used 2565K, capacity 4486K, committed 4864K, reserved 1056768K
-  class space    used 281K, capacity 386K, committed 512K, reserved 1048576K</pre></div>
-<ol>
+  class space    used 281K, capacity 386K, committed 512K, reserved 1048576K
+</code></pre></div><ol>
 <li>最前面的数字 &ldquo;0,070&rdquo; 代表了GC发生的时间，这个数字的含义是从Java虚拟机启动以来经过的秒数</li>
 <li>GC日志开头的“[GC 和 [Full GC” 说明了这次垃圾收集的停顿类型，而不是用来区分新生代GC还是年老代GC的。</li>
 <li>PSYoungGen, ParOldGen，PSPermGen表示GC发生的区域，这里显示的区域名称与使用的GC收集器密切相关，不同收集器对于不同区域所显示的名称可能不同。</li>
@@ -405,9 +323,7 @@ Heap
 <li>0.0008663 secs表示该内存区域GC所占用的时间，单位是秒。</li>
 <li>[Times: user=0.00 sys=0.00, real=0.00 secs] 这里面的user、sys、和real与Linux的time命令所输出的时间含义一致。分别代表用户消耗的CPU时间，内存态消耗的CPU时间，和操作从开始到结束所经过的墙钟时间。</li>
 </ol>
-
-<hr />
-
+<hr>
 <p>注：以上内容收集于互联网多篇文章，在此感谢原作者们。</p>
     </div>
     <footer class="post-footer">
@@ -448,6 +364,23 @@ Heap
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：跟我一起复习Java-8
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -540,27 +473,24 @@ Heap
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li><a href="#内存模型">内存模型</a>
-<ul>
-<li><a href="#堆">堆</a></li>
-<li><a href="#方法区">方法区</a></li>
-<li><a href="#程序计数寄存器">程序计数寄存器</a></li>
-<li><a href="#虚拟机栈">虚拟机栈</a></li>
-<li><a href="#本地方法栈">本地方法栈</a></li>
-<li><a href="#直接内存">直接内存</a></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-<li><a href="#gc">GC</a>
-<ul>
-<li><a href="#对象是否存活算法">对象是否存活算法</a></li>
-<li><a href="#垃圾收集算法">垃圾收集算法</a></li>
-<li><a href="#垃圾收集器">垃圾收集器</a></li>
-<li><a href="#gc分类">GC分类</a></li>
-<li><a href="#触发gc点">触发GC点</a></li>
-<li><a href="#gc日志">GC日志</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#堆">堆</a></li>
+    <li><a href="#方法区">方法区</a></li>
+    <li><a href="#程序计数寄存器">程序计数寄存器</a></li>
+    <li><a href="#虚拟机栈">虚拟机栈</a></li>
+    <li><a href="#本地方法栈">本地方法栈</a></li>
+    <li><a href="#直接内存">直接内存</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#对象是否存活算法">对象是否存活算法</a></li>
+    <li><a href="#垃圾收集算法">垃圾收集算法</a></li>
+    <li><a href="#垃圾收集器">垃圾收集器</a></li>
+    <li><a href="#gc分类">GC分类</a></li>
+    <li><a href="#触发gc点">触发GC点</a></li>
+    <li><a href="#gc日志">GC日志</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -575,12 +505,12 @@ Heap
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

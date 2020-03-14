@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -151,11 +151,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="书的目录">书的目录</h1>
-
 <p>现在的软件类的书籍是越来越厚，尤其是语言类书籍很多通篇都是代码，需要花费很长的时间去阅读，久而之对厚厚的书就有一种莫名的恐惧感。个人看书喜欢先看一本书的目录，快速了解整本书的内容，挑选自己最感兴趣的章节直接开始阅读。</p>
-
 <p>目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：</p>
-
 <ul>
 <li>让人清楚地知道书所讲的框架内容，一目了然</li>
 <li>让人知道章节之间的逻辑关系，主次之分</li>
@@ -220,26 +217,18 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="函数与方法">函数与方法</h1>
-
 <p>我们经常会遇到两个词，函数（Function）与方法（Method），简言之：</p>
-
 <ul>
 <li>函数不属于任何对象</li>
 <li>方法是关联到对象内的函数</li>
 </ul>
-
 <p>他们的区别：</p>
-
 <ul>
 <li>函数是面向过程编程中，为解决问题划分每个步骤的体现</li>
-<li>方法是面向对象编程中，对象能提供的能力或行为的体现
-<br /></li>
+<li>方法是面向对象编程中，对象能提供的能力或行为的体现</li>
 </ul>
-
 <p>方法底层实现本质还是函数，只是隐式传递了对象引用或指针，方法最终通过转化为函数的形式进行调用。为了简化后面的叙述，方法与函数统一称函数，不再区分。</p>
-
 <p>他们的必要性：</p>
-
 <ul>
 <li>让代码可以重复使用，他们是”积木“</li>
 <li>函数黑盒特性，有效封装，隐藏细节</li>
@@ -303,13 +292,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="理解类">理解类</h1>
-
 <p>类（实例化产生对象）是面向对象编程中最基本的组成单元，将逻辑和数据封装其中，以提高软件的重用性、灵活性和扩展性等。它相比人类社会组成，系统/子系统、组件/（微）服务、模块/包这些相当于社会中不同层次的实体或虚拟的组织机构；而类则相当于一类自然人，一个对象相当一个自然人。一个类在系统中承担着一种的 ”角色“ ，从事一种职业。</p>
-
 <h1 id="单一职责">单一职责</h1>
-
 <p>大多数人只从事一种职业，也就是单一职责原则。若一个类只关注的就是自身职责的完成，也就是单一职责原则。</p>
-
 <p>面向对象设计的五个基本原则（SOLID），排在第一就是单一职责原则（SRP：Single responsibility principle）。SRP的原话解释是：There should never be more than one reason for a class to change。应该有且仅有一个原因引起类的变更。</p>
     </div>
     
@@ -370,22 +355,15 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。</p>
-
 <h1 id="依赖">依赖</h1>
-
 <p>模块依赖指模块之间发生了关系，如模块A调用了模块B的接口，则模块A依赖了模块B。依赖的英语是Dependency。</p>
-
 <p>模块依赖是系统内不可避免的，复杂的系统都是分而治之，软件架构活动中最重要的事就是如何正确把系统分解，并定义他们之间关系。存在关系就会存在依赖，依赖是系统分解的必然产物。如果一个系统内的模块间不存在任何的关联，那他们应该划分为不同的系统；一个模块没有与其它的模块发生关联，那这个模块就应该不存在这个系统中。</p>
-
 <p>模块的依赖关系，按生命周期阶段可分为：</p>
-
 <ul>
 <li><strong>开发态依赖</strong>：如开发模块A时，需要依赖其它模块提供的接口，数据结构等文件依赖；还有一种如测试依赖，仅仅发生在开发阶段，在测试时，需要依赖测试数据，测试框架等，测试完成就不需要了。</li>
 <li><strong>运行态依赖</strong>：在系统运行时，模块A必须依赖其它模块提供能力才能完成某种完整的功能或服务，依赖的形态可能是本地或远程接口，集中配置数据，模型数据信息等。</li>
 </ul>
-
 <p>开发态依赖可能引发运行态依赖，但运行态依赖不一定需要在开发态就依赖。我们经常关注的是运行态依赖导致的问题，目前的微服务架构设计，减少了开发态的依赖，把依赖导致的问题后移到运行态。</p>
-
 <p>模块之间最好还是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是系统整体拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。</p>
     </div>
     
@@ -446,11 +424,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="问题">问题</h1>
-
 <p>架构设计中常常关注几个视图，如功能视图、逻辑视图、运行视图与部署视图。但架构师们由于层次较高，长期缺少代码编写能力，往往就直接忽视了开发视图。开发视图主要描述软件的开发工程结构、代码规范，以及构建技术等。代码结构和构建关系到项目的可持续维护以及维护的周期，非常重要。但实现开发活动，架构到开发中间层的GAP，真正重视并落地的很少很少。</p>
-
 <p>清淅明确的代码结构，是软件项目成功的重要开始。</p>
-
 <p>代码结构不应该仅仅归纳为 “代码编码风格” 一类，它是架构在代码层次的真实反应，架构是否能落地，代码结构的良好设计起着至关重要的作用。软件是有生命力的，需要考虑其可持续性发展。一个结构层次非常不好软件，它的逻辑可能并不一定复杂，但随着时间的推移，需要花费非常长的时间去理解它表达的的意思。同样不好的代码结构，让构建变得困难或效率低下，进一步降低了它的生命力。</p>
     </div>
     
@@ -511,9 +486,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="忽视的差距">忽视的差距</h1>
-
 <p>公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。</p>
-
 <p>软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。</p>
     </div>
     
@@ -574,9 +547,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>五一放假正好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support&hellip;</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
-
 <h1 id="如何集成">如何集成</h1>
-
 <p>在主题文件<code>layouts/partials/script.html</code>中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。</p>
     </div>
     
@@ -637,7 +608,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="背景">背景</h1>
-
 <p>我司强执行力，很容易把事情做得极致，但有时过于极致反而带来不好的意外结果。我参与了公司C/Java等编程规范的评审，但让我受不了的是编程规范中条款事无巨细。连运算符或关键字之间几个空格都要写入规范，太多关于格式、命名等条款。这种在代码格式上的洁癖，可能是见仁见智。但我司的特点是一旦形成规范，就会强行执行，先是考试，再是落入到项目中，像有几个空格这种拿来考试不是折磨人吗，能使用工具解决的为什么不去开发一个工具来提升效率，而不是死记硬背的规范。</p>
     </div>
     
@@ -836,12 +806,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

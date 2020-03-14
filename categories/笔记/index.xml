@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>笔记 on 蘭陵N梓記</title>
@@ -18,9 +18,7 @@
       
       <guid>http://lanlingzi.cn/post/notes/2019/0504_latex/</guid>
       <description>&lt;p&gt;五一放假正好有点时间，于是计划完成这个 Issue: &lt;a href=&#34;https://github.com/xtfly/hugo-theme-next/issues/8&#34;&gt;Is it possible to add latex support&amp;hellip;&lt;/a&gt;，要解决支持LateX，只需要集成&lt;a href=&#34;https://github.com/mathjax/MathJax&#34;&gt;MathJax&lt;/a&gt;。&lt;/p&gt;
-
 &lt;h1 id=&#34;如何集成&#34;&gt;如何集成&lt;/h1&gt;
-
 &lt;p&gt;在主题文件&lt;code&gt;layouts/partials/script.html&lt;/code&gt;中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。&lt;/p&gt;</description>
     </item>
     
@@ -31,42 +29,30 @@
       
       <guid>http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/</guid>
       <description>&lt;p&gt;Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
-
 &lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
-
-&lt;h2 id=&#34;toc_1&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
-
+&lt;h2 id=&#34;heading&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;
 &lt;p&gt;scala中泛型使用&lt;code&gt;[]&lt;/code&gt;指定泛型的类型参数，上下文界定是隐式参数的语法糖&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;:&lt;/code&gt; 表示上下文界定，如&lt;code&gt;A：B&lt;/code&gt; 表示 B 可以进行隐式转化的A类型&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;示例：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;T:A:B&lt;/code&gt; 表示即同时满足AT这种隐式值和BT这种隐式值&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;h2 id=&#34;与&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
-
+&lt;h2 id=&#34;-与-&#34;&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;lt;: A&lt;/code&gt; 表示T必须为A的子类&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;&amp;gt;:&lt;/code&gt; 表示只限定子类，如 &lt;code&gt;T &amp;gt;: A&lt;/code&gt; 表示T必须为A的父类&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;&lt;code&gt;&amp;lt;:&lt;/code&gt; 与 &lt;code&gt;:&amp;gt;&lt;/code&gt; 相当于java范型编程中的extends，super对泛型变量的限定。&lt;/p&gt;
-
 &lt;p&gt;示例：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;T &amp;lt;: A with B&lt;/code&gt; 表示A和B为T上界&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;T &amp;gt;: A with B&lt;/code&gt; 表示A和B为T下界&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;T &amp;gt;: A &amp;lt;: B&lt;/code&gt; 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     
@@ -77,9 +63,8 @@
       
       <guid>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</guid>
       <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34; /&gt;
-&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -89,9 +74,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/1001_reactive_programming/</guid>
       <description>&lt;h2 id=&#34;rxjava&#34;&gt;RxJava&lt;/h2&gt;
-
 &lt;p&gt;最早接触响应式编程，是分析Netflix的架构时，发现Netflix系统中大量使用了&lt;a href=&#34;https://github.com/ReactiveX/RxJava&#34;&gt;RxJava(Reactive Extension for Java)&lt;/a&gt;。由于Netflix中服务的高并发请求，需要一个高效的异步编程框架，于是他们参考了微软的&lt;a href=&#34;http://Rx.Net&#34;&gt;Rx.Net&lt;/a&gt;的实现原理，在JVM上实现了响应式编程(Reactive Programming)的一种方式。同类的库还有&lt;a href=&#34;http://projectreactor.io/&#34;&gt;Project Reactor&lt;/a&gt;, &lt;a href=&#34;https://akka.io/&#34;&gt;Akka&lt;/a&gt;和&lt;a href=&#34;https://github.com/google/agera&#34;&gt;Agera&lt;/a&gt;等等。&lt;/p&gt;
-
 &lt;p&gt;传统编程模式下，我们通常是同步实现。同步是最能简单理解的，调用一个函数或方法，等待响应返回。但对于要求高并发的服务端的软件开发，同步实现带来的开销也是巨大的。像Java中，并没有语言层面实现异步，如果没有借助一些框架，1K的并发请求，可能使用1K的线程来处理；如果采用一些异步框架来实现异步，就会像早期的JavaScript，通常是CallBack，Future模式，代码逻辑变得离散而复杂，造成所谓的&lt;code&gt;Callback Hell&lt;/code&gt;。JavaScript在ES6引入Promise机制，在ES7引入async关键字，就是想语言原生层面来解决&lt;code&gt;Callback Hell&lt;/code&gt;。而Go语言则更进一步，在内置Runtime中，通过Goroutine调度实现IO调用等异步机制，让上层使用感不到异步调用的存在。&lt;/p&gt;</description>
     </item>
     
@@ -101,16 +84,11 @@
       <pubDate>Sun, 10 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0910_dns_opensource/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;DNS是互联网的基础设施，开源的DNS也有不少，下面列出主要的几种供参考：&lt;/p&gt;
-
 &lt;h2 id=&#34;bind9&#34;&gt;Bind9&lt;/h2&gt;
-
 &lt;p&gt;ISC（Internet System Consortium）的Bind一直以来基本上都是DNS的工业标准，Bind应该是目前世界上使用最为广泛的DNS服务器了。Bind起源于1980年的Berkeley大学，比起我的年龄还大，Bind的名称也是源自&lt;code&gt;Berkeley Internet Name Domain&lt;/code&gt;。不过Bind也是一直漏洞不断，Bind9是ISC开发人员对Bind重写，目前常见的Linux发行版本中，会自带Bind9的安装包。&lt;/p&gt;
-
 &lt;p&gt;Bind9可以作为权威与递归DNS。主要特性如下：&lt;/p&gt;
-
 &lt;p&gt;作为权威DNS时：&lt;/p&gt;</description>
     </item>
     
@@ -121,14 +99,10 @@
       
       <guid>http://lanlingzi.cn/post/technical/2017/0903_dns/</guid>
       <description>&lt;p&gt;致谢：转自 &lt;a href=&#34;http://bbs.chinaunix.net/thread-1573358-1-1.html&#34;&gt;http://bbs.chinaunix.net/thread-1573358-1-1.html&lt;/a&gt;  ，由 &lt;a href=&#34;http://bbs.chinaunix.net/space-uid-71828.html&#34;&gt;llzqq&lt;/a&gt; 发表。&lt;/p&gt;
-
 &lt;h2 id=&#34;有关公网dns&#34;&gt;有关公网DNS&lt;/h2&gt;
-
 &lt;p&gt;公网DNS服务器是直接服务于广大上网用户的，负责域名（域名记录）到IP地址之间的翻译工作。公网DNS通常是各个网络运营商按照自己的网络分布规划DNS的分布，一般做法是按行政区域放置，如按省份放置。每个省份内也有细分在各地区放置的情况。&lt;/p&gt;
-
 &lt;p&gt;近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/dns_1_arch.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -137,16 +111,11 @@
       <pubDate>Sun, 30 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0730_4a/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/4a_security.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/4a_security.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;什么是4a&#34;&gt;什么是4A&lt;/h2&gt;
-
 &lt;p&gt;4A是指：账号Account、认证Authentication、授权Authorization、审计Audit，中文名称为统一安全管理平台解决方案。即将身份认证、授权、审计和账号(即不可否认性及数据完整性)定义为网络安全的四大组成部分，从而确立了身份认证在整个网络安全系统中的地位与作用。(来源百度百科)&lt;/p&gt;
-
 &lt;h2 id=&#34;账号account&#34;&gt;账号Account&lt;/h2&gt;
-
 &lt;p&gt;为用户提供统一集中的帐号管理，包括：用户身份信息的集中存储与统一管理。参考AWS等系统，涉及到概念包括：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;主账号：一般指管理资源的唯一身份标识，他为资源付费。也是自然人在4A中的唯一身份标识，一个用户只会有一个主账号，唯一标识了他的身份。&lt;/li&gt;
 &lt;li&gt;从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。&lt;/li&gt;
@@ -161,14 +130,10 @@
       <pubDate>Sat, 15 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2017/0715_cloud_design_pattern/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/azure.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/azure.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在云环境下，如何构建出可靠，弹性，安全的应用？有哪些挑战？面对这些挑战如何解决，微软Azure总结一系列的设计模式。本文是翻译&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/&#34;&gt;Azure架构中心&lt;/a&gt;在线资料中的&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/architecture/patterns/&#34;&gt;云设计模式&lt;/a&gt;，仅个人的笔记，借翻译学习一下，英文好的可以直接阅读原文。&lt;/p&gt;
-
 &lt;h2 id=&#34;挑战&#34;&gt;挑战&lt;/h2&gt;
-
 &lt;h3 id=&#34;可用性&#34;&gt;可用性&lt;/h3&gt;
-
 &lt;p&gt;可用性是指系统功能可用的时间占整体的比例，通常以正常运行时间比来衡量，它会受到系统错误、基础设施问题、恶意攻击和系统负载的影响。云应用典型为用户提供提供服务级协议（SLA），因此必须设计应用以最大限度地可用性。&lt;/p&gt;</description>
     </item>
     
@@ -178,16 +143,15 @@
       <pubDate>Sat, 03 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/notes/2017/0603_mac_mysql/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/mysql.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/y17/mysql.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;最近在家想写的东西，在MacOS上需要使用到MySQL。在MacOS下，使用brew来安装软件是最便捷。关于brew是什么，可在brew官网查看：&lt;a href=&#34;https://brew.sh/index_zh-cn.html&#34;&gt;brew官网&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;安装：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;➜  ~ brew info mysql
+&lt;pre&gt;&lt;code&gt;➜  ~ brew info mysql
 mysql: stable 5.7.18 (bottled)
 Open source relational database management system
 ......
-➜  ~ brew install mysql&lt;/pre&gt;&lt;/div&gt;</description>
+➜  ~ brew install mysql
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
     <item>
@@ -206,7 +170,6 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/1027_team_mgnt/</guid>
       <description>&lt;p&gt;最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。&lt;/p&gt;
-
 &lt;p&gt;作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。&lt;/p&gt;</description>
     </item>
     
@@ -217,22 +180,17 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/technical/2016/0803_go_interface/</guid>
       <description>&lt;h2 id=&#34;概述&#34;&gt;概述&lt;/h2&gt;
-
 &lt;p&gt;Go语言中的&lt;a href=&#34;http://golang.org/doc/effective_go.html#interfaces&#34;&gt;接口&lt;/a&gt;很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组&lt;a href=&#34;http://golang.org/ref/spec#Method_sets&#34;&gt;方法的集合&lt;/a&gt;，要有方法为&lt;a href=&#34;http://golang.org/ref/spec#Interface_types&#34;&gt;接口类型&lt;/a&gt;就被认为是该接口。从定义上来看，接口有两个特点:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C++/Java中的接口，后者仅用于声明方法签名。&lt;/li&gt;
 &lt;li&gt;接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;接口是完全抽象的，因此不能将其实例化。然而，可以创建一个其类型为接口的变量，它可以被赋值为任何满足该接口类型的实际类型的值。接口的重要特性是：&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。&lt;/li&gt;
 &lt;li&gt;作为1的推论，任何类型的值都可以赋值给空接口interface{}。&lt;/li&gt;
 &lt;/ol&gt;
-
-&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;ldquo;。&lt;/p&gt;</description>
+&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;quot;。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -242,9 +200,7 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/0716_pandoc_md_ppt/</guid>
       <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-
 &lt;p&gt;在我司PPT被称为胶片。一层层的汇报都是胶片承载，胶片也是做得非常漂亮。像我所在领域，架构师主要产出也是胶片，俨然无胶片就无架构。一方面个人非常羡慕胶片写得好（内容与外观）的人，另一方面觉得像使用MS的PowerPoint几乎要把一半的精力放在外观而不是内容上。甚至感觉到为了一个格式、一个颜色，调整都需要老半天时间。大家的胶片都做得漂亮，而你不可能也就只草草准备，尤其是给领导的胶片，人在江湖，身不由已。但做一名技术人员，内心还是比较抵触形式大于内容的胶片。昨天，一名同事给我展示了一个由Markdown生成Slide，给人感觉是耳目一新。&lt;/p&gt;
-
 &lt;p&gt;Markdown是一种内容与形式的分享的轻量级标记语言，受到越来越多的人喜欢，只要只简单的文本编辑器，都能书写文本内容。那有什么工具能快速方便地生成Slide呢。Markdown本身是为了方便输出到HTML格式。而HTML+CSS+JS是一个开放的，可扩展的技术。自然Markdown也可以通过工具生成像PPT一样可以上下翻页的HTML Slide，同样借助CSS与JS的结合，Slide一样可以做得像PPT一样格式漂亮，动作酷炫。&lt;/p&gt;</description>
     </item>
     
@@ -255,7 +211,6 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/</guid>
       <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
-
 &lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：&lt;/p&gt;</description>
     </item>
     
@@ -266,7 +221,6 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/0313_grub_win10/</guid>
       <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
-
 &lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。&lt;/p&gt;</description>
     </item>
     
@@ -277,13 +231,9 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/0221_mac_tmux/</guid>
       <description>&lt;h2 id=&#34;什么是tmux&#34;&gt;什么是tmux&lt;/h2&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://tmux.github.io/&#34;&gt;tmux&lt;/a&gt;是一个支持多会话独立运行的优秀的终端复用软件。它类似&lt;a href=&#34;http://www.gnu.org/software/screen/&#34;&gt;GNU Screen&lt;/a&gt;，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。&lt;/p&gt;
-
 &lt;h2 id=&#34;tmux的使用场景&#34;&gt;tmux的使用场景&lt;/h2&gt;
-
 &lt;p&gt;Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。&lt;/li&gt;
 &lt;li&gt;提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。&lt;/li&gt;
@@ -297,7 +247,6 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2016/0215_about_soft_arch/</guid>
       <description>&lt;h2 id=&#34;什么是软件架构设计&#34;&gt;什么是软件架构设计&lt;/h2&gt;
-
 &lt;p&gt;依稀记得公司的软件架构培训材料中说到软件架构=组件+交互。最近读温昱的&lt;a href=&#34;http://baike.baidu.com/link?url=FwG7S8RSOkY8BzeZ1MBRSppAkJsTZZZTHRlj8wjvq7r4BPowUlimOuVUyZusyrUvaYXurh8hqxF3O0FTxA-8c_&#34;&gt;《软件架构设计》&lt;/a&gt;才知道这只是其中一大阵营的观点。而软件架构在定义上分为&lt;code&gt;“组成派”&lt;/code&gt;和&lt;code&gt;“决策派”&lt;/code&gt;两大阵营。“组成派”认为软件架构是将系统描述成计算组件及组件之间的交互；而“决策派”认为软件架构包含了一系列的决策。事实上，从我司实际操作来看，两种观点并不是互斥的，而是相辅相成。两种观点只是站在不同的角度来看待软件架构。架构师在分割组件模块时，选择备选方案时，也是会不得不去作出各种决策，架构没有最完美的，只有在特定场景需求下最合适的。&lt;/p&gt;</description>
     </item>
     
@@ -317,15 +266,15 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2010/0111_team_culture/</guid>
       <description>&lt;p&gt;今天晚上在部门的公告牌上看到一个另部门的项目做的总结，觉得后面几句话不错：&lt;/p&gt;
-
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;树立团队荣誉感：&lt;/p&gt;
-
-&lt;p&gt;如何树立团队荣誉感，没有什么好方法，我的理解就是带领团队不断地打胜仗，克服一个个困难，另外就是获得应该有的荣誉，这样你的团队才能有荣誉感。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;角色认知，系统化思考：&lt;/p&gt;
-
-&lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;树立团队荣誉感：&lt;/p&gt;
+&lt;p&gt;如何树立团队荣誉感，没有什么好方法，我的理解就是带领团队不断地打胜仗，克服一个个困难，另外就是获得应该有的荣誉，这样你的团队才能有荣誉感。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;角色认知，系统化思考：&lt;/p&gt;
+&lt;p&gt;你是代表部门在做这项工作，需要也可以站得更高角度来系统化，有计划地操作这项工作，你也可以行使你应有的权力。&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ol&gt;</description>
     </item>
     
@@ -336,7 +285,6 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/notes/2009/0822_history_think/</guid>
       <description>&lt;h2 id=&#34;战乱多&#34;&gt;战乱多&lt;/h2&gt;
-
 &lt;p&gt;自从买了个诺基亚的大E之后，在手机上看书的时间越来越多了，最近一连看了好几本历史相关的书籍。原来中国的历史并非课本上写的那么简单。两千年来，中国历史能值得我们骄傲的并不多，对于普通百姓来说，一直是充满着无知与无奈。对于官员来说，一直是充满着虚伪与争斗，对于帝王来说， 一直是充满着荒唐与淫乱。在历史长河，没有几个太平盛世，没有几个有作为的帝王，没有几个能臣干将。整个中原民族也是不断地受到外族侵略，也不断的融合其它的民族。李世民是鲜卑族，成吉思汗是蒙古族，康熙是满族。强大的政权往往是由外族创建，而后才慢慢融合到汉族中。&lt;/p&gt;</description>
     </item>
     
@@ -347,18 +295,14 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/technical/csdn/oo_design_principle/</guid>
       <description>&lt;p&gt;如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。&lt;/p&gt;
-
 &lt;p&gt;导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;过于僵硬&lt;/li&gt;
 &lt;li&gt;过于脆弱&lt;/li&gt;
 &lt;li&gt;复用率低&lt;/li&gt;
 &lt;li&gt;黏度过高&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;一个好的系统设计应该有如下的性质，这三条性质就是一个系统设计应当达到的目标。&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;可扩展性&lt;/li&gt;
 &lt;li&gt;灵活性&lt;/li&gt;

@@ -148,27 +148,22 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="背景">背景</h2>
-
 <p>最近在设计调用链与日志跟踪的API，发现相比于Java与C++，Go语言中没有原生的线程（协程）上下文，也不支持TLS（Thread Local Storage），更没有暴露API获取Goroutine的Id（后面简称<code>GoId</code>）。这导致无法像Java一样，把一些信息放在TLS上，用于来简化上层应用的API使用：不需要在调用栈的函数中通过传递参数来传递调用链与日志跟踪的一些上下文信息。</p>
-
 <p>在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。</p>
-
 <p>在Java中，JDK库提供<code>Thread.CurrentThread()</code>来获取当前线程对象，提供<code>ThreadLocal</code>来存储与获取线程局部变量。由于Java能通过<code>Thread.CurrentThread()</code>获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。</p>
-
 <p>ThreadLocal的API提供了如下的4个方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">public T get()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public T get()
 protected  T initialValue()
 public void remove()
-public void set(T value)</pre></div>
-<ul>
+public void set(T value)
+</code></pre></div><ul>
 <li><code>T get()</code>:返回此线程局部变量的当前线程副本中的值，如果这是线程第一次调用该方法，则创建并初始化此副本。</li>
 <li><code>protected  T initialValue()</code>: 返回此线程局部变量的当前线程的初始值。最多在每次访问线程来获得每个线程局部变量时调用此方法一次，即线程第一次使用<code>get()</code>方法访问变量的时候。如果线程先于<code>get</code>方法调用<code>set(T)</code>方法，则不会在线程中再调用<code>initialValue</code>方法。</li>
 <li><code>void remove()</code>: 移除此线程局部变量的值。这可能有助于减少线程局部变量的存储需求。如果再次访问此线程局部变量，那么在默认情况下它将拥有其 <code>initialValue</code>。</li>
 <li><code>void set(T value)</code>将此线程局部变量的当前线程副本中的值设置为指定值。许多应用程序不需要这项功能，它们只依赖于<code>initialValue()</code>方法来设置线程局部变量的值。</li>
 </ul>
-
 <p>在Go语言中，而Google提供的解决方法是采用<a href="https://blog.golang.org/context"><code>golang.org/x/net/context</code></a>包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：<a href="http://lanlingzi.cn/post/technical/2016/0802_go_context/">理解Go Context机制</a>。<code>Context</code>也是能存储Goroutine一些数据达到共享，但它提供的接口是<code>WithValue</code>函数来创建一个新的<code>Context</code>对象。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func WithValue(parent Context, key interface{}, val interface{}) Context {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func WithValue(parent Context, key interface{}, val interface{}) Context {
 	return &amp;valueCtx{parent, key, val}
 }
 
@@ -182,57 +177,43 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 		return c.val
 	}
 	return c.Context.Value(key)
-}</pre></div>
-<p>从上面代码中可以看出，<code>Context</code>设置一次Value，就会产生一个<code>Context</code>对象，获取Value是先找当前<code>Context</code>存储的值，若没有再向父一级查找。获取<code>Value</code>可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine<strong>一次</strong>设置<code>Key/Value</code>，其它多Goroutine只能读取<code>Key</code>的<code>Value</code>。</p>
-
+}
+</code></pre></div><p>从上面代码中可以看出，<code>Context</code>设置一次Value，就会产生一个<code>Context</code>对象，获取Value是先找当前<code>Context</code>存储的值，若没有再向父一级查找。获取<code>Value</code>可以说是多Goroutine访问安全，因为它的接口设计上，是只一个Goroutine<strong>一次</strong>设置<code>Key/Value</code>，其它多Goroutine只能读取<code>Key</code>的<code>Value</code>。</p>
 <h2 id="为什么无获取goid接口">为什么无获取GoId接口</h2>
-
 <blockquote>
 <p>This, among other reasons, to prevent programmers for simulating thread local storage using the goroutine id as a key.</p>
 </blockquote>
-
 <p>官方说，就为了避免采用<code>Goroutine Id</code>当成<code>Thread Local Storage</code>的<code>Key</code>。</p>
-
 <blockquote>
 <p>Please don’t use goroutine local storage. It’s highly discouraged. In fact, IIRC, we used to expose Goid, but it is hidden since we don’t want people to do this.</p>
 </blockquote>
-
 <p>用户经常使用GoId来实现<code>goroutine local storage</code>，而Go语言不希望用户使用<code>goroutine local storage</code>。</p>
-
 <blockquote>
 <p>when goroutine goes away, its goroutine local storage won’t be GCed. (you can get goid for the current goroutine, but you can’t get a list of all running goroutines)</p>
 </blockquote>
-
 <p>不建议使用<code>goroutine local storage</code>的原因是由于不容易GC，虽然能获当前的GoId，但不能获取其它正在运行的Goroutine。</p>
-
 <blockquote>
 <p>what if handler spawns goroutine itself? the new goroutine suddenly loses access to your goroutine local storage. You can guarantee that your own code won’t spawn other goroutines, but in general you can’t make sure the standard library or any 3rd party code won’t do that.</p>
 </blockquote>
-
 <p>另一个重要的原因是由于产生一个Goroutine非常地容易（而线程通用会采用线程池），新产生的Goroutine会失去访问<code>goroutine local storage</code>。需要上层应用保证不会产生新的Goroutine，但我们很难确保标准库或第三库不会这样做。</p>
-
 <blockquote>
 <p>thread local storage is invented to help reuse bad/legacy code that assumes global state, Go doesn’t have legacy code like that, and you really should design your code so that state is passed explicitly and not as global (e.g. resort to goroutine local storage)</p>
 </blockquote>
-
 <p>TLS的应用是帮助重用现有那些不好（遗留）的采用全局状态的代码。而Go语言建议是重新设计代码，采用显示地传递状态而不是采用全局状态（例如采用<code>goroutine local storage</code>）。</p>
-
 <h2 id="其它手段获取goid">其它手段获取GoId</h2>
-
 <p>虽然Go语言有意识地隐藏GoId，但目前还是有手段来获取GoId：</p>
-
 <ul>
-<li><p>修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容</p>
-
+<li>
+<p>修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容</p>
 <p>在标准库的<code>runtime/proc.go</code>（Go 1.6.3）中的<code>newextram</code>函数，会产生个GoId：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">mp.lockedg = gp
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">mp.lockedg = gp
 gp.lockedm = mp
-gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))</pre></div></li>
-
-<li><p>通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p>
-
+gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
+</code></pre></div></li>
+<li>
+<p>通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p>
 <p>在标准库的<code>runtime/mprof.go</code>（Go 1.6.3）中，<code>runtime.Stack</code>会获取gp对象(包含GoId)并输出整个Stack信息：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">func Stack(buf []byte, all bool) int {
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func Stack(buf []byte, all bool) int {
     if all {
         stopTheWorld(&#34;stack trace&#34;)
     }
@@ -261,73 +242,60 @@ gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))</pre></div></li>
         startTheWorld()
     }
     return n
-}</pre></div>
-<p>从文件名就可以看出，<code>runtime/mprof.go</code>是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack信息也会导致无法正常获取GoId。</p></li>
-
-<li><p>通用<code>runtime.Callers</code>来给调用Stack来打标签</p>
-
-<p>代码参考：<a href="https://github.com/jtolds/gls/blob/master/stack_tags_main.go#L43">https://github.com/jtolds/gls/blob/master/stack_tags_main.go#L43</a></p></li>
-
-<li><p>通过内联c或者内联汇编</p>
-
+}
+</code></pre></div><p>从文件名就可以看出，<code>runtime/mprof.go</code>是用于做Profile分析，获取Stack肯定性能不会太好。从上面的代码来看，若第二个参数指定为true，还会STW，业务系统无论如何都无法接受。若Go语言修改了Stack的输出，分析Stack信息也会导致无法正常获取GoId。</p>
+</li>
+<li>
+<p>通用<code>runtime.Callers</code>来给调用Stack来打标签</p>
+<p>代码参考：https://github.com/jtolds/gls/blob/master/stack_tags_main.go#L43</p>
+</li>
+<li>
+<p>通过内联c或者内联汇编</p>
 <p>go版本1.5，x86_64arc下汇编，估计也不通用</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">// func GoID() int64
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// func GoID() int64
 TEXT s3lib GoID(SB),NOSPLIT,$0-8
 MOVQ TLS, CX
 MOVQ 0(CX)(TLS*1), AX
 MOVQ AX, ret+0(FP)
-RET</pre></div></li>
+RET
+</code></pre></div></li>
 </ul>
-
 <h2 id="开源goroutine-local-storage实现">开源goroutine local storage实现</h2>
-
 <p>只要有机制获取GoId，就可以像Java一样来采用全局的map实现<code>goroutine local storage</code>，在Github上搜索一下，发现有两个：</p>
-
 <ul>
-<li><p><a href="https://github.com/tylerb/gls/">tylerb/gls</a></p>
-
-<p>GoId是通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p></li>
-
-<li><p><a href="https://github.com/jtolds/gls">jtolds/gls</a></p>
-
-<p>GoId是通用<code>runtime.Callers</code>来给调用Stack来打标签</p></li>
+<li>
+<p><a href="https://github.com/tylerb/gls/">tylerb/gls</a></p>
+<p>GoId是通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p>
+</li>
+<li>
+<p><a href="https://github.com/jtolds/gls">jtolds/gls</a></p>
+<p>GoId是通用<code>runtime.Callers</code>来给调用Stack来打标签</p>
+</li>
 </ul>
-
 <p>第二个有人在2013年测试过性能，数据如下：</p>
-
 <blockquote>
-<p>BenchmarkGetValue 500000 2953 ns/op<br />
+<p>BenchmarkGetValue 500000 2953 ns/op<br>
 BenchmarkSetValues 500000 4050 ns/op</p>
 </blockquote>
-
 <p>上面的测试结果看似还不错，但<code>goroutine local storage</code>实现无外乎是<code>map+RWMutex</code>，存在性能瓶颈：</p>
-
 <ul>
 <li>Goroutine不像Thread，它的个数可以上十万并发，当这么多的Goroutine同时竞争同一把锁时，性能会急剧恶化。</li>
 <li>GoId是通过分析调用Stack的信息来获取，也是一个高成本的调用，一个字：慢。</li>
 </ul>
-
 <p>不管怎么样，没有官方的GLS，的确不是很方便，第三方实现又存在性能与不兼容风险。连<code>jtolds/gls</code>作者也贴出其它人的评价：</p>
-
 <blockquote>
-<p>&ldquo;Wow, that&rsquo;s horrifying.&rdquo;</p>
-
+<p>&quot;Wow, that&rsquo;s horrifying.&rdquo;</p>
 <p>&ldquo;This is the most terrible thing I have seen in a very long time.&rdquo;</p>
-
 <p>&ldquo;Where is it getting a context from? Is this serializing all the requests? What the heck is the client being bound to? What are these tags? Why does he need callers? Oh god no. No no no.&rdquo;</p>
 </blockquote>
-
 <h2 id="小结">小结</h2>
-
 <p>Go语言官方认为TLS来存储全局状态是不好的设计，而是要显示地传递状态。Google给的解决方法是<a href="https://blog.golang.org/context"><code>golang.org/x/net/context</code></a>。</p>
-
-<hr />
-
-<p>参考：<br />
-[1] <a href="https://groups.google.com/forum/#!topic/golang-nuts/Nt0hVV_nqHE">golang-nuts</a><br />
-[2] <a href="http://grokbase.com/p/gg/golang-nuts/13bdh27k5b/go-nuts-re-goroutine-local-storage-implementation">go-nuts-re-goroutine-local-storage-implementation</a><br />
-[3] <a href="https://github.com/jtolds/gls">jtolds/gls</a><br />
-[4] <a href="https://github.com/tylerb/gls/">tylerb/gls</a><br />
+<hr>
+<p>参考：<br>
+[1] <a href="https://groups.google.com/forum/#!topic/golang-nuts/Nt0hVV_nqHE">golang-nuts</a><br>
+[2] <a href="http://grokbase.com/p/gg/golang-nuts/13bdh27k5b/go-nuts-re-goroutine-local-storage-implementation">go-nuts-re-goroutine-local-storage-implementation</a><br>
+[3] <a href="https://github.com/jtolds/gls">jtolds/gls</a><br>
+[4] <a href="https://github.com/tylerb/gls/">tylerb/gls</a><br>
 [5] <a href="http://www.zhihu.com/question/39863941/answer/83575802">在golang中如何优雅地获取goroutineID？</a></p>
     </div>
     <footer class="post-footer">
@@ -366,6 +334,23 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Goroutine Local Storage
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -458,16 +443,13 @@ BenchmarkSetValues 500000 4050 ns/op</p>
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#背景">背景</a></li>
-<li><a href="#为什么无获取goid接口">为什么无获取GoId接口</a></li>
-<li><a href="#其它手段获取goid">其它手段获取GoId</a></li>
-<li><a href="#开源goroutine-local-storage实现">开源goroutine local storage实现</a></li>
-<li><a href="#小结">小结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#为什么无获取goid接口">为什么无获取GoId接口</a></li>
+    <li><a href="#其它手段获取goid">其它手段获取GoId</a></li>
+    <li><a href="#开源goroutine-local-storage实现">开源goroutine local storage实现</a></li>
+    <li><a href="#小结">小结</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -482,12 +464,12 @@ BenchmarkSetValues 500000 4050 ns/op</p>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

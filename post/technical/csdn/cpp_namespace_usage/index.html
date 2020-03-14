@@ -148,7 +148,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace outspname  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname  
 {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &#34;33333&#34;;  
@@ -161,22 +161,22 @@
       {  
       };  
    }  
-}</pre></div>
-<p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
-
+}
+</code></pre></div><p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
 <ul>
-<li><p>当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">const int  local  = outspname::inspname::A</pre></div>
-<p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">{  
+<li>
+<p>当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">const int  local  = outspname::inspname::A
+</code></pre></div><p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">{  
    using outspname::inspname::A;  
    const int local = A;  
-}</pre></div></li>
-
-<li><p>通过一个使用指令把该名字空间下所有的名字变成可用。</p>
-
+}
+</code></pre></div></li>
+<li>
+<p>通过一个使用指令把该名字空间下所有的名字变成可用。</p>
 <p>如下所示，与第一点的用法区别，是<code>using</code> 后面有个<code>namespace</code>。同样只在转换时，或者在一个小的局部作用域内使用<code>using namesapce</code>，否则也会带来名字的污染。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">{  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">{  
   using namespace outspname;  
   const int local2 = CVAR1;  
   const int local2 = inspname::B;  
@@ -184,49 +184,54 @@
      using namespace inspname;  
      Klass* p = new Klass();  
   }    
-}</pre></div>
-<p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace testname  
+}
+</code></pre></div><p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname  
 {  
    void test(int param);  
-}</pre></div>
-<p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">using testname;  
+}
+</code></pre></div><p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">using testname;  
 void test(int param)  
 {  
-}</pre></div>
-<p>正确的使用方式是:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace testname  
+}
+</code></pre></div><p>正确的使用方式是:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname  
 {  
    void test(int param)  
    {  
    }  
-}  </pre></div>
-<p>或者是</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">void testname::test(int param)  
+}  
+</code></pre></div><p>或者是</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void testname::test(int param)  
 {  
-}  </pre></div></li>
-
-<li><p>名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace oin = outspname::inspname;  </pre></div></li>
-
-<li><p>无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace   
+}  
+</code></pre></div></li>
+<li>
+<p>名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace oin = outspname::inspname;  
+</code></pre></div></li>
+<li>
+<p>无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace   
 {  
   const int CVAR1 = 1;  
   void test();  
-}  </pre></div>
-<p>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">namespace $$$  
+}  
+</code></pre></div><p>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace $$$  
 {  
   const int CVAR1 = 1;  
   void test();  
 }
 
-using namespace $$$;</pre></div>
-<p>其中<code>$$$</code>在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，<code>usingnamesapce  $$$</code>只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。</p></li>
+using namespace $$$;
 
-<li><p>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</p></li>
+</code></pre></div><p>其中<code>$$$</code>在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，<code>usingnamesapce  $$$</code>只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。</p>
+</li>
+<li>
+<p>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</p>
+</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -265,6 +270,23 @@ using namespace $$$;</pre></div>
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：C&#43;&#43;技巧之名字空间namespace
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -355,12 +377,12 @@ using namespace $$$;</pre></div>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

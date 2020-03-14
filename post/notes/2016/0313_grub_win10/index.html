@@ -148,26 +148,25 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。</p>
-
 <p>安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。</p>
-
 <p>我的Sony本本比较老，并不支持UEFI，所以系统选择安装Grub来引导。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># grub-install --target=i386-pc --recheck /dev/sda
-# grub-mkconfig -o /boot/grub/grub.cfg</pre></div>
+<pre><code># grub-install --target=i386-pc --recheck /dev/sda
+# grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
 <p>采用grub-mkconfig生成的grub.cfg并没有引导Win10的菜单，解决方法如下。为了实现多系统启动，需要安装os-prober。进入到/etc/grub.d/目录下，发现存在<code>30_os-prober</code>文件，说明os-prober是安装的（<code>pacman -S grub</code>会自动安装）。</p>
-
 <p>我的Windows分区是/dev/sda1。首先，找到Windows系统分区的UUID(bootmgr存放其上)。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># mount /dev/sda1 /mnt
+<pre><code># mount /dev/sda1 /mnt
 # grub-probe --target=fs_uuid /mnt/bootmgr
 70B235F6749E84AE
 # grub-probe --target=hints_string /mnt/bootmgr
---hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1</pre></div>
+--hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1
+</code></pre>
 <p>接着，将下面的代码添加到<code>/boot/grub/grub.cfg</code>中，注意替换其中的<code>fs_uuid</code>，即<code>70B235F6749E84AE</code>。保存<code>grub.cfg</code>文件，重启系统，在gurb菜单就可以看到<code>Windows 10 (loader) (on /dev/sda1)</code>项了。选择，成功进入win10。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">### BEGIN /etc/grub.d/30_os-prober ###
-menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class os $menuentry_id_option &#39;osprober-chain-70B235F6749E84AE&#39; {
+<pre><code>### BEGIN /etc/grub.d/30_os-prober ###
+menuentry 'Windows 10 (loader) (on /dev/sda1)' --class windows --class os $menuentry_id_option 'osprober-chain-70B235F6749E84AE' {
     insmod part_msdos
     insmod ntfs
-    set root=&#39;hd0,msdos1&#39;
+    set root='hd0,msdos1'
     if [ x$feature_platform_search_hint = xy ]; then
       search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos1 --hint-efi=hd0,msdos1 --hint-baremetal=ahci0,msdos1  70B235F6749E84AE
     else
@@ -178,12 +177,14 @@ menuentry &#39;Windows 10 (loader) (on /dev/sda1)&#39; --class windows --class o
     chainloader +1
 }
 set timeout_style=menu
-if [ &#34;${timeout}&#34; = 0 ]; then
+if [ &quot;${timeout}&quot; = 0 ]; then
   set timeout=10
 fi
-### END /etc/grub.d/30_os-prober ###</pre></div>
+### END /etc/grub.d/30_os-prober ###
+</code></pre>
 <p>注：后经验证，grub-mkconfig无法扫描到win10，是由于少安装了os-prober。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"># pacman -S os-prober</pre></div>
+<pre><code># pacman -S os-prober
+</code></pre>
 <p>参考：<a href="https://wiki.archlinux.org/index.php/GRUB_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">GRUB_(简体中文)</a></p>
     </div>
     <footer class="post-footer">
@@ -226,6 +227,23 @@ fi
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Grub引导Win10
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -316,12 +334,12 @@ fi
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

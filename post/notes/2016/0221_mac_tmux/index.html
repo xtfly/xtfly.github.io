@@ -148,72 +148,53 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="什么是tmux">什么是tmux</h2>
-
 <p><a href="http://tmux.github.io/">tmux</a>是一个支持多会话独立运行的优秀的终端复用软件。它类似<a href="http://www.gnu.org/software/screen/">GNU Screen</a>，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。</p>
-
 <h2 id="tmux的使用场景">tmux的使用场景</h2>
-
 <p>Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？</p>
-
 <ul>
 <li>与VIM配合使用，打造出更高效、更优雅的终端工具。尤其是在当前大屏幕显示器下，多标签和分割窗体，无缝跳转。既可使用vim来写代码，也可使用tmux来查询代码编译与支行结果。</li>
 <li>提供了一个窗体组随时存储和恢复的功能。调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，如果使用tmux就attach就能找回原来打开的那些窗口。</li>
 </ul>
-
 <h2 id="tmux的基本概念">tmux的基本概念</h2>
-
 <p>tmux的主要元素分为三层：</p>
-
 <ul>
 <li>Session会话： 一组窗口的集合，通常用来概括同一个任务。session可以有自己的名字便于任务之间的切换。</li>
 <li>Window 窗口： 单个可见窗口。Windows有自己的编号，也可以认为和ITerm2中的Tab类似。</li>
 <li>Pane 窗格： 被划分成小块的窗口，类似于Vim中 <code>C-w +v</code> 后的效果。</li>
 </ul>
-
-<p><img src="http://ww1.sinaimg.cn/mw690/7178f37egw1esoxc7hp5oj20gm0bkjs6.jpg" alt="层次结构" /></p>
-
+<p><img src="http://ww1.sinaimg.cn/mw690/7178f37egw1esoxc7hp5oj20gm0bkjs6.jpg" alt="层次结构"></p>
 <h2 id="安装">安装</h2>
-
 <p>在Mac环境下，先安装<a href="http://brew.sh/">Brew</a>，使用Brew安装tmux命令如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">brew install tmux</pre></div>
+<pre><code>brew install tmux
+</code></pre>
 <h2 id="使用">使用</h2>
-
 <p>安装完成之后，在终端中直接敲入<code>tmux</code>就可启动一个 tmux 的会话。退出会话敲入 <code>exit</code> 即可退出当前会话Pane。可以使用 <code>tmux detach</code> 命令断开已有的会话。也可以使用快捷键 <code>Ctrl-b d</code> 断开会话</p>
-
 <p>tmux 默认使用 <code>Ctrl-b</code> 作为激活快捷键的开关,开关开启后就可以通过快捷键迅速调用大量的功能。快捷键参考如下：</p>
-
 <h3 id="基础">基础</h3>
-
 <ul>
 <li>? 获取帮助信息</li>
 </ul>
-
 <h3 id="session管理">Session管理</h3>
-
 <ul>
 <li>s 列出所有会话</li>
 <li>$ 重命名当前的会话</li>
 <li>d 断开当前的会话</li>
 </ul>
-
 <h3 id="window管理">window管理</h3>
-
 <ul>
 <li>c 创建一个新窗口</li>
 <li>, 重命名当前窗口</li>
 <li>w 列出所有窗口</li>
 <li>% 水平分割窗口</li>
-<li>&rdquo; 竖直分割窗口</li>
+<li>&quot; 竖直分割窗口</li>
 <li>n 选择下一个窗口</li>
 <li>p 选择上一个窗口</li>
 <li>0~9 选择0~9对应的窗口</li>
 </ul>
-
 <h3 id="pane管理">pane管理</h3>
-
 <ul>
 <li>% 创建一个水平窗格</li>
-<li>&rdquo; 创建一个竖直窗格</li>
+<li>&quot; 创建一个竖直窗格</li>
 <li>h 将光标移入左侧的窗格*</li>
 <li>j 将光标移入下方的窗格*</li>
 <li>l 将光标移入右侧的窗格*</li>
@@ -225,35 +206,28 @@
 <li>! 在新窗口中显示当前窗格</li>
 <li>x 关闭当前窗格&gt; 要使用带“*”的快捷键需要提前配置</li>
 </ul>
-
 <h3 id="其他">其他</h3>
-
 <ul>
 <li>t 在当前窗格显示时间</li>
 </ul>
-
 <h2 id="配置">配置</h2>
-
 <p>像VIM一样，可以定制你的tmux。tmux默认会先从 <code>/etc/tmux.conf</code> 加载系统级的配置项，然后从 <code>~/.tmux.conf</code> 加载用户级的配置项。也可以启动tmux时使用参数 <code>-f</code> 指定一个配置文件。配置包含如下几个配置项：</p>
-
 <ul>
 <li>自定义各种快捷键</li>
 <li>自定义屏幕下方的状态条</li>
 </ul>
-
 <p>如配置激活快捷键：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">set -g prefix ^k
-unbind ^b</pre></div>
+<pre><code>set -g prefix ^k
+unbind ^b
+</code></pre>
 <p>默认的tmux风格比较朴素甚至有些丑陋。如果希望做一些美化和个性化配置的话，建议使用<a href="https://github.com/gpakosz/.tmux">gpakosz</a> 的tmux配置。它的本质是一个tmux配置文件，实现了以下功能：</p>
-
 <ul>
 <li>基于powerline的美化</li>
 <li>显示笔记本电池电量</li>
 <li>和Mac互通的剪切板</li>
 <li>和vim更相近的快捷键</li>
 </ul>
-
-<p><img src="https://cloud.githubusercontent.com/assets/553208/9890858/ee3c0ca6-5c02-11e5-890e-05d825a46c92.gif" alt=".tmux" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/553208/9890858/ee3c0ca6-5c02-11e5-890e-05d825a46c92.gif" alt=".tmux"></p>
     </div>
     <footer class="post-footer">
      
@@ -293,6 +267,23 @@ unbind ^b</pre></div>
 
 
 
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：使用tmux
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
     </footer>
   </article>
 </section>
@@ -385,24 +376,22 @@ unbind ^b</pre></div>
 <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#什么是tmux">什么是tmux</a></li>
-<li><a href="#tmux的使用场景">tmux的使用场景</a></li>
-<li><a href="#tmux的基本概念">tmux的基本概念</a></li>
-<li><a href="#安装">安装</a></li>
-<li><a href="#使用">使用</a>
-<ul>
-<li><a href="#基础">基础</a></li>
-<li><a href="#session管理">Session管理</a></li>
-<li><a href="#window管理">window管理</a></li>
-<li><a href="#pane管理">pane管理</a></li>
-<li><a href="#其他">其他</a></li>
-</ul></li>
-<li><a href="#配置">配置</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#什么是tmux">什么是tmux</a></li>
+    <li><a href="#tmux的使用场景">tmux的使用场景</a></li>
+    <li><a href="#tmux的基本概念">tmux的基本概念</a></li>
+    <li><a href="#安装">安装</a></li>
+    <li><a href="#使用">使用</a>
+      <ul>
+        <li><a href="#基础">基础</a></li>
+        <li><a href="#session管理">Session管理</a></li>
+        <li><a href="#window管理">window管理</a></li>
+        <li><a href="#pane管理">pane管理</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+    <li><a href="#配置">配置</a></li>
+  </ul>
 </nav></div>
     </div>
 </section>
@@ -417,12 +406,12 @@ unbind ^b</pre></div>
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -217,7 +217,6 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>最近由于Go语言项目，又带一个小团队。以前作为团队的Leader，总是遇到各种问题，尤其是如何管理好人很困惑。HW的组织相对是比较宽松的，内部号称是矩阵式，感觉一个团队的凝聚力个人还是来源于Leader的个人技术感召力。好吧，这个只是凭感觉的管理，这是远远不够的。</p>
-
 <p>作为一个技术团队的小Leader，整体来讲，它面临”业务“，”人“，”事“这三个方面的工作展开。这些是来源公司内牛人们的一些总结，我把他们纪录下来，是为了我更好地开展工作。</p>
     </div>
     
@@ -285,9 +284,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>传统大型软件系统 ，多以功能需求驱动设计与开发。在体系结构上是一个单体应用，变更修改往往是牵一而发动全身；在系统生态上是一个封闭系统，系统集成是大量定制开发。单体封闭的系统在交付中面临着越来越多的挑战，提升系统的竞争力首先是在软件架构上先行。软件系统发展也需像硬件一样不断地更新换代，软件架构设计需要输入新的思维。只有在思想上彻底地变革，才能摆脱原有的束缚与局限性。</p>
-
 <h2 id="体验为王">体验为王</h2>
-
 <p>软件原本是一种信息技术发展不断地服务于各行各业，软件在实现上又是偏向技术性。如何让普通用户能够较好地使用软件，而不需要这方面的专业背景，需要思考软件减少数字与体验之间鸿沟。互联网思维一直讲求如何让用户感知到你对他的价值，而且把这个价值争取做到极致，超出用户的预期，这个就叫体验。只有用户产生体验之后，才能形成口碑。简而言之，体验的思想，就是从用户的感受出发，把它做到极致。</p>
     </div>
     
@@ -348,11 +345,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>团队成员中大多是原来做Java，深受Java的影响，对于使用map问得最多的：map的key如何计算它的HashCode。下面试图通过讲解一些类型知识来解答。</p>
-
 <h2 id="map的key类型">map的key类型</h2>
-
 <p>map中的key可以是任何的类型，只要它的值能比较是否相等，Go的<a href="http://golang.org/ref/spec#Comparison_operators">语言规范</a>已精确定义，Key的类型可以是：</p>
-
 <ul>
 <li>布尔值</li>
 <li>数字</li>
@@ -363,9 +357,7 @@
 <li>结构体</li>
 <li>只包含上述类型的数组。</li>
 </ul>
-
 <p>但不能是：</p>
-
 <ul>
 <li>slice</li>
 <li>map</li>
@@ -430,20 +422,15 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="背景">背景</h2>
-
 <p>个人最近一直使用VSCode+Go插件来开发Go代码，虽然也觉得VSCode是目前最好用的Go的开发工具，但还是对VIM有点不可割舍，对我来说原因有三：</p>
-
 <ul>
 <li>VIM可以在控制台使用，适合远程登陆到Linux进行代码调试修改</li>
 <li>配合Tmux使用，开启多个Pane各司其职，不同Pane之间快速切换</li>
 <li>有Tagbar，团队内代码串讲，能先看出每个文件的大纲，代码跳转也非常方便</li>
 </ul>
-
 <h2 id="截图">截图</h2>
-
 <p>第一张是自己截的，后两张是使用各插件官方的：</p>
-
-<p><img src="http://lanlingzi.cn/images/vim/vim-snapshot.png" alt="snapshot" /></p>
+<p><img src="http://lanlingzi.cn/images/vim/vim-snapshot.png" alt="snapshot"></p>
     </div>
     
     <div class="post-more-link text-center">
@@ -503,11 +490,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>时间真是过得太快，转眼儿子要上幼儿园了。昨天是第一次参加儿子的入园家长沟通会。</p>
-
 <h2 id="上幼儿园的意义">上幼儿园的意义</h2>
-
 <p>上幼儿园是小孩步入社会第一步，是融入世界的起点。脱离原生家庭才能独立成长，幼儿园有孩子同龄的伙伴，可以让孩子收获不同的体验；幼儿园也有专业的老师，可以让孩子快乐自由的探索自己，认识朋友，体验世界。</p>
-
 <p>我平时的工作都比较忙，基本都是早七晚九，白天小孩要么是跟他奶奶，要么是跟他外婆。还好他妈妈是小学老师，晚上能投入一些时间与他相处。大家居住环境比较封闭，邻里来往不多, 小孩基本都是呆在家里的时间居多。他对家的依赖比较多。虽他平时也会经常去他妈妈工作的小学玩，但还是在大家的完全监控下。养孩子的最终目的是为了看着他们独立，幼儿园是教孩子独立的第一步，也是教家长放手的第一步。</p>
     </div>
     
@@ -568,13 +552,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <h2 id="概述">概述</h2>
-
 <p>我应该是一个喜欢折腾的技术党。从采用Hugo建静态blog以来，算上今天移植的这个，一共使用了三个主题：</p>
-
 <p>第一个是修改自<a href="http://blog.coderzh.com/">Hueman</a>，它是一个Wordpress主题。第二个是修改自<a href="http://coderzh.github.io/hugo-pacman-theme/">pacman</a>，它是一个Hexo的主题。</p>
-
 <p>这二个主题都是<a href="http://blog.coderzh.com/">coderzh</a>最早移植的，我只是在其上修改些布局，增加点功能，换个图片什么。这个过程让我弄清楚了Hugo中模板制作方法。</p>
-
 <p>第三个则是从零开始，移植Github上人气最高的Hexo主题：<a href="https://github.com/iissnan/hexo-theme-next/">NexT</a>。正如你现在看到的，NexT是一款简洁又富有动感的主题，当前天我第一眼看到它时，就喜欢上它的风格。于是乎趁着周日，就开始NexT主题移植之旅。</p>
     </div>
     
@@ -629,30 +609,29 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2207 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2213 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Go语言内置了测试框架，编写单元测试非常方便。</p>
-
 <h2 id="命名约定">命名约定</h2>
-
 <ul>
-<li><p>测试代码位于以<code>_test.go</code>结尾的源文件中，一般与源码在同一个package中。</p>
-
-<p>位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。</p></li>
-
-<li><p>测试源码可以修改package名，带上<code>_test</code>结尾</p>
-
+<li>
+<p>测试代码位于以<code>_test.go</code>结尾的源文件中，一般与源码在同一个package中。</p>
+<p>位于同一个package中的主要原因是：测试可以访问package中不可导出的变量，方法等元素。</p>
+</li>
+<li>
+<p>测试源码可以修改package名，带上<code>_test</code>结尾</p>
 <p>修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的<code>bytes</code>中的测试代码，方便使用被测试的元素，可以采用<code>.</code>来import测试的package：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><span style="color:#f92672">package</span> <span style="color:#a6e22e">bytes_test</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">bytes_test</span>
 
 <span style="color:#f92672">import</span> (
     . <span style="color:#e6db74">&#34;bytes&#34;</span>
     <span style="color:#e6db74">&#34;io&#34;</span>
     <span style="color:#f92672">...</span>
-)</pre></div></li>
+)
+</code></pre></div></li>
 </ul>
     </div>
     
@@ -852,12 +831,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

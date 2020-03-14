@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.58.3" />
+	<meta name="generator" content="Hugo 0.67.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -151,17 +151,16 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">sum = 0  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
 10.times{|n| sum += n}   
-print sum</pre></div>
-<p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
-
+print sum
+</code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 <p>我们还来看看<code>Python</code>写的闭包：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">def addx(x):      
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
-print add8(100)</pre></div>
-<p>用Python写就没有那么好看。</p>
+print add8(100)
+</code></pre></div><p>用Python写就没有那么好看。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -392,7 +391,7 @@ print add8(100)</pre></div>
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">939 字 ~2分钟</span>
+<span class="leancloud-visitors-count">955 字 ~2分钟</span>
 </span>
       </div>
     </header>
@@ -451,20 +450,24 @@ print add8(100)</pre></div>
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">668 字 ~2分钟</span>
+<span class="leancloud-visitors-count">671 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <ol>
-<li><p>宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。</p></li>
-
-<li><p>宏的展开是一行，所以宏中的注释不能使用<code>//</code>，只能使用<code>/* */</code>。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。</p></li>
-
-<li><p>宏的参数一般情况下使用时要用()括起来，如:
+<li>
+<p>宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。</p>
+</li>
+<li>
+<p>宏的展开是一行，所以宏中的注释不能使用<code>//</code>，只能使用<code>/* */</code>。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。</p>
+</li>
+<li>
+<p>宏的参数一般情况下使用时要用()括起来，如:
 <code>#define MAX(a, b) a /2 &gt; b ? a /2  : b</code>
 MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
-应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code></p></li>
+应用定义为<code>#define MAX(a, b)  (a) / 2 &gt;  (b) ?  (a) /2 : (b)</code></p>
+</li>
 </ol>
     </div>
     
@@ -584,14 +587,11 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:</p>
-
 <ul>
 <li>第一部分是与malloc功能相同，是从堆上面申请内存块</li>
 <li>第二部是调用类的构造方法来初始化刚申请的内存。</li>
 </ul>
-
 <p>delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。</p>
-
 <p>new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。</p>
     </div>
     
@@ -794,12 +794,12 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2019</span>
+  2009 - 2020</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.58.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
