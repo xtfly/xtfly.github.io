@@ -6,10 +6,21 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 13 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>软件工程文化</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0322_engining/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0322_engining/</guid>
+      <description>&lt;h1 id=&#34;软件危机&#34;&gt;软件危机&lt;/h1&gt;
+&lt;p&gt;软件工程师的困惑：软件具有太多的不确定性，软件工程师每天日复一日的工作，大多数面对的都是自己目前不知道答案的问题。我们依赖着过去的经验，朝着大致的方向，努力地解决一个又一个问题。但历史的经验并不解决未来的问题，反面太多成功的经验可能会让我们陷入经验主义。我们也会经常责怪前人犯下的错误，需要我们去应对。我们讨厌需求的变更，它让我们曾经的付出付诸东流。变更是软件开发中不可避免的，所以我们在任何的阶段都要去适应变。即使软件发布了，也不可能一劳永逸，它像一个生命体还得继续维护。&lt;/p&gt;
+&lt;p&gt;从软件项目管理角度的困惑，软件存在所谓的软件危机：软件的开发进度难以预测；软件的开发成本难以控制；软件的功能难以满足用户；软件的产品质量无法保证；软件产品难以维护&amp;hellip;..&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>开源软件知识</title>

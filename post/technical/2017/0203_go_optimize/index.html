@@ -346,7 +346,7 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">121</span>
+        <span class="site-state-item-count">122</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -402,27 +402,31 @@ s := make([]string, 0, 100) // 注意：对于slice make时，第二个参数是
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
   <ul>
-    <li><a href="#内存优化">内存优化</a>
+    <li>
       <ul>
-        <li><a href="#小对象合并成结构体一次分配减少内存分配次数">小对象合并成结构体一次分配，减少内存分配次数</a></li>
-        <li><a href="#缓存区内容一次分配足够大小空间并适当复用">缓存区内容一次分配足够大小空间，并适当复用</a></li>
-        <li><a href="#slice和map采make创建时预估大小指定容量">slice和map采make创建时，预估大小指定容量</a></li>
-        <li><a href="#长调用栈避免申请较多的临时对象">长调用栈避免申请较多的临时对象</a></li>
-        <li><a href="#避免频繁创建临时对象">避免频繁创建临时对象</a></li>
-      </ul>
-    </li>
-    <li><a href="#并发优化">并发优化</a>
-      <ul>
-        <li><a href="#高并发的任务处理使用goroutine池">高并发的任务处理使用goroutine池</a></li>
-        <li><a href="#避免高并发调用同步系统接口">避免高并发调用同步系统接口</a></li>
-        <li><a href="#高并发时避免共享对象互斥">高并发时避免共享对象互斥</a></li>
-      </ul>
-    </li>
-    <li><a href="#其它优化">其它优化</a>
-      <ul>
-        <li><a href="#避免使用cgo或者减少cgo调用次数">避免使用CGO或者减少CGO调用次数</a></li>
-        <li><a href="#减少byte与string之间转换尽量采用byte来字符串处理">减少[]byte与string之间转换，尽量采用[]byte来字符串处理</a></li>
-        <li><a href="#字符串的拼接优先考虑bytesbuffer">字符串的拼接优先考虑bytes.Buffer</a></li>
+        <li><a href="#内存优化">内存优化</a>
+          <ul>
+            <li><a href="#小对象合并成结构体一次分配减少内存分配次数">小对象合并成结构体一次分配，减少内存分配次数</a></li>
+            <li><a href="#缓存区内容一次分配足够大小空间并适当复用">缓存区内容一次分配足够大小空间，并适当复用</a></li>
+            <li><a href="#slice和map采make创建时预估大小指定容量">slice和map采make创建时，预估大小指定容量</a></li>
+            <li><a href="#长调用栈避免申请较多的临时对象">长调用栈避免申请较多的临时对象</a></li>
+            <li><a href="#避免频繁创建临时对象">避免频繁创建临时对象</a></li>
+          </ul>
+        </li>
+        <li><a href="#并发优化">并发优化</a>
+          <ul>
+            <li><a href="#高并发的任务处理使用goroutine池">高并发的任务处理使用goroutine池</a></li>
+            <li><a href="#避免高并发调用同步系统接口">避免高并发调用同步系统接口</a></li>
+            <li><a href="#高并发时避免共享对象互斥">高并发时避免共享对象互斥</a></li>
+          </ul>
+        </li>
+        <li><a href="#其它优化">其它优化</a>
+          <ul>
+            <li><a href="#避免使用cgo或者减少cgo调用次数">避免使用CGO或者减少CGO调用次数</a></li>
+            <li><a href="#减少byte与string之间转换尽量采用byte来字符串处理">减少[]byte与string之间转换，尽量采用[]byte来字符串处理</a></li>
+            <li><a href="#字符串的拼接优先考虑bytesbuffer">字符串的拼接优先考虑bytes.Buffer</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>
