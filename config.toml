@@ -63,3 +63,8 @@ DefaultContentLanguage = "zh"
   Name = "知乎"
   Icon = "globe"
   URL = "https://www.zhihu.com/people/lan-ling-xin-yun"  
+
+[markup]
+  [markup.tableOfContents]
+    endLevel = 3
+    startLevel = 1
