@@ -164,7 +164,7 @@ os.remove(file_name)
 </ul>
 <p>能正确释放资源的建议写法是:</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">src_path, src_file = os.path.split(file_name)
-dst_file_name = os.path.join(path_name, src_file).strip(<span style="color:#cd5555">&#39;gz&#39;</span>).strip(<span style="color:#cd5555">&#39;.&#39;</span>)
+dst_file_name = os.path.join(path_name, src_file).rstrip(<span style="color:#cd5555">&#39;gz&#39;</span>).rstrip(<span style="color:#cd5555">&#39;.&#39;</span>)
 
 <span style="color:#8b008b;font-weight:bold">with</span> gzip.GzipFile(file_name) <span style="color:#8b008b;font-weight:bold">as</span> src_gz_file, <span style="color:#658b00">open</span>(dst_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>) <span style="color:#8b008b;font-weight:bold">as</span> out_file:
     out_file.writeline(src_gz_file.realines())

@@ -12,7 +12,7 @@
         <content type="html"> 案例 下面的代码来自我们某一工具源码中：
 file_gz = gzip.GzipFile(file_name) src_path, src_file = os.path.split(file_name) tmp_file_name = os.path.join(path_name, src_file).strip(&amp;#39;gz&amp;#39;).strip(&amp;#39;.&amp;#39;) tmp_file = open(tmp_file_name, &amp;#39;wb&amp;#39;) tmp_file.writeline(file_gz.realines()) file_gz.close() tmp_file.close() os.remove(file_name) 从代码健壮角度来看，存在如下两个问题：
  缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常 当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题  能正确释放资源的建议写法是:
-src_path, src_file = os.path.split(file_name) dst_file_name = os.path.join(path_name, src_file).strip(&amp;#39;gz&amp;#39;).strip(&amp;#39;.&amp;#39;) with gzip.GzipFile(file_name) as src_gz_file, open(dst_file_name, &amp;#39;wb&amp;#39;) as out_file: out_file.writeline(src_gz_file.realines()) os.remove(file_name) 还有一种写法，采用try-except-finally，在finally中对打开的文件关闭掉，但这种写法的代码显得臃肿。所以Python又提供上述示例中with语句写法。
+src_path, src_file = os.path.split(file_name) dst_file_name = os.path.join(path_name, src_file).rstrip(&amp;#39;gz&amp;#39;).rstrip(&amp;#39;.&amp;#39;) with gzip.GzipFile(file_name) as src_gz_file, open(dst_file_name, &amp;#39;wb&amp;#39;) as out_file: out_file.writeline(src_gz_file.realines()) os.remove(file_name) 还有一种写法，采用try-except-finally，在finally中对打开的文件关闭掉，但这种写法的代码显得臃肿。所以Python又提供上述示例中with语句写法。
 背后的知识 with语句启用了上下文管理器，标准库中contextlib模块包含用于处理上下文管理器一些工具。
 上下文管理器涉及两种方法:
  当执行进入内部代码块时运行 __enter__() 方法, 返回要在上下文中使用的对象 当执行离开 with 块时，运行 __exit__() 方法来清理正在使用的任何资源  对于任何一个对象能够使用 with 语句来清理资源，只要像下面来提供__enter__() 方法与__exit__() 方法：
