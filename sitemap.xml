@@ -27,14 +27,14 @@ try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(new F
 Go 作为后起之秀的Go，对于资源释放的解决方法，相比Python与Java来得优雅些。它提供了defer关键字:
 src, err := os.Open(srcFile) if err != nil { return } defer src.Close() defer的底层实现是：defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。采用栈数据结构，一个方法中，当存在多个defer语句时，先加入列表则后执行。
 当然，由于defer后面可以跟匿名函数块，如：
-func test() int { i := 0 defer func (){ i&#43;&#43; fmt.Println(&amp;#34;defer2:&amp;#34;, i) // 打印结果为 defer2: 2 }() defer func (){ i&#43;&#43; fmt.Println(&amp;#34;defer1:&amp;#34;, i) // 打印结果为 defer1: 1 }() return i // 假如返回值是a，此时a=i，defer中修改i的值不会影响返回值a，defer也根本访问不到a } 若是像上面代码在defer的函数中有使用前面的变量并对它进行修改，则引入了复杂性。有兴趣的同学的不烦再对defer深挖一下。是不是像Java一样要求，不要在finally中修改基本类型或对象中的值的既视感？
+func test() int { i := 0 defer func (){ i&#43;&#43; fmt.Println(&amp;#34;defer2:&amp;#34;, i) // 打印结果为 defer2: 2  }() defer func (){ i&#43;&#43; fmt.Println(&amp;#34;defer1:&amp;#34;, i) // 打印结果为 defer1: 1  }() return i // 假如返回值是a，此时a=i，defer中修改i的值不会影响返回值a，defer也根本访问不到a } 若是像上面代码在defer的函数中有使用前面的变量并对它进行修改，则引入了复杂性。有兴趣的同学的不烦再对defer深挖一下。是不是像Java一样要求，不要在finally中修改基本类型或对象中的值的既视感？
 再来一个例子，返回值有名：
-func test() (i int) { i = 5 defer func() { i&#43;&#43; fmt.Println(&amp;#34;defer2:&amp;#34;, i) // 打印结果为 defer2: 7 }() defer func() { i&#43;&#43; fmt.Println(&amp;#34;defer1:&amp;#34;, i) // 打印结果为 defer1: 6 }() return i // 返回的结果是几？ } 它的返回值又是什么，还有更多的defer坑等你去发现哦。
+func test() (i int) { i = 5 defer func() { i&#43;&#43; fmt.Println(&amp;#34;defer2:&amp;#34;, i) // 打印结果为 defer2: 7  }() defer func() { i&#43;&#43; fmt.Println(&amp;#34;defer1:&amp;#34;, i) // 打印结果为 defer1: 6  }() return i // 返回的结果是几？ } 它的返回值又是什么，还有更多的defer坑等你去发现哦。
 C&#43;&#43; C&#43;&#43;其实在资源管理上是最为成熟，RAII技术被认为是C&#43;&#43;中管理资源的最佳方法。 RAII是C&#43;&#43;的发明者Bjarne Stroustrup老爷子提出的概念，RAII全称是Resource Acquisition is Initialization，直译过来是资源获取即初始化，也就是说在构造函数中申请分配资源，在析构函数中释放资源。
 智能指针（std::unique_ptr）即RAII最具代表的实现，使用智能指针，可以实现自动的内存管理，再也不需要担心忘记delete造成的内存泄漏。内存只是资源的一种，如对于文件的打开与关闭，也可以使用RAII来解决，不过有点麻烦，按照常规的RAII技术需要写一堆管理它们的类。
 不过C&#43;&#43;11有lambda表达式，结合std::function，我们可以利用RAII机制完美地模拟Go的defer：
-#define SCOPEGUARD_LINENAME_CAT(name, line) name##line #define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line) #define DEFER(callback) ScopeGuard SCOPEGUARD_LINENAME(EXIT, __LINE__)(callback) class ScopeGuard { public: explicit ScopeGuard(std::function&amp;lt;void()&amp;gt; f) : handleExitScope(f){}; ~ScopeGuard(){ handleExitScope(); } private: std::function&amp;lt;void()&amp;gt; handleExitScope; }; { std::ofstream file(&amp;#34;test.txt&amp;#34;); DEFER([&amp;amp;] {file.close(); }); } 上面的代码看起来是不是很Clean，妈妈再不用担心我的代码出现资源泄露了^_^。
-结语 程序使用的资源，不仅仅是内存。在内存管理方面，有垃圾回归器的语言帮程序员省了很多事。但广义上资源还有文件，流，连接，锁等等，这些都需要开发者手动关闭他们，否则随着程序的不断运行，资源泄露将会累积成重大的生产事故。我们也许会记得在正常流程中关闭这些资源，即经常可能会忽视了异常场景，我们应该利用语言中最新的特征，既使代码Clean，能又能确保资源被正常释放。
+#define SCOPEGUARD_LINENAME_CAT(name, line) name##line #define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line) #define DEFER(callback) ScopeGuard SCOPEGUARD_LINENAME(EXIT, __LINE__)(callback)  class ScopeGuard { public: explicit ScopeGuard(std::function&amp;lt;void()&amp;gt; f) : handleExitScope(f){}; ~ScopeGuard(){ handleExitScope(); } private: std::function&amp;lt;void()&amp;gt; handleExitScope; }; { std::ofstream file(&amp;#34;test.txt&amp;#34;); DEFER([&amp;amp;] { file.close(); }); } 上面的代码看起来是不是很Clean，妈妈再不用担心我的代码出现资源泄露了^_^。
+结语 程序使用的资源，不仅仅是内存。在内存管理方面，有垃圾回归器的语言帮程序员省了很多事。但广义上资源还有文件，流，连接，锁等等，这些都需要开发者手动关闭他们，否则随着程序的不断运行，资源泄露将会累积成重大的生产事故。我们也许会记得在正常流程中关闭这些资源，却可能经常忽视了异常场景，我们应该利用语言中最新的特性，既使代码Clean，能又能确保资源被正常释放。
 </content>
     </entry>
     

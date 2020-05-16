@@ -185,7 +185,7 @@
 <p>Attach Listener线程启动后，就会创建一个监听套接字，并创建了一个文件/tmp/.java_pid的IPC socketFile，之后客户端和目标JVM进程就通过这个socketFile进行通信。客户端可以通过这个socketFile发送相关命令。Attach Listener线程做的事情就是监听这个socketFile，发现有请求就解析，然后根据命令执行不同的方法，最后将结果返回。</p>
 <h1 id="jpda">JPDA</h1>
 <p>JPDA（Java Platform Debugger Architecture）是Java提供的一套用于开发Java调试工具的规范，任何的JDK实现都需要实现这个规范。JPDA是一个Architecture，它包括了三个不同层次的规范。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">                 /    |--------------|
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">                 /    |--------------|
                 /     |     VM       |
     debuggee - (      |--------------|  &lt;------- JVMTI - Java VM Tool Interface
                 \     |   back-end   |

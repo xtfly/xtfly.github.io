@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。</p>
 <h2 id="顺序存储实现">顺序存储实现：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, size_t SIZE&gt;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, size_t SIZE&gt;  
 class Queue  
 {  
 public:  
@@ -219,7 +219,7 @@ private:
     int m_rear;  
 };  
 </code></pre></div><h2 id="链表存储实现">链表存储实现：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;  
 struct QNode  
 {  
     QNode() : m_pNext(NULL)  
@@ -318,7 +318,7 @@ private:
     int m_size;  
 };  
 </code></pre></div><h2 id="测试代码">测试代码：</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print_queue(int&amp; a)  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print_queue(int&amp; a)  
 {  
     printf(&#34;%d/t&#34;, a);  
 }  

@@ -152,10 +152,10 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一工具源码中：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">file_gz = gzip.GzipFile(file_name)
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">file_gz = gzip.GzipFile(file_name)
 src_path, src_file = os.path.split(file_name)
-tmp_file_name = os.path.join(path_name, src_file).strip(&#39;gz&#39;).strip(&#39;.&#39;)
-tmp_file = open(tmp_file_name, &#39;wb&#39;)
+tmp_file_name = os.path.join(path_name, src_file).strip(<span style="color:#cd5555">&#39;gz&#39;</span>).strip(<span style="color:#cd5555">&#39;.&#39;</span>)
+tmp_file = <span style="color:#658b00">open</span>(tmp_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>)
 tmp_file.writeline(file_gz.realines())
 file_gz.close()
 tmp_file.close()

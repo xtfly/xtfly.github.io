@@ -18,7 +18,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname  
 {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
@@ -42,7 +42,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
       <description>&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
@@ -57,12 +57,12 @@ strmap.erase(iter);
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
       <description>&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
 10.times{|n| sum += n}   
 print sum
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
 &lt;p&gt;我们还来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
 print add8(100)

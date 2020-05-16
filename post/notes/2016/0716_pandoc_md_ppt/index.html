@@ -157,7 +157,7 @@
 <pre><code>$ brew install pandoc
 </code></pre>
 <h3 id="检验">检验</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ pandoc --version
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ pandoc --version
 pandoc 1.17.1
 Compiled with texmath 0.8.6.3, highlighting-kate 0.6.2.
 Syntax highlighting is supported for the following languages:
@@ -177,27 +177,27 @@ Syntax highlighting is supported for the following languages:
 ......
 </code></pre></div><p>可见，Pandoc支持多种语言的高亮显示，程序员不愁写PPT了。</p>
 <h3 id="样例">样例</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">% Markdown + Pandoc
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">% Markdown + Pandoc
 % lanlingzi
 % 2016-07-16
 
-<span style="color:#75715e">## Web-based slideshow
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">-</span> is a slide show which can be played (viewed or presented) using a web browser
-<span style="color:#66d9ef">-</span> is typically generated to or authored in HTML, JavaScript and CSS code (files)
-<span style="color:#66d9ef">-</span> are generated from presentation software
-<span style="color:#66d9ef">-</span> offer templates allowing the slide show to be easily edited and changed.
+<span style="color:#800080;font-weight:bold">## Web-based slideshow
+</span><span style="color:#800080;font-weight:bold"></span>
+<span style="color:#8b008b;font-weight:bold">-</span> is a slide show which can be played (viewed or presented) using a web browser
+<span style="color:#8b008b;font-weight:bold">-</span> is typically generated to or authored in HTML, JavaScript and CSS code (files)
+<span style="color:#8b008b;font-weight:bold">-</span> are generated from presentation software
+<span style="color:#8b008b;font-weight:bold">-</span> offer templates allowing the slide show to be easily edited and changed.
 
-<span style="color:#75715e">## Features
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">-</span> Keyboard navigation
-<span style="color:#66d9ef">-</span> Slide transitions and animations
-<span style="color:#66d9ef">-</span> Auto-play/timed transitions
-<span style="color:#66d9ef">-</span> Displays a table of contents
-<span style="color:#66d9ef">-</span> Nested slides
-<span style="color:#66d9ef">-</span> Separate slide notes for the speaker
-<span style="color:#66d9ef">-</span> Full screen support, with automatic text and images resizing to fit full screen
-<span style="color:#66d9ef">-</span> .....
+<span style="color:#800080;font-weight:bold">## Features
+</span><span style="color:#800080;font-weight:bold"></span>
+<span style="color:#8b008b;font-weight:bold">-</span> Keyboard navigation
+<span style="color:#8b008b;font-weight:bold">-</span> Slide transitions and animations
+<span style="color:#8b008b;font-weight:bold">-</span> Auto-play/timed transitions
+<span style="color:#8b008b;font-weight:bold">-</span> Displays a table of contents
+<span style="color:#8b008b;font-weight:bold">-</span> Nested slides
+<span style="color:#8b008b;font-weight:bold">-</span> Separate slide notes for the speaker
+<span style="color:#8b008b;font-weight:bold">-</span> Full screen support, with automatic text and images resizing to fit full screen
+<span style="color:#8b008b;font-weight:bold">-</span> .....
 
 </code></pre></div><p>Pandoc对分级标题、列表、插入图片等标准的Markdown语法均被支持，和平常用Markdown记笔记写博客无异。在文本开头需要包含三行以%打头的元信息：标题、作者和日期。</p>
 <p>默认情况下每个二级标题是一张独立的幻灯片，所以，注意把每个二级标题下的内容控制在适当的长度。列表的显示效果可以人为设定，例如在幻灯片演示的时候逐条渐入。也可以直接在文本中嵌入HTML，用于显示Markdown等标记语言不支持的表格，或控制字体大小，以及进行其他更加复杂的排版。当然，如果用到的HTML标签过多，这不是Markdown这些轻量级标记语言的错，也许是做幻灯片的方式出了问题。因为演示本身要传达的是内容，复杂的排版没有任何意义。</p>

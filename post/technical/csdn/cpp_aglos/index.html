@@ -152,7 +152,7 @@
 <ul>
 <li>先来一个排序中的比较函数子，实现是左值小于右值。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> template&lt;typename T&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> template&lt;typename T&gt;
 struct CmpFuctor
 {
   bool operator()(const T&amp; lhs, const T&amp; rhs)
@@ -163,7 +163,7 @@ struct CmpFuctor
 </code></pre></div><ul>
 <li>交换排序中用到的交换两个元素的函数。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
 void swap(T* lhs, T* rhs)
 {
   T tmp = *lhs;
@@ -173,7 +173,7 @@ void swap(T* lhs, T* rhs)
 </code></pre></div><ul>
 <li>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;
 void traverse(T* pArray, const int size, void (*func)(T&amp;) )
 {
   for(int idx =0; idx&lt; size; idx++)
@@ -184,7 +184,7 @@ void traverse(T* pArray, const int size, void (*func)(T&amp;) )
 </code></pre></div><ul>
 <li>我们先来看一个最简单的插入排序。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP &gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP &gt;
 void insertsort(T* pArray, const int size, CMP cmp)
 {
   for(int idx =0; idx&lt; size; idx++)
@@ -202,7 +202,7 @@ void insertsort(T* pArray, const int size, CMP cmp)
 </code></pre></div><ul>
 <li>再对上面的插入排序改进，查找为折半插入排序。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void binaryinsertsort(T* pArray, const int size, CMP cmp)
 {
   for(int idx = 1; idx &lt; size; idx++)
@@ -237,7 +237,7 @@ void binaryinsertsort(T* pArray, const int size, CMP cmp)
 <li>再来一个改进版的插入排序。</li>
 </ul>
 <p>是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void shellsort(T* pArray, const int size, CMP cmp)
 {
   int j = 0;
@@ -269,7 +269,7 @@ void shellsort(T* pArray, const int size, CMP cmp)
 </code></pre></div><ul>
 <li>下面是一种简单选择排序算法。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void selectsort(T* pArray, const int size, CMP cmp)
 {
   for(int idx = 0; idx &lt; size; idx++)
@@ -286,7 +286,7 @@ void selectsort(T* pArray, const int size, CMP cmp)
 </code></pre></div><ul>
 <li>交换排序中最简单的冒泡排序。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 void bubblesort(T* pArray, const int size, CMP cmp)
 {
  for(int idx =0; idx &lt; size; idx++)
@@ -304,7 +304,7 @@ void bubblesort(T* pArray, const int size, CMP cmp)
 </code></pre></div><ul>
 <li>交换排序中最简单的快速排序。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, typename CMP&gt;
 int partition(T* pArray, int p, int r, CMP cmp)
 {
   int i = p - 1;
@@ -320,7 +320,7 @@ int partition(T* pArray, int p, int r, CMP cmp)
   swap(&amp;pArray[i + 1], &amp;pArray[r]);
   return i + 1;
 </code></pre></div><h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print(int&amp; a)
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print(int&amp; a)
 {
   printf(&#34;%d/t&#34;, a);
 }

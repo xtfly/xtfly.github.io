@@ -166,7 +166,7 @@
 </ul>
 <h3 id="桥方法">桥方法</h3>
 <p>什么是桥方法(Bridge Method)，从实际代码入手：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 父类
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 父类
 public interface Supper&lt;T&gt; {
     void method(T t);
 }
@@ -179,11 +179,11 @@ public class Sub implements Supper&lt;Integer&gt; {
 	}
 }
 </code></pre></div><p>父类Supper<!-- raw HTML omitted -->在泛型擦除后原始类型是：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface Supper{
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface Supper{
     void method(Object t);
 }
 </code></pre></div><p>子类Sub虽然实现了父类Supper，但是它只实现了void method(Integer value)而没有实现父类中的void method(Object t)，这个时候，编译期编译器会为子类Sub创建此方法，也就是子类Sub会变成这样：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public class Sub implements Supper&lt;Integer&gt; {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public class Sub implements Supper&lt;Integer&gt; {
 	@Override
 	public void method(Integer value) {
 		System.out.println(value);
@@ -233,7 +233,7 @@ public class Sub implements Supper&lt;Integer&gt; {
 <li>位于声明一侧的，源码里写了什么到运行时就能看到什么；</li>
 <li>位于使用一侧的，源码里写什么到运行时都没了。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import java.util.List;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import java.util.List;  
 import java.util.Map;  
   
 public class GenericClass&lt;T&gt; {                // 1  
@@ -265,7 +265,7 @@ public class GenericClass&lt;T&gt; {                // 1
 <p>Java 5在java.lang.reflect中新引入四种泛型类型：ParameterizedType、TypeVariable、WildcardType、GenericArrayType都是接口。</p>
 <h4 id="parameterizedtype">ParameterizedType</h4>
 <p>也就是参数化类型，注释里面说到ParameterizedType表示一个参数化类型，例如<code>Collection&lt;String&gt;</code>，实际上只要带有参数化(泛型)标签<code>&lt;ClassName&gt;</code>的参数或者属性，都属于ParameterizedType。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface ParameterizedType extends Type {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface ParameterizedType extends Type {
     Type[] getActualTypeArguments();
     Type getRawType();
     Type getOwnerType();
@@ -277,7 +277,7 @@ public class GenericClass&lt;T&gt; {                // 1
 </ul>
 <h4 id="typevariable">TypeVariable</h4>
 <p>也就是类型变量，它是各种类型变量的公共父接口，它主要用来表示带有上界的泛型参数的信息，它和ParameterizedType不同的地方是，ParameterizedType表示的参数的最外层一定是已知具体类型的(如<code>List&lt;String&gt;)</code>，而TypeVariable面向的是K、V、E等这些泛型参数字面量的表示。常见的TypeVariable的表示形式是<code>&lt;T extends KnownType-1 &amp; KnownType-2&gt;</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface TypeVariable&lt;D extends GenericDeclaration&gt; extends Type {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface TypeVariable&lt;D extends GenericDeclaration&gt; extends Type {
    //获得泛型的上限，若未明确声明上边界则默认为Object
     Type[] getBounds();
     //获取声明该类型变量实体(即获得类、方法或构造器名)
@@ -295,7 +295,7 @@ public class GenericClass&lt;T&gt; {                // 1
 </ul>
 <h4 id="wildcardtype">WildcardType</h4>
 <p>用于表示通配符(?)类型的表达式的泛型参数，例如&lt;? extends Number&gt;等。根据WildcardType注释提示：现阶段通配符表达式仅仅接受一个上边界或者下边界，这个和定义类型变量时候可以指定多个上边界是不一样。但是为了保持扩展性，这里返回值类型写成了数组形式。实际上现在返回的数组的大小就是1。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface WildcardType extends Type {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface WildcardType extends Type {
     Type[] getUpperBounds();
     Type[] getLowerBounds();
 }
@@ -305,7 +305,7 @@ public class GenericClass&lt;T&gt; {                // 1
 </ul>
 <h4 id="genericarraytype">GenericArrayType</h4>
 <p>也就是泛型数组，也就是元素类型为泛型类型的数组实现了该接口。它要求元素的类型是ParameterizedType或TypeVariable(实际中发现元素是GenericArrayType也是允许的)。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface GenericArrayType extends Type {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface GenericArrayType extends Type {
 
     Type getGenericComponentType();
 }

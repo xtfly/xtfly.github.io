@@ -169,7 +169,7 @@
 <li>抽象层次是循序渐进，逐步分层</li>
 </ul>
 <p>例如，对某一个数据集进行分析，第一层抽象：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func AnalysisData()  {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func AnalysisData()  {
     // 1. 读取数据
     loadDataset() 
     // 2. 处理数据
@@ -178,7 +178,7 @@
     outputResult()
 }
 </code></pre></div><p>对处理数据进行第二层抽象：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func processDataset() {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func processDataset() {
     // 2.1 转换数据
     transformData()
     // 2.2 选择算法，建立模型
@@ -195,7 +195,7 @@
 <li>SLAP，说函数中的语句应该是一个抽象层上的步骤组合，也就是只做了一件事</li>
 </ul>
 <p>另外我们在写函数代码时，通常会通过空行或注释分割逻辑片段，就像文章的段落：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//注释1
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//注释1
 代码片段1
 
 //注释2

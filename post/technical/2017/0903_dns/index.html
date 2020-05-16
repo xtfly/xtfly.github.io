@@ -254,7 +254,7 @@
 <p>域名权威DNS由A转移到B的过程中域名解析权发生变化，世界各地的递归DNS要知道这个变化需要一段时间，因为各地DNS都缓存了该域名以前的状态，更新到最新的状态需要时间。</p>
 <h3 id="过渡期时长的确定">过渡期时长的确定</h3>
 <p>我们对域名进行trace查询以便了解该域名NS记录的TTL值。如查询CN类域名。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig xxx.cn ns +trace
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig xxx.cn ns +trace
 xxx.cn.            21600  IN      NS      ns.xxx.cn.
 xxx.cn.            21600  IN      NS      ns.xxx.com.
 ;; Received 83 bytes from 203.119.25.1#53(A.DNS.cn) in 46 ms
@@ -262,7 +262,7 @@ xxx.cn.            21600  IN      NS      ns.xxx.cn.
 xxx.cn.            21600  IN      NS      ns.xxx.com.
 ;; Received 83 bytes from 129.44.79.4#53(ns.xxx.cn) in 78 ms
 </code></pre></div><p>上面权威DNS与顶级域DNS上NS记录的TTL值相同，则过渡期为21600秒。特殊情况，如果该域名的原权威DNS上定义的该域名NS记录的TTL值与顶级域DNS上定义的值不同。则这个时候原权威DNS上的TTL为有效值。如163.cn:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig 163.cn ns +trace
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig 163.cn ns +trace
 163.cn.                 21600   IN      NS      ns1.newfavor.net.
 163.cn.                 21600   IN      NS      ns2.newfavor.net.
 ;; Received 72 bytes from 203.119.28.1#53(D.DNS.cn) in 62 ms
@@ -272,13 +272,13 @@ xxx.cn.            21600  IN      NS      ns.xxx.com.
 ;; Received 174 bytes from 61.145.126.88#53(ns1.newfavor.net) in 93 ms
 </code></pre></div><p>可以看到该域名在顶级域上NS记录的TTL为21600，而在权威DNS上有重新定义为10800，则这个时候原权威DNS上的TTL为有效值。
 在实际工作中稳妥起见我们取两者中较大的为最后的参考值。下面列出几种域名NS记录的TTL值：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">COM.  TTL = 172800  (48小时)
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">COM.  TTL = 172800  (48小时)
 NET.  TTL = 172800  (48小时)
 ORG.  TTL = 86400  (24小时)
 CN.  TTL = 21600  (6小时)
 </code></pre></div><h3 id="域名配置zone文件">域名配置ZONE文件</h3>
 <p>这次把ZONE文件拿出来简单说明一下。ZONE文件是DNS上保存域名配置的文件，对BIND来说一个域名对应一个ZONE文件，现以abc.com的ZONE文件为例展开。罗嗦一句，该ZONE存在于权威DNS上。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 6h                                    //第1行
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 6h                                    //第1行
 $ORIGIN abc.com.                           //第2行
 @               3600    IN      SOA     ns1.ddd.com. root.ddd.com.(         //第3行
          929142851  ; Serial            //第4行
@@ -361,7 +361,7 @@ b               3600    IN      CNAME  a.abc.com.         //第14行
 </ul>
 <h3 id="目前域名解析授权状况">目前域名解析授权状况</h3>
 <p>目前在互联网上域名解析授权大体上是谁出售域名就把域名的权威DNS授权给谁并由其提供域名的权威DNS来完成域名解析工作，如购买了新网域名。默认就是由新网的权威DNS（nsx.xinnetdns.com、nsx.xinnet.cn）负责所售域名解析:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net xinnet.com ns
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net xinnet.com ns
 ;; ANSWER SECTION:
 xinnet.com.             172800  IN      NS      ns.xinnet.cn.
 xinnet.com.             172800  IN      NS      ns.xinnetdns.com.
@@ -371,7 +371,7 @@ xinnet.com.             172800  IN      NS      ns2.xinnetdns.com.
 <p>域名解析授权是个树状的，从上而下的分层体系，简图如下：</p>
 <p><img src="http://lanlingzi.cn/images/y17/dns_4_tree.jpg" alt=""></p>
 <p>首先“.”DNS把COM/NET/CN/ORG/TV等等域名按后缀的不同分别授权给不同的DNS，以利于分别管理。如COM/NET域名被授权给了如下几个权威DNS。这里不难想像要修改COM/NET的授权DNS要到“.”DNS上去操作才能完成。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig com. ns
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig com. ns
 ;; ANSWER SECTION:
 com.                    96045   IN      NS      d.gtld-servers.net.
 com.                    96045   IN      NS      g.gtld-servers.net.
@@ -388,7 +388,7 @@ com.                    96045   IN      NS      h.gtld-servers.net.
 com.                    96045   IN      NS      c.gtld-servers.net.
 </code></pre></div><p>同理可知，要指定或修改ABC.COM的权威DNS要去顶级DNS上操作。通常来说一般的域名所有者是无权登录顶级DNS进行操作的。只能通过域名提供商（如新网，万网等）的专用接口（位于域名商的域名管理平台上）来间接操作顶级DNS上的记录。</p>
 <p>以ABC.COM为例简要说明怎么指定自己的权威DNS，假设ABC.COM是在新网购买，那么默认该域名的权威DNS就是<code>nsx.xinnetdns.com、nsx.xinnet.cn</code>。这时候要修改默认权威DNS。首先登录新网的域名管理后台，找到修改域名DNS页面即可完成操作（详细过程这里有：http://docs.aidns.cn/help02.htm）。操作完成后要验证一下是否修改成功：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net abc.com ns
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net abc.com ns
 ;; ANSWER SECTION:
 abc.com.             172800  IN      NS      ns1.ai-dns.com.
 abc.com.             172800  IN      NS      ns2.ai-dns.com.
@@ -399,7 +399,7 @@ abc.com.             172800  IN      NS      ns3.ai-dns.com.
 <ol>
 <li>
 <p>扩展现有的权威DNS数量，如现有ns1,ns2,ns3.ai-dns.com共三台DNS，现在要增加到4台，则可以在原3台DNS上abc.com的ZONE文件内增加ns4这个NS记录。原来的ZONE内容：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 2d
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 2d
 $ORIGIN abc.com.
 @  3600 IN SOA ns1.ai-dns.com. root.ai-dns.com.(
 2288091841 1h 600 1w 900 )
@@ -407,7 +407,7 @@ $ORIGIN abc.com.
 @  2d IN NS ns2.ai-dns.com.
 @  2d IN NS ns3.ai-dns.com.
 </code></pre></div><p>增加ns4这个NS记录后为：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"></code></pre></div></li>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"></code></pre></div></li>
 </ol>
 <p>$TTL 2d
 $ORIGIN abc.com.
@@ -417,7 +417,7 @@ $ORIGIN abc.com.
 @  2d IN NS ns2.ai-dns.com.
 @  2d IN NS ns3.ai-dns.com.
 @  2d IN NS ns4.ai-dns.com.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
  当然增加NS4的操作也可以在顶级DNS上完成，不再赘述。
 
 2. 把权威DNS重新授权给其他DNS，如把原来的权威DNS（nsx.ai-dns.com）重新授权给别人（nsx.ddd.com）。操作过程同上，不再赘述。
@@ -438,7 +438,7 @@ $ORIGIN abc.com.
 A.ROOT-SERVERS.NET.  3600000      A     198.41.0.4
 .       3600000      NS    B.ROOT-SERVERS.NET.
 B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
 ## 擅用日志排除BIND故障
 
 这么多年来耳闻目染，发现网友提出的几乎99%的问题本来是不需要求助就能解决的，追其根源是不擅于（或不知道）使用软件本身提供的运行日志来解决问题。本文就BIND服务器日志简要说明。这里假设一网友反映“启动named进程后配置的域名解析服务不工作”这一简单问题说明怎么使用named的日志来解决。
@@ -453,7 +453,7 @@ B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
 02-Jan-2010 11:05:54.698 /var/named/etc/named.conf:45: missing &lsquo;;&rsquo; before &lsquo;key&rsquo;
 02-Jan-2010 11:05:54.698 loading configuration: failure
 02-Jan-2010 11:05:54.698 exiting (due to fatal error)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
 我们看到日志提示在named.conf文件的第45行少写了“；”，好，问题找到了排除问题就简单了。打开named.conf把那个“；”补上。
 
 </code></pre></div><p>[root@test ~]##named -gc /var/named/etc/named.conf
@@ -473,7 +473,7 @@ B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
 02-Jan-2010 11:06:33.840 zone test.com/IN: loaded serial 912200620
 02-Jan-2010 11:06:33.841 running
 02-Jan-2010 11:06:33.841 zone test.com/IN: sending notifies (serial 912200620)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
 问题排除。上面方法适用于下列情形：
 
 1. 安装BIND后调试named,看看有没有问题。
@@ -502,7 +502,7 @@ print-time yes;
 category default { warning; };
 category queries { query; };
 };</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
 这里我们让named把named运行日志和日常查询日志分别记录到named.log和query.log文件内。最后测试一下解析是否正常了：
 
 </code></pre></div><p>[root@test ~]#dig @localhost <a href="http://www.test.com">www.test.com</a>
@@ -529,7 +529,7 @@ ns3.test.com.           3600    IN      A       12.4.4.4
 ;; SERVER: 127.0.0.1#53(127.0.0.1)
 ;; WHEN: Sat Jan  2 11:48:03 2010
 ;; MSG SIZE  rcvd: 148</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
 由于是针对初级用户，更深相关细节不再赘述。
 
 </code></pre></div>

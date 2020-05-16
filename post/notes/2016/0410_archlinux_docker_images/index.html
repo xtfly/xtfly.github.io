@@ -169,23 +169,23 @@
 <ul>
 <li>前提Archlinux中也安装了docker引擎</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # pacman -S docker
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # pacman -S docker
   # systemctl enable docker
   # systemctl start docker
 </code></pre></div><ul>
 <li>以root用户执行mkimage.sh脚本</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # ./mkimage.sh
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # ./mkimage.sh
 </code></pre></div><ul>
 <li>制作完成之后，使用<code>docker images</code>查看，生成一个名为<code>archlinux</code>的images</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker images
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker images
   REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
   archlinux           latest              dc54036acaa4        About an hour ago   337.2 MB
 </code></pre></div><ul>
 <li>使用如下命令生成一个container，容器名为<code>arch1</code></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  # docker run -d --name -arch1 -p 2222:22 archlinux /run.sh
 </code></pre></div><ul>
 <li>使用ssh登陆验证，<code>ssh -p &lt;port&gt; root@127.0.0.1</code>，默认密码是<code>123456</code>。</li>
 <li>也可以使用命令<code>docker exec -it arch1 bash</code>来执行<code>bash</code>进入container操作。</li>

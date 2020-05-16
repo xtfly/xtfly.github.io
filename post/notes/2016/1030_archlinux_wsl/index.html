@@ -186,12 +186,12 @@ $ sudo apt-get install squashfs-tools
 <ul>
 <li>Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># pacman-key --init
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># pacman-key --init
 # pacman-key --populate
 </code></pre></div><ul>
 <li>locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># cd /usr/share/i18n/charmaps
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># cd /usr/share/i18n/charmaps
 # tar zxvf UTF-8.gz
 # locale-gen
 </code></pre></div><ul>

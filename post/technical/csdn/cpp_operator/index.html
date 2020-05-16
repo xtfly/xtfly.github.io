@@ -150,7 +150,7 @@
     <p>这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得<code>operator</code>比较好玩。C++有时它的确是个耐玩的东东。<code>operator</code>它有两种用法，一种是<code>operator overloading</code>（操作符重载），一种是<code>operator casting</code>（操作隐式转换）。</p>
 <h2 id="operator-overloading">operator overloading</h2>
 <p>C++可以通过operator 重载操作符，格式如下：类型<code>T operator 操作符 ()</code>，如比重载<code>+</code>，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; class A  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; class A  
 {  
 public:  
     const T operator + (const T&amp; rhs)  
@@ -161,13 +161,13 @@ private:
     T m_;  
 };
 </code></pre></div><p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; struct A  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; struct A  
 {  
    T operator()(const T&amp; lhs, const T&amp; rhs){ return lhs-rhs;}  
 };  
 </code></pre></div><h2 id="operator-casting">operator casting</h2>
 <p>C++可以通过operator 重载隐式转换，格式如下： <code>operator</code> 类型<code>T ()</code>，如下所示</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">class A  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">class A  
 {  
 public:  
    operator B* () { return this-&gt;b_;}   

@@ -152,7 +152,7 @@
 <p>在Java与C++中，TLS是一种机制，指存储在线程环境内的一个结构，用来存放该线程内独享的数据。进程内的线程不能访问不属于自己的TLS，这就保证了TLS内的数据在线程内是全局共享的，而对于线程外却是不可见的。</p>
 <p>在Java中，JDK库提供<code>Thread.CurrentThread()</code>来获取当前线程对象，提供<code>ThreadLocal</code>来存储与获取线程局部变量。由于Java能通过<code>Thread.CurrentThread()</code>获取当前线程，其实现的思路就很简单了，在ThreadLocal类中有一个Map，用于存储每一个线程的变量。</p>
 <p>ThreadLocal的API提供了如下的4个方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public T get()
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public T get()
 protected  T initialValue()
 public void remove()
 public void set(T value)
@@ -163,7 +163,7 @@ public void set(T value)
 <li><code>void set(T value)</code>将此线程局部变量的当前线程副本中的值设置为指定值。许多应用程序不需要这项功能，它们只依赖于<code>initialValue()</code>方法来设置线程局部变量的值。</li>
 </ul>
 <p>在Go语言中，而Google提供的解决方法是采用<a href="https://blog.golang.org/context"><code>golang.org/x/net/context</code></a>包来传递GoRoutine的上下文。对Go的Context的深入了解可参考我之前的分析：<a href="http://lanlingzi.cn/post/technical/2016/0802_go_context/">理解Go Context机制</a>。<code>Context</code>也是能存储Goroutine一些数据达到共享，但它提供的接口是<code>WithValue</code>函数来创建一个新的<code>Context</code>对象。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func WithValue(parent Context, key interface{}, val interface{}) Context {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func WithValue(parent Context, key interface{}, val interface{}) Context {
 	return &amp;valueCtx{parent, key, val}
 }
 
@@ -206,14 +206,14 @@ func (c *valueCtx) Value(key interface{}) interface{} {
 <li>
 <p>修改源代码暴露GoId，但Go语言可能随时修改源码，导致不兼容</p>
 <p>在标准库的<code>runtime/proc.go</code>（Go 1.6.3）中的<code>newextram</code>函数，会产生个GoId：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">mp.lockedg = gp
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">mp.lockedg = gp
 gp.lockedm = mp
 gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
 </code></pre></div></li>
 <li>
 <p>通过<code>runtime.Stack</code>来分析Stack输出信息获取GoId。</p>
 <p>在标准库的<code>runtime/mprof.go</code>（Go 1.6.3）中，<code>runtime.Stack</code>会获取gp对象(包含GoId)并输出整个Stack信息：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func Stack(buf []byte, all bool) int {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func Stack(buf []byte, all bool) int {
     if all {
         stopTheWorld(&#34;stack trace&#34;)
     }
@@ -252,7 +252,7 @@ gp.goid = int64(atomic.Xadd64(&amp;sched.goidgen, 1))
 <li>
 <p>通过内联c或者内联汇编</p>
 <p>go版本1.5，x86_64arc下汇编，估计也不通用</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// func GoID() int64
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// func GoID() int64
 TEXT s3lib GoID(SB),NOSPLIT,$0-8
 MOVQ TLS, CX
 MOVQ 0(CX)(TLS*1), AX

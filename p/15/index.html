@@ -151,7 +151,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname  
 {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &#34;33333&#34;;  
@@ -297,7 +297,7 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">typedef std::map&lt;std::string, std::string&gt; TStrMap;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">typedef std::map&lt;std::string, std::string&gt; TStrMap;  
 typedef TStrMap::iterator TStrMapIter;  
 TStrMap strmap;  
 TStrMapIter iter = strmap.find(&#34;somekey&#34;);  
@@ -362,12 +362,12 @@ strmap.erase(iter);
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
 10.times{|n| sum += n}   
 print sum
 </code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 <p>我们还来看看<code>Python</code>写的闭包：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
 print add8(100)

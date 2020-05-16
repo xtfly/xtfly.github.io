@@ -208,7 +208,7 @@
 </li>
 <li>
 <p>另一种方案是采用JVM的Instrumentation功能。在JVM级别，以插件的方法动态AOP切入JVM或JRE类中已有的实现。正好Instrumentation提供一种机制切入到每个ClassLoader.defineClass方法之前。应用只需要实现接口java.lang.instrument.ClassFileTransformer。在transform方法实现对类字符码的转换。此方法的原型为</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  byte[] transform(ClassLoader loader,  String className,  Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  byte[] transform(ClassLoader loader,  String className,  Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain,  byte[] classfileBuffer) throws IllegaIClassFormatException
 </code></pre></div><p>转换器ClassFileTransformer利用Instrumentation.addTransformer注册之后，在定义每个新类和重定义每个类时都将调用该转换器。对新的类定义的请求通过ClassLoader.defineClass进行。对类重定义的请求通过Instrumentation.redefineClasses方法进行。转换器是在验证或应用class文件字节之前的处理请求过程中进行调用的。</p>
 <p>如果实现的方法确定不需要进行字节码转换，则将返回null。否则它将刨建一个新的byte[]数组。将输入classfileBuffer连同所有需要的转换复制到其中，并返回新数组。</p>
 </li>
@@ -246,7 +246,7 @@
 <li>
 <p>调用黑名单列表类的属性</p>
 <p>新的代码类似如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//插入抛NoClassDefFoundError代码，调用一个类的静态方法
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//插入抛NoClassDefFoundError代码，调用一个类的静态方法
 //原代码
 </code></pre></div></li>
 </ul>
@@ -278,7 +278,7 @@
 <li>
 <p>类型为java/lang/Class，调用方法为newlnstance.</p>
 <p>当满足上面条件时，修改原有这些方法调用，则在原有方法中插入检查反射的target对象的类型是否不在白名单列表中。新的代码类似如下</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void setBoolean (Field f, Object a, final boolean value) {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void setBoolean (Field f, Object a, final boolean value) {
 ／／插入检查obj是否有访问权限（配合Securtiy访问控制）
 ／／插入检查obj是否在黑名单列表中
 ／／再加上原有的f.setBoolean(obj，value)；

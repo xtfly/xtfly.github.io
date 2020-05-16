@@ -163,19 +163,19 @@ floatT = { a: float; f: (float → int); }</p>
 </blockquote>
 <p>从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一种抽象类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，有点像Java中interface或GO的Interface。</p>
 <p>在Rust中，我们可以采用<code>impl Trait</code>指定函数的返回类型，而不必指出具体是哪一种类型。例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Trait {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Trait {
     // ...
 }
 </code></pre></div><p>如果是这样，为什么Rust不直接设计为如下，Trait像Java8中interface或GO的Interface，函数返回interface：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; Trait {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; Trait {
     // ...
 }
 </code></pre></div><p>遗憾地是，上面的写法在Rust都不可能编译通过，因为在Rust变量lifetime之说，返回值的lifetime不能悬空，那只能变成这种写法</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo3() -&gt; Box&lt;Trait&gt; {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo3() -&gt; Box&lt;Trait&gt; {
     Box::new(5) as Box&lt;Trait&gt;
 }
 </code></pre></div><p>这样写是不是很繁琐，不过，使用Box<!-- raw HTML omitted -->意味着动态分配，我们并非总是希望或需要这样，而<code>impl Trait</code>确保了静态分配。这种方法使foo仅能返回同样的类型。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">trait Trait {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">trait Trait {
     fn method(&amp;self);
 }
 
@@ -193,11 +193,11 @@ fn new_foo2() -&gt; impl Trait {
     5.0f32  // 返回一个f32类型的值
 }
 </code></pre></div><p>在定义返回闭包的函数时，新的<code>impl Trait</code>语法也可以如下使用，闭包函数实现了特性Fn：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Fn(i32) -&gt; i32 {
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Fn(i32) -&gt; i32 {
     |x| x + 1
 }
 </code></pre></div><p>另外，<code>impl Trait</code>语法还可以用于替代泛型类型的声明，如下例所示，虽然在这种情况下，它定义了一个通用类型，而不是存在类型：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 之前
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 之前
 fn foo&lt;T: Trait&gt;(x: T) {
 
 // 之后
@@ -205,7 +205,7 @@ fn foo(x: impl Trait) {
 </code></pre></div><p>从上面来看，<code>impl Trait</code>其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，函数不支持返回抽象类型，简单问题复杂化了。</p>
 <h2 id="具体应用">具体应用</h2>
 <p>actix是rust实现的一个web框架，它很快就使用到<code>impl Trait</code>，如下所示：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[derive(Serialize)]
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[derive(Serialize)]
 struct Measurement {
     temperature: f32,
 }
@@ -223,7 +223,7 @@ fn current_temperature(_req: HttpRequest) -&gt; impl Responder {
     Json(Measurement { temperature: 42.3 })
 }
 </code></pre></div><p>其中Responder是一个Trait，它定义如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// https://github.com/actix/actix-web/blob/master/src/handler.rs#L24
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// https://github.com/actix/actix-web/blob/master/src/handler.rs#L24
 
 pub trait Responder {
     /// The associated item which can be returned.
@@ -238,7 +238,7 @@ pub trait Responder {
     ) -&gt; Result&lt;Self::Item, Self::Error&gt;;
 
 </code></pre></div><p>Json是一个struct，它的实现在json.rs文件，也是实现了Responder Trait，在respond_to方法中对T进行了序列化，并生成Result对象</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// https://github.com/actix/actix-web/blob/master/src/json.rs#L119
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// https://github.com/actix/actix-web/blob/master/src/json.rs#L119
 
 impl&lt;T: Serialize&gt; Responder for Json&lt;T&gt; {
     type Item = HttpResponse;
@@ -254,7 +254,7 @@ impl&lt;T: Serialize&gt; Responder for Json&lt;T&gt; {
     }
 }
 </code></pre></div><p>为什么直接返回&quot;Hello World!&ldquo;与format!(&ldquo;Hello {}!&quot;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">https://github.com/actix/actix-web/blob/master/src/handler.rs#L292
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">https://github.com/actix/actix-web/blob/master/src/handler.rs#L292
 
 impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
     #[inline]

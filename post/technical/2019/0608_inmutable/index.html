@@ -189,7 +189,7 @@
 <p>而面向对象语言中虽强调对象的封装性，但没有在语义上强制约束对象的不可变性。面向对象的编程通过<strong>封装可变</strong>的部分来构造能够让人读懂的代码，函数式编程则是通过最大程度地<strong>减少可变</strong>的部分来构造出可让人读懂的代码。</p>
 <h1 id="函数式风格">函数式风格</h1>
 <p>Scala与Kotlin鼓励使用val，变量只是只读，使代码像函数式风格。我们来一个简单的Scala例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
     var i = 0 
     while (i &lt; args.length) {  
         println(args(i))  
@@ -197,12 +197,12 @@
     }  
 }  
 </code></pre></div><p>可以通过去掉var的办法把这个代码变得偏函数式风格:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
     args.foreach(println)  
 }  
 </code></pre></div><p>很显然，重构后的代码比原来的代码更简洁明了，也更少机会犯错。因为它消除了var变量，也消除了var变量上述可能导致的问题。</p>
 <p>当然它并不是纯函数式的，因为它有副作用，其副作用是打印到标准输出流。如果某个函数不返回任何值，就是说其结果类型为Unit，那么这个函数唯一能让其有点儿变化的办法就是通过某种副作用。而函数式的方式应该是定义对需打印的arg进行格式化的方法，但是仅返回格式化之后的字串。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def formatArgs(args: Array[String]) = args.mkString(&#34;\n&#34;)
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def formatArgs(args: Array[String]) = args.mkString(&#34;\n&#34;)
 
 val res = formatArgs(Array(&#34;zero&#34;, &#34;one&#34;, &#34;two&#34;))
 println(res)
@@ -223,7 +223,7 @@ println(res)
 <h2 id="函数式编程">函数式编程</h2>
 <p>函数式编程是java8的一大特色，说到函数式编程，就不得不提及流Stream。</p>
 <p>Stream其中有一个特点：它不会改变原集合，它是一堆元素顺序或者并行执行我们串起来的函数，函数并不会对集合中的元素造成影响。对Stream的使用就是实现一个filter-map-reduce过程，这个过程我也叫做聚合操作，产生一个最终结果。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">final List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4);
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">final List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4);
 final Integer sum = nums.stream()
   .filter(n -&gt; n % 2 == 0)
   .map(n -&gt; n * n)
