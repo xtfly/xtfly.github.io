@@ -106,6 +106,144 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0609_comment/" itemprop="url">
+        合理有效的注释
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-09">
+    2019-06-09
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1867 字 ~4分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="注释是什么">注释是什么</h1>
+<p>注释是否有用一直以来都被程序员们广泛争论。也有人说，良好的编程习惯从写注释开始；有的人说，注释是恶魔，它将我们的代码变得很难理解。那什么才是注释？</p>
+<blockquote>
+<p>注释就是对代码的解释和说明，其目的是让人们能够更加轻松地了解代码。注释是编写程序时，写程序的人给一个语句、程序段、函数等的解释或提示，能提高程序代码的可读性。 &ndash; 百度百科</p>
+</blockquote>
+<p>注释主要是给人看的，其目的是增加代码的可读性。不同的公司、项目，对代码注释要求不同，他们被写入到编程规范中。而大多的规范中对注释关注的是格式，却难以说明如何正确地写注释，什么样的注释不应该写，什么地方需要写注释。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0609_comment/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0608_inmutable/" itemprop="url">
+        不可变减少副作用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-08">
+    2019-06-08
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2860 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="可变与不可变">可变与不可变</h1>
+<p>在JVM系统语言如Scala与Kotlin中有两个关键字定义变量</p>
+<ul>
+<li>var是一个<strong>可变</strong>变量，可以通过重新分配来更改为另一个值的变量</li>
+<li>val是一个<strong>只读</strong>变量，创建的时候必须初始化，以后不能再被改变</li>
+</ul>
+<p>为什么新的语言需要强调变量<code>不可改变</code>？ 我再来看一下Rust语言中的变量不可改变。</p>
+<ul>
+<li>let，采用此关键字来绑定变量，变量默认不可变</li>
+<li>let mut，采用此关键字来绑定可以变更的变量</li>
+</ul>
+<p>Rust在mutable（可变）与immutable（不可变）上相比Scala上更进了一步：</p>
+<ul>
+<li>Scala的val只能约束了同一个变量名不可再重新赋值，变量绑定的对象是可以改变的（如val的list对象，可以调用它的append方法修改对象内容）</li>
+<li>Rust通过借用（borrow）语义与mut关键字，约束了只有声明为 mut 的变量，才能对绑定的对象是进变更（如只有是mut的vec对象，才能调用它的push方法修改其内容）</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0608_inmutable/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0602_dry/" itemprop="url">
         拒绝重复代码
         </a>
@@ -503,128 +641,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/thoughts/2019/0511_study/" itemprop="url">
-        不断学习
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-11">
-    2019-05-11
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%84%9F%E6%83%B3" itemprop="url" rel="index">
-        <span itemprop="name">感想</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1263 字 ~3分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="忽视的差距">忽视的差距</h1>
-<p>公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。</p>
-<p>软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/thoughts/2019/0511_study/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2019/0504_latex/" itemprop="url">
-        支持LateX
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-04">
-    2019-05-04
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">443 字 ~1分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>五一放假正好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support&hellip;</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
-<h1 id="如何集成">如何集成</h1>
-<p>在主题文件<code>layouts/partials/script.html</code>中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/notes/2019/0504_latex/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -742,7 +758,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">122</span>
+        <span class="site-state-item-count">124</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

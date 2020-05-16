@@ -12,6 +12,39 @@
     
     
     <item>
+      <title>飞哥讲代码1：确保资源被释放</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0516_code/</link>
+      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一工具源码中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;file_gz = gzip.GzipFile(file_name)
+src_path, src_file = os.path.split(file_name)
+tmp_file_name = os.path.join(path_name, src_file).strip(&amp;#39;gz&amp;#39;).strip(&amp;#39;.&amp;#39;)
+tmp_file = open(tmp_file_name, &amp;#39;wb&amp;#39;)
+tmp_file.writeline(file_gz.realines())
+file_gz.close()
+tmp_file.close()
+os.remove(file_name)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
+&lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;能正确释放资源的建议写法是:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>阅读</title>
+      <link>http://lanlingzi.cn/post/thoughts/2020/0329_delay/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/thoughts/2020/0329_delay/</guid>
+      <description>生于80后，长相70后的我们，不知不觉已将跨入不惑不年。但还是为了房子、孩子、票子日复一日地忙碌工作，曾经年少的理想也慢慢被岁月磨平，也根本</description>
+    </item>
+    
+    <item>
       <title>软件工程文化</title>
       <link>http://lanlingzi.cn/post/technical/2020/0322_engining/</link>
       <pubDate>Sun, 22 Mar 2020 00:00:00 +0000</pubDate>
