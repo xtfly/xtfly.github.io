@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2330 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2335 字 ~5分钟</span>
 </span>
       </div>
     </header>
@@ -174,7 +174,7 @@ os.remove(file_name)
 <p><code>with</code>语句启用了上下文管理器，标准库中<code>contextlib</code>模块包含用于处理上下文管理器一些工具。</p>
 <p>上下文管理器涉及两个方法:</p>
 <ul>
-<li>当进入内部代码块时执行 <code>__enter__()</code> 方法, 返回要在上下文中使用的对象</li>
+<li>当进入内部代码块时，执行 <code>__enter__()</code> 方法, 返回要在上下文中使用的对象</li>
 <li>当离开 <code>with</code> 块时，执行 <code>__exit__()</code> 方法，清理正在使用的任何资源</li>
 </ul>
 <p>对于任何一个对象能够使用 <code>with</code> 语句来清理资源，只要像下面来提供 <code>__enter__()</code> 方法与 <code>__exit__()</code> 方法：</p>
@@ -221,23 +221,22 @@ BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">null</s
     <span style="color:#8b008b;font-weight:bold">if</span> (bin != <span style="color:#8b008b;font-weight:bold">null</span>) {
         <span style="color:#8b008b;font-weight:bold">try</span> {
             bin.<span style="color:#658b00">close</span>();
-        }
-        <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
             log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>)
         }
     }
     <span style="color:#8b008b;font-weight:bold">if</span> (bout != <span style="color:#8b008b;font-weight:bold">null</span>) {
         <span style="color:#8b008b;font-weight:bold">try</span> {
             bout.<span style="color:#658b00">close</span>();
-        }
-        <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
             log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
         }
     }
 }
 </code></pre></div><p>上面的代码是不是不够简洁？关闭资源也要 <code>try-catch</code> ，否则会导致后续的close未被执行。Java 1.7中新增的<code>try-with-resource</code>语法糖，简化的代码就成了如下：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> (BufferedInputStream bin = <span style="color:#8b008b;font-weight:bold">new</span> BufferedInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;input.txt&#34;</span>)));
-    BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)))) {
+    BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)))
+) {
     <span style="color:#00688b;font-weight:bold">int</span> br = -1;
     <span style="color:#8b008b;font-weight:bold">while</span> ((br = bin.<span style="color:#658b00">read</span>()) != -1) {
         bout.<span style="color:#658b00">write</span>(br);
@@ -260,11 +259,11 @@ BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">null</s
 <p>当然，由于defer后面可以跟匿名函数块，如：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">test</span>() <span style="color:#00688b;font-weight:bold">int</span> {
     i := <span style="color:#b452cd">0</span>
-    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> (){
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
         i++
         fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer2:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer2: 2
 </span><span style="color:#228b22"></span>    }()
-    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> (){
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
         i++
         fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer1:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer1: 1
 </span><span style="color:#228b22"></span>    }()
@@ -289,7 +288,7 @@ BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">null</s
 <p>C++其实在资源管理上是最为成熟，RAII技术被认为是C++中管理资源的最佳方法。 RAII是C++的发明者Bjarne Stroustrup老爷子提出的概念，RAII全称是<code>Resource Acquisition is Initialization</code>，直译过来是<code>资源获取即初始化</code>，也就是说在构造函数中申请分配资源，在析构函数中释放资源。</p>
 <p>智能指针（std::unique_ptr）即RAII最具代表的实现，使用智能指针，可以实现自动的内存管理，再也不需要担心忘记delete造成的内存泄漏。内存只是资源的一种，如对于文件的打开与关闭，也可以使用RAII来解决，不过有点麻烦，按照常规的RAII技术需要写一堆管理它们的类。</p>
 <p>不过C++11有lambda表达式，结合std::function，我们可以利用RAII机制完美地模拟Go的<code>defer</code>（效果与Go还是有些区别的，Go
-是函数级，它代码块级）：</p>
+是函数级，它是代码块级）：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define SCOPEGUARD_LINENAME_CAT(name, line) name##line
 </span><span style="color:#1e889b">#define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line)
 </span><span style="color:#1e889b">#define DEFER(callback) ScopeGuard SCOPEGUARD_LINENAME(EXIT, __LINE__)(callback)
