@@ -106,6 +106,73 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" itemprop="url">
+        Cache设计
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-06-24">
+    2018-06-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">1470 字 ~3分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>一提到Cache，就想到08年我为公司写的消息缓存系统的惨痛教训。当时Redis与Memcached远还没有流行，公司对使用开源项目也是慎重，于是我和另一个同事自己撸了一个系统，但做着做着就变成一个带有强业务逻辑的Cache了。后面又扩大他的使用场景，也导致了一些问题。这个系统的要满足如下场景：</p>
+<ul>
+<li>针对消息对象缓存，每个消息都非常小，要高效地使用内存</li>
+<li>存在定时消息，当定时到了，需要回到业务系统中去调度</li>
+<li>消息有优先级与时序性，要支持按不同的属性来索引（消息ID，发送人，收件人等）</li>
+<li>消息量非常大，缓存需要有淘汰机制，支持淘汰的消息本地文件存储（相当于多级缓存，本地文件存储要求高效索引）</li>
+</ul>
+<p>从上面的场景来，它比纯Key/Value的缓存复杂，即要高效使用内存，同一个Value缓存，存在多个Key映射，而Value只能缓存一份，Value有优先级与时序性，索引时需排序处理，又有点消息队列的诉求。</p>
+<p>今天，我们大量在使用Redis来做缓存，Redis只作为Key/Value存储，上层复杂的缓存相关业务逻辑是在其外来叠加实现。但由于对于业务系统来说，永远都是具体情况具体分析，没有最好，只有最合适，所以也不得不要考虑通用问题：缓存穿透、缓存雪崩，缓存击穿。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0623_customize_spring_cache/" itemprop="url">
         自定义扩展Spring Cache注解
         </a>
@@ -566,82 +633,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0730_4a/" itemprop="url">
-        4A技术概览
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-07-30">
-    2017-07-30
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2995 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p><img src="http://lanlingzi.cn/images/y17/4a_security.png" alt=""></p>
-<h2 id="什么是4a">什么是4A</h2>
-<p>4A是指：账号Account、认证Authentication、授权Authorization、审计Audit，中文名称为统一安全管理平台解决方案。即将身份认证、授权、审计和账号(即不可否认性及数据完整性)定义为网络安全的四大组成部分，从而确立了身份认证在整个网络安全系统中的地位与作用。(来源百度百科)</p>
-<h2 id="账号account">账号Account</h2>
-<p>为用户提供统一集中的帐号管理，包括：用户身份信息的集中存储与统一管理。参考AWS等系统，涉及到概念包括：</p>
-<ul>
-<li>主账号：一般指管理资源的唯一身份标识，他为资源付费。也是自然人在4A中的唯一身份标识，一个用户只会有一个主账号，唯一标识了他的身份。</li>
-<li>从账号：一般指资源访问的账号，如虚拟机的访问用户，数据库的访问用户等。</li>
-<li>用户：实现操作资源的人员，对应物理存在的人，它由账号分配。</li>
-<li>群组：一般对应企业的组织，把用户归属到一个群组里，用户可以自动获得这个群组所具有的权限。对于大型的企业，组织可能分为人员组织与业务组织。对于用户来说，群组也是为提供分级管理能力。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0730_4a/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -760,7 +751,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">125</span>
+        <span class="site-state-item-count">126</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

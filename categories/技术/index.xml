@@ -6,10 +6,37 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 23 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 31 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码3：简洁高效的线程安全</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0531_code/</link>
+      <pubDate>Sun, 31 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0531_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一中间件产品源码(Java语言)中（&lt;code&gt;写法一&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+    AtomicLong rejectMessageCount = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(serviceName);
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; == rejectMessageCount) {
+        rejectMessageCount = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong();
+        AtomicLong currentValue = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;putIfAbsent&lt;/span&gt;(serviceName, rejectMessageCount);
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ( &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; != currentValue) {
+            rejectMessageCount = currentValue;
+        }
+    }
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCount;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码是线程安全的，但不够简洁，Java 1.8的&lt;code&gt;ConcurrentMap&lt;/code&gt;提供&lt;code&gt;computeIfAbsent()&lt;/code&gt;方法，可以简化为（&lt;code&gt;写法二&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;computeIfAbsent&lt;/span&gt;(serviceName, (key)-&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong());
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码2：把大象装进冰箱要几步</title>
