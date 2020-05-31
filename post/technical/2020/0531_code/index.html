@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3378 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3376 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -181,9 +181,9 @@
 <h2 id="背后的知识">背后的知识</h2>
 <p>ConcurrentMap是JDK1.5开始提供的新接口，用来解决Map操作线程不安全的问题。另一个代替是HashTable，通过synchronized来锁住整个table，无疑在多线程并发又是低效的。ConcurrentMap接口实现者ConcurrentHashMap有两个版本的实现逻辑（JDK1.8以前与1.8），简言之都是划整为零，避免大范围的锁。</p>
 <p>1.8以前版本（为简化说明，后面统一以1.5版本代替）的ConcurrentHashMap采用Segment数组和多个HashEntry来存储数据结构，Segment数组将一个大的table分割成多个小的table来进行加锁。而每一个Segment元素存储的是HashEntry数组+链表，这个和HashMap的数据存储结构一样。</p>
-<p><a href="http://lanlingzi.cn/images/code/con_map_1.7.png">con_map_1.7</a></p>
+<p><img src="http://lanlingzi.cn/images/code/con_map_1.7.png" alt="con_map_1.7"></p>
 <p>1.8版本的实现已经摒弃了Segment的概念，而是直接用Node数组+链表+红黑树的数据结构来实现，并发控制使用Synchronized和CAS来操作。</p>
-<p><a href="http://lanlingzi.cn/images/code/con_map_1.8.png">con_map_1.8</a></p>
+<p><img src="http://lanlingzi.cn/images/code/con_map_1.8.png" alt="con_map_1.8"></p>
 <p>以put操作实现为例，对当前的table进行无条件自循环直到put成功，使用了CAS+Synchronized+黑红树：</p>
 <ul>
 <li>如果没有初始化就先调用initTable方法来进行初始化过程</li>

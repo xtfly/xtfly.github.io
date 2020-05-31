@@ -16,9 +16,7 @@ private AtomicLong getRejectMessageCount(String serviceName) { synchronized(reje
 上面案例代码看似简单，但涉及到了线程安全的多个知识点，促使了我写这一篇博文。本文虽是以Java语言呈现，但线程安全的原理是相通的。
 背后的知识 ConcurrentMap是JDK1.5开始提供的新接口，用来解决Map操作线程不安全的问题。另一个代替是HashTable，通过synchronized来锁住整个table，无疑在多线程并发又是低效的。ConcurrentMap接口实现者ConcurrentHashMap有两个版本的实现逻辑（JDK1.8以前与1.8），简言之都是划整为零，避免大范围的锁。
 1.8以前版本（为简化说明，后面统一以1.5版本代替）的ConcurrentHashMap采用Segment数组和多个HashEntry来存储数据结构，Segment数组将一个大的table分割成多个小的table来进行加锁。而每一个Segment元素存储的是HashEntry数组&#43;链表，这个和HashMap的数据存储结构一样。
-con_map_1.7
 1.8版本的实现已经摒弃了Segment的概念，而是直接用Node数组&#43;链表&#43;红黑树的数据结构来实现，并发控制使用Synchronized和CAS来操作。
-con_map_1.8
 以put操作实现为例，对当前的table进行无条件自循环直到put成功，使用了CAS&#43;Synchronized&#43;黑红树：
  如果没有初始化就先调用initTable方法来进行初始化过程 如果没有hash冲突就直接CAS插入 如果还在进行扩容操作就先进行扩容 如果存在hash冲突，就加锁（Synchronized）来保证线程安全 最后一个如果该链表的数量大于阈值8，就要先转换成黑红树的结构  1.5与1.8版本的具体实现细节就不一一展开讲了，有兴趣的同学可以网上搜索相关源码分析。总结区别如下：
  1.5版本采用ReentrantLock&#43;Segment&#43;HashEntry；1.8版本中synchronized&#43;CAS&#43;HashEntry&#43;红黑树 1.8版本的实现降低锁的粒度，1.5版本锁的粒度是基于Segment的，包含多个HashEntry，1.8锁的粒度就是HashEntry（Hash值首节点） 1.8版本的数据结构变得更加简单，使得操作也更加清晰流畅，因为基于Hash计算冲突是否加锁，所以不需要分段锁的概念，也就不需要Segment这种数据结构了，由于粒度的降低，实现的复杂度也增加了 1.8版本使用红黑树来优化链表，基于长度很长的链表的遍历是一个很漫长的过程，而红黑树的遍历效率是很快的，代替一定阈值的链表 1.8版本使用内置锁synchronized来代替重入锁ReentrantLock，synchronized并不比ReentrantLock差，基于JVM的synchronized优化空间更大  回到案例的代码，再来对比说明一下
