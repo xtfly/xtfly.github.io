@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3376 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3384 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -204,10 +204,10 @@
 <ul>
 <li>写法三：采用synchronized锁get+put，则锁的范围过大，完全把ConcurrentHashMap中分段/Hash冲突加锁给废了</li>
 <li>写法一：putIfAbsent方法（底层是putValue）无论1.8版本或它之前的版本，相比synchronized锁get+put进一步降低了锁的粒度</li>
-<li>写法二：1.8版本针对不存在则put操作场景提供更为简单的API，涉及到锁的可见性</li>
+<li>写法二：1.8版本针对不存在则put操作场景提供更为简单的API，涉及到线程安全的可见性</li>
 </ul>
 <h1 id="线程安全">线程安全</h1>
-<p>JDK提供多种容器、原子对象与线程池，让多线程编程变得较为简单，但简单也隐藏了复杂与其背后的原理，若使用不当，也会造成多线程安全问题。</p>
+<p>JDK提供多种容器、原子对象与线程池，让多线程编程变得较为简单，简单后面往往也隐藏复杂性。若对他们不深入了解而使用不当，也会造成多线程安全问题。</p>
 <p>多线程编程要确保并发程序正确地执行，必须满足下面三个特性，他们缺一不可：</p>
 <ul>
 <li>原子性：一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行</li>
