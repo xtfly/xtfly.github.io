@@ -6,10 +6,40 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 31 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码4：消除重复，需要了解框架机制</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0605_code/</link>
+      <pubDate>Fri, 05 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0605_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中（&lt;code&gt;代码一&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory instance = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServiceFactory();
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory &lt;span style=&#34;color:#008b45&#34;&gt;getInstance&lt;/span&gt;() {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; instance;
+    }
+
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateDesignServie appTemplateDesignServie;
+   
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateExportServie appTemplateExportServie;
+    
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再来看另一平台服务的代码(Java语言)（&lt;code&gt;代码二&lt;/code&gt;）：&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码3：简洁高效的线程安全</title>

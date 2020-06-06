@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3384 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3382 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -165,7 +165,7 @@
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
     <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
 }
-</code></pre></div><p>回起曾经走读代码见过如下的写法（<code>写法三</code>，还是以getRejectMessageCount实现为例）：</p>
+</code></pre></div><p>回想起曾经走读代码见过如下的写法（<code>写法三</code>，还是以getRejectMessageCount实现为例）：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
     <span style="color:#8b008b;font-weight:bold">synchronized</span>(rejectMessageCounts) {
         AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
@@ -218,7 +218,7 @@
 <ul>
 <li>原子性：由于ConcurrentMap提供的get/put方法是原子操作，他们要么全部能执行，所以<code>写法三</code>需要加锁来确保</li>
 <li>可见性：ConcurrentMap的putIfAbsent方法能立即返回其它线程已加入Map中的对象，即拿到最新的值，所以<code>写法一</code>是没有问题的</li>
-<li>顺序性：涉及到Java中的指令重排序问题，案例代码不好直接说明此特征，简单说多个线程使用变量依赖是要有序的，不可被打断打乱，volatile变量则不可重排序</li>
+<li>顺序性：涉及到Java中的指令重排序问题，案例代码不好直接说明此特征，简单说多个线程使用变量依赖是要有序的，不可被打断打乱，volatile变量则不可重排序</li>
 </ul>
 <h1 id="锁的优化">锁的优化</h1>
 <p>线程安全解决办法一般是采用加锁同步，但一旦使用到锁，就会导致多个线程竞争时阻塞。如何让锁的锁定障碍降到最低？</p>
@@ -277,6 +277,10 @@
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/0605_code/" rel="next" title="飞哥讲代码4：消除重复，需要了解框架机制">
+        <i class="fa fa-chevron-left"></i> 飞哥讲代码4：消除重复，需要了解框架机制
+        </a>
     
     </div>
 
@@ -350,7 +354,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">126</span>
+        <span class="site-state-item-count">127</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
