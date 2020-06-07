@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4192 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4224 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -199,7 +199,7 @@
 <li>ServiceFactory也不是一个合格的单例，缺少private构造方法, instance未声明为final。</li>
 <li>出现了十多个类似的对象注入代码，那后面我加一个XXXService，是不是要再修改代码，若有几十个Service要使用，是不是这个类就膨胀了。</li>
 </ul>
-<p>写出ServiceFactory目的是想解决由于<code>@Autowired</code>只能用于Spring管理的Bean对象中，并不能用于其它对象中。而实现代码会在其它非Bean对象中随时调用XXXService，ServiceFactory则提供了获取Spring管理的XXXService一种变通途径。</p>
+<p>写出ServiceFactory目的是想解决由于<code>@Autowired</code>只能用于Spring管理的Bean对象中，并不能用于其它对象中。当代码要在其它非Bean对象中随时调用XXXService时，ServiceFactory则提供了获取Spring管理的XXXService一种变通途径，只是这种途径没有使用到Spring提供的扩展机制。</p>
 <p><code>代码二</code>的问题：</p>
 <ul>
 <li>比较直观地发现，代码出现了重复（相似），但似乎也没有重复太多，一般人也能接受。</li>
@@ -210,7 +210,7 @@
 <li>没有做到：对扩展开放，对修改关闭。</li>
 <li>扩展新的类似功能，需要修改此类的代码。</li>
 </ul>
-<p>为什么上面集中且容易察觉到的重复（相似），我们不去消除它。因为写重复代码太容易了，传统消除重复的套路（提取函数）在上面的代码已不再能有效解决，更别说满足<code>开闭原则</code>。若消除这类重复，而是需要我们对Spring的IoC运作机制较深入了解。</p>
+<p>为什么上面集中且容易察觉到的重复（相似），我们不去消除它。因为写重复代码太容易了，传统消除重复的套路（提取函数）在上面的代码已不再能有效解决，更别说满足<code>开闭原则</code>。若消除这类重复，则需要我们对Spring的IoC运作机制较深入了解。</p>
 <p><code>代码一</code>的优化建议：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SpringContextUtil</span> <span style="color:#8b008b;font-weight:bold">implements</span> ApplicationContextAware {
@@ -235,7 +235,7 @@
 		<span style="color:#8b008b;font-weight:bold">return</span> clazz.<span style="color:#658b00">cast</span>(springContext.<span style="color:#658b00">getBean</span>(name));
 	}
 }
-</code></pre></div><p>拿到ApplicationContext之后，我们就可以获取任一Bean对象了，可以消除了相似代码，也解决了违背<code>开闭原则</code>的问题。</p>
+</code></pre></div><p>拿到ApplicationContext之后，我们就可以获取任一Bean对象了，消除了相似代码，也解决了违背<code>开闭原则</code>的问题。</p>
 <p><code>代码二</code>的优化建议：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> ServiceConfigurer <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
@@ -256,12 +256,12 @@
         }
     }
 }
-</code></pre></div><p>通过采用List注入方式解决扩展性问题，那又怎么解决不同Interceptor注册先后问题？Spring还提供一个@Order注解，只需要在各个类声明时，给它排个序，那List中注入的对象就具有先后顺序：</p>
+</code></pre></div><p>通过采用List注入方式解决了扩展性问题，那又怎么解决不同Interceptor注册先后问题？Spring还提供一个@Order注解，只需要在各个类声明时，给它排个序，那List中注入的对象就具有先后顺序：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Order</span>(1)
 <span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AucInterceptor</span> ....
 </code></pre></div><h2 id="背后的知识">背后的知识</h2>
-<p>Spring框架其中的IoC容器负责管理Bean对象的生命周期，其底层核心对象：</p>
+<p>Spring提供的IoC容器负责管理Bean对象的生命周期，其底层核心对象：</p>
 <ul>
 <li>BeanDefinition：每个bean对应一个BeanDefinition实例。BeanDefinition负责保存bean对象的所有必要信息，包括bean对象的class类型、构造方法和参数、属性等等。</li>
 <li>BeanDefinitionRegistry：抽象bean描述信息的注册逻辑。</li>
@@ -304,7 +304,7 @@
 <p><code>@Order</code>注解，底层对应提供了<code>Ordered</code>这个接口，是使用了策略模式，用来处理相同接口实现类的优先级问题。默认实现是在<code>DefaultListableBeanFactory.resolveMultipleBeans</code> 方法会对依赖注入的对象进行排序处理。</p>
 <p>Spring的IoC知识内容非常多，不可能全都深入了解，但我们可以简单记注几个接口名称后辍：XXXRegistry，XXXFactory，XXXProcessor，XXXAware, XXXListener。不一定要记得细节，当你需要使用到某个能力时，就按后辍名去搜索找到我们需要的扩展机制。</p>
 <h1 id="di与ioc">DI与IoC</h1>
-<p>提供Spring的Bean管理，我们必定会提到两个词：DI与IoC。Spring是Bean的IoC容器，我们使用Bean时需要DI，初学者容易混淆他们。</p>
+<p>一提到Spring的Bean管理，我们也会提到两个词：DI与IoC。Spring是Bean的IoC容器，我们使用Bean时需要DI，初学者容易混淆他们。</p>
 <ul>
 <li>DI：依赖注入，将类的依赖通过外部注入进来。</li>
 <li>IoC：控制反转，将类的对象创建交给框架来配置。</li>
@@ -315,7 +315,7 @@
 <p>IoC的意义是为了解除耦合，IoC创建对象的控制权进行转移，以前创建对象的主动权和创建时机是由自己把控的，而现在这种权力转移到IoC容器。你要什么对象，它就给你什么对象。有了IoC容器，依赖关系就变了，原先的依赖关系就没了，它们都依赖IoC容器了，通过IoC容器来建立它们之间的关系。</p>
 <p>回到案例代码，消除重复需要理解Spring的运行机制，其进一步所思考的是如何学会IoC的本质。控制反转，让框架来帮我们完成依赖注入，而不是我们主动显示依赖其它对象，破坏代码的稳定性。</p>
 <h1 id="如何学习">如何学习</h1>
-<p>前面提到的Spring知识也只是点为止，而市面上编程、框架介绍这类书籍都通常非常的厚，我们哪些时间去学习啊；甚至通篇大段的代码讲解，让我去学习失去新鲜感。我也想掌握更多的知识，把代码写得更简练。面对编程中的各个体系，我们怎么去学习？学习有个金字塔理论：</p>
+<p>本文提到的Spring IoC知识只是点到为止，市面上编程、框架介绍这类书籍都通常非常的厚，我们哪些时间去学习啊；甚至通篇大段的代码讲解，让我对学习失去了新鲜感。我们每个人都想掌握更多的知识，把代码写得更简练。面对编程中的各种体系，我们怎么去学习？学习有个金字塔理论：</p>
 <ul>
 <li>听讲：两周以后学习的内容只能留下5%</li>
 <li>阅读：可以保留10%</li>
@@ -328,12 +328,12 @@
 <p>后面几种效果高的学习方式，都是团队学习、主动学习与参与式学习。结合编程应用上述理论：</p>
 <ul>
 <li>我们应该积极参与代码Review，这不仅仅是Committer的工作。因为Review不仅可以学习其它同学是怎么写代码，当遇到不同或更好的写法，我们可以及时交流；还可以搜索相应的知识，举一反三地深入了解其背后的原理。</li>
-<li>个人不建议平时花时间去看什么编程、框架之类的书籍，而是在工作中遇到问题，针对问题去主动寻求答案。正如案例代码一的写法，当你写一到三个对象注入时，可能不会想到优化。当写到七到八个时，那就应该想想有没有更好的办法。采取顺藤摸瓜式的思考，面向搜索学习：Spring怎么管理Bean-&gt;是否有Bean查询接口-&gt;我怎么拿到查询接口-&gt;是否有什么扩展点&hellip;&hellip;刚开始可能完全没有背景知识毫无思路，但如果不走第一步，也将永远停留在原地。</li>
-<li>平时注意总结与分享，分享不一定要搞个正式会议，形式多样。当你去考虑如何教别人时，就会先去了解更多的相关知识，也会在总结中有更多的思考，在讲解的过程中有更深的体会。这样日累月累下来，将会有越来越多的收获。</li>
+<li>个人不建议平时花时间无目的地去看什么编程、框架之类的书籍，而是当工作中遇到问题，针对问题去主动寻求答案。正如案例代码一的写法，当你写一到三个对象注入时，可能不会想到优化。当写到七到八个时，那就应该想想有没有更好的办法。采取顺藤摸瓜式的思考，面向搜索学习：Spring怎么管理Bean的-&gt;是否有Bean查询接口-&gt;怎么拿到查询接口-&gt;是否有扩展点&hellip;&hellip;刚开始可能完全没有背景知识毫无思路，但如果不走出第一步，也将永远停留在原地。</li>
+<li>平时注意总结与分享，分享不一定要搞个正式会议，形式可以多样。当你去考虑如何教别人时，就会先去了解更多的相关知识，也会在总结中有更多的思考，在讲解的过程中有更深的体会。这样日积月累下来，将会有越来越多的收获。</li>
 </ul>
 <p>在工作中 <a href="http://lanlingzi.cn/post/thoughts/2019/0511_study/">不断学习</a>，将是程序员不断提升的不二法门。</p>
 <h1 id="结语">结语</h1>
-<p>写出干净的代码，需要我们对所使用的框架机制有较深入的了解，一是可以避免出现框架已有机制没有应用起来出现重复或复杂的代码； 二是可以避免当出现问题时两手抓狂不知如何下手定位。在工作中带着问题，带着思考去学习。学习框架的运行机制，以及其应用的原理、设计原则，将会使自己从编码的纯体力劳动解放出来，发现更多有趣的新技术与技巧。并把这些应用到工作中，解决现实的问题，也将收获编程带来的满足感，快乐感。</p>
+<p>写出干净的代码，需要我们对所使用的框架机制有较深入的了解，一是可以避免出现框架已有机制没有使用出现重复与复杂的代码； 二是可以避免当出现问题时两手抓狂不知如何定位。在工作中带着问题，带着思考有目的地去学习。学习框架的运行机制，以及其应用的原理、设计原则，将会使自己从编码的纯体力劳动解放出来，发现更多有趣的新技术与技巧。把这些再应用到工作中，解决现实的问题，也将收获编程带来的满足感，快乐感。</p>
     </div>
     <footer class="post-footer">
      
