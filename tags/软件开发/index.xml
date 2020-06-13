@@ -6,10 +6,19 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 05 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码4：消除重复，需要搞点设计模式</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0613_code/</link>
+      <pubDate>Sat, 13 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0613_code/</guid>
+      <description>案例 下面的代码来自我们某一平台产品源码(Java语言)中： public class RemoteExecuteHandler { public Future&amp;lt;RemoteExecuteResult&amp;gt; handleDownload() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;CMC download package failed&amp;#34;, e); closeSshClient(); throw e; } } public Future&amp;lt;RemoteExecuteResult&amp;gt; handleLoad() throws SspException { try</description>
+    </item>
     
     <item>
       <title>飞哥讲代码4：消除重复，需要了解框架机制</title>

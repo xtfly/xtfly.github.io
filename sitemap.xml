@@ -1,6 +1,42 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码4：消除重复，需要搞点设计模式</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0613_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 下面的代码来自我们某一平台产品源码(Java语言)中：
+public class RemoteExecuteHandler { public Future&amp;lt;RemoteExecuteResult&amp;gt; handleDownload() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;CMC download package failed&amp;#34;, e); closeSshClient(); throw e; } } public Future&amp;lt;RemoteExecuteResult&amp;gt; handleLoad() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;Load site package failed&amp;#34;, e); closeSshClient(); throw e; } } // 下面还有几个类似的方法，不再一一列表 } 上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:
+ 异常资源泄露：可能抛运行期异常，则存在未正常closeSshClient，close动作应该放在finally中，或采用try-with-resources语法，参见飞哥讲代码1：确保资源被释放。 方法有副作用：多个方法隐式操作了成员变量，initSshClient方法创建的SshClient对象赋值给成员变量，而应该是返回SshClient对象，作为参数传递给loadPackage与closeSshClient方法，这样多线程并发就没有问题。  我们再来看一下downloadPackage的实现：
+private Future&amp;lt;RemoteExecuteResult&amp;gt; downloadPackage() throws SspException { String workspace = baseOption.getWorkspace(); String donwloadScript = LinuxFileSystemUtil.join(workspace, DOWNLOAD_SHEEL_SCRIPT); String resultFile = LinuxFileSystemUtil.join(workspace, DOWNLOAD_TASK_DIR, baseOption.getExecuteId(), DOWNLOAD_RESULT); String logFile = LinuxFileSystemUtil.join(workspace,DOWNLOAD_TASK_DIR, baseOption.getExecuteId(), DOWNLOAD_LOG); String configFile = makeExecuteConfigFile(); String cmdInstall = String.format(&amp;#34;chmod &#43;x %s &amp;amp;&amp;amp; %s %s %s &amp;gt; %s 2&amp;gt;&amp;amp;1 &amp;amp;&amp;#34;, donwloadScript, donwloadScript, configFile, resultFile, logFile); // 构建执行命令  SSHExistStatus result = null; try { result = sshClient.execute(cmdInstall); } catch (Exception e) { LOGGER.error(&amp;#34;Remote execute cmc download package failed: {}&amp;#34;, e); throw new SspException(&amp;#34;Remote execute cmc download package failed: &amp;#34; &#43; e.getMessage()); } if (result.getCode() != 0 ) { LOGGER.error(&amp;#34;Remote execute cmc download package failed: {}&amp;#34;, result); throw new SspException(&amp;#34;Remote execute cmc download package failed: &amp;#34; &#43; result.getError()); } return new RemoteExecuteResultFuture(this); } 上面的代码较同样出现重复（相似），每个动作的逻辑也是类似，开始是拼接命令行，再执行，检查结查，异常打印日志。另外代码还有其它的问题：
+ 命令注入：直接拼接命令会导致命令注入，如workspace是否可能会通过带 | &amp;amp; &amp;gt; 等危险字符拼了其它的危险命令。 命名风格不统一：SspException与SSHExistStatus，编程规范建议是Ssh，不要全大写。 类之间紧耦合：RemoteExecuteResultFuture(this)这一句可以看到RemoteExecuteHandler与RemoteExecuteResultFutere耦合了，把this传给RemoteExecuteResultFuture，说明Future依赖了Handler，则优化Future可以作为Handler的内部类？  想到样板代码，我们应该如何优化呢？把变化的隔离开，固化不变化的这是设计模式干的活。我们先不考虑采用什么模式，尝试优化一下：
+第一步，抽象一个命令接口：
+public interface Command { // 命令名称  String name(); // 构建命令参数  String buildCmdArgs(); } 第二步，固化不变化部分，那框架代码可以变成如下。先还是放在RemoteExecuteHandler中，包装SshClient实现AutoClosable接口：
+public class RemoteExecuteHandler { public Future&amp;lt;RemoteExecuteResult&amp;gt; call(Command command) throws SspException { SSHExistStatus result = null; try (sshClient = createSslClient()) { result = sshClient.execute(command.buildCmdArgs()); } catch (Exception e) { LOGGER.error(&amp;#34;Remote execute {} failed: {}&amp;#34;, command.name(), e); throw new SspException(&amp;#34;Remote execute &amp;#34; &#43; command.name() &#43; &amp;#34; failed: &amp;#34; &#43; e.getMessage()); } if (result.getCode() != 0 ) { LOGGER.error(&amp;#34;Remote execute {} failed: {}&amp;#34;, command.name(), result); throw new SspException(&amp;#34;Remote execute &amp;#34; &#43; command.name() &#43; &amp;#34; failed: &amp;#34; &#43; result.getError()); } return new RemoteExecuteResultFuture(); } } 第三步，抽取变化的内容，扩展不同的Command接口实现，如下：
+public class DownloadCommand implements Command { @Override public String name() { return &amp;#34;DownloadPackage&amp;#34;; } @Override public String buildCmdArgs() { // 构建命令需要执行的参数，本文不再例出了。  } } 经过这样一修改，代码消除了样板代码，也具有了扩展性。增加不同的命令，只要实现不同的Command子类即可。
+但，等等&amp;hellip;&amp;hellip;这用了什么设计模式？没有使用任何模式，只是做了一层抽象，把Command的命令构建抽象了一个接口，而RemoteExecuteHandler执行时只依赖了接口，不关心具体的命令参数。那还有没有优化的空间？当然有。
+背后的知识 重复的代码，本质其实都在表达（即依赖）同一项知识。如果它们表达（即依赖）的知识发生了变化，则需要多处修改。为了达成高内聚低耦合，大师们都会提到正交性设计，而正交性的第一点就是要消除重复。
+正交性源自几何学，当两根直线互相垂直的时候，我们认为这两根直线是正交的，否则的话这两根直线就是不正交的。引入到软件设计中，引申意是说无重复，向不同的变化方向发展，正交性有四个策略（原则）：
+ 消除重复(最小化重复)：重复意味着耦合。正如上面的案例代码，Handler类需要耦合（理解）不同的命令行构建。 分离变化：识别变化方向，并对变化预留出扩展接口。案例优化代码，识别出了变化内容是不同的命令行，则抽象了Command接口。 缩小依赖范围：依赖接口，不要依赖实现，接口应尽可能地包含少的知识，案例优化代码，Handler不再耦合依赖具体的命令拼装逻辑，而是只看Command接口。 向稳定的方向依赖：定义的API应该关注What，而不是How。站在需求的角度，而不是实现方式的角度定义API，会让其更加稳定。需求的提出方，一定是客户端，而不是实现侧。案例优化代码，Handler是命令的客户端，则接口由它来定。  所有的设计原则与设计模式为了实现高内聚、低耦合。正交性设计的本质是关注背后的动力：变化。正交性的四个策略（原则）以变化驱动，让系统逐步向更好的正交性演进的策略。总结要点如下：
+ 一切围绕变化：由变化驱动，反过来让系统演进的更容易应对变化（扩展性）。 分离不同变化方向：把变化的部分从主系统中分离出来，让系统更加的局部化影响。  设计模式 设计模式是从许多优秀系统中总结出的成功，可复用的经验；提供了一套通用的设计词汇与形式来描述。设计模式不有同的层次，通常分层为：
+ 架构模式：描述软件系统的结构组成与纲要。如云服务抽象非常多的设计模式，比如Cache-Aside，Circuit Breaker，CQRS等等，可参见Cloud Design Patterns。 设计模式：描述软件程序设计反复出现的问题描述，如GoF总结的23个基本设计模式。 实现模式：描述具体语言实现的问题，如异常处理规则 ，函数命名规则等等。  本文所说的消除重复，需要搞点设计模式，它指的是第二层。
+说真的，若去看设计模式的书籍，会陷入困惑：
+ 可能会觉得过于深奥，有些枯燥无味，根本学不下去； 有时也可能会走上拿着锤子满世界找钉子的过程。  笔者曾经喜欢上设计模式，总想把代码往设计模式上靠，不是导致过度设计就是画虎类猫了。现在我也不记得每种设计模式的类图结构，模式A与模式B之间到底他们之间的区别。“黑猫白猫，会捉老鼠就是好猫”。我们学习和使用设计模式时，也不应该把重点放在“这是黄色的母马还是黑色的公马”上，而应该是这马适合长途负重、还是短距离冲刺。抓住本质（如正交性设计四原则），找准使用场景，方能应用设计模式。
+我们还是来回顾一下23种经典的设计模式（来源于公司可信考试学习材料）：
+ 创建型：  Factory Method：隔离创建对象的细节，使得创建对象的行为可扩展。 Abstract Factory：创建一组相关的对象对接，其中每个方法即为Factory Method。 Builder：包含对象构建的若干过程，因些天然与Template结合。 Prototype：用于以某个对象为模子创建一个新的对象。 Singleton：确保对象实例唯一。   结构型：  Adapter Class/Object：处理遗留系统的不二法宝，也可以用空方法实现接口作为抽象父类 Bridge：使用关联代替继承，解决类多维的扩展导致的类爆炸的问题 Composite：将组件组装为整体使用 Decorator：用于各个Wrapper，在原函数执行前后做一些额外的工作 Facade：封装扇出，复用树状结构减少调用者的复杂度。 Flyweight：复用变化小的对象 Proxy：对原对象所有方法进行代理   行为型：  Interpreter：用于解释执行自定义的某种语法 Template Method：框架与钩子 Chain Of Responsibility：一组对象执照既定的顺序关联起来，依次处理请求 Command：将行为抽象与解耦 Iterator：封装数据的访问行为（顺序、可见性等） Mediator：用一个中介对象来封装一系列的交到；新增一个模块处理两个模块的交互 Memento：将当前对象的状态信息保存为中一个对象，可以基于状态镜像快速恢复原状态 Observer：订阅/发布模型，用于事件驱动的设计 State：封装有限状态机的状态与状态迁移 Strategy：使用接口即使用策略，用于隔离变化 Visitor：数据与行为分离方法    再次改进 前面提到优化还有空间，原因在于命令执行拿结果还需要看到RemoteExecuteResultFuture较底层的对象。理想的情况下，我发一个命令，执行，拿到最终结果。
+过一遍设计模式，我们发现有一个命令（Command）模式。其实它非常适合于我们案例的场景。找到了使用场景，我们再来复习一下：
+ 命令模式：将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化，对请求排队或记录请求日志，以及支持可撤销的操作。
+  Command（抽象命令类）：抽象出命令对象，可以根据不同的命令类型，写出不同的实现类。 ConcreteCommand（具体命令类）：实现了抽象命令对象的具体实现。 Invoker（调用者/请求者）：请求的发送者，它通过命令对象来执行请求。一个调用者并不需要在设计时确定其接收者，因此它只与抽象命令来之间存在关联。在程序运行时，将调用命令对象的execute() ，间接调用接收者的相关操作。 Receiver（接收者）：接收者执行与请求相关的操作，真正执行命令的对象。具体实现对请求的业务处理。未抽象前，实际执行操作内容的对象。 Client（客户端）：在客户类中需要创建调用者对象，具体命令类对象，在创建具体命令对象时指定对应的接收者。发送者和接收者之间没有之间关系。  再回到前面案例中
+ 具体的Command，如DownloadCommand，实现命令行的构建，以及响应结果的定义。 sshClient的包装类应该是Receiver，建议修改为RemoteExecuteReceiver。还是提供SSH远程命令执行，可以把代化之后RemoteExecuteHandler的call方法称到此类中（封装原生的SshClient的API调用，并在方法上动态创建sshClient对象与关闭）。 现有的RemoteExecuteHandler应该是Invoker类，提供callAndWaitResult方法，用于打印命令执行前后日志，调用receiver.action执行远程命令，等待RemoteExecuteResultFuture结果，把Future异步结果转换为各自命令对应的结果。  则客户端的代码简化为
+RemoteExecuteReceiver receiver = new RemoteExecuteReceiver(); DownloadCommand downloadCmd = new DownloadCommand(receiver); RemoteExecuteInvoker invoker = new RemoteExecuteInvoker(downloadCmd); invoker.callAndWaitResult(); 结语 重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。GoF总结的23种设计模式非常地经典，掌握它能解决我们绝大多数的问题。学习与应用设计模式有一个过程，就像案例优化的思路一样，我们先搞清那个是变化点，通过抽象隔离变化。再回过头来审视一下可参考的设计模式把它完善。当然最好像武林高手一样，忘记所有的设计模式招式，以正交性四原则为指导，以无招胜有招。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码4：消除重复，需要了解框架机制</title>
         <url>http://lanlingzi.cn/post/technical/2020/0605_code/</url>
         <categories>

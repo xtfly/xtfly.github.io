@@ -1,0 +1,583 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码4：消除重复，需要搞点设计模式 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码4：消除重复，需要搞点设计模式">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码4：消除重复，需要搞点设计模式 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0613_code/" itemprop="url">
+        飞哥讲代码4：消除重复，需要搞点设计模式
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-13">
+    2020-06-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4368 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>下面的代码来自我们某一平台产品源码(Java语言)中：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleDownload</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            initSshClient();
+            Future&lt;RemoteExecuteResult&gt; feture = downloadPackage();
+            <span style="color:#8b008b;font-weight:bold">return</span> feture;
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;CMC download package failed&#34;</span>, e);
+            closeSshClient();
+            <span style="color:#8b008b;font-weight:bold">throw</span> e;
+        }
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleLoad</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            initSshClient();
+            Future&lt;RemoteExecuteResult&gt; feture = loadPackage();
+            <span style="color:#8b008b;font-weight:bold">return</span> feture;
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Load site package failed&#34;</span>, e);
+            closeSshClient();
+            <span style="color:#8b008b;font-weight:bold">throw</span> e;
+        }
+    }
+
+    <span style="color:#228b22">// 下面还有几个类似的方法，不再一一列表
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:</p>
+<ul>
+<li>异常资源泄露：可能抛运行期异常，则存在未正常closeSshClient，close动作应该放在finally中，或采用try-with-resources语法，参见<a href="http://lanlingzi.cn/post/technical/2020/0516_code/">飞哥讲代码1：确保资源被释放</a>。</li>
+<li>方法有副作用：多个方法隐式操作了成员变量，initSshClient方法创建的SshClient对象赋值给成员变量，而应该是返回SshClient对象，作为参数传递给loadPackage与closeSshClient方法，这样多线程并发就没有问题。</li>
+</ul>
+<p>我们再来看一下downloadPackage的实现：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8b008b;font-weight:bold">private</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">downloadPackage</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        String workspace = baseOption.<span style="color:#658b00">getWorkspace</span>();
+        String donwloadScript = LinuxFileSystemUtil.<span style="color:#658b00">join</span>(workspace, DOWNLOAD_SHEEL_SCRIPT);
+        String resultFile = LinuxFileSystemUtil.<span style="color:#658b00">join</span>(workspace, DOWNLOAD_TASK_DIR, baseOption.<span style="color:#658b00">getExecuteId</span>(), DOWNLOAD_RESULT);
+        String logFile = LinuxFileSystemUtil.<span style="color:#658b00">join</span>(workspace,DOWNLOAD_TASK_DIR, baseOption.<span style="color:#658b00">getExecuteId</span>(), DOWNLOAD_LOG);
+        String configFile = makeExecuteConfigFile();
+        String cmdInstall =  String.<span style="color:#658b00">format</span>(<span style="color:#cd5555">&#34;chmod +x %s &amp;&amp; %s %s %s &gt; %s 2&gt;&amp;1 &amp;&#34;</span>,
+            donwloadScript, donwloadScript, configFile, resultFile, logFile); <span style="color:#228b22">// 构建执行命令
+</span><span style="color:#228b22"></span>        SSHExistStatus result = <span style="color:#8b008b;font-weight:bold">null</span>;
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            result = sshClient.<span style="color:#658b00">execute</span>(cmdInstall);
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Remote execute cmc download package failed: {}&#34;</span>, e);
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> SspException(<span style="color:#cd5555">&#34;Remote execute cmc download package failed: &#34;</span> + e.<span style="color:#658b00">getMessage</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">if</span> (result.<span style="color:#658b00">getCode</span>() != 0 ) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Remote execute cmc download package failed: {}&#34;</span>, result);
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> SspException(<span style="color:#cd5555">&#34;Remote execute cmc download package failed: &#34;</span> + result.<span style="color:#658b00">getError</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteResultFuture(<span style="color:#8b008b;font-weight:bold">this</span>);
+    }
+</code></pre></div><p>上面的代码较同样出现重复（相似），每个动作的逻辑也是类似，开始是拼接命令行，再执行，检查结查，异常打印日志。另外代码还有其它的问题：</p>
+<ul>
+<li>命令注入：直接拼接命令会导致命令注入，如workspace是否可能会通过带 <code>| &amp; &gt; </code>等危险字符拼了其它的危险命令。</li>
+<li>命名风格不统一：SspException与SSHExistStatus，编程规范建议是Ssh，不要全大写。</li>
+<li>类之间紧耦合：RemoteExecuteResultFuture(this)这一句可以看到RemoteExecuteHandler与RemoteExecuteResultFutere耦合了，把this传给RemoteExecuteResultFuture，说明Future依赖了Handler，则优化Future可以作为Handler的内部类？</li>
+</ul>
+<p>想到样板代码，我们应该如何优化呢？把变化的隔离开，固化不变化的这是设计模式干的活。我们先不考虑采用什么模式，尝试优化一下：</p>
+<p><strong>第一步</strong>，抽象一个命令接口：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">Command</span> {
+    <span style="color:#228b22">// 命令名称
+</span><span style="color:#228b22"></span>    String <span style="color:#008b45">name</span>();
+
+    <span style="color:#228b22">// 构建命令参数
+</span><span style="color:#228b22"></span>    String <span style="color:#008b45">buildCmdArgs</span>();
+}
+</code></pre></div><p><strong>第二步</strong>，固化不变化部分，那框架代码可以变成如下。先还是放在RemoteExecuteHandler中，包装SshClient实现AutoClosable接口：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">call</span>(Command command) <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        SSHExistStatus result = <span style="color:#8b008b;font-weight:bold">null</span>;
+        <span style="color:#8b008b;font-weight:bold">try</span> (sshClient = createSslClient()) {
+            result = sshClient.<span style="color:#658b00">execute</span>(command.<span style="color:#658b00">buildCmdArgs</span>());
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (Exception e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Remote execute {} failed: {}&#34;</span>, command.<span style="color:#658b00">name</span>(), e);
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> SspException(<span style="color:#cd5555">&#34;Remote execute  &#34;</span> + command.<span style="color:#658b00">name</span>() + <span style="color:#cd5555">&#34; failed: &#34;</span> + e.<span style="color:#658b00">getMessage</span>());
+        }
+
+        <span style="color:#8b008b;font-weight:bold">if</span> (result.<span style="color:#658b00">getCode</span>() != 0 ) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Remote execute {} failed: {}&#34;</span>, command.<span style="color:#658b00">name</span>(), result);
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> SspException(<span style="color:#cd5555">&#34;Remote execute &#34;</span> + command.<span style="color:#658b00">name</span>() + <span style="color:#cd5555">&#34; failed: &#34;</span> + result.<span style="color:#658b00">getError</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteResultFuture();
+    }
+}
+</code></pre></div><p><strong>第三步</strong>，抽取变化的内容，扩展不同的Command接口实现，如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DownloadCommand</span> <span style="color:#8b008b;font-weight:bold">implements</span> Command {
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">name</span>() { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;DownloadPackage&#34;</span>; }
+
+    <span style="color:#707a7c">@Override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">buildCmdArgs</span>() {
+        <span style="color:#228b22">// 构建命令需要执行的参数，本文不再例出了。
+</span><span style="color:#228b22"></span>    }
+}
+</code></pre></div><p>经过这样一修改，代码消除了样板代码，也具有了扩展性。增加不同的命令，只要实现不同的Command子类即可。</p>
+<p>但，等等&hellip;&hellip;这用了什么设计模式？没有使用任何模式，只是做了一层抽象，把Command的命令构建抽象了一个接口，而RemoteExecuteHandler执行时只依赖了接口，不关心具体的命令参数。那还有没有优化的空间？当然有。</p>
+<h2 id="背后的知识">背后的知识</h2>
+<p>重复的代码，本质其实都在表达（即依赖）同一项知识。如果它们表达（即依赖）的知识发生了变化，则需要多处修改。为了达成高内聚低耦合，大师们都会提到正交性设计，而正交性的第一点就是要消除重复。</p>
+<p>正交性源自几何学，当两根直线互相垂直的时候，我们认为这两根直线是正交的，否则的话这两根直线就是不正交的。引入到软件设计中，引申意是说无重复，向不同的变化方向发展，正交性有四个策略（原则）：</p>
+<ul>
+<li>消除重复(最小化重复)：重复意味着耦合。正如上面的案例代码，Handler类需要耦合（理解）不同的命令行构建。</li>
+<li>分离变化：识别变化方向，并对变化预留出扩展接口。案例优化代码，识别出了变化内容是不同的命令行，则抽象了Command接口。</li>
+<li>缩小依赖范围：依赖接口，不要依赖实现，接口应尽可能地包含少的知识，案例优化代码，Handler不再耦合依赖具体的命令拼装逻辑，而是只看Command接口。</li>
+<li>向稳定的方向依赖：定义的API应该关注What，而不是How。站在需求的角度，而不是实现方式的角度定义API，会让其更加稳定。需求的提出方，一定是客户端，而不是实现侧。案例优化代码，Handler是命令的客户端，则接口由它来定。</li>
+</ul>
+<p>所有的设计原则与设计模式为了实现<strong>高内聚、低耦合</strong>。正交性设计的本质是关注背后的动力：<strong>变化</strong>。正交性的四个策略（原则）以变化驱动，让系统逐步向更好的正交性演进的策略。总结要点如下：</p>
+<ul>
+<li>一切围绕变化：由变化驱动，反过来让系统演进的更容易应对变化（扩展性）。</li>
+<li>分离不同变化方向：把变化的部分从主系统中分离出来，让系统更加的局部化影响。</li>
+</ul>
+<h1 id="设计模式">设计模式</h1>
+<p>设计模式是从许多优秀系统中总结出的成功，可复用的经验；提供了一套通用的设计词汇与形式来描述。设计模式不有同的层次，通常分层为：</p>
+<ul>
+<li>架构模式：描述软件系统的结构组成与纲要。如云服务抽象非常多的设计模式，比如Cache-Aside，Circuit Breaker，CQRS等等，可参见<a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/">Cloud Design Patterns</a>。</li>
+<li>设计模式：描述软件程序设计反复出现的问题描述，如GoF总结的23个基本设计模式。</li>
+<li>实现模式：描述具体语言实现的问题，如异常处理规则 ，函数命名规则等等。</li>
+</ul>
+<p>本文所说的消除重复，需要搞点设计模式，它指的是第二层。</p>
+<p>说真的，若去看设计模式的书籍，会陷入困惑：</p>
+<ul>
+<li>可能会觉得过于深奥，有些枯燥无味，根本学不下去；</li>
+<li>有时也可能会走上拿着锤子满世界找钉子的过程。</li>
+</ul>
+<p>笔者曾经喜欢上设计模式，总想把代码往设计模式上靠，不是导致过度设计就是画虎类猫了。现在我也不记得每种设计模式的类图结构，模式A与模式B之间到底他们之间的区别。“黑猫白猫，会捉老鼠就是好猫”。我们学习和使用设计模式时，也不应该把重点放在“这是黄色的母马还是黑色的公马”上，而应该是这马适合长途负重、还是短距离冲刺。抓住本质（如正交性设计四原则），找准使用场景，方能应用设计模式。</p>
+<p>我们还是来回顾一下23种经典的设计模式（来源于公司可信考试学习材料）：</p>
+<ul>
+<li>创建型：
+<ul>
+<li>Factory Method：隔离创建对象的细节，使得创建对象的行为可扩展。</li>
+<li>Abstract Factory：创建一组相关的对象对接，其中每个方法即为Factory Method。</li>
+<li>Builder：包含对象构建的若干过程，因些天然与Template结合。</li>
+<li>Prototype：用于以某个对象为模子创建一个新的对象。</li>
+<li>Singleton：确保对象实例唯一。</li>
+</ul>
+</li>
+<li>结构型：
+<ul>
+<li>Adapter Class/Object：处理遗留系统的不二法宝，也可以用空方法实现接口作为抽象父类</li>
+<li>Bridge：使用关联代替继承，解决类多维的扩展导致的类爆炸的问题</li>
+<li>Composite：将组件组装为整体使用</li>
+<li>Decorator：用于各个Wrapper，在原函数执行前后做一些额外的工作</li>
+<li>Facade：封装扇出，复用树状结构减少调用者的复杂度。</li>
+<li>Flyweight：复用变化小的对象</li>
+<li>Proxy：对原对象所有方法进行代理</li>
+</ul>
+</li>
+<li>行为型：
+<ul>
+<li>Interpreter：用于解释执行自定义的某种语法</li>
+<li>Template Method：框架与钩子</li>
+<li>Chain Of Responsibility：一组对象执照既定的顺序关联起来，依次处理请求</li>
+<li>Command：将行为抽象与解耦</li>
+<li>Iterator：封装数据的访问行为（顺序、可见性等）</li>
+<li>Mediator：用一个中介对象来封装一系列的交到；新增一个模块处理两个模块的交互</li>
+<li>Memento：将当前对象的状态信息保存为中一个对象，可以基于状态镜像快速恢复原状态</li>
+<li>Observer：订阅/发布模型，用于事件驱动的设计</li>
+<li>State：封装有限状态机的状态与状态迁移</li>
+<li>Strategy：使用接口即使用策略，用于隔离变化</li>
+<li>Visitor：数据与行为分离方法</li>
+</ul>
+</li>
+</ul>
+<h1 id="再次改进">再次改进</h1>
+<p>前面提到优化还有空间，原因在于命令执行拿结果还需要看到RemoteExecuteResultFuture较底层的对象。理想的情况下，我发一个命令，执行，拿到最终结果。</p>
+<p>过一遍设计模式，我们发现有一个命令（Command）模式。其实它非常适合于我们案例的场景。找到了使用场景，我们再来复习一下：</p>
+<blockquote>
+<p>命令模式：将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化，对请求排队或记录请求日志，以及支持可撤销的操作。</p>
+</blockquote>
+<p><img src="http://lanlingzi.cn/images/code/command_pattern.jpg" alt="command_pattern"></p>
+<ul>
+<li>Command（抽象命令类）：抽象出命令对象，可以根据不同的命令类型，写出不同的实现类。</li>
+<li>ConcreteCommand（具体命令类）：实现了抽象命令对象的具体实现。</li>
+<li>Invoker（调用者/请求者）：请求的发送者，它通过命令对象来执行请求。一个调用者并不需要在设计时确定其接收者，因此它只与抽象命令来之间存在关联。在程序运行时，将调用命令对象的execute() ，间接调用接收者的相关操作。</li>
+<li>Receiver（接收者）：接收者执行与请求相关的操作，真正执行命令的对象。具体实现对请求的业务处理。未抽象前，实际执行操作内容的对象。</li>
+<li>Client（客户端）：在客户类中需要创建调用者对象，具体命令类对象，在创建具体命令对象时指定对应的接收者。发送者和接收者之间没有之间关系。</li>
+</ul>
+<p>再回到前面案例中</p>
+<ul>
+<li>具体的Command，如DownloadCommand，实现命令行的构建，以及响应结果的定义。</li>
+<li>sshClient的包装类应该是Receiver，建议修改为RemoteExecuteReceiver。还是提供SSH远程命令执行，可以把代化之后RemoteExecuteHandler的call方法称到此类中（封装原生的SshClient的API调用，并在方法上动态创建sshClient对象与关闭）。</li>
+<li>现有的RemoteExecuteHandler应该是Invoker类，提供callAndWaitResult方法，用于打印命令执行前后日志，调用receiver.action执行远程命令，等待RemoteExecuteResultFuture结果，把Future异步结果转换为各自命令对应的结果。</li>
+</ul>
+<p>则客户端的代码简化为</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    RemoteExecuteReceiver receiver = <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteReceiver();
+    DownloadCommand downloadCmd = <span style="color:#8b008b;font-weight:bold">new</span> DownloadCommand(receiver);
+    RemoteExecuteInvoker invoker = <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteInvoker(downloadCmd);
+    invoker.<span style="color:#658b00">callAndWaitResult</span>();
+</code></pre></div><h1 id="结语">结语</h1>
+<p>重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。GoF总结的23种设计模式非常地经典，掌握它能解决我们绝大多数的问题。学习与应用设计模式有一个过程，就像案例优化的思路一样，我们先搞清那个是变化点，通过抽象隔离变化。再回过头来审视一下可参考的设计模式把它完善。当然最好像武林高手一样，忘记所有的设计模式招式，以正交性四原则为指导，以无招胜有招。</p>
+
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/0605_code/" rel="prev" title="飞哥讲代码4：消除重复，需要了解框架机制">
+        飞哥讲代码4：消除重复，需要了解框架机制 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码4：消除重复，需要搞点设计模式
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">128</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a>
+      <ul>
+        <li><a href="#背后的知识">背后的知识</a></li>
+      </ul>
+    </li>
+    <li><a href="#设计模式">设计模式</a></li>
+    <li><a href="#再次改进">再次改进</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2020</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>
