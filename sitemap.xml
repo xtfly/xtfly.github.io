@@ -1,7 +1,7 @@
 <search>
     
      <entry>
-        <title>飞哥讲代码4：消除重复，需要搞点设计模式</title>
+        <title>飞哥讲代码5：消除重复，需要搞点设计模式</title>
         <url>http://lanlingzi.cn/post/technical/2020/0613_code/</url>
         <categories>
           <category>技术</category>
@@ -11,7 +11,7 @@
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一平台产品源码(Java语言)中：
 public class RemoteExecuteHandler { public Future&amp;lt;RemoteExecuteResult&amp;gt; handleDownload() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;CMC download package failed&amp;#34;, e); closeSshClient(); throw e; } } public Future&amp;lt;RemoteExecuteResult&amp;gt; handleLoad() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;Load site package failed&amp;#34;, e); closeSshClient(); throw e; } } // 下面还有几个类似的方法，不再一一列表 } 上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:
- 异常资源泄露：可能抛运行期异常，则存在未正常closeSshClient，close动作应该放在finally中，或采用try-with-resources语法，参见飞哥讲代码1：确保资源被释放。 方法有副作用：多个方法隐式操作了成员变量，initSshClient方法创建的SshClient对象赋值给成员变量，而应该是返回SshClient对象，作为参数传递给loadPackage与closeSshClient方法，这样多线程并发就没有问题。  我们再来看一下downloadPackage的实现：
+ 异常资源泄露：可能抛运行期异常，则存在未正常closeSshClient，close动作应该放在finally中，或采用try-with-resources语法，参见飞哥讲代码1：确保资源被释放。  方法有副作用：多个方法隐式操作了成员变量，initSshClient方法创建的SshClient对象赋值给成员变量，而应该是返回SshClient对象，作为参数传递给loadPackage与closeSshClient方法，这样多线程并发就没有问题。    我们再来看一下downloadPackage的实现：
 private Future&amp;lt;RemoteExecuteResult&amp;gt; downloadPackage() throws SspException { String workspace = baseOption.getWorkspace(); String donwloadScript = LinuxFileSystemUtil.join(workspace, DOWNLOAD_SHEEL_SCRIPT); String resultFile = LinuxFileSystemUtil.join(workspace, DOWNLOAD_TASK_DIR, baseOption.getExecuteId(), DOWNLOAD_RESULT); String logFile = LinuxFileSystemUtil.join(workspace,DOWNLOAD_TASK_DIR, baseOption.getExecuteId(), DOWNLOAD_LOG); String configFile = makeExecuteConfigFile(); String cmdInstall = String.format(&amp;#34;chmod &#43;x %s &amp;amp;&amp;amp; %s %s %s &amp;gt; %s 2&amp;gt;&amp;amp;1 &amp;amp;&amp;#34;, donwloadScript, donwloadScript, configFile, resultFile, logFile); // 构建执行命令  SSHExistStatus result = null; try { result = sshClient.execute(cmdInstall); } catch (Exception e) { LOGGER.error(&amp;#34;Remote execute cmc download package failed: {}&amp;#34;, e); throw new SspException(&amp;#34;Remote execute cmc download package failed: &amp;#34; &#43; e.getMessage()); } if (result.getCode() != 0 ) { LOGGER.error(&amp;#34;Remote execute cmc download package failed: {}&amp;#34;, result); throw new SspException(&amp;#34;Remote execute cmc download package failed: &amp;#34; &#43; result.getError()); } return new RemoteExecuteResultFuture(this); } 上面的代码较同样出现重复（相似），每个动作的逻辑也是类似，开始是拼接命令行，再执行，检查结查，异常打印日志。另外代码还有其它的问题：
  命令注入：直接拼接命令会导致命令注入，如workspace是否可能会通过带 | &amp;amp; &amp;gt; 等危险字符拼了其它的危险命令。 命名风格不统一：SspException与SSHExistStatus，编程规范建议是Ssh，不要全大写。 类之间紧耦合：RemoteExecuteResultFuture(this)这一句可以看到RemoteExecuteHandler与RemoteExecuteResultFutere耦合了，把this传给RemoteExecuteResultFuture，说明Future依赖了Handler，则优化Future可以作为Handler的内部类？  想到样板代码，我们应该如何优化呢？把变化的隔离开，固化不变化的这是设计模式干的活。我们先不考虑采用什么模式，尝试优化一下：
 第一步，抽象一个命令接口：

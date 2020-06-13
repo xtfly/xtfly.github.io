@@ -107,7 +107,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0613_code/" itemprop="url">
-        飞哥讲代码4：消除重复，需要搞点设计模式
+        飞哥讲代码5：消除重复，需要搞点设计模式
         </a>
       </h1>
       <div class="post-meta">
@@ -150,7 +150,36 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    案例 下面的代码来自我们某一平台产品源码(Java语言)中： public class RemoteExecuteHandler { public Future&lt;RemoteExecuteResult&gt; handleDownload() throws SspException { try { initSshClient(); Future&lt;RemoteExecuteResult&gt; feture = downloadPackage(); return feture; } catch (SspException e) { LOGGER.error(&#34;CMC download package failed&#34;, e); closeSshClient(); throw e; } } public Future&lt;RemoteExecuteResult&gt; handleLoad() throws SspException { try
+    <h1 id="案例">案例</h1>
+<p>下面的代码来自我们某一平台产品源码(Java语言)中：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleDownload</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            initSshClient();
+            Future&lt;RemoteExecuteResult&gt; feture = downloadPackage();
+            <span style="color:#8b008b;font-weight:bold">return</span> feture;
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;CMC download package failed&#34;</span>, e);
+            closeSshClient();
+            <span style="color:#8b008b;font-weight:bold">throw</span> e;
+        }
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleLoad</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            initSshClient();
+            Future&lt;RemoteExecuteResult&gt; feture = loadPackage();
+            <span style="color:#8b008b;font-weight:bold">return</span> feture;
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
+            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Load site package failed&#34;</span>, e);
+            closeSshClient();
+            <span style="color:#8b008b;font-weight:bold">throw</span> e;
+        }
+    }
+
+    <span style="color:#228b22">// 下面还有几个类似的方法，不再一一列表
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:</p>
     </div>
     
     <div class="post-more-link text-center">
