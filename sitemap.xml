@@ -1,6 +1,37 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码6：消除重复，需要配置代码分离</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0621_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 下面的代码来自我们某一平台产品前端源码(Java语言)中：
+private static Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; constructConstrainMap() { Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = new HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;(); Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); imageConstrainPatternMap.put(&amp;#34;allowdPatten&amp;#34;, &amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdMin&amp;#34;, &amp;#34;1&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdMax&amp;#34;, &amp;#34;256&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdValue&amp;#34;, null); imageConstrainPatternMap.put(&amp;#34;noEcho&amp;#34;, &amp;#34;false&amp;#34;); imageConstrainPatternMap.put(&amp;#34;description&amp;#34;, &amp;#34;com.huawei.....&amp;#34;); typeConstrainMap.put(TPropType.IAA_S_IMAGE_ID.value(), imageConstrainPatternMap) Map&amp;lt;String, String&amp;gt; netWorkConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); // 省略 put ...  Map&amp;lt;String, String&amp;gt; containerConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); // 省略 put ...  // 省略 其它的Constrain代码 ... } 上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？
+ 对于较老的代码，可以选择XML，Properties。 对于基于SpringBoot框架开发的代码，有更多的选择，还可以是JSON与YAML。  无论哪种配置文件格式，解释库几乎都提供配置内容直接到Java对象的映射。比如XML，JDK1.6起提供JAXB(Java Architecture for XML Binding)来序列化与反序列化XML文件。不过由于XML技术过于古老，JDK11把JAXB从标准模块移除了，需要额外引入依赖或使用Jackson的JAXB能力。倘若使用DOM或SAX来解释XML，要写的代码有些多，也容易出错，直观感觉还不如上面一行一行代码写死配置内容来得快。而采用JAXB，定义映射结构类加上解释代码，也就20行左右代码可以搞定。那我们来尝试优化一下此案例代码：
+第一步，定义XML的格式：
+&amp;lt;Constrains&amp;gt; &amp;lt;Constrain id=&amp;#34;image&amp;#34; allowdPatten=&amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34; allowdMin=&amp;#34;1&amp;#34; allowdMax=&amp;#34;256&amp;#34; noEcho=&amp;#34;false&amp;#34; description=&amp;#34;com...&amp;#34;&amp;gt; &amp;lt;Constrain id=&amp;#34;network&amp;#34; allowdPatten=&amp;#34;^[a-zA-Z0-9_]$&amp;#34; allowdMin=&amp;#34;1&amp;#34; allowdMax=&amp;#34;256&amp;#34; noEcho=&amp;#34;false&amp;#34; allowdValue=&amp;#34;local/external&amp;#34; description=&amp;#34;com...&amp;#34;&amp;gt; &amp;lt;!--省略其它的--&amp;gt; &amp;lt;/Constrains&amp;gt; 第二步，定义Java类结构：
+@XmlAccessorType(XmlAccessType.FIELD) @Getter @Setter public class Constrain { @XmlAttribute(name=&amp;#34;id&amp;#34;) private String id; @XmlAttribute(name=&amp;#34;allowdPatten&amp;#34;) private String allowdPatten; @XmlAttribute(name=&amp;#34;allowdMin&amp;#34;) private int allowdMin; @XmlAttribute(name=&amp;#34;iallowdMaxd&amp;#34;) private int allowdMax; @XmlAttribute(name=&amp;#34;noEcho&amp;#34;) private boolean noEcho; @XmlAttribute(name=&amp;#34;allowdValue&amp;#34;) private String allowdValue; @XmlAttribute(name=&amp;#34;description&amp;#34;) private String description; } @XmlRootElement(name=&amp;#34;Constrains&amp;#34;) @Getter @Setter public class Constrains { @XmlElement(name = &amp;#34;Constrain&amp;#34;) protected List&amp;lt;Constrain&amp;gt; items; } 第三步，解释配置文件
+try (InputStream is = new FileInputStream(&amp;#34;constrains.xml&amp;#34;)) { JAXBContext jc = JAXBContext.newInstance(Constrains.class); Unmarshaller unmarshaller = jc.createUnmarshaller(); Constrains constrains = (Constrains)unmarshaller.unmarshal(is) } 不过上面的代码有两个坑：
+ JAXBContext不能每次都new，存在Class泄露(注：以前在JDK1.7版本遇到过，不知1.8以后是否还存在)，它是线程安全的，只要new一次即可在不同的线程中使用。 可能存在XML的外部实体注入攻击，虽然配置文件不直接暴露给外部，从公司可信代码要求来看，存在风险。  再优化一下:
+// JAXBContext jc = JAXBContext.newInstance(Constrains.class); 在初始化或静态区中确保jc只new一次 XMLInputFactory xif = XMLInputFactory.newFactory(); xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false); // 关闭外部实体解释支持 xif.setProperty(XMLInputFactory.SUPPORT_DTD, false); // 注：视情况true/false，当存在DTD，可以由DTD检查XML合法性，请参考要相关文档 try (XMLStreamReader xsr = xif.createXMLStreamReader(new FilterInputStream(&amp;#34;constrains.xml&amp;#34;), &amp;#34;UTF-8&amp;#34;)) { Unmarshaller unmarshaller = jc.createUnmarshaller(); Constrains constrains = (Constrains)unmarshaller.unmarshal(xsr) } 背后的知识 读取配置文件是一个软件系统必不可少的一部分，现代编程语言通常内置不同格式的解释库。面向对象语言，也通常支持直接从配置内容映射到对象树，使用起来则非常的简洁方便。
+配置文件不仅是给软件程序读取，也需要给维护者阅读修改，或自动化工具修改(如部署安装)，则可以从如下几个方面考虑：
+ 表达能力强，如支持典型的键值对，还支持数组，引用，层级关系等。 便于人书写，通常的文本编辑器能检查出一些语法问题，也方便自动化工具搜索修改。 便于人理解，不需要由专业人员也能一看就知道其含义。 机制上安全，不会存在设计上缺陷或过于灵活导致安全问题。 外部依赖少，最好是语言系统库中自带的能力，不需要依赖第三方库。  常用有如下几种配置格式：
+ INI：表达能力弱，支持Section一个层级，键值对，对于数组与引用需要扩展。Python内置支持。 XML：表达能力较强，拥有层级结构，语法有些冗余，存在外部实体注入。Java，Go，Python内置支持。 JSON：表达能力较弱，最大的问题不支持注释，存在Type注入。它本为数据交换设计，做数据存储还行，适合于直接读取之后发给其它模块接口的场景。 YAML：表达能力强，支持层级与引用，不过缩进只能使用空格不能使用tab，空格需要对齐，其实不太好维护修改。  网上有人总结如下：
+ 适合人类编写：INI &amp;gt; YAML &amp;gt; JSON &amp;gt; XML 可以存储的数据复杂度：XML &amp;gt; YAML &amp;gt; JSON &amp;gt; INI  配置文件的选择还是需要考虑实际使用场景，个人没有倾向性。
+配置数据分离 用户界面中对输入数据的约束可以粗略的分为两种:
+ 给出的约束是较为固定不变的，通常可以将约束“硬编码”到代码中。 给出的约束可能随着业务规则的变动而变动，当“硬编码”会导致系统的维护代价比较高。   在一个系统中，我们总是会遇到一些参数，它们和具体的程序逻辑无关，比如数据库的地址，启动时绑定的IP与端口。显然这些参数更不适合被“硬编码”在代码中。
+通常需要把这类的数据抽出来放在配置文件，方便扩展与修改。广义上讲，配置文件也是属于代码一种承载形式。通过配置文件来存放数据，其实把纯数据从主体代码中移到配置文件中，本质是实现配置数据与逻辑代码的分离。
+回到案例中的代码，显然也是对用户输出数据的约束规则，可能这种约束就是固定不变的，从是否可变的角色来看，把它“硬编码”到代码在代码似乎问题不大。
+但当我们将这类配置数据从代码中分离出来，则可以：
+ 职责清晰： 配置与逻辑在代码结构上泾渭分明，他们的职责也是清晰的，方便我们修改和维护源码。 减少代码： 配置类代码通常是相似的，从代码中分离出来会减少重复代码量，相似重复的代码错一点很难肉眼发现。 降低出错： 通过代码读取配置数据，可以对数据本身做有效性检查（比如检查是否遗漏某一项），避免配置出错带来的问题。  结语 软件系统中必不可少地会出现配置类数据，数据是否“硬编码”到代码中，还是从代码中分离出来，分离时采用什么的配置格式，都要视场景来选择不同的策略。配置类数据代码通常也是重复相似代码问题的高发之地，拒绝写重复代码，让代码职责清晰，降低出错，把配置数据从代码中分离是不错的方向。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码5：消除重复，需要搞点设计模式</title>
         <url>http://lanlingzi.cn/post/technical/2020/0613_code/</url>
         <categories>
