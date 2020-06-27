@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码7：消除重复，需要脚本模块化 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码7：消除重复，需要脚本模块化">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码7：消除重复，需要脚本模块化 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0627_code/" itemprop="url">
+        飞哥讲代码7：消除重复，需要脚本模块化
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-27">
+    2020-06-27
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2936 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：</p>
+<ul>
+<li>每个服务都要支持手工安装，DF部署，容器部署。</li>
+<li>每个服务都要支持修改密钥，密码等。</li>
+<li>每个服务都要支持容灾，WatchDog等</li>
+</ul>
+<p>上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：</p>
+<ul>
+<li><strong>服务内重复：</strong> 同一服务内脚本不同场景下复制粘贴，如手工安装与DF部署，都需要创建OS用户，没有抽取公共函数复用</li>
+<li><strong>服务间重复：</strong> 不同服务间脚本复制粘贴，如同样是修改密码，只是配置文件路径不一样，配置项略有差别，没有抽取公共脚本复用。</li>
+<li><strong>缺少封装性：</strong> 部分脚本从头到尾没有任何函数提取，大块脚本从顶写到尾，全局变量到处飞，阅读极其困难。</li>
+<li><strong>健壮性不足：</strong> 脚本中的操作没有判断返回值或退出状态码，脚本没有太多的可靠性的防护。</li>
+</ul>
+<p>Shell脚本重复是<strong>普遍现象</strong> ，却又是常常<strong>习惯性被忽略</strong>:</p>
+<ul>
+<li>一是认为它是次要功能，几乎不会影响系统关键运行，在工作时间分配与测试上投入不足；</li>
+<li>二次认为脚本没有太多的技术难度，似乎谁都可能做好似的。</li>
+</ul>
+<p>但事实却一地鸡毛，大量相似与重复的脚本充斥在我们服务的代码仓中，也带来了大量重复机械的开发与测试工作量，开发效率自然好不到哪些去。</p>
+<h1 id="脚本模块化">脚本模块化</h1>
+<p>像高级语言Java，Python等都支持模块化，shell本质上并不支持模块化，但通过抽取函数，分类规划好脚本文件来达到模块化的效果。</p>
+<h2 id="提取函数">提取函数</h2>
+<p>同其它语言一样，函数具有封装性，是搭起大系统的积木。Shell的函数定义如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> func_name() {
+    statements
+    [<span style="color:#8b008b;font-weight:bold">return</span> value]
+}
+</code></pre></div><p>函数的调用方式</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">func_name <span style="color:#228b22"># 不带参数</span>
+func_name param1 param2  <span style="color:#228b22"># 带参数</span>
+</code></pre></div><p>函数一些最佳实践：</p>
+<ul>
+<li>函数返回值虽是可选的，默认是最后一条命令的退出码，但还是建议显示指定返回值，通常是用 <code>0</code> 表示成功， 非 <code>0</code> 表示失败。</li>
+<li>函数内不建议调用 <code>exit</code> 退出执行，而是由上层调用者通过 返回值 决定是否 退出。</li>
+<li>对于局部变量一定要采用 <code>local</code> 声明，因为无论在哪定义的变量默认是 <strong>global</strong> 的，其作用域从被定义的地方开始，到shell结束或被显示删除的地方为止。而 <code>local</code> 则只限制在函数内，则避免了对全局变量的污染。</li>
+<li>全局变量应该是全大写（如HOME_PATH），而函数内的局部变量应该是小写(local_var)，并且当是只读变量最，建议增加 <code>local -r </code>。</li>
+<li>函数应该取了好名称，由于函数通过source生效时，具有 <strong>global</strong> 性，建议是按功能模块对函数增加 前辍， 如安装类函数，增加 <code>install_</code> 前辍。</li>
+<li>函数取参数要先赋值给 <code>local</code> 局部变量，不要在其它语句中直接通过 <code>$1 $2</code> 这种引用，因为它们可读性差，而局部变量名称增加可读性。</li>
+</ul>
+<p>另外，在Github发现一个好东西，<a href="https://github.com/dylanaraps/pure-sh-bible">pure-sh-bible</a>，收集汇总了编写 bash 脚本经常会使用到的一些代码片段，以帮助开发者更快的搭建好自己的脚本工具。</p>
+<h2 id="启动子shell进程">启动子Shell进程</h2>
+<p>把功能相对独立的函数与入口逻辑放一个独立的文件中，通过如下两种执行方式产生子Shell进程，以达到模块化的效果。</p>
+<ul>
+<li>指定Shell类型执行，如<code>sh script.sh</code></li>
+<li>通过spawnw命令执行，通常搭配expect使用，用于交互式命令，也适合于我们对于安全要求较高，脚本参数不能传递密码这类的场景。</li>
+</ul>
+<h2 id="引用shell文件">引用Shell文件</h2>
+<p>把功能相对独立的函数放在一个独立文件中，当要使用其中的函数时，可以使用source命令，让函数在当前的Shell上下文生效。</p>
+<ul>
+<li>使用source命令 <code>source script.sh</code></li>
+<li>直接用点号 <code>. script</code>， 注：sh只支持点号，不支持source命令，不过现在Linux中，sh通常是bash的软链接。</li>
+</ul>
+<p>通过source Shell文件，类比C中的include语句。但要注意的是shell不会判断一个shell脚本是不是被导入多次，每次source script.sh一下，都会在当前shell中执行script.sh。</p>
+<p>能被source的Shell一些最佳实践：</p>
+<ul>
+<li>建议只包含函数定义，不要包含有入口执行逻辑，函数内不要定义全局变量。</li>
+<li>若在Shell脚本开头定义了全局变量，一定要考虑全局变量的冲突问题，建议采用<code>declare -r</code>来定义只读全局变量。</li>
+</ul>
+<p>当模块化Shell之后，不同功能的Shell往往不在一个目录下，Shell之间还会相互导入。但引用Shell脚本存在有一个较大的坑。</p>
+<p>从我们实际代码来看，通用采用如下方式来获取脚本所在路径，拿到此路径再根据相对路径引用其它的Shell脚本。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span>dirname <span style="color:#00688b">$0</span><span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span>;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
+<span style="color:#658b00">declare</span> -R <span style="color:#00688b">LIB_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#00688b">$CUR_PATH</span>/../lib;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
+<span style="color:#658b00">source</span> <span style="color:#00688b">$LIB_PATH</span>/lib_a.sh
+</code></pre></div><p>上面的写法是有问题的，比如脚本A source了另一个目录下的脚本B、然后脚本B尝试使用此法获取路径时得到的是A的路径。获取当前执行的shell脚本路径的正确姿势应该是：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span> <span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span> dirname <span style="color:#cd5555">&#34;</span><span style="color:#cd5555">${</span><span style="color:#00688b">BASH_SOURCE</span>[0]<span style="color:#cd5555">}</span><span style="color:#cd5555">&#34;</span> <span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span> &amp;&amp; <span style="color:#658b00">pwd</span> <span style="color:#8b008b;font-weight:bold">)</span>
+</code></pre></div><p>原因是<code>$0</code>是入口主脚本路径，并非被引用Shell的路径。对于source Shell一定要记住：</p>
+<ul>
+<li>source命令，不再产生新的shell，而是在当前Shell下执行一切命令。</li>
+<li>source FileName，作用是在当前Shell环境下读取并执行FileName中的命令。</li>
+<li>source在本Shell中执行的，产生的结果会影响本Shell。</li>
+</ul>
+<h2 id="模块化规划">模块化规划</h2>
+<p>通过上面三种脚本复用方式，我们现在大概清楚如何做脚本模块化了：</p>
+<ul>
+<li>第一步，按功能划分不同一脚本目录或文件，形成一系列的Shell Lib。</li>
+<li>第二步，在每个Shell Lib定义公共函数，做到函数级可复用。</li>
+<li>第三步，通过正式的姿势，source Lib文件到本Shell，调用相应的函数。</li>
+<li>可选，当发现大部分执行逻辑相同能复用时，也可以采用启动子Shell进程方式复用。</li>
+</ul>
+<p>下面给出一个目录及文件规划建议：</p>
+<ul>
+<li>shell_lib： 根目录
+<ul>
+<li>lib_common： 通用公共函数，如打印日志，异常退出函数，函数名建议以 <code>common_</code> 开头。</li>
+<li>lib_os：OS相关的函数，如创建用户组，用户，增加crontab任务，函数名建议以 <code>os_</code> 开头。</li>
+<li>lib_install：安装流程函数，函数名建议以 <code>install_</code> 开头。</li>
+<li>lib_unisntall：卸载流程函数，函数名建议以 <code>unisntall_</code> 开头。</li>
+<li>lib_df: DF部署特有函数，函数名建议以 <code>df_</code> 开头。</li>
+<li>&hellip;</li>
+<li>libs.sh: 为了方便引用，可以提供一个汇总文件，它只source其它 lib_ 文件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务间引用">服务间引用</h2>
+<p>由于目前系统大多采用微服务的架构，为了能在多个微服务间复用，需要做到打包自动化，则依赖于服务所采用构建工具。</p>
+<p>对于Java maven工程，给出一种参考玩法。</p>
+<p>第一步，把脚本放在一个独立的Maven module工程中，此工程只包含公共脚本，放在src/main/resources下，子目录参考前面的目录规划建议。</p>
+<p>第二步，把此module工程发布到Maven仓库中，以便其它的服务能通过Maven的GAV坐标下载它。</p>
+<p>第三步，通过Maven Assambly插件打包，把依赖的脚本解压到目标包文件中，可以采用如下</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"> <span style="color:#8b008b;font-weight:bold">&lt;dependencySets&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependencySet&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;outputDirectory&gt;</span>/shell_lib<span style="color:#8b008b;font-weight:bold">&lt;/outputDirectory&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;useProjectArtifact&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/useProjectArtifact&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;unpack&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/unpack&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;unpackOptions&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
+                    <span style="color:#228b22">&lt;!--也可能只解压部分需要的shell文件--&gt;</span>
+                    <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>*.sh<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;lineEnding&gt;</span>unix<span style="color:#8b008b;font-weight:bold">&lt;/lineEnding&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/unpackOptions&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
+                <span style="color:#228b22">&lt;!--指定公共Shell的GAV信息--&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>com.huawe.xx:xx-common-shell<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependencySet&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencySets&gt;</span>
+</code></pre></div><h1 id="结语">结语</h1>
+<p>各个服务的Shell脚本质量也像Java/C++语言同等重要，但脚本的模块化通常被人遗忘。大量相似与重复的脚本充斥在我们服务的代码仓中，也带来了大量重复机械的开发与测试工作量，对后面的维护也带来困难。消除脚本的重复，需要在设计与开发脚本时，采用模块化思维提升他们的复用，提升我们的开发效率。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/0621_code/" rel="prev" title="飞哥讲代码6：消除重复，需要配置代码分离">
+        飞哥讲代码6：消除重复，需要配置代码分离 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码7：消除重复，需要脚本模块化
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">130</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a></li>
+    <li><a href="#脚本模块化">脚本模块化</a>
+      <ul>
+        <li><a href="#提取函数">提取函数</a></li>
+        <li><a href="#启动子shell进程">启动子Shell进程</a></li>
+        <li><a href="#引用shell文件">引用Shell文件</a></li>
+        <li><a href="#模块化规划">模块化规划</a></li>
+        <li><a href="#服务间引用">服务间引用</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2020</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

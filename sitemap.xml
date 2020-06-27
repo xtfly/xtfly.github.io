@@ -1,6 +1,43 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码7：消除重复，需要脚本模块化</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0627_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：
+ 每个服务都要支持手工安装，DF部署，容器部署。 每个服务都要支持修改密钥，密码等。 每个服务都要支持容灾，WatchDog等  上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：
+ 服务内重复： 同一服务内脚本不同场景下复制粘贴，如手工安装与DF部署，都需要创建OS用户，没有抽取公共函数复用 服务间重复： 不同服务间脚本复制粘贴，如同样是修改密码，只是配置文件路径不一样，配置项略有差别，没有抽取公共脚本复用。 缺少封装性： 部分脚本从头到尾没有任何函数提取，大块脚本从顶写到尾，全局变量到处飞，阅读极其困难。 健壮性不足： 脚本中的操作没有判断返回值或退出状态码，脚本没有太多的可靠性的防护。  Shell脚本重复是普遍现象 ，却又是常常习惯性被忽略:
+ 一是认为它是次要功能，几乎不会影响系统关键运行，在工作时间分配与测试上投入不足； 二次认为脚本没有太多的技术难度，似乎谁都可能做好似的。  但事实却一地鸡毛，大量相似与重复的脚本充斥在我们服务的代码仓中，也带来了大量重复机械的开发与测试工作量，开发效率自然好不到哪些去。
+脚本模块化 像高级语言Java，Python等都支持模块化，shell本质上并不支持模块化，但通过抽取函数，分类规划好脚本文件来达到模块化的效果。
+提取函数 同其它语言一样，函数具有封装性，是搭起大系统的积木。Shell的函数定义如下：
+function func_name() { statements [return value] } 函数的调用方式
+func_name # 不带参数 func_name param1 param2 # 带参数 函数一些最佳实践：
+ 函数返回值虽是可选的，默认是最后一条命令的退出码，但还是建议显示指定返回值，通常是用 0 表示成功， 非 0 表示失败。 函数内不建议调用 exit 退出执行，而是由上层调用者通过 返回值 决定是否 退出。 对于局部变量一定要采用 local 声明，因为无论在哪定义的变量默认是 global 的，其作用域从被定义的地方开始，到shell结束或被显示删除的地方为止。而 local 则只限制在函数内，则避免了对全局变量的污染。 全局变量应该是全大写（如HOME_PATH），而函数内的局部变量应该是小写(local_var)，并且当是只读变量最，建议增加 local -r 。 函数应该取了好名称，由于函数通过source生效时，具有 global 性，建议是按功能模块对函数增加 前辍， 如安装类函数，增加 install_ 前辍。 函数取参数要先赋值给 local 局部变量，不要在其它语句中直接通过 $1 $2 这种引用，因为它们可读性差，而局部变量名称增加可读性。  另外，在Github发现一个好东西，pure-sh-bible，收集汇总了编写 bash 脚本经常会使用到的一些代码片段，以帮助开发者更快的搭建好自己的脚本工具。
+启动子Shell进程 把功能相对独立的函数与入口逻辑放一个独立的文件中，通过如下两种执行方式产生子Shell进程，以达到模块化的效果。
+ 指定Shell类型执行，如sh script.sh 通过spawnw命令执行，通常搭配expect使用，用于交互式命令，也适合于我们对于安全要求较高，脚本参数不能传递密码这类的场景。  引用Shell文件 把功能相对独立的函数放在一个独立文件中，当要使用其中的函数时，可以使用source命令，让函数在当前的Shell上下文生效。
+ 使用source命令 source script.sh 直接用点号 . script， 注：sh只支持点号，不支持source命令，不过现在Linux中，sh通常是bash的软链接。  通过source Shell文件，类比C中的include语句。但要注意的是shell不会判断一个shell脚本是不是被导入多次，每次source script.sh一下，都会在当前shell中执行script.sh。
+能被source的Shell一些最佳实践：
+ 建议只包含函数定义，不要包含有入口执行逻辑，函数内不要定义全局变量。 若在Shell脚本开头定义了全局变量，一定要考虑全局变量的冲突问题，建议采用declare -r来定义只读全局变量。  当模块化Shell之后，不同功能的Shell往往不在一个目录下，Shell之间还会相互导入。但引用Shell脚本存在有一个较大的坑。
+从我们实际代码来看，通用采用如下方式来获取脚本所在路径，拿到此路径再根据相对路径引用其它的Shell脚本。
+declare -r CUR_PATH=$(cd &amp;#34;$(dirname $0)&amp;#34;;pwd) declare -R LIB_PATH=$(cd $CUR_PATH/../lib;pwd) source $LIB_PATH/lib_a.sh 上面的写法是有问题的，比如脚本A source了另一个目录下的脚本B、然后脚本B尝试使用此法获取路径时得到的是A的路径。获取当前执行的shell脚本路径的正确姿势应该是：
+declare -r CUR_PATH=$( cd &amp;#34;$( dirname &amp;#34;${BASH_SOURCE[0]}&amp;#34; )&amp;#34; &amp;amp;&amp;amp; pwd ) 原因是$0是入口主脚本路径，并非被引用Shell的路径。对于source Shell一定要记住：
+ source命令，不再产生新的shell，而是在当前Shell下执行一切命令。 source FileName，作用是在当前Shell环境下读取并执行FileName中的命令。 source在本Shell中执行的，产生的结果会影响本Shell。  模块化规划 通过上面三种脚本复用方式，我们现在大概清楚如何做脚本模块化了：
+ 第一步，按功能划分不同一脚本目录或文件，形成一系列的Shell Lib。 第二步，在每个Shell Lib定义公共函数，做到函数级可复用。 第三步，通过正式的姿势，source Lib文件到本Shell，调用相应的函数。 可选，当发现大部分执行逻辑相同能复用时，也可以采用启动子Shell进程方式复用。  下面给出一个目录及文件规划建议：
+ shell_lib： 根目录  lib_common： 通用公共函数，如打印日志，异常退出函数，函数名建议以 common_ 开头。 lib_os：OS相关的函数，如创建用户组，用户，增加crontab任务，函数名建议以 os_ 开头。 lib_install：安装流程函数，函数名建议以 install_ 开头。 lib_unisntall：卸载流程函数，函数名建议以 unisntall_ 开头。 lib_df: DF部署特有函数，函数名建议以 df_ 开头。 &amp;hellip; libs.sh: 为了方便引用，可以提供一个汇总文件，它只source其它 lib_ 文件。    服务间引用 由于目前系统大多采用微服务的架构，为了能在多个微服务间复用，需要做到打包自动化，则依赖于服务所采用构建工具。
+对于Java maven工程，给出一种参考玩法。
+第一步，把脚本放在一个独立的Maven module工程中，此工程只包含公共脚本，放在src/main/resources下，子目录参考前面的目录规划建议。
+第二步，把此module工程发布到Maven仓库中，以便其它的服务能通过Maven的GAV坐标下载它。
+第三步，通过Maven Assambly插件打包，把依赖的脚本解压到目标包文件中，可以采用如下
+&amp;lt;dependencySets&amp;gt; &amp;lt;dependencySet&amp;gt; &amp;lt;outputDirectory&amp;gt;/shell_lib&amp;lt;/outputDirectory&amp;gt; &amp;lt;useProjectArtifact&amp;gt;true&amp;lt;/useProjectArtifact&amp;gt; &amp;lt;unpack&amp;gt;true&amp;lt;/unpack&amp;gt; &amp;lt;unpackOptions&amp;gt; &amp;lt;includes&amp;gt; &amp;lt;!--也可能只解压部分需要的shell文件--&amp;gt; &amp;lt;include&amp;gt;*.sh&amp;lt;/include&amp;gt; &amp;lt;/includes&amp;gt; &amp;lt;lineEnding&amp;gt;unix&amp;lt;/lineEnding&amp;gt; &amp;lt;/unpackOptions&amp;gt; &amp;lt;includes&amp;gt; &amp;lt;!--指定公共Shell的GAV信息--&amp;gt; &amp;lt;include&amp;gt;com.huawe.xx:xx-common-shell&amp;lt;/include&amp;gt; &amp;lt;/includes&amp;gt; &amp;lt;/dependencySet&amp;gt; &amp;lt;/dependencySets&amp;gt; 结语 各个服务的Shell脚本质量也像Java/C&#43;&#43;语言同等重要，但脚本的模块化通常被人遗忘。大量相似与重复的脚本充斥在我们服务的代码仓中，也带来了大量重复机械的开发与测试工作量，对后面的维护也带来困难。消除脚本的重复，需要在设计与开发脚本时，采用模块化思维提升他们的复用，提升我们的开发效率。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码6：消除重复，需要配置代码分离</title>
         <url>http://lanlingzi.cn/post/technical/2020/0621_code/</url>
         <categories>

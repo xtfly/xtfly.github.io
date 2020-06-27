@@ -6,10 +6,32 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 21 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码7：消除重复，需要脚本模块化</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0627_code/</link>
+      <pubDate>Sat, 27 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0627_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个服务都要支持手工安装，DF部署，容器部署。&lt;/li&gt;
+&lt;li&gt;每个服务都要支持修改密钥，密码等。&lt;/li&gt;
+&lt;li&gt;每个服务都要支持容灾，WatchDog等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务内重复：&lt;/strong&gt; 同一服务内脚本不同场景下复制粘贴，如手工安装与DF部署，都需要创建OS用户，没有抽取公共函数复用&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务间重复：&lt;/strong&gt; 不同服务间脚本复制粘贴，如同样是修改密码，只是配置文件路径不一样，配置项略有差别，没有抽取公共脚本复用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺少封装性：&lt;/strong&gt; 部分脚本从头到尾没有任何函数提取，大块脚本从顶写到尾，全局变量到处飞，阅读极其困难。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;健壮性不足：&lt;/strong&gt; 脚本中的操作没有判断返回值或退出状态码，脚本没有太多的可靠性的防护。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码6：消除重复，需要配置代码分离</title>
