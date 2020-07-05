@@ -6,10 +6,19 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 27 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码7：提升性能，线程级缓存复用</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0705_code/</link>
+      <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0705_code/</guid>
+      <description>案例 去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话： ■■(工号) 2019-08-27 14:50 飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下 ◆◆</description>
+    </item>
     
     <item>
       <title>飞哥讲代码7：消除重复，需要脚本模块化</title>

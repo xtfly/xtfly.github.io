@@ -1,6 +1,45 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码7：提升性能，线程级缓存复用</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0705_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：
+ ■■(工号) 2019-08-27 14:50
+飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下
+◆◆◆(工号) 2019-08-27 14:51
+好
+■■(工号) 2019-08-28 10:39
+飞哥，性能有提升， 8W8 压到了 9W7
+提升了1W
+ 一个下午的时间，到底发生了什么，对代码做了什么优化，性能提升将近1W TPS？
+出现性能瓶颈的组件是平台一个很成熟的中间件，从x86切换到arm下性能基准测试情况如下：
+ 组网：3 client &#43; 1 server 环境：4VM(arm 8C64G) VS 4VM(x86 8C64G） 基准测试：TPS x86 VS arm = 1 VS 0.6  首次在arm下测试，情况不容乐观。此中间件采用Java开发，底层的JVM我们无法直接优化，但应用层还是存在优化的空间，测试主要场景如下：
+ 业务流程关键逻辑是对消息进行序列化与反序列化，编解码采用protostuff。 网络层连接采用Netty，粘包/拆包采用不定的自定义格式LengthFieldBasedFrame。 基准测试传递的消息长度固定为1K。  接到兄弟的救助之后，我们一起通过JProfile分析了主要流程的调用栈耗时情况，再结合代码快速发现一处可优化点：
+ 消息的编解码内存是可以线程级复用，完全可以分配一段大于1K的内存绑定每个线程，只给此线程反复使用。  背后的知识 Java NIO框架提供了ByteBuffer机制，通常用于对数据流byte的操作，也常用于网络编程，它有两种分配方式：
+ allocate(int capacity) ：从JVM的堆内存上分配。 allocateDirect(int capacity) ：从堆外内存上分配。  他们的使用场景不同，并不是一定哪个快哪个慢。
+ allocate分配受垃圾回收器影响，并不太适合内存长驻使用的场景。 allocateDirect不受垃圾回收器影响，适合于不需要从OS内存到JVM内存拷贝的场景，也适合于大块内存长驻使用的场景，并不适合于频繁申请小块内存的场景。做过C/C&#43;&#43;开发的同学，可能听说过内存空洞的问题。  而Netty又在参考JDK的ByteBuffer基础之上，提供ByteBufAllocator：
+public interface ByteBufAllocator { // 直接分配一块内存，是使用direct还是heap取决于子类实现  ByteBuf buffer(int initialCapacity, int maxCapacity); // 更倾向于direct方式分配  ByteBuf ioBuffer(int initialCapacity, int maxCapacity); // heap内存分配  ByteBuf heapBuffer(int initialCapacity, int maxCapacity); // direct内存分配  ByteBuf directBuffer(int initialCapacity, int maxCapacity); ... } 它有两个主要的子类：
+ UnpooledByteBufAllocator： 非池化分配器。 PooledByteBufAllocator：池化分配器，并且考虑了多线程并发访问的效率问题。在多线程情况下，每个线程有一份独立的缓存管理。  PooledByteBufAllocator的实现很复杂，它涉及到多个数据结构Arena、Chunk、ChunkList、Page、SubPage。我就不敢班门弄斧了，请感兴趣的同学自行搜索Netty相应的资料。可参考：看完这篇还不清楚Netty的内存管理，那我就哭了
+线程级缓存复用 任何计算机中的资源是有限的，为了效率，我们通常会采用池化复用各种资源，常见有：
+ 线程池 连接池 内存池  内存池化指：应用程序可以通过系统的内存分配调用预先一次性申请适当大小的内存作为一个内存池，之后应用程序自己对内存的分配和释放则可以通过这个内存池来完成。但内存池的实现相比于线程池，连接池更为复杂，因为内存池还需要对内存进一步分块分片，以满足不同的大小对象的高效使用。
+从线程安全的角度来分，内存池可以分为单线程内存池和多线程内存池。单线程内存池整个生命周期只被一个线程使用，因而不需要考虑互斥访问的问题；多线程内存池有可能被多个线程共享，因此则需要在每次分配和释放内存时加锁。相对而言，单线程内存池性能更高，而多线程内存池适用范围更广。
+JVM的堆内存管理，也是一种更为广义支持多线程带有内存标记整理能自动回收的内存池管理。由于越是最为复杂的东西，考虑的场景越多，效率也就不是最好的。
+对于网络编程，我们对于连接，线程都是可能固定池化管理，固定的连接数，固定的处理线程数。那内存则可以直接如下：
+ 分配足够的内存绑定连接，只给此连接复用。 分配足够的内存绑定线程，只给此线程复用。  这样一下来，内存的管理也就简单得多，也变得效率更高，不需要池化管理的加锁保证多线程安全问题。
+回到案例中的问题，虽然我们可以使用PooledByteBufAllocator来达到ByteBuff复用的效果，同样它也支持为每一个线程通过PoolThreadLocalCache来管理内存，从来避免多线程争夺的问题。它的实现还是非常高效的，只不要过要注意第一次分配的时间。来自网上的测试：
+public class PooledByteBufTest { public static void main(String[] args) throws InterruptedException { for(int i=0; i&amp;lt;5; i&#43;&#43;){ long start = System.currentTimeMillis(); ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.buffer(1024*1024); long end = System.currentTimeMillis(); System.out.println(&amp;#34;初始化pooled的ByteBuf第&amp;#34;&#43;i&#43;&amp;#34;次，耗时&amp;#34;&#43;(end-start)&#43;&amp;#34;毫秒&amp;#34;); } } } 执行结果：
+初始化pooled的ByteBuf第0次，耗时165毫秒 初始化pooled的ByteBuf第1次，耗时2毫秒 初始化pooled的ByteBuf第2次，耗时0毫秒 初始化pooled的ByteBuf第3次，耗时0毫秒 初始化pooled的ByteBuf第4次，耗时0毫 但我觉得还是过于复杂，其实最为简单的实现：
+ 考虑绝多大数的场景，假定每个请求消息98%是 1K 大小以内，则可以为每个处理线程直接预先分配 1K的 directBuffer。这个大小做成系统配置项。 当大小超过 1K 时，则可以再调整 directBuffer 内存的大小。可设置一个上限，避免对内存的溢出攻击。  结语 任何计算机的资源都是有限的，而内存则是最为重要的资源之一。现代语言的垃圾回收机制解决了手工释放内存的问题，内存池化也得解决了内存复用的问题。但多线程并发场景下，内存池可能会存在锁的争夺与分配不公平导致CPU抖动等问题，效率并不高。为了更高效，往往我们需要视使用场景返璞归真，使用最为简单的策略，固定的线程数，为每个线程独立预先分配足够的内存，做到线程级缓存复用。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码7：消除重复，需要脚本模块化</title>
         <url>http://lanlingzi.cn/post/technical/2020/0627_code/</url>
         <categories>

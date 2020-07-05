@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>CloudNative初探 - 蘭陵N梓記</title>
+    <title>飞哥讲代码7：提升性能，线程级缓存复用 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="CloudNative初探">
+    <meta property="og:title" content="飞哥讲代码7：提升性能，线程级缓存复用">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="CloudNative初探 - 蘭陵N梓記" />
+    <meta name="title" content="飞哥讲代码7：提升性能，线程级缓存复用 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0106_cloudnative/" itemprop="url">
-        CloudNative初探
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0705_code/" itemprop="url">
+        飞哥讲代码7：提升性能，线程级缓存复用
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-01-06">
-    2017-01-06
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-05">
+    2020-07-05
 </time>
 </span> 
       
@@ -142,75 +142,119 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1690 字 ~4分钟</span>
+<span class="leancloud-visitors-count">2399 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>随着日益普及的云计算，越来越多的传统应用迁移到云上。尤其是视频巨头NetFlix从2009年开始，放弃构建自己的数据中心，把所有应用迁移到AWS。NetFlix认为云环境下，everything will be failure。它基于微服务架构，以及Design for failure理论，构建出一系统非常成功的云应用（微服务），支持它的业务飞速发展。NetFlix认为他们比Amazon自己更懂得AWS。同时业界也提出了CloudNative概念，Netflix的应用也认为目前最为成功的CloudNative应用（参考<a href="http://www.slideshare.net/adrianco/netflix-what-changed-gartner-catalyst">Cloud Native at Netflix</a>）。那什么是CloudNative？</p>
-<h2 id="概念">概念</h2>
-<p>目前对CloudNative并没有明确的定义。15年，Google联合其他20家公司宣布成立了开源组织Cloud Native Computing Foundation（CNCF）。想通过开源的Kubernetes，在云计算领域占据主层地位。当然Kubernetes目前是一个以应用为中心容器编排，调度集群管理系统。它想做的是CloudNative Application的基石。从CNCF组织来看，CloudNative Application应该包含微服务，容器，CI/CD特征。</p>
-<p>早在2010年，WSO2的联合他始人Paul Fremantle在业界最早提出<a href="http://wso2.com/library/articles/2010/05/blog-post-cloud-native/">CloudNative，认为有如下几个关键特征</a>：</p>
+    <h1 id="案例">案例</h1>
+<p>去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：</p>
+<blockquote>
+<p>■■(工号) 2019-08-27 14:50<br>
+飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下<br>
+◆◆◆(工号) 2019-08-27 14:51<br>
+好<br>
+■■(工号) 2019-08-28 10:39<br>
+飞哥，性能有提升， 8W8 压到了 9W7<br>
+提升了1W</p>
+</blockquote>
+<p>一个下午的时间，到底发生了什么，对代码做了什么优化，性能提升将近1W TPS？</p>
+<p>出现性能瓶颈的组件是平台一个很成熟的中间件，从x86切换到arm下性能基准测试情况如下：</p>
 <ul>
-<li>Distributed/Dynamically wired，分布式/动态连接</li>
-<li>Elastic，弹性；Scale down as well as up, based on load，基于系统负载的动态伸缩</li>
-<li>Granularly metered and billed，粒度合适的计量计费；Pay per user，按使用量计费</li>
-<li>Multi-tenant，多租户</li>
-<li>Self service，自服务</li>
-<li>Incrementally deployed and tested， 增量的部署与测试</li>
+<li>组网：3 client + 1 server</li>
+<li>环境：4VM(arm 8C64G) VS 4VM(x86 8C64G）</li>
+<li>基准测试：TPS x86 VS arm = 1 VS 0.6</li>
 </ul>
-<p>CloudNative系统的效果： Better utilization of resources, faster provisioning, better governace。</p>
-<p>在2013年，AWS的云战略架构师同时也是NetFlix的云架构师Adrian Cockcroft提出对<a href="https://www.infoq.com/presentations/migration-cloud-microservices">CloudNative新的定义</a>：基于不可靠的，易失效的基础设施(ephermeral and assumed broken components), 构建高度敏捷（high agile），高可用（highly available）的服务，包括如下几个方面：</p>
+<p>首次在arm下测试，情况不容乐观。此中间件采用Java开发，底层的JVM我们无法直接优化，但应用层还是存在优化的空间，测试主要场景如下：</p>
 <ul>
-<li>目标：Scalability，伸缩性；Availablility，可用性；Agile，敏捷；Efficiency，效率</li>
-<li>原则：Separation of Concerns，关注点分离；Anti-Fragility，反脆弱性；High trust organization，高度信任的组织</li>
-<li>特点：Public Cloud，基于公有云； Mirco-services，微服务；De-normalized data，反范式化数据；Chaos Engines，混沌引擎；Continues Deployment，持续部署；DevOps等等</li>
+<li>业务流程关键逻辑是对消息进行序列化与反序列化，编解码采用protostuff。</li>
+<li>网络层连接采用Netty，粘包/拆包采用不定的自定义格式LengthFieldBasedFrame。</li>
+<li>基准测试传递的消息长度固定为1K。</li>
 </ul>
-<p>在2015年，Pivotal的产品经理Matt Stine又对<a href="http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine">CloudNative关键架构特征</a>进行补充：</p>
+<p>接到兄弟的救助之后，我们一起通过JProfile分析了主要流程的调用栈耗时情况，再结合代码快速发现一处可优化点：</p>
 <ul>
-<li><a href="https://12factor.net/">Twelve Factor App</a>，十二因子应用</li>
-<li>Mirco-services，微服务</li>
-<li>Self Service Agile Infrastructure，自服务敏捷的基础设施</li>
-<li>API Based Clolaboration， 基于API的协作</li>
-<li>Anti-Fragility，反脆弱性</li>
+<li>消息的编解码内存是可以线程级复用，完全可以分配一段大于1K的内存绑定每个线程，只给此线程反复使用。</li>
 </ul>
-<h2 id="总结">总结</h2>
-<p>总结起来，要实施CloudNative，包括三个维度：</p>
+<h2 id="背后的知识">背后的知识</h2>
+<p>Java NIO框架提供了ByteBuffer机制，通常用于对数据流byte的操作，也常用于网络编程，它有两种分配方式：</p>
 <ul>
-<li>软件架构：基于敏捷基础设施，是整个Cloud Native的根基；基于微服务架构，微服务架构是Cloud Native的一个核心要素；基于Design for failure理论，构建高可用的系统；基于容器部署，确保环境一致性，应用快速启动终止，水平扩展。</li>
-<li>组织变革：根据康威定律，如果要达到比较理想的云化效果，必须进行组织变革。一个合理的组织架构，将会极大提高云化的推行；推行DevOps文化，倡导开放、合作的组织文化。</li>
-<li>软件工程：推行持续集成与持续交付，联合开发、质量、运维各个环节，打通代码，编译，检查，打包，上线，发布各个环节。全自动化，包括自动化部署，升级，灰度，以及运维。</li>
+<li>allocate(int capacity) ：从JVM的堆内存上分配。</li>
+<li>allocateDirect(int capacity) ：从堆外内存上分配。</li>
 </ul>
-<p>CloudNative背后的软件架构需求：</p>
+<p>他们的使用场景不同，并不是一定哪个快哪个慢。</p>
 <ul>
-<li>按需特性的伸缩</li>
-<li>按特性持续演进</li>
-<li>应用快速上线</li>
-<li>系统的高用性</li>
-<li>全面解耦合</li>
-<li>系统自服务</li>
-<li>支持多租户</li>
-<li>异构公有云</li>
+<li>allocate分配受垃圾回收器影响，并不太适合内存长驻使用的场景。</li>
+<li>allocateDirect不受垃圾回收器影响，适合于不需要从OS内存到JVM内存拷贝的场景，也适合于大块内存长驻使用的场景，并不适合于频繁申请小块内存的场景。做过C/C++开发的同学，可能听说过内存空洞的问题。</li>
 </ul>
-<hr>
-<p>参考：</p>
-<ol>
-<li><a href="http://wso2.com/library/articles/2010/05/blog-post-cloud-native">http://wso2.com/library/articles/2010/05/blog-post-cloud-native</a></li>
-<li><a href="https://www.infoq.com/presentations/migration-cloud-microservices">https://www.infoq.com/presentations/migration-cloud-microservices</a></li>
-<li><a href="http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine">http://www.infoq.com/cn/articles/cloud-native-architectures-matt-stine</a></li>
-<li><a href="http://www.open-open.com/lib/view/open1447420363069.html">一篇文章带你了解Cloud Native</a></li>
-</ol>
+<p>而Netty又在参考JDK的ByteBuffer基础之上，提供ByteBufAllocator：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ByteBufAllocator</span> {
+    <span style="color:#228b22">// 直接分配一块内存，是使用direct还是heap取决于子类实现
+</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">buffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+ 
+    <span style="color:#228b22">// 更倾向于direct方式分配
+</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">ioBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+ 
+    <span style="color:#228b22">// heap内存分配
+</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">heapBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+ 
+    <span style="color:#228b22">// direct内存分配
+</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">directBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+    ...
+}
+</code></pre></div><p>它有两个主要的子类：</p>
+<ul>
+<li>UnpooledByteBufAllocator： 非池化分配器。</li>
+<li>PooledByteBufAllocator：池化分配器，并且考虑了多线程并发访问的效率问题。在多线程情况下，每个线程有一份独立的缓存管理。</li>
+</ul>
+<p>PooledByteBufAllocator的实现很复杂，它涉及到多个数据结构Arena、Chunk、ChunkList、Page、SubPage。我就不敢班门弄斧了，请感兴趣的同学自行搜索Netty相应的资料。可参考：<a href="https://blog.csdn.net/bjweimengshu/article/details/99260447?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase">看完这篇还不清楚Netty的内存管理，那我就哭了</a></p>
+<h1 id="线程级缓存复用">线程级缓存复用</h1>
+<p>任何计算机中的资源是有限的，为了效率，我们通常会采用池化复用各种资源，常见有：</p>
+<ul>
+<li>线程池</li>
+<li>连接池</li>
+<li>内存池</li>
+</ul>
+<p>内存池化指：应用程序可以通过系统的内存分配调用预先一次性申请适当大小的内存作为一个内存池，之后应用程序自己对内存的分配和释放则可以通过这个内存池来完成。但内存池的实现相比于线程池，连接池更为复杂，因为内存池还需要对内存进一步分块分片，以满足不同的大小对象的高效使用。</p>
+<p>从线程安全的角度来分，内存池可以分为单线程内存池和多线程内存池。单线程内存池整个生命周期只被一个线程使用，因而不需要考虑互斥访问的问题；多线程内存池有可能被多个线程共享，因此则需要在每次分配和释放内存时加锁。相对而言，单线程内存池性能更高，而多线程内存池适用范围更广。</p>
+<p>JVM的堆内存管理，也是一种更为广义支持多线程带有内存标记整理能自动回收的内存池管理。由于越是最为复杂的东西，考虑的场景越多，效率也就不是最好的。</p>
+<p>对于网络编程，我们对于连接，线程都是可能固定池化管理，固定的连接数，固定的处理线程数。那内存则可以直接如下：</p>
+<ul>
+<li>分配足够的内存绑定连接，只给此连接复用。</li>
+<li>分配足够的内存绑定线程，只给此线程复用。</li>
+</ul>
+<p>这样一下来，内存的管理也就简单得多，也变得效率更高，不需要池化管理的加锁保证多线程安全问题。</p>
+<p>回到案例中的问题，虽然我们可以使用PooledByteBufAllocator来达到ByteBuff复用的效果，同样它也支持为每一个线程通过PoolThreadLocalCache来管理内存，从来避免多线程争夺的问题。它的实现还是非常高效的，只不要过要注意第一次分配的时间。来自网上的测试：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">PooledByteBufTest</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
+        <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0; i&lt;5; i++){
+            <span style="color:#00688b;font-weight:bold">long</span> start = System.<span style="color:#658b00">currentTimeMillis</span>();
+            ByteBuf byteBuf = PooledByteBufAllocator.<span style="color:#658b00">DEFAULT</span>.<span style="color:#658b00">buffer</span>(1024*1024);
+            <span style="color:#00688b;font-weight:bold">long</span> end = System.<span style="color:#658b00">currentTimeMillis</span>();
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化pooled的ByteBuf第&#34;</span>+i+<span style="color:#cd5555">&#34;次，耗时&#34;</span>+(end-start)+<span style="color:#cd5555">&#34;毫秒&#34;</span>);
+        }
+    }
+}
+</code></pre></div><p>执行结果：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">初始化pooled的ByteBuf第0次，耗时165毫秒
+初始化pooled的ByteBuf第1次，耗时2毫秒
+初始化pooled的ByteBuf第2次，耗时0毫秒
+初始化pooled的ByteBuf第3次，耗时0毫秒
+初始化pooled的ByteBuf第4次，耗时0毫
+</code></pre></div><p>但我觉得还是过于复杂，其实最为简单的实现：</p>
+<ul>
+<li>考虑绝多大数的场景，假定每个请求消息98%是 1K 大小以内，则可以为每个处理线程直接预先分配 1K的 directBuffer。这个大小做成系统配置项。</li>
+<li>当大小超过 1K 时，则可以再调整 directBuffer 内存的大小。可设置一个上限，避免对内存的溢出攻击。</li>
+</ul>
+<h1 id="结语">结语</h1>
+<p>任何计算机的资源都是有限的，而内存则是最为重要的资源之一。现代语言的垃圾回收机制解决了手工释放内存的问题，内存池化也得解决了内存复用的问题。但多线程并发场景下，内存池可能会存在锁的争夺与分配不公平导致CPU抖动等问题，效率并不高。为了更高效，往往我们需要视使用场景返璞归真，使用最为简单的策略，固定的线程数，为每个线程独立预先分配足够的内存，做到线程级缓存复用。</p>
+
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cloud" rel="tag" title="Cloud">#Cloud#</a>
-    
-    <a href="http://lanlingzi.cn/tags/%e5%ae%b9%e5%99%a8" rel="tag" title="容器">#容器#</a>
-    
-    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84" rel="tag" title="软件架构">#软件架构#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -219,16 +263,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2017/0203_go_optimize/" rel="next" title="Go性能优化小结">
-        <i class="fa fa-chevron-left"></i> Go性能优化小结
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/1120_go_deps_mgnt/" rel="prev" title="Go依赖管理机制">
-        Go依赖管理机制 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2020/0627_code/" rel="prev" title="飞哥讲代码7：消除重复，需要脚本模块化">
+        飞哥讲代码7：消除重复，需要脚本模块化 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -249,7 +289,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：CloudNative初探
+            标题：飞哥讲代码7：提升性能，线程级缓存复用
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -351,12 +391,13 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
   <ul>
-    <li>
+    <li><a href="#案例">案例</a>
       <ul>
-        <li><a href="#概念">概念</a></li>
-        <li><a href="#总结">总结</a></li>
+        <li><a href="#背后的知识">背后的知识</a></li>
       </ul>
     </li>
+    <li><a href="#线程级缓存复用">线程级缓存复用</a></li>
+    <li><a href="#结语">结语</a></li>
   </ul>
 </nav></div>
     </div>
