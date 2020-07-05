@@ -17,7 +17,24 @@
       <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2020/0705_code/</guid>
-      <description>案例 去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话： ■■(工号) 2019-08-27 14:50 飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下 ◆◆</description>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;■■(工号) 2019-08-27 14:50&lt;br&gt;
+飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下&lt;br&gt;
+◆◆◆(工号) 2019-08-27 14:51&lt;br&gt;
+好&lt;br&gt;
+■■(工号) 2019-08-28 10:39&lt;br&gt;
+飞哥，性能有提升， 8W8 压到了 9W7&lt;br&gt;
+提升了1W&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一个下午的时间，到底发生了什么，对代码做了什么优化，性能提升将近1W TPS？&lt;/p&gt;
+&lt;p&gt;出现性能瓶颈的组件是平台一个很成熟的中间件，从x86切换到arm下性能基准测试情况如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;组网：3 client + 1 server&lt;/li&gt;
+&lt;li&gt;环境：4VM(arm 8C64G) VS 4VM(x86 8C64G）&lt;/li&gt;
+&lt;li&gt;基准测试：TPS x86 VS arm = 1 VS 0.6&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
