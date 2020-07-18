@@ -17,7 +17,25 @@
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2020/0718_code/</guid>
-      <description>案例 两周前，参与某一老产品的性能优化有如下收获： 同事说，我配置了 1000个线程 ，但是总消耗时间还是需要 10分钟 左右，似乎没有真正的并发。 经过</description>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;两周前，参与某一老产品的性能优化有如下收获：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同事说，我配置了 &lt;strong&gt;1000个线程&lt;/strong&gt; ，但是总消耗时间还是需要 &lt;strong&gt;10分钟&lt;/strong&gt; 左右，似乎没有真正的并发。&lt;/li&gt;
+&lt;li&gt;经过分析代码，狂改一通代码，结果是：只配置了 &lt;strong&gt;32个线程&lt;/strong&gt; ，总消耗时间下降至 &lt;strong&gt;44秒&lt;/strong&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(cache) {  &lt;span style=&#34;color:#228b22&#34;&gt;// 这个是全局锁，极大影响并发
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {  
+            desc = getDescription(....);  &lt;span style=&#34;color:#228b22&#34;&gt;// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; CopyOnWriteMap(cache) &lt;span style=&#34;color:#228b22&#34;&gt;// 对象Copy
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(key, desc);
+        }
+    }
+}
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; resource;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
