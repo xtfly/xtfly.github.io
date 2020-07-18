@@ -164,7 +164,7 @@
         }
     }
 }
-<span style="color:#8b008b;font-weight:bold">return</span> resource;
+<span style="color:#8b008b;font-weight:bold">return</span> desc;
 </code></pre></div><p>cache是自己实现的CopyOnWrite的Map，并没有使用ConcurrentHashMap，目的是提升读远远多于写的场景的性能。但这个性能问题就是写的时候。写的业务场景：</p>
 <ul>
 <li>业务中有76个Jar包，需要读取这个76个jar包中所有Class对象，每个Jar中平均约100个Class。</li>

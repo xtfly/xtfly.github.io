@@ -11,7 +11,7 @@
         </tags>
         <content type="html"> 案例 两周前，参与某一老产品的性能优化有如下收获：
  同事说，我配置了 1000个线程 ，但是总消耗时间还是需要 10分钟 左右，似乎没有真正的并发。 经过分析代码，狂改一通代码，结果是：只配置了 32个线程 ，总消耗时间下降至 44秒 。  这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：
-Description desc = cache.get(key); if (desc == null) { synchronized(cache) { // 这个是全局锁，极大影响并发  if (desc == null) { desc = getDescription(....); // 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高  cache = new CopyOnWriteMap(cache) // 对象Copy  cache.add(key, desc); } } } return resource; cache是自己实现的CopyOnWrite的Map，并没有使用ConcurrentHashMap，目的是提升读远远多于写的场景的性能。但这个性能问题就是写的时候。写的业务场景：
+Description desc = cache.get(key); if (desc == null) { synchronized(cache) { // 这个是全局锁，极大影响并发  if (desc == null) { desc = getDescription(....); // 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高  cache = new CopyOnWriteMap(cache) // 对象Copy  cache.add(key, desc); } } } return desc; cache是自己实现的CopyOnWrite的Map，并没有使用ConcurrentHashMap，目的是提升读远远多于写的场景的性能。但这个性能问题就是写的时候。写的业务场景：
  业务中有76个Jar包，需要读取这个76个jar包中所有Class对象，每个Jar中平均约100个Class。 采用懒加载方式，通过反射获取这些Class的方法与属性等描述信息，描述信息生成之后则放入Cache中。 虽然采用多线程并发加载（每个Jar在一个线程中处理），配置1000个线程也是多余的。 多个线程并没有完全并发处理，因为都是首次加载，线程阻塞在获取cache全局锁上。 在整个流程中，上述采用Double-Check对Map操作的synchronized块有5~6个，即有5~6全局锁。  所做优化：
  把CopyOnWriteMap换成JDK自带的ConcurrentHashMap。 去掉Double-Check &#43; synchronized块，采用putIfAbsent来加入新值。  这次不再讲锁的优化（请参考飞哥讲代码3：简洁高效的线程安全 ），而是来谈谈线程模型，并不是线程配置得越多，就能提升性能。
 背后的知识 笔者在我司最早曾写过C/C&#43;&#43;代码，接触的早期智能网平台产品是单线程多进程模式，即一个进程中只有一个线程在处理业务逻辑。所有的事件采用Select函数监视所有文件描述符的变化情况来处理各种请求。虽然只有一个线程在处理，性能并不差，因为线程并没有阻塞，它是满血在永不停息的干活。并发是采用多进程的方式，单个进程并绑定CPU，也避免了CPU在多进程之间的切换，效率更好。
