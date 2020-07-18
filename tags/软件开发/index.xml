@@ -6,10 +6,19 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 05 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 18 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码9：提升性能，线程数合适就行</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0718_code/</link>
+      <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0718_code/</guid>
+      <description>案例 两周前，参与某一老产品的性能优化有如下收获： 同事说，我配置了 1000个线程 ，但是总消耗时间还是需要 10分钟 左右，似乎没有真正的并发。 经过</description>
+    </item>
     
     <item>
       <title>飞哥讲代码8：提升性能，线程级缓存复用</title>
