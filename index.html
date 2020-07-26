@@ -150,7 +150,15 @@
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    案例 在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。 案例一：某服务对接
+    <h1 id="案例">案例</h1>
+<p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
+<p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
+...
+</code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
     </div>
     
     <div class="post-more-link text-center">

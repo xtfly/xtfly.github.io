@@ -17,7 +17,15 @@
       <pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2020/0726_code/</guid>
-      <description>案例 在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。 案例一：某服务对接</description>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;案例一&lt;/strong&gt;：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytesInternel&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:127)
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;Accessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(Accessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:897)
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getString&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:154)
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。&lt;/p&gt;</description>
     </item>
     
     <item>
