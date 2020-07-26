@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>飞哥讲代码10：提升性能，表设计很重要</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0726_code/</link>
+      <pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0726_code/</guid>
+      <description>案例 在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。 案例一：某服务对接</description>
+    </item>
+    
+    <item>
       <title>飞哥讲代码9：提升性能，线程数合适就行</title>
       <link>http://lanlingzi.cn/post/technical/2020/0718_code/</link>
       <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>

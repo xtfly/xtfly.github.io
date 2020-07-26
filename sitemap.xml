@@ -1,6 +1,44 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码10：提升性能，表设计很重要</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0726_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。
+案例一：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：
+Caused by java.sql.SQLException: Stream has already bean closed at oracle.jdbc.driver.LongAccessor.getBytesInternel(LongAccessor.java:127) at oracle.jdbc.driver.Accessor.getBytes(Accessor.java:897) at oracle.jdbc.driver.LongAccessor.getString(LongAccessor.java:154) ... 从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。
+案例二：对接GaussDB，几十并发执行作业，日志报无法获取可用的数据库连接，导致后面的作业状态入库失败。
+通过时间打点日志发现写某一张表很慢，导致长时间占用连接，连接池很快耗尽。这一张表有个Blob字段，把这修改Varchar2之后，问题得已解决。
+背后的知识 案例一，先看一段Oracle官方对Long的描述(摘抄部分):
+ Do not create tables with LONG columns. Use LOB columns (CLOB, NCLOB, BLOB) instead. LONG columns are supported only for backward compatibility.
+LONG columns store variable-length character strings containing up to 2 gigabytes -1, or 231-1 bytes. LONG columns have many of the characteristics of VARCHAR2 columns. You can use LONG columns to store long text strings. The length of LONG values may be limited by the memory available on your computer. LONG literals are formed as described for &amp;ldquo;Text Literals&amp;rdquo;.
+ 更多Long的问题与约束参见LONG Datatype 。
+Oracle不建议使用Long类型，存在也是为了向后兼容。Long并不存储整数型，而是存储字符串型数据，最大长度限制是2GB。在案例一中，即使只存储一个很短的字符串给Long字段，当查询时Oracle也可能会分配一个较大的空间，所以问题只有在一定场景下出现。
+为什么会采用Long类型，这是不恰当使用hibernate造成的，我们来还原一下出现这个问题的使用过程：
+ 系统采用了JPA做数据访问层，JPA底层是hibernate。 某个表映射Java类型为String，指定长度4096。 开启JPA的ddl_auto，自动刷表，创建对应表结构，此字段自动声明为Long类型。 为了省事，直接把生成的表DDL拷贝出来，放在flyway的安装SQL脚本中。  hibernate为什么会对String声明为Long类型，因为在 Oracle9iDialect 中会有如下代码：
+registerColumnType( Types.VARCHAR, 4000, &amp;#34;varchar2($l char)&amp;#34; ); registerColumnType( Types.VARCHAR, &amp;#34;long&amp;#34; ); 虽然我们是配置Oracle12cDialect，但他们继承关系，Oracle12cDialect-&amp;gt;Oracle10gDialect-&amp;gt;Oracle9iDialect。当String长度超过4000，则使用long类型。这就掉入坑中的根因，其实从业务场景来看，根本不需要那么长的存储要求。
+案例二，是由Blob字段的性能问题引起的。无论是哪种数据库，Clob/Blob的写入性能并不高。我们也来还原一下出现这个问题的使用过程：
+ 使用一张表用于记录作业执行过程日志，担心日志可能过长，最开始采用Blob（文本存储为什么不采用Clob，还是JPA自动刷表映射的问题）。 后面也做了优化，日志拆成多行记录写，每一行限制长度，但表字段类型并未修改。  由于GaussDB的材料比较少，还是以Oracle为例说明一下问题。
+Oracle数据库的LOB字段用于存储大数据对象的字段类型，包括BLOB、CLOB、NLOB、BFILE：
+ 当LOB字段大小超过4k时，数据库会单独为该LOB字段分配额外的BLOB Segments存储BLOB对象，存储在lobsegment中的lob缺省不在缓冲区缓存，对于lob的读写都是物理IO，代价非常高。 被删除或更新的BLOB字段所占用空间不会自动批量回收，当所在表有大量的删除、更新操作时，BLOB所在Segments会迅速耗尽空间，新的INSERT需要空间时，会在高水位线上加锁后，回收曾使用但已经过期的BLOB空间，由于该操作效率很低，此时数据库就会有大量的enq:HW – contention等待，相关SQL会由于该等待而串行执行。因此LOB字段不适合在有大批量删除、更新操作的并发场合使用。  对两个案例的反思：
+ 不要采用JPA/hibernate自动DDL创建表，自动能省事即不是最优的。 每个表结构的采用什么类型，长度是多少，应该严格设计。  数据库设计 数据库有很强的领域知识，但现实项目中几乎由开发者直接进行数据库设计。但开发者通常对数据表知识知之甚少，就会导致各种问题的发生。比较大的团队可能会有DBA专门负责表设计，评审与优化，为项目保驾护航。今年的任职也把数据库这一专项也取消掉了，可能会导致后面更为严重的问题，无任职的牵引，无人懂数据库，完全需要依赖外部专家。
+从提升性能的角度来看，关系型数据库设计通常要从下面两点考虑：
+ 节省空间：选择合适的类型与和长度，不要浪费存储空间。 提高效率：采用合适的主键，建立合适的索引，去掉不必的依赖，切分表读写分离，存储分离。  范式 团队开发者甚少需要了解有哪些范式，才能设计出合理的表结构。下面只是简单记录一下，更详细的说明请自行搜索相关材料。
+ 第一范式(1NF)：无重复的列，每一列都是不可分割的基本数据项。 第二范式(2NF)：1NF基础上，每列都和主键相关，每张表一定要有个主键例。 第三范式(3NF)：每列都和主键列直接相关,而不是间接相关，非主键列变更不应引起其它列变更，应该消除传递依赖。 鲍依斯-科得范式(BCNF)：3NF基础上，某一列与复合主键中的某一列有关，而与其他主键无关，即每个表中只有一个候选键。 第四范式(4NF)：非主键列不应该有多值，没有多值依赖。 第五范式(5NF)：最终范式，满足4NF基础上，表必须可以分解为较小的表，除非那些表在逻辑上拥有与原始表相同的主键。  从实际项目中的来看，对于数据模型存在层次结构，我们不少情况没有拆分为小表，通常一张表中存在多个大字段，存储Json字符串。这样看似存储扩展性好，但它违背了第四范式或第五范式，解决方案是增加关联表。虽然增加关联表会导致一些冗余，也会导致联合查询的效率问题，但结构依赖是清晰，便于数据库维护，也可能针对性查询优化（如只查询下层结构的数据）。
+一些经验 下面是个人一些经验积累，由于本人非数据库领域专家，供参考，欢迎大家补充：
+节省空间：
+ 选择小的数据类型，如枚举类型，可以采用tinyint/bit，以便节省空间。 使用varchar而不要使用char字段，varchar使用可以减少空间占用。 不要使用BLOB/CLOB字段存放大数据，除非无性能要求。 不要使用设计器/框架缺省的字段长度，给每个字段指定最合理的长度。 不要过早考虑字段的扩展，审视空值字段存在是否有业务必要性。  提升效率：
+ 主键类型，建议采用bigint，因为CPU是64位，查询效率更高。 慎重使用联合主键。 不建议使用外键约束，一是影响效率，二是增加维护成本。 用关联表建立表和表之间的多对多关系，而不用一个字段解析的方式。 列无重复值，可以建索引，唯一索引和普通索引。 审视非主键唯一索引的必要性。唯一索引一定要小心，它带有唯一约束。 唯一性太差的字段不适合建立索引，比如性别，真假值。 频繁更新的字段不适合建立索引。 where条件中用不到的字段不适合建立索引。  当然上述肯定只是最为基础的优化点，对于大规模系统中的表还得考虑读写分离，分库分表，表空间分离，采用不同的存储引擎等等。我由于却少实战经验，就不敢造次了。
+结语 数据库设计是一门非常高深的学问，DBA这个岗位的价值非常的大。不合理的表结构设计，极可能会导致业务性能问题。对于我们普通开发人员来说，非常有必要掌握一些数据库表设计的原则、技巧。范式为我们提供了基本的原则与规范要求。一个开发团队内，表结构设计应该拿出来内部评审，参考公司内部相关设计规范。三个臭皮匠顶个诸葛亮，充分发挥集体的经验，减少不必要的设计问题。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码9：提升性能，线程数合适就行</title>
         <url>http://lanlingzi.cn/post/technical/2020/0718_code/</url>
         <categories>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Go语言不足 - 蘭陵N梓記</title>
+    <title>飞哥讲代码10：提升性能，表设计很重要 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="Go语言不足">
+    <meta property="og:title" content="飞哥讲代码10：提升性能，表设计很重要">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Go语言不足 - 蘭陵N梓記" />
+    <meta name="title" content="飞哥讲代码10：提升性能，表设计很重要 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2016/0718_go_insufficient/" itemprop="url">
-        Go语言不足
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0726_code/" itemprop="url">
+        飞哥讲代码10：提升性能，表设计很重要
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-07-18">
-    2016-07-18
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-26">
+    2020-07-26
 </time>
 </span> 
       
@@ -142,104 +142,108 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2083 字 ~5分钟</span>
+<span class="leancloud-visitors-count">3080 字 ~7分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>最近公司是在疯狂地推广Go语言，我也是推广小组成员。Go语言的确很多的优点，这里并不想表扬Go语言，而是说说它的不足。</p>
-<h2 id="生态不成熟">生态不成熟</h2>
-<p>一个语言的流行，都有其背后的推动者。Go语言是由Google公司创建与推动。最近我司的高层也亲自拜访了Go语言的主创人员。Google称目前已有100+的App从Java转向Go。Google内部主要有三大语言（C++、Java、Python），之前对Go语言的公司内部的政治意义大于它的实际使用。近两年来，语言的战略地位凸显，不断地在推动Go语言的应用。</p>
-<p>目前主要使用Go语言的公司是一些创业公司或互联网公司。而这些公司采用Go语言非技术的因素主要有：</p>
-<ul>
-<li>公司软件资产积累少，不存在切换其它语言成本，使用Go语言可以轻装上阵；</li>
-<li>互联网公司的技术人员流动大，Go语言面向开发简化，招人容易，上手快；</li>
-</ul>
-<p>采用Go语言的技术因素主要有：</p>
-<ul>
-<li>Go语言在语言级通过Goroutine与网络IO的Netpoller的封装，能大在简化高并发的网络应用开发，而互联网的应用都以HTTP、网络通讯应用为主；</li>
-<li>Go语言标准库丰富，能满足互联网应用的常用应用场景：不需要太多的业务逻辑，偏网络接入；</li>
-</ul>
-<p>Go当前很多的第三方开源框架，库都是最近一到两年内才诞生的，并且后面没有相应的大公司支撑，个人或小团体的维护的项目居多。这些框架，库的成熟需要时间来锤炼与稳定。</p>
-<h2 id="动态扩展机制不成熟">动态扩展机制不成熟</h2>
-<p>对于编译型静态语言，需要有一种机制来支持动态扩展。C/C++是通过动态库来扩展，Java是支持Class动态加载，或基于JVM平台的其它脚本语言互通。Go语言长期没有支持动态库，Go语言的创始人曾明确表态：</p>
+    <h1 id="案例">案例</h1>
+<p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
+<p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
+...
+</code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
+<p><strong>案例二</strong>：对接GaussDB，几十并发执行作业，日志报无法获取可用的数据库连接，导致后面的作业状态入库失败。</p>
+<p>通过时间打点日志发现写某一张表很慢，导致长时间占用连接，连接池很快耗尽。这一张表有个Blob字段，把这修改Varchar2之后，问题得已解决。</p>
+<h2 id="背后的知识">背后的知识</h2>
+<p><strong>案例一</strong>，先看一段Oracle官方对Long的描述(摘抄部分):</p>
 <blockquote>
-<p>动态库的存在是一个系统的设计Bug</p>
+<p>Do not create tables with LONG columns. Use LOB columns (CLOB, NCLOB, BLOB) instead. LONG columns are supported only for backward compatibility.</p>
+<p>LONG columns store variable-length character strings containing up to 2 gigabytes -1, or 231-1 bytes. LONG columns have many of the characteristics of VARCHAR2 columns. You can use LONG columns to store long text strings. The length of LONG values may be limited by the memory available on your computer. LONG literals are formed as described for &ldquo;Text Literals&rdquo;.</p>
 </blockquote>
-<p>但是在Go1.5版本又加入了动态库支持，对动态库支持采用一定的妥协，这也说明它确有它的应用场景。但目前只支持：Linux/AMD64，ARM平台（<a href="https://github.com/golang/go/wiki/cgo">cgo·golang/go Wiki</a>,<a href="https://github.com/golang/go/wiki/WindowsDLLs">WindowsDLLs·golang/go Wiki</a>）。同时支持也是有限制：</p>
+<p>更多Long的问题与约束参见<a href="https://docs.oracle.com/cd/B28359_01/server.111/b28286/sql_elements001.htm#sthref103">LONG Datatype</a> 。</p>
+<p>Oracle不建议使用Long类型，存在也是为了向后兼容。Long并不存储整数型，而是存储字符串型数据，最大长度限制是2GB。在案例一中，即使只存储一个很短的字符串给Long字段，当查询时Oracle也可能会分配一个较大的空间，所以问题只有在一定场景下出现。</p>
+<p>为什么会采用Long类型，这是不恰当使用hibernate造成的，我们来还原一下出现这个问题的使用过程：</p>
 <ul>
-<li>Go语言代码，可以生成动态库给C代码调用，也可能给Go代码调用，但他们使用也有区别，参考：<a href="http://www.golangtc.com/t/55976045b09ecc0f51000001">Go1.5生成动态库</a></li>
-<li>不支持运行时在代码中动态加载库</li>
+<li>系统采用了JPA做数据访问层，JPA底层是hibernate。</li>
+<li>某个表映射Java类型为String，指定长度4096。</li>
+<li>开启JPA的ddl_auto，自动刷表，创建对应表结构，此字段自动声明为Long类型。</li>
+<li>为了省事，直接把生成的表DDL拷贝出来，放在flyway的安装SQL脚本中。</li>
 </ul>
-<p>目前可行的解决方案：</p>
+<p>hibernate为什么会对String声明为Long类型，因为在 <a href="https://github.com/hibernate/hibernate-orm/blob/5.0/hibernate-core/src/main/java/org/hibernate/dialect/Oracle9iDialect.java">Oracle9iDialect</a> 中会有如下代码：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, 4000, <span style="color:#cd5555">&#34;varchar2($l char)&#34;</span> );
+registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, <span style="color:#cd5555">&#34;long&#34;</span> );
+</code></pre></div><p>虽然我们是配置Oracle12cDialect，但他们继承关系，Oracle12cDialect-&gt;Oracle10gDialect-&gt;Oracle9iDialect。当String长度超过4000，则使用long类型。这就掉入坑中的根因，其实从业务场景来看，根本不需要那么长的存储要求。</p>
+<p><strong>案例二</strong>，是由Blob字段的性能问题引起的。无论是哪种数据库，Clob/Blob的写入性能并不高。我们也来还原一下出现这个问题的使用过程：</p>
 <ul>
-<li>生成C语言动态库：通过动态加载生成C语言动态库，实现动态扩展，一个进程中，运行了多个“Go世界”（Go的Runtime）</li>
+<li>使用一张表用于记录作业执行过程日志，担心日志可能过长，最开始采用Blob（文本存储为什么不采用Clob，还是JPA自动刷表映射的问题）。</li>
+<li>后面也做了优化，日志拆成多行记录写，每一行限制长度，但表字段类型并未修改。</li>
 </ul>
+<p>由于GaussDB的材料比较少，还是以Oracle为例说明一下问题。</p>
+<p>Oracle数据库的LOB字段用于存储大数据对象的字段类型，包括BLOB、CLOB、NLOB、BFILE：</p>
 <ul>
-<li>这需要GCC编译器，所以严格来说并不支持Win下的纯DLL动态库（cywin之类的gcc没有验证过）</li>
+<li>当LOB字段大小超过4k时，数据库会单独为该LOB字段分配额外的BLOB Segments存储BLOB对象，存储在lobsegment中的lob缺省不在缓冲区缓存，对于lob的读写都是物理IO，代价非常高。</li>
+<li>被删除或更新的BLOB字段所占用空间不会自动批量回收，当所在表有大量的删除、更新操作时，BLOB所在Segments会迅速耗尽空间，新的INSERT需要空间时，会在高水位线上加锁后，回收曾使用但已经过期的BLOB空间，由于该操作效率很低，此时数据库就会有大量的<code>enq:HW – contention</code>等待，相关SQL会由于该<strong>等待而串行执行</strong>。因此LOB字段不适合在有大批量删除、更新操作的并发场合使用。</li>
 </ul>
+<p>对两个案例的反思：</p>
 <ul>
-<li>嵌入脚本语言，实现功能逻辑的动态扩展。</li>
+<li>不要采用JPA/hibernate自动DDL创建表，自动能省事即不是最优的。</li>
+<li>每个表结构的采用什么类型，长度是多少，应该严格设计。</li>
 </ul>
+<h1 id="数据库设计">数据库设计</h1>
+<p>数据库有很强的领域知识，但现实项目中几乎由开发者直接进行数据库设计。但开发者通常对数据表知识知之甚少，就会导致各种问题的发生。比较大的团队可能会有DBA专门负责表设计，评审与优化，为项目保驾护航。今年的任职也把数据库这一专项也取消掉了，可能会导致后面更为严重的问题，无任职的牵引，无人懂数据库，完全需要依赖外部专家。</p>
+<p>从提升性能的角度来看，关系型数据库设计通常要从下面两点考虑：</p>
 <ul>
-<li>目前开源项目已有纯Go实现的Lua VM，也有通过CGo绑定C的Lua。也有开源项目通过Cgo绑定支持Python,Ruby等；</li>
-<li>自创脚本脚本，或DSL脚本，采用Go来实现脚本解释。但如果对性能要高要求，需要支持对脚本的JIT，这是相当有难度，目前也未见有解决方案。</li>
+<li>节省空间：选择合适的类型与和长度，不要浪费存储空间。</li>
+<li>提高效率：采用合适的主键，建立合适的索引，去掉不必的依赖，切分表读写分离，存储分离。</li>
 </ul>
+<h2 id="范式">范式</h2>
+<p>团队开发者甚少需要了解有哪些范式，才能设计出合理的表结构。下面只是简单记录一下，更详细的说明请自行搜索相关材料。</p>
 <ul>
-<li>实现基于通信机制的插件模式</li>
+<li>第一范式(1NF)：无重复的列，每一列都是不可分割的基本数据项。</li>
+<li>第二范式(2NF)：1NF基础上，每列都和主键相关，每张表一定要有个主键例。</li>
+<li>第三范式(3NF)：每列都和主键列直接相关,而不是间接相关，非主键列变更不应引起其它列变更，应该消除传递依赖。</li>
+<li>鲍依斯-科得范式(BCNF)：3NF基础上，某一列与复合主键中的某一列有关，而与其他主键无关，即每个表中只有一个候选键。</li>
+<li>第四范式(4NF)：非主键列不应该有多值，没有多值依赖。</li>
+<li>第五范式(5NF)：最终范式，满足4NF基础上，表必须可以分解为较小的表，除非那些表在逻辑上拥有与原始表相同的主键。</li>
 </ul>
+<p>从实际项目中的来看，对于数据模型存在层次结构，我们不少情况没有拆分为小表，通常一张表中存在多个大字段，存储Json字符串。这样看似存储扩展性好，但它违背了第四范式或第五范式，解决方案是增加关联表。虽然增加关联表会导致一些冗余，也会导致联合查询的效率问题，但结构依赖是清晰，便于数据库维护，也可能针对性查询优化（如只查询下层结构的数据）。</p>
+<h2 id="一些经验">一些经验</h2>
+<p>下面是个人一些经验积累，由于本人非数据库领域专家，供参考，欢迎大家补充：</p>
+<p><strong>节省空间：</strong></p>
 <ul>
-<li>类似于VScode的语言服务插件机制，参考：<a href="http://www.oschina.net/translate/common-language-protocol">通用语言协议</a></li>
-<li>这本质是进程间的通讯，并不传统意义上的插件扩展机制。</li>
+<li>选择小的数据类型，如枚举类型，可以采用tinyint/bit，以便节省空间。</li>
+<li>使用varchar而不要使用char字段，varchar使用可以减少空间占用。</li>
+<li>不要使用BLOB/CLOB字段存放大数据，除非无性能要求。</li>
+<li>不要使用设计器/框架缺省的字段长度，给每个字段指定最合理的长度。</li>
+<li>不要过早考虑字段的扩展，审视空值字段存在是否有业务必要性。</li>
 </ul>
-<h2 id="不支持泛型">不支持泛型</h2>
-<p>泛型是目前高级语言最常见的语言基础，Java1.5采用擦除法的泛型（并不像C++一样的Template技术）也解放了不少生产力，能大大减少相似的代码。而Go语言官方团队相对是“民主集中制”，很难听取社区的意见，认为这个总是不紧急，并且他们也没有找到满意的实现方式（C++/Java实现方式都不让他们满意：C++是编译期间展示，生成不同的代码，对编译速度与生成文件大小都有影响；而Java是擦除法，只是语法糖，生成Bytecode变成Object对象，并没有本质变化）。</p>
-<p>从目前来看，Go语言在1.0规范发布之后，语法特性几乎没有什么变化，围绕是性能优化与跨平台支持。至少在Go2.0之前，极可能不会引入这个语言特性。</p>
-<p>目前可行的解决方案</p>
+<p><strong>提升效率：</strong></p>
 <ul>
-<li>interface{}</li>
+<li>主键类型，建议采用bigint，因为CPU是64位，查询效率更高。</li>
+<li>慎重使用联合主键。</li>
+<li>不建议使用外键约束，一是影响效率，二是增加维护成本。</li>
+<li>用关联表建立表和表之间的多对多关系，而不用一个字段解析的方式。</li>
+<li>列无重复值，可以建索引，唯一索引和普通索引。</li>
+<li>审视非主键唯一索引的必要性。唯一索引一定要小心，它带有唯一约束。</li>
+<li>唯一性太差的字段不适合建立索引，比如性别，真假值。</li>
+<li>频繁更新的字段不适合建立索引。</li>
+<li>where条件中用不到的字段不适合建立索引。</li>
 </ul>
-<ul>
-<li>类似于C的void*，Java的Object，但这会增加代码的可读性差与安全危险，又与Go的简单哲学不相符</li>
-</ul>
-<ul>
-<li>Go generate</li>
-</ul>
-<ul>
-<li>参考：<a href="http://www.kuqin.com/shuoit/20141104/343014.html">Golang generate 草案</a></li>
-</ul>
-<ul>
-<li>Go泛型编程库：<a href="http://www.open-open.com/lib/view/open1389580392476.html">gen</a></li>
-</ul>
-<ul>
-<li>gen 项目目的是为 Go 语言带来了类似泛型的函数，灵感来自 C# 的 LinQ 和 JavaScript 的 Array methods 以及 underscore 库。操作包括过滤、分组、排序等等。</li>
-</ul>
-<h2 id="goroutine性能陷阱">Goroutine性能陷阱</h2>
-<p>Goroutine简化了并发编程，但它并不能消除并发问题（资源竞争，原子性操作），只是把线程的调度预置到了它的Runtime中，让上层应用代码变得很少。它的坑也主要体现在它的调度不可控制上。</p>
-<p>下面阻塞不会创建新的调度线程：</p>
-<ul>
-<li>网络IO阻塞</li>
-<li>Channel阻塞</li>
-<li>Sleep，同步锁阻塞</li>
-<li>基于底层系统异步调用的Syscall</li>
-</ul>
-<p>下面阻塞会创建新的调度线程：</p>
-<ul>
-<li>磁盘IO阻塞</li>
-<li>CGo方式调用C语言动态库中的调用IO或其它阻塞</li>
-</ul>
-<p>这些情况下会导致线程数量爆涨，从而导致系统性能下降，而Goroutine通过go func就能产生一个Goroutine，犯错的成本低，容易被滥用。这需要开发人员熟悉Goroutine内部机制，并小心地避开这些坑。期待Go官方将来能重点解决这些问题。</p>
-<p>参考：<br>
-[1] <a href="http://studygolang.com/articles/84">goroutine背后的系统知识</a><br>
-[2] <a href="http://www.zhihu.com/question/20862617">golang的goroutine是如何实现的</a><br>
-[3] <a href="http://studygolang.com/articles/1855">goroutine与调度器</a></p>
+<p>当然上述肯定只是最为基础的优化点，对于大规模系统中的表还得考虑读写分离，分库分表，表空间分离，采用不同的存储引擎等等。我由于却少实战经验，就不敢造次了。</p>
+<h1 id="结语">结语</h1>
+<p>数据库设计是一门非常高深的学问，DBA这个岗位的价值非常的大。不合理的表结构设计，极可能会导致业务性能问题。对于我们普通开发人员来说，非常有必要掌握一些数据库表设计的原则、技巧。范式为我们提供了基本的原则与规范要求。一个开发团队内，表结构设计应该拿出来内部评审，参考公司内部相关设计规范。三个臭皮匠顶个诸葛亮，充分发挥集体的经验，减少不必要的设计问题。</p>
+
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/go" rel="tag" title="go">#go#</a>
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
 </div>
 
@@ -248,16 +252,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0723_why_go/" rel="next" title="为什么是Go">
-        <i class="fa fa-chevron-left"></i> 为什么是Go
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2016/0717_go_book/" rel="prev" title="Go语言在线书籍收集">
-        Go语言在线书籍收集 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2020/0718_code/" rel="prev" title="飞哥讲代码9：提升性能，线程数合适就行">
+        飞哥讲代码9：提升性能，线程数合适就行 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -278,7 +278,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Go语言不足
+            标题：飞哥讲代码10：提升性能，表设计很重要
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -380,14 +380,18 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
   <ul>
-    <li>
+    <li><a href="#案例">案例</a>
       <ul>
-        <li><a href="#生态不成熟">生态不成熟</a></li>
-        <li><a href="#动态扩展机制不成熟">动态扩展机制不成熟</a></li>
-        <li><a href="#不支持泛型">不支持泛型</a></li>
-        <li><a href="#goroutine性能陷阱">Goroutine性能陷阱</a></li>
+        <li><a href="#背后的知识">背后的知识</a></li>
       </ul>
     </li>
+    <li><a href="#数据库设计">数据库设计</a>
+      <ul>
+        <li><a href="#范式">范式</a></li>
+        <li><a href="#一些经验">一些经验</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
   </ul>
 </nav></div>
     </div>
