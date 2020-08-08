@@ -6,10 +6,46 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 26 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码11：通过封装降低耦合</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0808_code/</link>
+      <pubDate>Sat, 08 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0808_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, String&amp;gt; store = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;();
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; List&amp;lt;Class2&amp;gt; queue= &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+    &lt;span style=&#34;color:#228b22&#34;&gt;//... 省略其它的字段与其Getter/Setter方法
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
+  &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+   &lt;span style=&#34;color:#228b22&#34;&gt;// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;()) {
+     String value = class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (value == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+        &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        value = createValue();
+        class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(key, value);
+     }
+   }
+
+   &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码的问题是很明显：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。&lt;/li&gt;
+&lt;li&gt;同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码10：提升性能，表设计很重要</title>

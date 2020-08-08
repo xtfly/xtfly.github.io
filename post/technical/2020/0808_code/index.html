@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>清晰的代码结构 - 蘭陵N梓記</title>
+    <title>飞哥讲代码11：通过封装降低耦合 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="清晰的代码结构">
+    <meta property="og:title" content="飞哥讲代码11：通过封装降低耦合">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="清晰的代码结构 - 蘭陵N梓記" />
+    <meta name="title" content="飞哥讲代码11：通过封装降低耦合 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -103,8 +103,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0519_structure/" itemprop="url">
-        清晰的代码结构
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0808_code/" itemprop="url">
+        飞哥讲代码11：通过封装降低耦合
         </a>
       </h1>
       <div class="post-meta">
@@ -113,8 +113,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-19">
-    2019-05-19
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-08-08">
+    2020-08-08
 </time>
 </span> 
       
@@ -142,54 +142,105 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2380 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2499 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <h1 id="问题">问题</h1>
-<p>架构设计中常常关注几个视图，如功能视图、逻辑视图、运行视图与部署视图。但架构师们由于层次较高，长期缺少代码编写能力，往往就直接忽视了开发视图。开发视图主要描述软件的开发工程结构、代码规范，以及构建技术等。代码结构和构建关系到项目的可持续维护以及维护的周期，非常重要。但实现开发活动，架构到开发中间层的GAP，真正重视并落地的很少很少。</p>
-<p>清淅明确的代码结构，是软件项目成功的重要开始。</p>
-<p>代码结构不应该仅仅归纳为 “代码编码风格” 一类，它是架构在代码层次的真实反应，架构是否能落地，代码结构的良好设计起着至关重要的作用。软件是有生命力的，需要考虑其可持续性发展。一个结构层次非常不好软件，它的逻辑可能并不一定复杂，但随着时间的推移，需要花费非常长的时间去理解它表达的的意思。同样不好的代码结构，让构建变得困难或效率低下，进一步降低了它的生命力。</p>
-<h1 id="目的">目的</h1>
-<p>当然，代码层次结构在软件质量属性方面，还是归于开发态的 “可读性和可维护性” 的范畴，我们设计一个层次清晰的代码结构，就是为了达到以下几点目的：</p>
+    <h1 id="案例">案例</h1>
+<p>最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue= <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
+  <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>
+   <span style="color:#228b22">// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+</span><span style="color:#228b22"></span>   <span style="color:#8b008b;font-weight:bold">synchronized</span>(class1.<span style="color:#658b00">getStore</span>()) {
+     String value = class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">get</span>(key);
+     <span style="color:#8b008b;font-weight:bold">if</span> (value == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>        value = createValue();
+        class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">put</span>(key, value);
+     }
+   }
+
+   <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>代码的问题是很明显：</p>
 <ul>
-<li>代码即架构：同样也是架构即代码，源码就可以解析软件架构，软件的组成，软件系统之间的依赖关系。也正如12因子中提到的CodeBase，一份代码能构建出不同的形态的软件，部署在不同的环境。背后的根因是代码能真实地反映出软件的运行与部署架构，构建都能通过代码来跟踪，由良好的代码结构来承载软件的不同形态的运行组成。</li>
-<li>可读性：代码不仅仅是编译给机器来读，更重要是软件人员参与其中，代码让人读懂，它才能更好的生命力。接手这个软件代码的人，一眼就能看懂目录结构，知道软件由什么功能组成，他们的依赖关系是什么；软件启动入口在哪里，测试目录在哪儿，配置文件在哪儿等等，从而非常快速的了解这个项目。</li>
-<li>可维护性：清晰明确的代码结构划分，也是软件各功能模块的边界划分，一旦定义好组织规则后，维护者就能很明确地知道，新的功能能增加在哪里，新增的文件能放在什么目录下，好处是随着时间的推移，代码与配置的规模增加，代码结构不会那么快的腐烂，变更导致乱麻一团。</li>
+<li>Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。</li>
+<li>同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。</li>
 </ul>
-<p>代码层次结构大到子系统、服务（组件）的划分，中到模块工程目录的划分，小到工程内的各个package（Java/Go）目录的划分。无论何种层次，重要还是保持一个层次清晰的目录结构。组织一个良好的目录结构也是设计思想直接体现，其实也并不是那么的简单能设计出来，实际需要根据软件的功能划分不断地调整。</p>
-<h1 id="模块结构">模块结构</h1>
-<p>系统结构的划分是对系统逐步分解的一个过程。设计软件结构的具体任务是将一个复杂系统按功能进行模块划分、建立模块的层次结构及调用关系、确定模块间的接口和人机界面等。模块的划发也是第一层项目工程目录结构划分，只要是模块划分是清晰的，还是较容易映射到代码工程结构。</p>
-<p>模块的划分方法论很多，模块往往是将由一个或多个功能(或目标)密切相关或相似的应用程序所组成的程序集合抽象出来组成在一起。这本质是对业务需求深入了解之后的功能与数据层面的分解。之前的SOA，以及现在微服务都是一种软件架构工程上的优秀实践，但它不能给出业务系统中是按什么维度来划分多少个服务或微服务的答案。</p>
-<p>大的道理与原则还是有一些：</p>
+<h2 id="背后的知识">背后的知识</h2>
+<p>在面向对象设计中，会提到如下特征：</p>
 <ul>
-<li>拆分：任何组织结构都是这样，软件架构的核心就是拆分再组成。拆分涉及到一个粒度的问题，非常考验设计者的水平和经验。</li>
-<li>分层：任一细分小的组织结构也会存在分层，在软件中最为经典的还是MVC，它不仅仅是用于Web开发，而是数据、逻辑和表示的分离思想。</li>
-<li>隔离：明确责任才能更好地工作，软件亦是如些，划清界限，不要过多假设，不要拖泥带水，任何模块只做它该做的事情就对了。</li>
+<li>封装性</li>
+<li>抽象性</li>
+<li>继承性</li>
+<li>多态性</li>
 </ul>
-<h1 id="包结构">包结构</h1>
-<p>模块在架构设计大都能较清晰明确，但模块内的包结构是常见混乱的地方。在Java体系中，Maven作为优秀的工程实践，它约定了源码、测试与资源三种顶层目录，我们还需要进一步在模块内如何划分包（package）结构。</p>
-<p>同样需要有一种按功能划分Package的意识：</p>
+<p><strong>封装性</strong>，顾名思义，对用户隐藏其实现细节，使用该类的用户可以通过该类提供的接口来访问该类，使用户不能轻易的操作此数据结构，只能执行类允许公开的数据的一个小系统。</p>
+<p><strong>抽象性</strong>，就是找出一些事物的相似和共性之处，然后将这些事物归为一个类，这个类只考虑这些事物的相似和共性之处，并且会忽略与当前主题和目标无关的那些方面，将注意力集中在与当前目标有关的方面。</p>
+<p>显然，案例中类设计违背了<strong>封装性</strong>，<strong>抽象也不够</strong>，只是一堆的数据集合，数据之间并没有共性，要说共性这个类的责职就是用来存储数据的。只不过这它承担的责职也太少太少。</p>
+<p>在领域驱动设计中对领域模型提到如下概念：</p>
 <ul>
-<li>功能子模块，尽量做到高内聚，低耦合，子模块的依赖是单向的</li>
-<li>功能与分层划分相结合，如一个功能内，可能涉及到逻辑，数据，接口，这些在以功能名为package下进一步划分子pakcage</li>
-<li>全局用到的变量，常量，应该放到一个地方去维护，全局变量尽量不要跨子模块，定义也是放在子模块的package内</li>
-<li>用到的各种工具类，放在一个package下统一管理，若工具类多了，要考虑按功能进一步划分</li>
-<li>对需要使用的数据结构，应分类存放，而不是混沌的一锅粥</li>
+<li><strong>失血模型</strong>：模型仅仅包含数据的定义和getter/setter方法，业务逻辑和应用逻辑都放到服务层中。</li>
+<li><strong>贫血模型</strong>：贫血模型中包含了一些业务逻辑，但不包含依赖持久层的业务逻辑。这部分依赖于持久层的业务逻辑将会放到服务层中。</li>
+<li><strong>充血模型</strong>：充血模型中包含了所有的业务逻辑，包括依赖于持久层的业务逻辑。</li>
+<li><strong>胀血模型</strong>：胀血模型就是把和业务逻辑不想关的其他应用逻辑（如授权、事务等）都放到领域模型中。</li>
 </ul>
-<p>优秀的包结构划分有着非常多的参考，例如JDK的源码，Spring boot的源码。</p>
-<h1 id="命名">命名</h1>
-<p>对模块，包package，类，方法的命名对于提升代码结构清晰度也非常的重要，好的命名让代码自解释，使用与维护时都能快速知道它所要表达的涵意。</p>
+<p>显然，案例中的代码是<strong>失血模型</strong>的类设计。</p>
+<p>上述案例的中代码，可反映出当时写代码的思考方式：以面向过程自顶向下的方式来解决业务流程问题，数据只是流程中的附属品。而不是以面向领域模型的设计方式，系统中存在哪些概念模型，模型以什么方式来提供能力（接口/方法），再把这此能力组织串起来，形成业务流程。</p>
+<h1 id="数据类">数据类</h1>
+<p>在现实开发中，的确并不是所有类都要有业务逻辑，有一种类只是数据的容器，用于聚合数据，这种类通常称为数据类（data class）。在JVM体系中，像Scala与Kotlin在语言层面都存在这种显式概念：</p>
 <ul>
-<li>多看开源代码，积累好的用词，多采用业界惯用词</li>
-<li>模块，能代表它提供功能特点，常用的gateway，worker，schudler，service, web，agent等后辍。</li>
-<li>包，一是代表它提供的功能，还有些子模块的分层，如mapper/dao, service, controller, api, util, config等作为子package名称</li>
-<li>类，常用的Factory，Builder，Command，Proxy，Adapter，Osberver，Compsite，Service，Controller，Request/Response等作为后辍</li>
-<li>方法：采用动宾组词，常用的add/remove，lock/unlock，open/close，send/receive，show/hide，begin/end等作为前辍</li>
+<li>Scala: 叫case class，其特性就是支持类的模式匹配，应用于数据的解构使用场景，定义如下</li>
 </ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala"><span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(name<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">String</span>, age<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">Int</span>)
+</code></pre></div><ul>
+<li>Kotlin：叫data class，与JavaBean相似，提供原生关键字，定义如下：</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8b008b;font-weight:bold">data</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(<span style="color:#8b008b;font-weight:bold">val</span> name: String, <span style="color:#8b008b;font-weight:bold">val</span> age: Int)
+</code></pre></div><ul>
+<li>Java：在Java14中也坐不住了，引用叫记录类(record)的概念，定义如下：</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> record <span style="color:#008b45">User</span>(String name, <span style="color:#00688b;font-weight:bold">int</span> age) {}
+</code></pre></div><p>各种语言概念略有差别，但都是数据类，他们共同的特点：</p>
+<ul>
+<li>都会自动生成 equals、hashCode 和 toString 方法</li>
+<li>都会自动生成 Getter 方法</li>
+<li>强调数据的不变性，字段在构建方法中声明，Scala 与 Kotlin 可以通过指定val来标识数据只读，record类的字段隐式都是final的</li>
+<li>Kotlin与Java的数据类不可继承</li>
+</ul>
+<p>从Java的命名Record(也是抄C#的概念)，更能看见对数据类的使用场景：</p>
+<ul>
+<li>是数据记录的承载，可用数据库表结构字段的映射，如JPA/MyBatis中Entity类定义。</li>
+<li>是数据格式的描述，可用于网络消息包的定义，如Rest接口请求/响应消息的结构体定义。</li>
+</ul>
+<p>这种类对数据的使用，一个重要的特点是：</p>
+<ul>
+<li>数据一旦生成，它们是不可变的，只能只读。</li>
+<li>类对数据透明持有，不理解数据，不需要有对数据的行为。</li>
+</ul>
+<p>看完上面说明，相信大家也清楚了上述案例中的Class1并不满足数据类的要求，因为外部对数据进行了修改。</p>
+<h1 id="再说封装">再说封装</h1>
+<p>封装是面向对象设计中的重要特征，其目标就是要实现软件部件的“高内聚、低耦合”，防止相互依赖性而带来的变动影响。封装具有黑盒性质，使得用户不用关注其内部细节，从而保证软件具有优良模块性基础。</p>
+<p>像Java是完全面向对象的编程语言，面向对象的封装比传统语言（如C的struct）的封装更为清晰、更为有力。封装就是把描述一个对象的属性和行为的代码封装在一个“模块”中，也就是一个类中，属性用变量定义，<strong>行为用方法进行定义</strong>，<strong>方法</strong>可以直接<strong>访问</strong>同一个<strong>对象中的属性</strong>。通常情况下，让变量和访问这个变量的方法放在一起，将一个类中的<strong>成员变量</strong>全部定义成<strong>私有</strong>的，只有这个类自己的方法才可以访问到这些成员变量，这就基本上实现对象的封装。</p>
+<p>封装设计原则：把对同一事物进行操作的方法和相关的方法放在同一个类中，把方法和它操作的数据放在同一个类中。对象封装成一个高度自治和相对封闭的个体，对象状态（属性）由这个对象自己的行为（方法）来读取和改变。</p>
+<p>封装带来好处也是显而易见的：</p>
+<ul>
+<li>代码复用：提供对行为方法的打包，调用者在使用的时候，只需调用方法即可，提升代码的易用性。</li>
+<li>信息隐蔽：将其成员通过Private隐蔽起来，对成员访问权限的合理控制，提高了数据的安全性。</li>
+<li>封装变化：将对其状态的改变控制在封闭的范围，后续修改调整在可见范围内，提升了代码的可维护性。</li>
+</ul>
+<p>我们再回到案例中的代码，所有散落在外部对Class1的数据操作，应该提供相应的行为方法，把对其的改变控制在自己相对封闭的范围内部。</p>
+<p>当一个类即有行为方法，又提供某一些字段的Getter方法时，一定要考虑Getter是其数据的Copy以及必要性，把改变控制在自己手上。</p>
 <h1 id="结语">结语</h1>
-<p>最近一直在和团队成员写代码，深感软件代码结构的重要性。若代码架构不清晰，是前人挖坑后人掉坑里难以出来。若有代码架构清晰，（微）服务、模块内可能有一两骨干再加一些新手就完全可以搞定。这样带来显著的效果是，既可以节省人力成本，也可以快速培养新人。</p>
+<p>在面向对象编程语言中，类是最为基础的单元，设计一个类，最先要考虑是它的封装性。把对一事物操作的方法和它操作的数据放在同一个类中，将其成员通过Private隐蔽起来，对外提供相应的方法，对其成员访问权限的合理控制，并把外部引起的变化都能控制在本类的方法中。以面向对象的思维来设计模块，通过类的行为方法来组织实现业务流程，避免直接对数据的耦合，这样我们不仅可以提升代码易用性，安全性与可维护性。</p>
     </div>
     <footer class="post-footer">
      
@@ -205,16 +256,12 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/2019/0523_dep_couple/" rel="next" title="降低模块间耦合">
-        <i class="fa fa-chevron-left"></i> 降低模块间耦合
-        </a>
-    
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/thoughts/2019/0511_study/" rel="prev" title="不断学习">
-        不断学习 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/2020/0726_code/" rel="prev" title="飞哥讲代码10：提升性能，表设计很重要">
+        飞哥讲代码10：提升性能，表设计很重要 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -235,7 +282,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：清晰的代码结构
+            标题：飞哥讲代码11：通过封装降低耦合
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -337,11 +384,13 @@
     <div class="post-toc">
         <div class="post-toc-content"><nav id="TableOfContents">
   <ul>
-    <li><a href="#问题">问题</a></li>
-    <li><a href="#目的">目的</a></li>
-    <li><a href="#模块结构">模块结构</a></li>
-    <li><a href="#包结构">包结构</a></li>
-    <li><a href="#命名">命名</a></li>
+    <li><a href="#案例">案例</a>
+      <ul>
+        <li><a href="#背后的知识">背后的知识</a></li>
+      </ul>
+    </li>
+    <li><a href="#数据类">数据类</a></li>
+    <li><a href="#再说封装">再说封装</a></li>
     <li><a href="#结语">结语</a></li>
   </ul>
 </nav></div>
