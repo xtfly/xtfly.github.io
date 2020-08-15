@@ -1,6 +1,48 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码12：好代码应表意直白</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0815_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。
+代码一：
+public void run() { while(!(this.stopped.get())) { try { synchronized (this.lock) { while (this.endTime - System.currentTimeMills() &amp;gt; 0L) { try { if (this.stopped.get()) { return; } this.lock.wait(this.endTime - System.currentTimeMillis()); // 省略主要业务逻辑  } catch (IntrruptedExecption e) { // 省略日志打印  } } // 注意：这个while之后并没有其它的逻辑  } } catch(Throwable e) { // 省略日志打印  } } } 代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：
+ 双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。 第一个while判断是 否定之否定 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。 代码有bug(嵌套太深隐藏了bug)，当超过最大时间时，若没有设置stopped标识位，空循环占CPU。  建议优化：
+ 由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。 去掉否定之否定。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。  public void run () { while(this.running) { try { if ( waitNotify() ) { // 省略主要业务逻辑  } } catch(Throwable e) { // 省略日志打印  } } } // 新增方法，表意是要等通知 private boolean waitNotify() { if (this.endTime - System.currentTimeMills() &amp;lt;= 0L) { this.running = false; // 超时，避免空循环  return false; } if (!this.running) { return false; } try { synchronized (this.lock) { this.lock.wait(this.endTime - System.currentTimeMillis()); } return true; } catch (IntrruptedExecption e) { // 省略日志打印  return false; } } 代码二：
+public boolean deleteFile(File file) if (file.isFile() &amp;amp;&amp;amp; file.exists()) { bool flag = file.delete() if (flag) { return true; } else { return false; } } else { return false; } } 上面的代码的问题比较明显：
+ 存在废话  建议优化：
+public boolean deleteFile(File file) if (file.isFile() &amp;amp;&amp;amp; file.exists()) { return file.delete() } return false; // 其实这个false与上面file.delete()返回false含义不一样，本文不深究这个问题 } 代码三：
+switch(getMessageResult().getStatus()) { case FOUND: { while (iter.hasNext()) { SelectMapedBufferResult selectMapedBuffer = iter.next(); try { // 省略其它业务逻辑  } finally { selectMapedBuffer.release(); } } messageList.addAll(mqMessageList); break; } case OFFSET_TOO_SMALL: // 省略其它的CASE处理逻辑  } 上面的代码问题主要是：
+ switch中嵌套while，若while循环中一个break，它到底是break while还是break switch，不一小心就是产生一个bug。  解决上述问题也比较简单：
+ 对于switch分支，每个分支的处理逻辑应该提取函数。  建议优化：
+switch(getMessageResult().getStatus()) { case FOUND: processFound(...) break; case OFFSET_TOO_SMALL: // 省略其它的CASE处理逻辑  } 背后的知识 上述代码表面上的共性问题：
+ 代码层次嵌套比较深，容易产生bug；也不容易读懂代码，甚至隐藏问题。 代码表达意图不够简洁，代码一写得比较绕，代码二存在废话，代码三存在break错误风险。  减少嵌套层次，降低代码复杂度是老生常谈的问题，也是大牛们经常提到的问题：
+ If you need more than 3 levels of indentation, you’re screwed anyway, and should fix your program.
+ Linus曾经说过：如果你的代码里需要有超过三层的缩进，那么你已经搞砸了，应该修改你的代码。
+在C语言中，Linus的话应该是没有问题的，对于其它的语言要求过高。在我司的编程规范，也建议嵌套层次不要超过4层。
+控制与逻辑分离 嵌套层次过深，表面上可能业务逻辑复杂，表现为控制流程太多过深；深层次可能的原因是我们思维方式引起的，正常的人思维肯定按顺序思考方式：先考虑正常情况，再考虑异常情况，依次递进地再思考。
+我把嵌套过深分为四类，从代码现象来看，都是由于控制语句引起的复杂。
+ if/else引嵌套。 for/while嵌套。 try/catch嵌套。 上述的组合嵌套。  总结的好处是可以给我带来新的思考，我们写代码的思维逻辑可不可以不是顺序的，而是站在更高一层来看，总体原则是否可能把控制与逻辑分离：
+ 控制： 即上述说的各个控制语名，它只是控制你的主要逻辑的走向。 逻辑： 才是程度真实要执行的代码，是业务主要完成的功能。  如果我们能把 控制 与 逻辑 部分有效的分开，那么代码将会变得更加容易看懂、维护和改进。
+对于 控制 的优化，则方法要根据不同控制语句而论：
+if/else 的优化
+ 使用卫语句，异常条件优先返回  if () { if () { if () { // ...  } } else if() { } } 可优化为：
+if (!...) { return ; } if (...) { return ; } if (...) { .... }  把嵌套的 if 换成 if {} else if {} 语句 将 if 换成 case 语句 优先使用&amp;amp;&amp;amp;，在可以使用&amp;amp;&amp;amp;条件判断的地方要避免使用连续嵌套的if 将深层嵌套抽出来放到子函数  for/while优化
+ 采用使用break，continue改变控制流程  for(int a : list) { if (...) { //  } } 优化为:
+for(int a : list) { if (!...) { // 反着写  continue; } } Switch优化
+ 不要根据类型标签进行分支，而要优先使用多态函数。 采用表驱动查找，每个类型标签分支对应一个。  try/catch优化：
+ 嵌套的try/catch表明你没有干净地编码，说明他们不在一个层次，肯定要把内部的try/catch的逻辑提取函数了。  对于 逻辑 的分开，最直接办法就是提取函数：
+ 复杂的if/else内的逻辑提取函数 for/while循环体内的逻辑提取函数 switch的分支处理逻辑提到函数  更复杂的 逻辑 分离，则需要采用一些设计手段，如状态机模式与策略模式的核心思维都是把逻辑分散化，不同的处理逻辑分布到各个子类中。
+结语 干净的代码首先肯定是易读的代码，直接白了的对话大家都喜欢，同样代码不应该隐藏其所表达的意图，而是表意直白，不需要让读者太多的思考。代码嵌套非常影响易读性，还会带来退出分支过多，需要人思考的方面也就越多，稍不留神就会搞出大Bug。减少嵌套层次，降低代码复杂度，值得你去追求。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码11：通过封装降低耦合</title>
         <url>http://lanlingzi.cn/post/technical/2020/0808_code/</url>
         <categories>
@@ -10,7 +52,7 @@
           <tag>软件开发</tag>
         </tags>
         <content type="html"> 案例 最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：
-public class Class1 { private Map&amp;lt;String, String&amp;gt; store = new HashMap&amp;lt;&amp;gt;(); private List&amp;lt;Class2&amp;gt; queue= new ArrayList&amp;lt;&amp;gt;(); //... 省略其它的字段与其Getter/Setter方法 } 此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：
+public class Class1 { private Map&amp;lt;String, String&amp;gt; store = new HashMap&amp;lt;&amp;gt;(); private List&amp;lt;Class2&amp;gt; queue = new ArrayList&amp;lt;&amp;gt;(); //... 省略其它的字段与其Getter/Setter方法 } 此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：
 public void method1() { // ... 省略其它逻辑  // 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理  synchronized(class1.getStore()) { String value = class1.getStore().get(key); if (value == null) { // ... 省略其它逻辑  value = createValue(); class1.getStore().put(key, value); } } // ... 省略其它逻辑 } 代码的问题是很明显：
  Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。 同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。  背后的知识 在面向对象设计中，会提到如下特征：
  封装性 抽象性 继承性 多态性  封装性，顾名思义，对用户隐藏其实现细节，使用该类的用户可以通过该类提供的接口来访问该类，使用户不能轻易的操作此数据结构，只能执行类允许公开的数据的一个小系统。
@@ -875,7 +917,7 @@ AQS定义两种资源共享方式：
 运用reduce我们可以做sum,min,max,average，这些常用的reduce，stream api已经为我们封装了对应的方法。
  reduce(T iden, BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 T reduce(BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 Optional reduce(U identity, BiFunction a, BinaryOperator combiner)： 可以将流中元素反复结合起来，得到一个值，返回 Optional  三个参数时是最难以理解的。 分析下它的三个参数：
  identity: 一个初始化的值；这个初始化的值其类型是泛型U，与Reduce方法返回的类型一致；注意此时Stream中元素的类型是T，与U可以不一样也可以一样，这样的话操作空间就大了；不管Stream中存储的元素是什么类型，U都可以是任何类型，如U可以是一些基本数据类型的包装类型Integer、Long等；或者是String，又或者是一些集合类型ArrayList等 accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的 combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作  collect Collectors里常用搜集器
- toList：list.stream().collect(Collectors.toList()) toSet：list.stream().collect(Collectors.toSet()) toCollection：list.stream().collect(Collectors.toCollection()) counting：计算流中元素的个数， list.stream().collect(Collectors.counting()) summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary)) averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary)) summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage() joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(&amp;quot;,&amp;quot;)) maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary))) minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary))) reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum)) collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size)) groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status)) partitiongBy：根据true/fase对流分组，返回Map, toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream() .collect(toMap(t -&amp;gt; t.getId(), Function.identity(), (k1, k2) -&amp;gt; k1, LinkedHashMap::new)) toConcurrentMap: 线程安全的Map   注：以上内容收集于互联网多篇文章，在此感谢原作者们。
+ toList：list.stream().collect(Collectors.toList()) toSet：list.stream().collect(Collectors.toSet()) toCollection：list.stream().collect(Collectors.toCollection()) counting：计算流中元素的个数， list.stream().collect(Collectors.counting()) summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary)) averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary)) summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage() joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(&amp;rdquo;,&amp;quot;)) maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary))) minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary))) reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum)) collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size)) groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status)) partitiongBy：根据true/fase对流分组，返回Map, toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream() .collect(toMap(t -&amp;gt; t.getId(), Function.identity(), (k1, k2) -&amp;gt; k1, LinkedHashMap::new)) toConcurrentMap: 线程安全的Map   注：以上内容收集于互联网多篇文章，在此感谢原作者们。
 </content>
     </entry>
     
@@ -1534,7 +1576,7 @@ fn foo() -&amp;gt; impl Fn(i32) -&amp;gt; i32 { |x| x &#43; 1 } 另外，impl Tr
 具体应用 actix是rust实现的一个web框架，它很快就使用到impl Trait，如下所示：
 [derive(Serialize)] struct Measurement { temperature: f32, } fn hello_world() -&amp;gt; impl Responder { &amp;#34;Hello World!&amp;#34; } fn greet(req: HttpRequest) -&amp;gt; impl Responder { let to = req.match_info().get(&amp;#34;name&amp;#34;).unwrap_or(&amp;#34;World&amp;#34;); format!(&amp;#34;Hello {}!&amp;#34;, to) } fn current_temperature(_req: HttpRequest) -&amp;gt; impl Responder { Json(Measurement { temperature: 42.3 }) } 其中Responder是一个Trait，它定义如下：
 // https://github.com/actix/actix-web/blob/master/src/handler.rs#L24 pub trait Responder { /// The associated item which can be returned. type Item: Into&amp;lt;AsyncResult&amp;lt;HttpResponse&amp;gt;&amp;gt;; /// The associated error which can be returned. type Error: Into&amp;lt;Error&amp;gt;; /// Convert itself to `AsyncResult` or `Error`. fn respond_to&amp;lt;S: &amp;#39;static&amp;gt;( self, req: &amp;amp;HttpRequest&amp;lt;S&amp;gt;, ) -&amp;gt; Result&amp;lt;Self::Item, Self::Error&amp;gt;; Json是一个struct，它的实现在json.rs文件，也是实现了Responder Trait，在respond_to方法中对T进行了序列化，并生成Result对象
-// https://github.com/actix/actix-web/blob/master/src/json.rs#L119 impl&amp;lt;T: Serialize&amp;gt; Responder for Json&amp;lt;T&amp;gt; { type Item = HttpResponse; type Error = Error; fn respond_to&amp;lt;S&amp;gt;(self, req: &amp;amp;HttpRequest&amp;lt;S&amp;gt;) -&amp;gt; Result&amp;lt;HttpResponse, Error&amp;gt; { let body = serde_json::to_string(&amp;amp;self.0)?; Ok(req .build_response(StatusCode::OK) .content_type(&amp;#34;application/json&amp;#34;) .body(body)) } } 为什么直接返回&amp;quot;Hello World!&amp;ldquo;与format!(&amp;ldquo;Hello {}!&amp;quot;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。
+// https://github.com/actix/actix-web/blob/master/src/json.rs#L119 impl&amp;lt;T: Serialize&amp;gt; Responder for Json&amp;lt;T&amp;gt; { type Item = HttpResponse; type Error = Error; fn respond_to&amp;lt;S&amp;gt;(self, req: &amp;amp;HttpRequest&amp;lt;S&amp;gt;) -&amp;gt; Result&amp;lt;HttpResponse, Error&amp;gt; { let body = serde_json::to_string(&amp;amp;self.0)?; Ok(req .build_response(StatusCode::OK) .content_type(&amp;#34;application/json&amp;#34;) .body(body)) } } 为什么直接返回&amp;quot;Hello World!&amp;ldquo;与format!(&amp;ldquo;Hello {}!&amp;rdquo;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。
 https://github.com/actix/actix-web/blob/master/src/handler.rs#L292 impl&amp;lt;T&amp;gt; From&amp;lt;T&amp;gt; for AsyncResult&amp;lt;T&amp;gt; { #[inline] fn from(resp: T) -&amp;gt; AsyncResult&amp;lt;T&amp;gt; { AsyncResult(Some(AsyncResultItem::Ok(resp))) } } 参考： [1] https://www.infoq.com/news/2018/05/rust-1.26-existential-types
 </content>
     </entry>
@@ -2146,7 +2188,7 @@ $ sudo unsquashfs airoot.sfs 然后把Bash窗口关掉，通过Windows的文件
 先在命令提示符（cmd）用lxrun /setdefaultuser root 把默认的用户换成root。再输入bash进入Linux。
 这个我们就把Ubuntu替换成Archlinux。我们就可以像使用Archlinux一样来在WSL中使用Archlinux。比如创建新的用户，设置locale，替换Archlinux的更新源。不过由于我最早是在14396版本中使用WSL，还是在使用过程遇到了几个问题：
  无法chroot，解决办法：  升级到14936或以后的Insider Preview版本。
- Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:  # pacman-key --init# pacman-key --populate locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：  # cd /usr/share/i18n/charmaps# tar zxvf UTF-8.gz# locale-gen 编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：  升级到14959或以后的Insider Preview版本。
+ Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:  # pacman-key --init # pacman-key --populate  locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：  # cd /usr/share/i18n/charmaps # tar zxvf UTF-8.gz # locale-gen  编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：  升级到14959或以后的Insider Preview版本。
 WSL终端 windows下命令提示符（cmd），输入bash可以直接进入WSL，但它的使用体验无法跟Linux中的终端相比。好在网上已有同学先贡献了终端模拟器，都是基于mintty，总算能找回一些在纯Linux中使用终端的感觉。若使用下msys2的同学应该对它比较熟悉。
  https://github.com/mintty/wsltty https://github.com/goreliu/wsl-terminal   参考：
 [1] https://blog.yoitsu.moe/arch-linux/wsl_with_arch_linux.html
@@ -2409,7 +2451,7 @@ GoId是通用runtime.Callers来给调用Stack来打标签
 BenchmarkSetValues 500000 4050 ns/op
  上面的测试结果看似还不错，但goroutine local storage实现无外乎是map&#43;RWMutex，存在性能瓶颈：
  Goroutine不像Thread，它的个数可以上十万并发，当这么多的Goroutine同时竞争同一把锁时，性能会急剧恶化。 GoId是通过分析调用Stack的信息来获取，也是一个高成本的调用，一个字：慢。  不管怎么样，没有官方的GLS，的确不是很方便，第三方实现又存在性能与不兼容风险。连jtolds/gls作者也贴出其它人的评价：
- &amp;quot;Wow, that&amp;rsquo;s horrifying.&amp;rdquo;
+ &amp;ldquo;Wow, that&amp;rsquo;s horrifying.&amp;rdquo;
 &amp;ldquo;This is the most terrible thing I have seen in a very long time.&amp;rdquo;
 &amp;ldquo;Where is it getting a context from? Is this serializing all the requests? What the heck is the client being bound to? What are these tags? Why does he need callers? Oh god no. No no no.&amp;rdquo;
  小结 Go语言官方认为TLS来存储全局状态是不好的设计，而是要显示地传递状态。Google给的解决方法是golang.org/x/net/context。

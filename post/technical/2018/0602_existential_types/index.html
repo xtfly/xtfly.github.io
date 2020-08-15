@@ -253,7 +253,7 @@ impl&lt;T: Serialize&gt; Responder for Json&lt;T&gt; {
             .body(body))
     }
 }
-</code></pre></div><p>为什么直接返回&quot;Hello World!&ldquo;与format!(&ldquo;Hello {}!&quot;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。</p>
+</code></pre></div><p>为什么直接返回&quot;Hello World!&ldquo;与format!(&ldquo;Hello {}!&rdquo;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">https://github.com/actix/actix-web/blob/master/src/handler.rs#L292
 
 impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
@@ -356,7 +356,7 @@ impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-count">135</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -438,7 +438,7 @@ impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

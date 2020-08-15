@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.67.0" />
+	<meta name="generator" content="Hugo 0.74.3" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -106,6 +106,99 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0815_code/" itemprop="url">
+        飞哥讲代码12：好代码应表意直白
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-08-15">
+    2020-08-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2214 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。</p>
+<p>代码一：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
+                    <span style="color:#8b008b;font-weight:bold">try</span> {
+                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
+                            <span style="color:#8b008b;font-weight:bold">return</span>;
+                        }
+                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+                        <span style="color:#228b22">// 省略主要业务逻辑
+</span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+                        <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>                    }
+                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
+</span><span style="color:#228b22"></span>            }
+        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+            <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
+<ul>
+<li>双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。</li>
+<li>第一个while判断是 <code>否定之否定</code> 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。</li>
+<li>代码有bug(嵌套太深隐藏了bug)，当超过最大时间时，若没有设置stopped标识位，空循环占CPU。</li>
+</ul>
+<p>建议优化：</p>
+<ul>
+<li>由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。</li>
+<li>去掉<code>否定之否定</code>。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0815_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0808_code/" itemprop="url">
         飞哥讲代码11：通过封装降低耦合
         </a>
@@ -145,7 +238,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2499 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2500 字 ~5分钟</span>
 </span>
       </div>
     </header>
@@ -154,7 +247,7 @@
 <p>最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
     <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue= <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
     <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
 </span><span style="color:#228b22"></span>}
 </code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
@@ -649,86 +742,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0605_code/" itemprop="url">
-        飞哥讲代码4：消除重复，需要了解框架机制
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-05">
-    2020-06-05
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4224 字 ~9分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一平台产品源码(Java语言)中（<code>代码一</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceFactory</span> {
-    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory instance = <span style="color:#8b008b;font-weight:bold">new</span> ServiceFactory();
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory <span style="color:#008b45">getInstance</span>() {
-        <span style="color:#8b008b;font-weight:bold">return</span> instance;
-    }
-
-    <span style="color:#707a7c">@Getter</span> 
-    <span style="color:#707a7c">@Setter</span>
-    <span style="color:#707a7c">@Autowired</span> 
-    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateDesignServie appTemplateDesignServie;
-   
-    <span style="color:#707a7c">@Getter</span> 
-    <span style="color:#707a7c">@Setter</span>
-    <span style="color:#707a7c">@Autowired</span> 
-    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateExportServie appTemplateExportServie;
-    
-    <span style="color:#228b22">// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>再来看另一平台服务的代码(Java语言)（<code>代码二</code>）：</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0605_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -848,7 +861,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-count">135</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -922,7 +935,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.67.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,0 +1,605 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码12：好代码应表意直白 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码12：好代码应表意直白">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码12：好代码应表意直白 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0815_code/" itemprop="url">
+        飞哥讲代码12：好代码应表意直白
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-08-15">
+    2020-08-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2214 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。</p>
+<p>代码一：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
+                    <span style="color:#8b008b;font-weight:bold">try</span> {
+                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
+                            <span style="color:#8b008b;font-weight:bold">return</span>;
+                        }
+                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+                        <span style="color:#228b22">// 省略主要业务逻辑
+</span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+                        <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>                    }
+                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
+</span><span style="color:#228b22"></span>            }
+        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+            <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
+<ul>
+<li>双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。</li>
+<li>第一个while判断是 <code>否定之否定</code> 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。</li>
+<li>代码有bug(嵌套太深隐藏了bug)，当超过最大时间时，若没有设置stopped标识位，空循环占CPU。</li>
+</ul>
+<p>建议优化：</p>
+<ul>
+<li>由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。</li>
+<li>去掉<code>否定之否定</code>。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span> () {
+    <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">if</span> ( waitNotify() ) {
+                <span style="color:#228b22">// 省略主要业务逻辑
+</span><span style="color:#228b22"></span>            }
+        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+            <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>        }
+    }
+}
+
+<span style="color:#228b22">// 新增方法，表意是要等通知
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">waitNotify</span>() {
+    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &lt;= 0L) {
+        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span> = <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 超时，避免空循环
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">try</span> {
+        <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+        }
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+        <span style="color:#228b22">// 省略日志打印 
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+}
+</code></pre></div><p>代码二：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
+        bool flag = file.<span style="color:#658b00">delete</span>()
+        <span style="color:#8b008b;font-weight:bold">if</span> (flag) {
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+        }
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+    }
+}
+</code></pre></div><p>上面的代码的问题比较明显：</p>
+<ul>
+<li>存在废话</li>
+</ul>
+<p>建议优化：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
+        <span style="color:#8b008b;font-weight:bold">return</span> file.<span style="color:#658b00">delete</span>()  
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 其实这个false与上面file.delete()返回false含义不一样，本文不深究这个问题
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>代码三：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: {
+            <span style="color:#8b008b;font-weight:bold">while</span> (iter.<span style="color:#658b00">hasNext</span>()) {
+                SelectMapedBufferResult selectMapedBuffer = iter.<span style="color:#658b00">next</span>();
+                <span style="color:#8b008b;font-weight:bold">try</span> {
+                     <span style="color:#228b22">// 省略其它业务逻辑
+</span><span style="color:#228b22"></span>                } <span style="color:#8b008b;font-weight:bold">finally</span> {
+                    selectMapedBuffer.<span style="color:#658b00">release</span>();
+                }
+            }
+
+            messageList.<span style="color:#658b00">addAll</span>(mqMessageList);
+            <span style="color:#8b008b;font-weight:bold">break</span>;
+        }
+        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
+        <span style="color:#228b22">// 省略其它的CASE处理逻辑
+</span><span style="color:#228b22"></span>    }
+</code></pre></div><p>上面的代码问题主要是：</p>
+<ul>
+<li>switch中嵌套while，若while循环中一个break，它到底是break while还是break switch，不一小心就是产生一个bug。</li>
+</ul>
+<p>解决上述问题也比较简单：</p>
+<ul>
+<li>对于switch分支，每个分支的处理逻辑应该提取函数。</li>
+</ul>
+<p>建议优化：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: 
+            processFound(...)
+            <span style="color:#8b008b;font-weight:bold">break</span>;
+        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
+        <span style="color:#228b22">// 省略其它的CASE处理逻辑
+</span><span style="color:#228b22"></span>    }
+</code></pre></div><h2 id="背后的知识">背后的知识</h2>
+<p>上述代码表面上的共性问题：</p>
+<ul>
+<li>代码层次嵌套比较深，容易产生bug；也不容易读懂代码，甚至隐藏问题。</li>
+<li>代码表达意图不够简洁，代码一写得比较绕，代码二存在废话，代码三存在break错误风险。</li>
+</ul>
+<p>减少嵌套层次，降低代码复杂度是老生常谈的问题，也是大牛们经常提到的问题：</p>
+<blockquote>
+<p>If you need more than 3 levels of indentation, you’re screwed anyway, and should fix your program.</p>
+</blockquote>
+<p>Linus曾经说过：如果你的代码里需要有超过三层的缩进，那么你已经搞砸了，应该修改你的代码。</p>
+<p>在C语言中，Linus的话应该是没有问题的，对于其它的语言要求过高。在我司的编程规范，也建议嵌套层次不要超过4层。</p>
+<h1 id="控制与逻辑分离">控制与逻辑分离</h1>
+<p>嵌套层次过深，表面上可能业务逻辑复杂，表现为控制流程太多过深；深层次可能的原因是我们思维方式引起的，正常的人思维肯定按顺序思考方式：先考虑正常情况，再考虑异常情况，依次递进地再思考。</p>
+<p>我把嵌套过深分为四类，从代码现象来看，都是由于控制语句引起的复杂。</p>
+<ul>
+<li>if/else引嵌套。</li>
+<li>for/while嵌套。</li>
+<li>try/catch嵌套。</li>
+<li>上述的组合嵌套。</li>
+</ul>
+<p>总结的好处是可以给我带来新的思考，我们写代码的思维逻辑可不可以不是顺序的，而是站在更高一层来看，总体原则是否可能把控制与逻辑分离：</p>
+<ul>
+<li><strong>控制：</strong> 即上述说的各个控制语名，它只是控制你的主要逻辑的走向。</li>
+<li><strong>逻辑：</strong> 才是程度真实要执行的代码，是业务主要完成的功能。</li>
+</ul>
+<p>如果我们能把 <code>控制</code> 与 <code>逻辑</code> 部分有效的分开，那么代码将会变得更加容易看懂、维护和改进。</p>
+<p>对于 <code>控制</code> 的优化，则方法要根据不同控制语句而论：</p>
+<p><strong>if/else 的优化</strong></p>
+<ul>
+<li>使用卫语句，异常条件优先返回</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> () {
+    <span style="color:#8b008b;font-weight:bold">if</span> () {
+        <span style="color:#8b008b;font-weight:bold">if</span> () {
+            <span style="color:#228b22">// ...
+</span><span style="color:#228b22"></span>        }
+    } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span>() {
+
+    }
+}
+</code></pre></div><p>可优化为：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> (!...) {
+    <span style="color:#8b008b;font-weight:bold">return</span> ;
+}
+
+<span style="color:#8b008b;font-weight:bold">if</span> (...) {
+    <span style="color:#8b008b;font-weight:bold">return</span> ;
+}
+
+<span style="color:#8b008b;font-weight:bold">if</span> (...) {
+    ....
+}
+</code></pre></div><ul>
+<li>把嵌套的 if 换成 if {} else if {} 语句</li>
+<li>将 if 换成 case 语句</li>
+<li>优先使用&amp;&amp;，在可以使用&amp;&amp;条件判断的地方要避免使用连续嵌套的if</li>
+<li>将深层嵌套抽出来放到子函数</li>
+</ul>
+<p><strong>for/while优化</strong></p>
+<ul>
+<li>采用使用break，continue改变控制流程</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (...) {
+       <span style="color:#228b22">//
+</span><span style="color:#228b22"></span>    }
+}
+</code></pre></div><p>优化为:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+    <span style="color:#8b008b;font-weight:bold">if</span> (!...) { <span style="color:#228b22">// 反着写
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">continue</span>; 
+    }
+}
+</code></pre></div><p><strong>Switch优化</strong></p>
+<ul>
+<li>不要根据类型标签进行分支，而要优先使用多态函数。</li>
+<li>采用表驱动查找，每个类型标签分支对应一个。</li>
+</ul>
+<p><strong>try/catch优化</strong>：</p>
+<ul>
+<li>嵌套的try/catch表明你没有干净地编码，说明他们不在一个层次，肯定要把内部的try/catch的逻辑提取函数了。</li>
+</ul>
+<p>对于 <code>逻辑</code> 的分开，最直接办法就是提取函数：</p>
+<ul>
+<li>复杂的if/else内的逻辑提取函数</li>
+<li>for/while循环体内的逻辑提取函数</li>
+<li>switch的分支处理逻辑提到函数</li>
+</ul>
+<p>更复杂的 <code>逻辑</code> 分离，则需要采用一些设计手段，如状态机模式与策略模式的核心思维都是把逻辑分散化，不同的处理逻辑分布到各个子类中。</p>
+<h1 id="结语">结语</h1>
+<p>干净的代码首先肯定是易读的代码，直接白了的对话大家都喜欢，同样代码不应该隐藏其所表达的意图，而是表意直白，不需要让读者太多的思考。代码嵌套非常影响易读性，还会带来退出分支过多，需要人思考的方面也就越多，稍不留神就会搞出大Bug。减少嵌套层次，降低代码复杂度，值得你去追求。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/0808_code/" rel="prev" title="飞哥讲代码11：通过封装降低耦合">
+        飞哥讲代码11：通过封装降低耦合 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码12：好代码应表意直白
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">135</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a>
+      <ul>
+        <li><a href="#背后的知识">背后的知识</a></li>
+      </ul>
+    </li>
+    <li><a href="#控制与逻辑分离">控制与逻辑分离</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2020</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>
