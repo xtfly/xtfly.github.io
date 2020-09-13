@@ -6,10 +6,43 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 12 Sep 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码13：好代码须匠心打磨</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0912_code/</link>
+      <pubDate>Sat, 12 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0912_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：&lt;/p&gt;
+&lt;p&gt;优化前的代码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
+        rule_type = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 1&lt;/span&gt;
+        rule_list = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;rules&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+        res = None
+
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;(rule_type).lower() != RULES_MAPPING:
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;&lt;/span&gt;)
+
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; rule &lt;span style=&#34;color:#8b008b&#34;&gt;in&lt;/span&gt; rule_list:
+            col_name = rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;column&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;cast&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#228b22&#34;&gt;# 3&lt;/span&gt;
+                mapping_dict, other = self.parse_cast(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;:
+                mapping_dict, other = self.parse_in(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;binning&amp;#39;&lt;/span&gt;:
+                res = data[col_name].apply(self.binning_func, args=(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;]))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt;:
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;not supported function&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#228b22&#34;&gt;# 4 &lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; res
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代化之后的代码：&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码12：好代码应表意直白</title>
