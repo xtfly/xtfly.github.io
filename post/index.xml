@@ -6,10 +6,34 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 12 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 Sep 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码14：好代码源自相互改进</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0920_code/</link>
+      <pubDate>Sun, 20 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0920_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;开始：&lt;/strong&gt; 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
+DASK_PROPERTIES_PATH = HOME_PATH + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39;&lt;/span&gt;
+DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+
+CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;lodap.dask.cluster.worker.nthreads&amp;#39;&lt;/span&gt;]
+.... &lt;span style=&#34;color:#228b22&#34;&gt;# 省略其它配置项的获取代码&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;后续：&lt;/strong&gt; 功能不断增加，又分配给 &lt;em&gt;不同的同学来实现&lt;/em&gt; ，也需要读取同目录下其它的配置文件，于是又出现 &lt;em&gt;类似&lt;/em&gt; 上面的代码写法，但略有差别，就不再贴代码了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题：&lt;/strong&gt; 经过一段时间，发现类似读取配置项的代码段 &lt;em&gt;散落&lt;/em&gt; 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重构：&lt;/strong&gt; 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 &lt;em&gt;封装&lt;/em&gt; 对象。改进之后代码如下，并且做了一点小的容错性增强：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。&lt;/li&gt;
+&lt;li&gt;[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码13：好代码须匠心打磨</title>

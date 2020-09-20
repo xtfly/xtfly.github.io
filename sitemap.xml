@@ -1,6 +1,36 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码14：好代码源自相互改进</title>
+        <url>http://lanlingzi.cn/post/technical/2020/0920_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：
+开始： 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：
+HOME_PATH = os.environ[&amp;#39;HOME&amp;#39;] DASK_PROPERTIES_PATH = HOME_PATH &#43; &amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39; DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties() CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&amp;#39;lodap.dask.cluster.worker.nthreads&amp;#39;] .... # 省略其它配置项的获取代码 后续： 功能不断增加，又分配给 不同的同学来实现 ，也需要读取同目录下其它的配置文件，于是又出现 类似 上面的代码写法，但略有差别，就不再贴代码了。
+问题： 经过一段时间，发现类似读取配置项的代码段 散落 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。
+重构： 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 封装 对象。改进之后代码如下，并且做了一点小的容错性增强：
+ [1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。 [2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。  class TrainingCfg(object): def __init__(self): self.cfgs = {} self.cls_path = os.path.expandvars(&amp;#39;$HOME/training/webapps/lodaps/WEB-INF/classes&amp;#39;) self.add_cfg(&amp;#39;app&amp;#39;, &amp;#39;application.properties&amp;#39;) self.add_cfg(&amp;#39;extend&amp;#39;, &amp;#39;application-extend.properties&amp;#39;) self.add_cfg(&amp;#39;dask&amp;#39;, &amp;#39;application-dask.properties&amp;#39;) self.add_cfg(&amp;#39;server&amp;#39;, &amp;#39;application-server.properties&amp;#39;) def add_cfg(self, name: str, file: str): cfg_path = f&amp;#39;{self.cls_path}/{file}&amp;#39; if os.path.exists(cfg_path): # 1 self.cfgs[name] = Properties(cfg_path) else: LOG.warning(f&amp;#39;not found configuration file {cfg_path}&amp;#39;) def get(self, name: str, key: str, default_value: str = &amp;#39;&amp;#39;) -&amp;gt; str: if name in self.cfgs: return self.cfgs[name].get(key, default_value) return default_value # 2 这个问题表象，是由于不同的开发人员写了类似重复代码，缺少统一集中的封装。在 飞哥讲代码11：通过封装降低耦合 一文中已讲了封装的重要性，这次我们来换个角度来看看这个问题。
+Commit机制 我司在推行Commit的代码审核机制，Committer做为代码的把关者，案例中重复的代码应该不能上库，为什么还会出现，后面又怎么整改了。
+Commit机制不是万金油：
+ 现在强调一次Commit代码不能太多，Committer在Review代码时没有完整上下文，也只见树木，不见森林。 Committer也是普通人，让人肉记忆是否存在相似代码不太现实，不是自己写的代码记忆也不会深刻。需要Committer对代码的全盘掌控。 我们的确做得不到位，每次上库前，重复代码，Findbugs，CodeStyle等可能并没有一一去做本地检查，需要开发者养成良好开发习惯。 即使采用工具检查了，对于相似代码，工具并不能检查出来，还需要开发者不能各自扫门前雪，应该多看看多思考。  事实上案例中的代码是我在重新阅读整个代码才发现可以改进，并 立刻 着手实施的。
+还有另一个小故事，由于重构了这段代码，加深了对其的印象。当后面有另一个同学提交代码给我Review时，我就很立刻能指出其类似代码。重用了TrainingCfg的使用，相应代码也从10&#43;行代码下降到3行。
+所以代码的看护并非能通过Commit机制一劳永逸，需要开发人员善用工具自已主动发现问题；也需要Committer不定期的代码全局地再次Review。“像老牛吃草一样进行反刍咀嚼”，把之前积累的片断MR（MergeRequest）代码完全地消化掉。
+相互改进 代码一旦写出，就已走上腐化的道路上。尤其是在多人团队开发的项目，多人协作性差也很容易加重腐化的速度。像我们家里的环境，即使你没有乱扔东西，一段时间之后也会到处布满灰尘，需要经常打扫保持房屋的干净，但问题是 谁来打扫 ？代码开发也是如此，童子军有一条军规：
+ 始终保持露营地比你发现它的时间还要干净。
+ 如果你在地上发现一点脏东西，不管是谁弄的，都清理掉它，要为了下一拨露营的人改善环境。这其实是一个我为人人的精神，代码开发也是应该是如此。事不过三，当你发现相似代码出现三处时，不管是不是你写的，都应该立即去思考重构，提取为公共能力。公共能力即可方便自己，也更能方便他人。所谓&amp;quot;众人拾柴火焰高&amp;rdquo;，只有我为人人了，人人为我才能成为可能，代码的改进才能形成良性的内循环。
+我们不应该通过吹捧 重构 对现有代码的问题进行全盘革命，或者热衷于把 重构 弄成一门政治业绩。重构就是在日常开发中持续地改进代码可维护性，可读性&amp;hellip;重构发生在开发新需求时，发生在代码Review时，发生在解决问题时。重构是每个开发人员份内的事，大凡需要大的代码重构（非架构重构）时说明没有把重构融入开发活动。我们不应该经常提及 重构，而是多鼓励小进改。这让我想到公司以前的宣传：&amp;ldquo;小改时，大奖励&amp;rdquo;。
+我们在写代码时通常不希望别人打扰的，但不是非得要拉个espace电话，发个espace消息就是协作了。Git就是代码开发最好的协作平台。每次从仓库Pull代码时，我们可以花点时间来看看有哪些同学做哪些修改：是否改过自己写的代码，为什么这样修改，有什么对我学习可取之处？有什么新开发公共能力，这次是否我能使用上？只有用心地发现，才会有相互改时的基础。
+通常我们去修改他人的代码的主观能动性不强，原因可能很多，最重要是怕出问题还被责问：看你把我的代码改出问题来了吧。我们可以&amp;quot;虚怀若谷，安之若素&amp;rdquo;。若你觉得再有问题，那就把它改得更好，拿代码来交流最有说服力。
+结语 每天我们都在输出代码，也可能自己写的代码被重写。不同的场景下，原先没有问题的代码也可能变成不太合适。优秀的代码源自不断地改进，不同人的改进。目前软件早已不是单打独斗，一个团队的代码开发，应该把代码的相互改进融入到个人日常开发中。我为人人，人人为我，形成良性的内循环。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码13：好代码须匠心打磨</title>
         <url>http://lanlingzi.cn/post/technical/2020/0912_code/</url>
         <categories>
