@@ -6,10 +6,62 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 20 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 01 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码15：写代码从事物认识开始</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1101_code/</link>
+      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1101_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是盆血模型类+事务脚本（逻辑过程），并给出一个盆血类设计的案例代码。凭记忆记录如下，有三个类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Customer: 顾客&lt;/li&gt;
+&lt;li&gt;Wallet: 顾客的钱包&lt;/li&gt;
+&lt;li&gt;Paperboy: 收银员&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;实现的主体逻辑是，收银员向顾客收钱。&lt;/p&gt;
+&lt;p&gt;代码如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; value;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getTotalMoney&lt;/span&gt;() { &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; value; }
+    
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;addMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; deposit) {
+        value += deposit;
+    }
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;subtractMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; debit) {
+        value -= debit;
+    }
+}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Customer&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String firstName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String lastName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Wallet myWallet;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法，与Getter
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Paperboy&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;charge&lt;/span&gt;(Customer myCustomer, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; payment) {
+        Wallet theWallet = myCustomer.&lt;span style=&#34;color:#658b00&#34;&gt;getWallet&lt;/span&gt;();
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;getTotalMoney&lt;/span&gt;() &amp;gt; payment) {
+            theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;subtractMoney&lt;/span&gt;(payment);
+        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; NotEnoughMoneyException();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码14：好代码源自相互改进</title>

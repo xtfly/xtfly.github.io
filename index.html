@@ -106,6 +106,108 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1101_code/" itemprop="url">
+        飞哥讲代码15：写代码从事物认识开始
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-01">
+    2020-11-01
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2401 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是盆血模型类+事务脚本（逻辑过程），并给出一个盆血类设计的案例代码。凭记忆记录如下，有三个类：</p>
+<ul>
+<li>Customer: 顾客</li>
+<li>Wallet: 顾客的钱包</li>
+<li>Paperboy: 收银员</li>
+</ul>
+<p>实现的主体逻辑是，收银员向顾客收钱。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">float</span> value;
+
+    <span style="color:#228b22">// 省略构造方法
+</span><span style="color:#228b22"></span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">float</span> <span style="color:#008b45">getTotalMoney</span>() { <span style="color:#8b008b;font-weight:bold">return</span> value; }
+    
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> deposit) {
+        value += deposit;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">subtractMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> debit) {
+        value -= debit;
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> String firstName;
+    <span style="color:#8b008b;font-weight:bold">private</span> String lastName;
+    <span style="color:#8b008b;font-weight:bold">private</span> Wallet myWallet;
+
+    <span style="color:#228b22">// 省略构造方法，与Getter
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
+        Wallet theWallet = myCustomer.<span style="color:#658b00">getWallet</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (theWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
+            theWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+</code></pre></div>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1101_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0920_code/" itemprop="url">
         飞哥讲代码14：好代码源自相互改进
         </a>
@@ -659,78 +761,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0627_code/" itemprop="url">
-        飞哥讲代码7：消除重复，需要脚本模块化
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-27">
-    2020-06-27
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2936 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：</p>
-<ul>
-<li>每个服务都要支持手工安装，DF部署，容器部署。</li>
-<li>每个服务都要支持修改密钥，密码等。</li>
-<li>每个服务都要支持容灾，WatchDog等</li>
-</ul>
-<p>上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：</p>
-<ul>
-<li><strong>服务内重复：</strong> 同一服务内脚本不同场景下复制粘贴，如手工安装与DF部署，都需要创建OS用户，没有抽取公共函数复用</li>
-<li><strong>服务间重复：</strong> 不同服务间脚本复制粘贴，如同样是修改密码，只是配置文件路径不一样，配置项略有差别，没有抽取公共脚本复用。</li>
-<li><strong>缺少封装性：</strong> 部分脚本从头到尾没有任何函数提取，大块脚本从顶写到尾，全局变量到处飞，阅读极其困难。</li>
-<li><strong>健壮性不足：</strong> 脚本中的操作没有判断返回值或退出状态码，脚本没有太多的可靠性的防护。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0627_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -852,7 +882,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-count">138</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

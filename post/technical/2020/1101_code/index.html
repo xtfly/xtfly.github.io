@@ -1,0 +1,523 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码15：写代码从事物认识开始 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码15：写代码从事物认识开始">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码15：写代码从事物认识开始 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1101_code/" itemprop="url">
+        飞哥讲代码15：写代码从事物认识开始
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-01">
+    2020-11-01
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2401 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是盆血模型类+事务脚本（逻辑过程），并给出一个盆血类设计的案例代码。凭记忆记录如下，有三个类：</p>
+<ul>
+<li>Customer: 顾客</li>
+<li>Wallet: 顾客的钱包</li>
+<li>Paperboy: 收银员</li>
+</ul>
+<p>实现的主体逻辑是，收银员向顾客收钱。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">float</span> value;
+
+    <span style="color:#228b22">// 省略构造方法
+</span><span style="color:#228b22"></span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">float</span> <span style="color:#008b45">getTotalMoney</span>() { <span style="color:#8b008b;font-weight:bold">return</span> value; }
+    
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> deposit) {
+        value += deposit;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">subtractMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> debit) {
+        value -= debit;
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> String firstName;
+    <span style="color:#8b008b;font-weight:bold">private</span> String lastName;
+    <span style="color:#8b008b;font-weight:bold">private</span> Wallet myWallet;
+
+    <span style="color:#228b22">// 省略构造方法，与Getter
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
+        Wallet theWallet = myCustomer.<span style="color:#658b00">getWallet</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (theWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
+            theWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+</code></pre></div><p>显然，案例中的Wallet与Customer类从直观上在太单薄了，而Paperboy是直接操作了顾客的钱包，把整个支付流程都写到了charge方法中。</p>
+<p>试想在现实生活中：</p>
+<ul>
+<li>假如你作为顾客，你是否愿意也把你的钱包直接给收银员，说：&ldquo;这是我的钱包，你直接从钱包中拿钱吧&rdquo;。</li>
+<li>假如你作为收银员，你是否愿意直接去数顾客钱包中的钱，还要判断里面的钱是否足够。</li>
+</ul>
+<h2 id="背后的知识">背后的知识</h2>
+<p>我在之前的博文 <a href="http://lanlingzi.cn/post/technical/2019/0526_class/#%E7%B1%BB%E7%9A%84%E6%A8%A1%E5%9E%8B">类的职责单一</a> 一文中提到了<strong>类的模型</strong>，主要有两种：</p>
+<ul>
+<li><strong>贫血模型</strong>：是指对象只有属性（getter/setter），或者包含少量的CRUD方法，而业务逻辑都不包含在其中。</li>
+<li><strong>充血模型</strong>：是指对象里即有数据和状态，也有行为，行为负责维持本身的数据和状态，具有内聚性，最符合面向对象的设计，满足单一职责原则。</li>
+</ul>
+<p><code>Martin Fowler</code>主张这种模型，他是从领域驱动开发（DDD）中领域模型对象来分析的，领域模型（Domain Model）是一个商业建模范畴。从一个模型的封装性来说，即有状态又有行为是合理的。</p>
+<p>注：有些资料进一步细分划分四种：贫血模型、失血模型、富血模型、胀血模型。</p>
+<h1 id="代码重构">代码重构</h1>
+<p>重构的方法：采用『移』。</p>
+<p><strong>第一步</strong>：把Paperboy.change的逻辑移到Customer中，收银员看不到顾客的钱包，以及其中钱的数目。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
+        myCustomer.<span style="color:#658b00">pay</span>(payment);
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
+        Wallet theWallet = getWallet();
+        <span style="color:#8b008b;font-weight:bold">if</span> (theWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
+            theWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+</code></pre></div><p><strong>第二步</strong>：对外屏蔽屏蔽Wallet，去掉getWallet()，因为钱包只是一种支付方式，后续可扩展为其它支付，如刷信用卡。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
+            myWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+</code></pre></div><p><strong>第三步</strong>：假定钱包也是一个鲜活个体，比如电子钱包。去掉getTotalMoney方法，提供isEnough方法。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">isEnough</span>(payment)) {
+            myWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">isEnough</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
+         <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">value</span> &gt; payment;
+    }
+}
+</code></pre></div><h1 id="再说类模型">再说类模型</h1>
+<p>在DDD中，一般将领域模型通过如下三种概念表示：</p>
+<ul>
+<li>Entity：用来代表一个事物，有唯一标识，它有着自己的生命周期。</li>
+<li>Value Object：用来描述事物的某一方面的特征，所以它是一个无状态的，且是一个没有标识符的对象，这是和Entity的本质区别。</li>
+<li>Service：用来组合多个实体(实体间没有聚合关系)和基础设施能力，提供<strong>领域内</strong>的组合服务能力。</li>
+</ul>
+<p>有些材料又把Service分为：</p>
+<ul>
+<li>Domain Service：即上面的领域模型中的Service，如果某种行为无法归类给任何实体/值对象，则就为这些行为建立相应的领域服务。如在账户管理领域中，转账服务（TransferService）需要操作借方/贷方两个账户实体，而借方/贷方又不能聚合到成一个新实体，并提供行为方法，所以转账行为可以由领域层的Service提供。</li>
+<li>Application Service：组合领域层的领域对象行为、领域服务和基础设施层能力提供更为场景化的能力。可以根据业务场景需要包装出多变的服务，以适应外部变化并能保持领域层模型稳定。</li>
+</ul>
+<p>把上面的三类领域模型都映射为类设计，则需要避免类贫血，应该是充血的，简单说类应该有数据、状态及行为。</p>
+<p>贫血模型偏重个性化，面向过程式，逻辑与数据分离了。充血偏共性化，面向对象，类拥有其属性及对应的行为，数据与行为内聚在一个事物内，具有封装性。如果对象的某些行为在任何场景都是通用的，那么就放在领域中去，将其绑定，这是尊重“共性”的约束；如果对象的某些能力依赖于具体的场景，那么则在具体的场景中注入相应的行为，赋予对象相应的角色，这是尊重“个性”的自由。</p>
+<p>对象的行为该不该放入“领域模型”，我们要先分析一下这些行为是对象所固有的，还是依赖于场景的。如果是固有的，即是共性的，就放入领域模型（Entity、VO，Domain Service），如果不是则延迟在具体的场景（Appliction Service）中，赋予其角色的个性。</p>
+<p>结合DDD的思想，从案例中的代码，我们能体会类设计最好是：</p>
+<ul>
+<li>面向对象设计的本质，一个对象是拥有自己数据、状态和行为，具有完备性。</li>
+<li>对象行为方法要内聚到各自的实体或值对象上，减少类之间数据依赖，具有独立演进性。</li>
+<li>从面向业务流程（面向过程设计）转变为领域建模设计（面向对象设计）</li>
+</ul>
+<h1 id="认知事物">认知事物</h1>
+<p>再结合DDD的概念，我们再来谈如何认识事物。</p>
+<p>描述事物的基本方法：要素、属性和行为</p>
+<ul>
+<li>要素：就是事物的构成部分，如车由发动机，轮胎等要素组成。可以理解为DDD的Enitty，具体相关的Entity在一起形成聚合（Aggregation），聚合体即事物(车)。</li>
+<li>属性：就是描述要素特征的维度，如轮胎的型号，大小等则是描述轮胎的特征。可以理解为DDD的Value Object。</li>
+<li>行为：就是基于要素和属性的行为，要素和属性决定了行力能力，发动机提供动力，轮胎基于动力向前滚动。</li>
+</ul>
+<p>要素、属性和方法的模型框架是数据化描述事物时使用的一种有效的方法，DDD建模则是对事物数据化的一种描述方法论。当模型概念映射为计算机编程语言时，而采用面向对象设计方式，事物分解成要素、属性即映射为『类』，类构建了计算机世界描述现实世界中事物的基本元素。</p>
+<h1 id="结语">结语</h1>
+<p>由于我们的需求通常是交付某个功能，在需求分析过程中思考的是如何去达成某个条件，需要哪些步骤来实现功能，这是面向过程的解题思维方式。但现实世界又是由一切事物组成，需求可以映射到事物提供的业务能力，则我们需要思考事物是什么，事物能干什么，事物之间的关系是什么。这是面向对象的解题思维方式。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/0920_code/" rel="prev" title="飞哥讲代码14：好代码源自相互改进">
+        飞哥讲代码14：好代码源自相互改进 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码15：写代码从事物认识开始
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">138</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a>
+      <ul>
+        <li><a href="#背后的知识">背后的知识</a></li>
+      </ul>
+    </li>
+    <li><a href="#代码重构">代码重构</a></li>
+    <li><a href="#再说类模型">再说类模型</a></li>
+    <li><a href="#认知事物">认知事物</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2020</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>
