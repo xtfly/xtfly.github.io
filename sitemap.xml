@@ -16,18 +16,18 @@ public class Wallet { private float value; // 省略构造方法  public float g
 试想在现实生活中：
  假如你作为顾客，你是否愿意也把你的钱包直接给收银员，说：&amp;ldquo;这是我的钱包，你直接从钱包中拿钱吧&amp;rdquo;。 假如你作为收银员，你是否愿意直接去数顾客钱包中的钱，还要判断里面的钱是否足够。  背后的知识 我在之前的博文 类的职责单一 一文中提到了类的模型，主要有两种：
  贫血模型：是指对象只有属性（getter/setter），或者包含少量的CRUD方法，而业务逻辑都不包含在其中。 充血模型：是指对象里即有数据和状态，也有行为，行为负责维持本身的数据和状态，具有内聚性，最符合面向对象的设计，满足单一职责原则。  Martin Fowler主张这种模型，他是从领域驱动开发（DDD）中领域模型对象来分析的，领域模型（Domain Model）是一个商业建模范畴。从一个模型的封装性来说，即有状态又有行为是合理的。
-注：有些资料进一步细分划分四种：贫血模型、失血模型、富血模型、胀血模型。
+注：有些资料进一步细分四种：贫血模型、失血模型、富血模型、胀血模型。
 代码重构 重构的方法：采用『移』。
 第一步：把Paperboy.change的逻辑移到Customer中，收银员看不到顾客的钱包，以及其中钱的数目。
-public class Paperboy { public void charge(Customer myCustomer, float payment) { myCustomer.pay(payment); } } public class Customer { public void pay(float payment) { Wallet theWallet = getWallet(); if (theWallet.getTotalMoney() &amp;gt; payment) { theWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } 第二步：对外屏蔽屏蔽Wallet，去掉getWallet()，因为钱包只是一种支付方式，后续可扩展为其它支付，如刷信用卡。
-public class Customer { public void pay(float payment) { if (myWallet.getTotalMoney() &amp;gt; payment) { myWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } 第三步：假定钱包也是一个鲜活个体，比如电子钱包。去掉getTotalMoney方法，提供isEnough方法。
+public class Paperboy { public void charge(Customer myCustomer, float payment) { myCustomer.pay(payment); } } public class Customer { public void pay(float payment) { Wallet theWallet = getWallet(); if (theWallet.getTotalMoney() &amp;gt; payment) { theWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } 第二步：对外屏蔽Wallet，去掉getWallet()，因为使用钱包只是一种支付方式，后续可能扩展为其它支付，如刷信用卡。
+public class Customer { public void pay(float payment) { if (myWallet.getTotalMoney() &amp;gt; payment) { myWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } 第三步：假定钱包也是个鲜活个体，也有自己的隐私。去掉getTotalMoney方法，不是暴露钱的数目，而提供判断是否足够的isEnough方法。
 public class Customer { public void pay(float payment) { if (myWallet.isEnough(payment)) { myWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } public class Wallet { public boolean isEnough(float payment) { return this.value &amp;gt; payment; } } 再说类模型 在DDD中，一般将领域模型通过如下三种概念表示：
  Entity：用来代表一个事物，有唯一标识，它有着自己的生命周期。 Value Object：用来描述事物的某一方面的特征，所以它是一个无状态的，且是一个没有标识符的对象，这是和Entity的本质区别。 Service：用来组合多个实体(实体间没有聚合关系)和基础设施能力，提供领域内的组合服务能力。  有些材料又把Service分为：
  Domain Service：即上面的领域模型中的Service，如果某种行为无法归类给任何实体/值对象，则就为这些行为建立相应的领域服务。如在账户管理领域中，转账服务（TransferService）需要操作借方/贷方两个账户实体，而借方/贷方又不能聚合到成一个新实体，并提供行为方法，所以转账行为可以由领域层的Service提供。 Application Service：组合领域层的领域对象行为、领域服务和基础设施层能力提供更为场景化的能力。可以根据业务场景需要包装出多变的服务，以适应外部变化并能保持领域层模型稳定。  把上面的三类领域模型都映射为类设计，则需要避免类贫血，应该是充血的，简单说类应该有数据、状态及行为。
 贫血模型偏重个性化，面向过程式，逻辑与数据分离了。充血偏共性化，面向对象，类拥有其属性及对应的行为，数据与行为内聚在一个事物内，具有封装性。如果对象的某些行为在任何场景都是通用的，那么就放在领域中去，将其绑定，这是尊重“共性”的约束；如果对象的某些能力依赖于具体的场景，那么则在具体的场景中注入相应的行为，赋予对象相应的角色，这是尊重“个性”的自由。
 对象的行为该不该放入“领域模型”，我们要先分析一下这些行为是对象所固有的，还是依赖于场景的。如果是固有的，即是共性的，就放入领域模型（Entity、VO，Domain Service），如果不是则延迟在具体的场景（Appliction Service）中，赋予其角色的个性。
 结合DDD的思想，从案例中的代码，我们能体会类设计最好是：
- 面向对象设计的本质，一个对象是拥有自己数据、状态和行为，具有完备性。 对象行为方法要内聚到各自的实体或值对象上，减少类之间数据依赖，具有独立演进性。 从面向业务流程（面向过程设计）转变为领域建模设计（面向对象设计）  认知事物 再结合DDD的概念，我们再来谈如何认识事物。
+ 面向对象设计的本质，一个对象是拥有自己数据、状态和行为，具有完备性。 对象行为方法要内聚到各自的实体或值对象上，减少类之间数据依赖，具有独立演进性。 从面向业务流程（面向过程设计）转变为领域建模设计（面向对象设计）  事物认知 再结合DDD的概念，我们再来谈如何认识事物。
 描述事物的基本方法：要素、属性和行为
  要素：就是事物的构成部分，如车由发动机，轮胎等要素组成。可以理解为DDD的Enitty，具体相关的Entity在一起形成聚合（Aggregation），聚合体即事物(车)。 属性：就是描述要素特征的维度，如轮胎的型号，大小等则是描述轮胎的特征。可以理解为DDD的Value Object。 行为：就是基于要素和属性的行为，要素和属性决定了行力能力，发动机提供动力，轮胎基于动力向前滚动。  要素、属性和方法的模型框架是数据化描述事物时使用的一种有效的方法，DDD建模则是对事物数据化的一种描述方法论。当模型概念映射为计算机编程语言时，而采用面向对象设计方式，事物分解成要素、属性即映射为『类』，类构建了计算机世界描述现实世界中事物的基本元素。
 结语 由于我们的需求通常是交付某个功能，在需求分析过程中思考的是如何去达成某个条件，需要哪些步骤来实现功能，这是面向过程的解题思维方式。但现实世界又是由一切事物组成，需求可以映射到事物提供的业务能力，则我们需要思考事物是什么，事物能干什么，事物之间的关系是什么。这是面向对象的解题思维方式。

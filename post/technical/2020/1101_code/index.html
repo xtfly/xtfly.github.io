@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2401 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2417 字 ~5分钟</span>
 </span>
       </div>
     </header>
@@ -203,7 +203,7 @@
 <li><strong>充血模型</strong>：是指对象里即有数据和状态，也有行为，行为负责维持本身的数据和状态，具有内聚性，最符合面向对象的设计，满足单一职责原则。</li>
 </ul>
 <p><code>Martin Fowler</code>主张这种模型，他是从领域驱动开发（DDD）中领域模型对象来分析的，领域模型（Domain Model）是一个商业建模范畴。从一个模型的封装性来说，即有状态又有行为是合理的。</p>
-<p>注：有些资料进一步细分划分四种：贫血模型、失血模型、富血模型、胀血模型。</p>
+<p>注：有些资料进一步细分四种：贫血模型、失血模型、富血模型、胀血模型。</p>
 <h1 id="代码重构">代码重构</h1>
 <p>重构的方法：采用『移』。</p>
 <p><strong>第一步</strong>：把Paperboy.change的逻辑移到Customer中，收银员看不到顾客的钱包，以及其中钱的数目。</p>
@@ -223,7 +223,7 @@
         }
     }
 }
-</code></pre></div><p><strong>第二步</strong>：对外屏蔽屏蔽Wallet，去掉getWallet()，因为钱包只是一种支付方式，后续可扩展为其它支付，如刷信用卡。</p>
+</code></pre></div><p><strong>第二步</strong>：对外屏蔽Wallet，去掉getWallet()，因为使用钱包只是一种支付方式，后续可能扩展为其它支付，如刷信用卡。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
         <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
@@ -233,7 +233,7 @@
         }
     }
 }
-</code></pre></div><p><strong>第三步</strong>：假定钱包也是一个鲜活个体，比如电子钱包。去掉getTotalMoney方法，提供isEnough方法。</p>
+</code></pre></div><p><strong>第三步</strong>：假定钱包也是个鲜活个体，也有自己的隐私。去掉getTotalMoney方法，不是暴露钱的数目，而提供判断是否足够的isEnough方法。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
         <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">isEnough</span>(payment)) {
@@ -270,7 +270,7 @@
 <li>对象行为方法要内聚到各自的实体或值对象上，减少类之间数据依赖，具有独立演进性。</li>
 <li>从面向业务流程（面向过程设计）转变为领域建模设计（面向对象设计）</li>
 </ul>
-<h1 id="认知事物">认知事物</h1>
+<h1 id="事物认知">事物认知</h1>
 <p>再结合DDD的概念，我们再来谈如何认识事物。</p>
 <p>描述事物的基本方法：要素、属性和行为</p>
 <ul>
@@ -431,7 +431,7 @@
     </li>
     <li><a href="#代码重构">代码重构</a></li>
     <li><a href="#再说类模型">再说类模型</a></li>
-    <li><a href="#认知事物">认知事物</a></li>
+    <li><a href="#事物认知">事物认知</a></li>
     <li><a href="#结语">结语</a></li>
   </ul>
 </nav></div>
