@@ -6,10 +6,57 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 01 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码16：函数式让数据处理更简洁</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1108_code/</link>
+      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1108_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非&lt;code&gt;F&lt;/code&gt;级别课程统计平均分数：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String title;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; grade;
+}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ReportCard&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String studentName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; ArrayList&amp;lt;CourseGrade&amp;gt; cliens;
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;printReport&lt;/span&gt;() {
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Report card for &amp;#34;&lt;/span&gt; + studentName);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Course Title       Grade&amp;#34;&lt;/span&gt;);
+        Iterator&amp;lt;CourseGrade&amp;gt; grades = cliens.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+        CourseGrade grade;
+        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;double&lt;/span&gt; avg = 0.&lt;span style=&#34;color:#658b00&#34;&gt;0d&lt;/span&gt;;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (grades.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+            grade = grades.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;();
+            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(grade.&lt;span style=&#34;color:#658b00&#34;&gt;title&lt;/span&gt; + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;    &amp;#34;&lt;/span&gt; + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt;);
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (!(grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;F&amp;#39;&lt;/span&gt;)) {
+                avg = avg + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; - 64;
+            }
+        }
+        avg = avg / cliens.&lt;span style=&#34;color:#658b00&#34;&gt;size&lt;/span&gt;();
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Grade Point Average = &amp;#34;&lt;/span&gt; + avg);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码有哪些问题呢:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;成员变量采用public，缺少数据封装性&lt;/li&gt;
+&lt;li&gt;没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题&lt;/li&gt;
+&lt;li&gt;avg这个变量多个用途，即是总分，又是平均分&lt;/li&gt;
+&lt;li&gt;cliens变量名难以理解&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;!(grade.grade == &#39;F&#39;)&lt;/code&gt; 有点反直觉&lt;/li&gt;
+&lt;li&gt;while循环干了两件事，打印每课的成绩，也统计了分数&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码15：写代码从事物认识开始</title>
