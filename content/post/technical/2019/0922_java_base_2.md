@@ -1,5 +1,5 @@
 ---
-title: "跟我一起复习Java-2"
+title: "跟我一起复习Java-2：集合/Stream"
 date: "2019-09-22"
 categories:
  - "技术"

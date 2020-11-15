@@ -1,5 +1,5 @@
 ---
-title: "跟我一起复习Java-9"
+title: "跟我一起复习Java-9：JNI/JIT/SM"
 date: "2019-10-05"
 categories:
  - "技术"

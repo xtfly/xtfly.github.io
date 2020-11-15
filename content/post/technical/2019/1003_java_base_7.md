@@ -1,5 +1,5 @@
 ---
-title: "跟我一起复习Java-7"
+title: "跟我一起复习Java-7：泛型"
 date: "2019-10-03"
 categories:
  - "技术"

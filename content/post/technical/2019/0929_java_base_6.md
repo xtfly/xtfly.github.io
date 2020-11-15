@@ -1,5 +1,5 @@
 ---
-title: "跟我一起复习Java-6"
+title: "跟我一起复习Java-6：反射/动态代理"
 date: "2019-09-29"
 categories:
  - "技术"

@@ -1,5 +1,5 @@
 ---
-title: "跟我一起复习Java-8"
+title: "跟我一起复习Java-8：内存模型"
 date: "2019-10-04"
 categories:
  - "技术"
