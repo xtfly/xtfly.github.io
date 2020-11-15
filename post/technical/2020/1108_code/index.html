@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2511 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2514 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -223,8 +223,12 @@
         printAverage();
     }   
 </code></pre></div><p>注：如果只算非F的平均分，而可以一行搞定：</p>
-<p><code>double avg = cliens.stream().filter(it -&gt; it.grade != 'F').mapToDouble(it -&gt; it.grade - 64).average().orElse(0.0d);</code></p>
-<p>案例二，再看一段代码：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">double</span> avg = cliens.<span style="color:#658b00">stream</span>()
+        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
+        .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64)
+        .<span style="color:#658b00">average</span>()
+        .<span style="color:#658b00">orElse</span>(0.<span style="color:#658b00">0d</span>);
+</code></pre></div><p>案例二，再看一段代码：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
         .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
         .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
@@ -237,7 +241,7 @@
 <li>各自取其Id字段</li>
 <li>输出Id列表</li>
 </ul>
-<p>这看起来是不是像这样一条SQL语句：<code>select t.id from tanscations as t where t.type == 'GROCERY' order by t.value desc</code></p>
+<p>这看起来是不是像这样一条SQL语句：<code>select t.id from tanscations t where t.type == 'GROCERY' order by t.value desc</code></p>
 <h2 id="背后的知识">背后的知识</h2>
 <p>目前Java8应该在公司已广泛使用，对于Stream与Lambda应习以为常了，而不再是一种炫技。我在 <a href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/">跟我一起复习Java-2：集合与Stream</a> 一文稍总结一下Stream的知识点，网上也有非常多的教程。若有同学还不熟悉他们的用法，可以多找找材料熟悉一下。</p>
 <p>Stream正如其名，像一条数据生产流水线，逐步叠加中间操作（算法和计算），把数据源转换为另一个数据集。</p>
@@ -298,6 +302,10 @@ sorted(iterable, key=functools.cmp_to_key(locale.strcoll))
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" rel="next" title="程序员编码技术栈">
+        <i class="fa fa-chevron-left"></i> 程序员编码技术栈
+        </a>
     
     </div>
 
@@ -371,7 +379,7 @@ sorted(iterable, key=functools.cmp_to_key(locale.strcoll))
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">139</span>
+        <span class="site-state-item-count">140</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

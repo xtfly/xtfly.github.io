@@ -1,6 +1,43 @@
 <search>
     
      <entry>
+        <title>程序员编码技术栈</title>
+        <url>http://lanlingzi.cn/post/technical/2020/1114_tech_stack/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 写在前面 偶尔会有同学来问我：&amp;ldquo;飞哥，我在学校是学java，来公司却按排搞c&#43;&#43;，我不喜欢，怎么办？&amp;rdquo;
+让人信服的回答这个问题其实很难。我的理解是无论什么语言，本质是要为业务服务的，无论是java还是c&#43;&#43;，他们都是实现业务软件的工具。在工作中，我们尽可能多的去掌握一些固化不变的基础，越基础的知识点会具有通用性，也会让自己变得更有价值。各种编程语言在语法上可能有着相同又有不同的地方，有着他们各自最佳适合的场景。透过语法层面来看，似乎我们总是能找到一些共同的基础知识体系。当你了解并熟悉这些基础的知识点之后，可能不再纠结是选java还是其它了。
+当然并不是语言层面的知识不需要深入掌握，而是当工作选择需要你掌握哪种语言时，就去学习了解哪种语言。有了一些公共基础，也会触类旁通，学习起来更轻松。
+本文试图抛开具体的语言，列出提纲梳理背后共同的技术栈，希望能给正在处于纠选择语言同学一些帮助。由于笔者能力、精力都有限，部分内容也是从网上收集整理，其中可能存在理解上偏差与错误。
+数据结构与算法 曾有人总结，程序=数据结构&#43;算法。毫无疑问，他们是基础，是根本。
+学习他们最好的方法是刷LeetCode题。我之前比较反感刷题，因为觉得编程语言的框架都实现大多数的数据结构和多种算法，大部分算法也在实际工作中使用不到。在某一次的软件教练聚餐上，让我意识的优秀人往往越爱学习。其中一位知名教练都说他会每周刷一两道题，目的是锻炼解决问题的思考能力。
+下面以应用的视象来看数据结构与算法，他们是不是即陌生又熟悉？不经意间发现我们从未离开他们。
+ 数据结构  集合：链表，栈，队列，编码时可能就是不停地与他们打交道 二叉树  红黑树：应用在Java/C&#43;&#43; STL的tree set/map，Linux虚拟内存管理 霍夫曼树：常应用在无损压缩编码 B树：分B-树，B&#43;树，B&#43;-树，用在磁盘文件组织，数据索引和数据库索引 AVL树：平衡二叉搜索树，Win系统对进程地址空间的管理 字典树：用在统计和排序大量字符串   图  二分图：有两顶点集且图中每条边的的两个顶点分别位于两个顶点集中，每个顶点集中没有边直接相连接。如应用在匈牙利算法，解决指派任务 有向无环图：如果一个有向图无法从某个顶点出发经过若干条边回到该点则这个图是一个有向无环图。如应用在流程编排，Spark的DAG图 欧拉图：通过图（无向图或有向图）中所有边且每边仅通过一次通路，相应的回路称为欧拉回路，如应用在判断定理，邮路问题 哈密顿图：图的一个回路，通过图的每一个节点一次且仅一次，就是哈密顿回路，存在哈密顿回路的图就是哈密顿图。可以解决旅行售货员，排座位问题等     算法  贪心：局部最优策略能导致产生全局最优解 动态规划：将待求解问题分解成若干个子问题，先求解子问题，然后从这些子问题的解得到原问题的解 深度优先搜索：解决连通性问题，通常采用递归 广度优先搜索：解决最短路径问题，通常采用栈 最大流最小割：网络流基础，网络流的最大流等于其最小割 均摊分析：少量昂贵操作的成本均摊到所有的操作上    离散数学 昨天刷手机刷到我司交付的瑞士5G网络优化项目荣获2020 GLOTEL最佳荐交付奖。前一段时间GTS的创新论坛，正好有一位教授演讲的Topic与之相关，不得不感慨数学太重要了。因为这个获奖的背后并不是简单的工程化，而是通过数学建模来解决复杂网络的优化场景，数学公式是复杂事物的抽象。
+不过大多数程序员不是数学科班出身，过多的数学理论对我们来说太难了。编程的基础是计算机科学，而计算机科学的基础是数学。学习数学有助于巩固编程的基础，写出更健壮的程序。
+计算机只能懂得离散，作为程序员就有必要了解一些离散数学知识。离散数学是数学和计算机之间的桥梁。算法的基础都是离散数学（如图论），加密的理论基础也是离散数学，编码中很多奇怪的小技巧核心也是与离散数学相关。
+笔者去年偶然发现一本日本人写的《程序员的数学》书，读下来就停不下来，其中不少是离散数学理论实例化，写得太有意思了：
+ 0的故事：无即是有，其意义更多的是空、占位符 逻辑：真与假的二元世界，写代码需注意边界值，也需要兼顾完整性和排他性 余数：大问题通过余数规律简化为小问题 归纳法：一条腿可以往前迈一步，另一条腿无论什么情况都能迈出去，那就能够行进到无限的远方 排列组合：计数的关键就在于注意“遗漏”和“重复” 递归：从一般性前提推出个别性结论 指数爆炸：极力求解，变相求解，近似求解，概率求解 不可解问题：不可数的集合，用对角论证法和反证法  数学如何解决问题：
+ 认清模式，进行抽象化：用简单的数字进行规则的探寻，对问题进行抽象化的思考 由不擅长催生出的智慧：处理大规模数字、复杂判断，复杂问题可以找到规律简化为小问题 幻想法则：把问题换一种思考方式，不按套路去出牌  语言理论 以前看软件工程的材料，会看到形式化建模、形式化验证与形式化方法。由于非CS科班出身，对形式化这一词难以理解。一搜索才发现还有形式语言，自动机理念，进程代数等。它们是形式化方法基础，也是程序语言(PL)理论基础。
+程序语言理论就是编程语言各自特征的设计、实现、分析、表征和分类。而形式语言是经过数学定义的语言，从数学习方法的严谨性解决各类计算问题。解决这些问题需要多少资源，存储的空间与花费的时间要达到怎样程度。
+公司iLearning上有一门南大教授讲《程序设计语言概念》的课程，或许你听完成之后有种上帝的视角，选择什么编程语言那不再是事儿。
+下面关于PL的知识点，感兴趣的同学可以搜索相关材料。
+ 形式语言理论  自动机理论  下推自动机 有限状态自动机 线性有界自动机 图灵机   文法  正则文法 上下文无关文法 无限制文法   形式系统  形式证明     形式语义学  操作语义 指称语义 代数语义 公理语义   编译原理  中间代码(IR) 编译器前端 编译器后端 编译方式  实时编译(JIT) 预先编译(AOT)      编程范式 编程语言有上百种，能归纳如下编程范式：
+ 指令式：使用流程化语句和过程直接控制程序的运行与状态数据  过程式：核心在于模块化，在实现过程中使用了状态，依赖了外部变量，导致很容易影响附近的代码，可读性较差，后期维护成本也较高。 面向对象：核心在于事物抽象，提供清晰的对象边界。结合封装、集成、多态特性，降低了代码的耦合度，提升了系统的可维护性。   声明式：定义计算的逻辑还不是定义具体的流程控制  函数式：核心在于“避免副作用”，不改变也不依赖当前函数外的数据。结合不可变数据、函数是第一等公民等特性，使函数带有自描述性，可读性较高。 逻辑式：核心在于强调的是我们事先知道一系列事实，然后通过这些事实自动推出合理的结果 数据流式：核心在于将数据视作数据流的形式，并用pipeline的形式做处理。典型代表是响应式编程   元编程：用代码生成代码  静态元编程：在编译期展开生成或者执行代码  宏：分为基于文本替换的宏(C/C&#43;&#43;)，基于语法的宏(Rust) 泛型：在强类型程序设计语言中编写代码时使用一些以后才指定的类型，在实例化时作为参数指明这些类型。Java叫泛型，C&#43;&#43;叫模板。   动态元编程：  反射式：在运行时可以访问、检测和修改它本身状态或行为的一种能力      并发编程 软件的性能是一个永恒话题，并发编程是提升性能常见有效的方式。现有在计算资源都是多核，从早期的多进程，到多线程，再到现在流行的协程，并发调度的粒度越来越细。但并发编程都需要面对的问题是：并发实体之间的如何协同，资源竞争时如何同步。个人觉得并发编程是编码中最不好掌握容易引用问题的点。
+多进程编程主涉及到进程间通讯，在嵌入系统中应用较多，多与操作系统相关。协程可以理解微线程，近几年已逐渐普及。多线程编程是各种语言并发基础，下面是对多线程的知识点梳理：
+ 并发模型  CSP：独立的并发实体间通过共享的通讯channel(管道)进行通信，注重的是消息传送方式（channel），不关心发送的人和接收的人是谁 Actor：独立的并发实体间通过消息传递避免数据竞争，注重的处理单元，也就是Actor，而不是消息传送方式，发送消息时，都需要知道对方是谁   协作方式  Semaphone：信号量维护了一组许可证，以约束访问被限制资源的线程数 Monitor：管程，使用条件变量（Condition Variable）提供的等待队列（Waiting Set）实现线程间协作 CountDownLatch：计数器，通过倒计数器控制线程是否要等待 CyclicBarrier：循环屏障，用于一组固定数目的线程互相等待 Phaser：相位器，一种同步器能够让多个线程分别在不同阶段进行同步 Exchanger：交换器，提供了线程之间能够交换对象的同步点   设计模式  Single Threaded Execution模式：同一时刻只允许一个线程操作 Immutable模式：变量赋值一次后只能读取，不能改变 Fork/Join：单机版的MapReduce Feature：给您一张提货单，下午来取 Producer-Consumer模式：你生产蛋榚我来吃 Balking模式：有人在做了？哈哈，太好了，我就不过去了 Guarded Suspension模式：要等到我准备好哦，没准备好就在门口等着，准备好了再叫你 Thread per Message模式：一任务一线程 Worker thread模式：工作没来就一直等，工作来了就干活 Thread-Specific Storage模式：线程私有物品保管箱 Two-Phase Termination模式：优雅安全的关闭线程   互斥锁  同步资源方式  悲观锁: 认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改 乐观锁: 认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据   同步资源表现方式  阻塞锁 非阻塞锁  自旋锁: 指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁 适应性自旋锁：自适应意味着自旋的时间（次数）不再固定，由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定     资源竞争方式  公平锁：排队，多个线程按照申请锁的顺序来获取锁 非公平锁：插队，多个线程获取锁的顺序并不是按照申请锁的顺序   资源竞争结果：  无锁：不锁住资源，多个线程只有一个锁能修改资源，其它线程重试 偏向锁：同一线程执行同步资源时自动获取资源 轻量级锁：多个线程竞争同步资源时，没有获得资源的线程自旋等待释放 重量级锁：多个线程竞争同步资源时，没有获得资源的线程阻塞等待唤醒   锁是否多线程持有  共享锁：锁可被多个线程所持有 独享锁：锁一次只能被一个线程所持有   锁是否可重入  可重入锁：递归锁，锁 支持 一个线程对资源的重复加锁 不可重入锁：锁 不支持 一个线程 对资源的重复加锁，同一线程重入会导致死锁      设计模式 设计模式是从许多优秀系统中总结出的成功，可复用的经验；提供了一套通用的设计词汇与形式来描述。
+设计模式的六大原则：
+ 开闭原则：对扩展开放，对修改关闭 里氏替换原则：任何基类可以出现的地方，子类一定可以出现 依赖倒置原则：针对接口编程，依赖于抽象而不依赖于具体 接口隔离原则：使用多个隔离的接口，比使用单个接口要好 迪米特法则：一个实体应当尽量少地与其他实体之间发生相互作用 合成复用原则：尽量使用合成/聚合的方式，而不是使用继承  面向对象设计原则:
+ 对接口编程而不是对实现编程 优先使用对象组合而不是继承  应对变化，正交四原则：
+ 消除重复：重复意味着耦合，最小化重复 分离变化：识别变化方向，并对变化预留出扩展接口 缩小依赖范围：依赖接口，不要依赖实现 向稳定的方向依赖：定义的API应该关注What，而不是How  经典 23 种设计模式：
+ 创建型模式：隐藏创建对象的逻辑，包括：工厂模式，抽象工厂模式，单例模式，建造者模式，原型模式 结构型模式：组合接口和定义组合对象获得新功能，包括：适配器模式，桥接模式，过滤器模式，组合模式，装饰器模式，外观模式，享元模式，代理模式 行为型模式：使对象之间的通信方式松耦、可扩展，包括： 责任链模式，命令模式，解释器模式，迭代器模式，迭代器模式，中介者模式，备忘录模式，观察者模式，状态模式，空对象模式，策略模式，模板模式，访问者模式  结语 上面的提纲仅仅是从编程语言层次来发现背后的理论、数学、范式、模型、原则来展开。整个软件开发的技术栈太广太深，这些只是冰山一角，但却是最为基础。掌握基础知识点，或许会让你切换编程语言体系不再是那么困难。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码16：函数式让数据处理更简洁</title>
         <url>http://lanlingzi.cn/post/technical/2020/1108_code/</url>
         <categories>
@@ -14,10 +51,9 @@ class CourseGrade { public String title; public char grade; } public class Repor
  成员变量采用public，缺少数据封装性 没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题 avg这个变量多个用途，即是总分，又是平均分 cliens变量名难以理解 !(grade.grade == &#39;F&#39;) 有点反直觉 while循环干了两件事，打印每课的成绩，也统计了分数  培训材料并未给标准解题。我来尝试优化一下代码，采用Java8的Stream来简化计算过程，并对代码进行了分段：
 public void printReport2() { System.out.println(&amp;#34;Report card for &amp;#34; &#43; studentName); System.out.println(&amp;#34;------------------------&amp;#34;); System.out.println(&amp;#34;Course Title Grade&amp;#34;); cliens.forEach(it -&amp;gt; System.out.println(it.title &#43; &amp;#34; &amp;#34; &#43; it.grade)); double total = cliens.stream().filter(it -&amp;gt; it.grade != &amp;#39;F&amp;#39;) .mapToDouble(it -&amp;gt; it.grade - 64).sum(); System.out.println(&amp;#34;------------------------&amp;#34;); System.out.println(&amp;#34;Grade Point Average = &amp;#34; &#43; total / cliens.size()); } 进一步优化，把各类打印抽取各自函数：
 private void printHeader() { System.out.println(&amp;#34;Report card for &amp;#34; &#43; studentName); System.out.println(&amp;#34;------------------------&amp;#34;); } private void printGrade() { System.out.println(&amp;#34;Course Title Grade&amp;#34;); cliens.forEach(it -&amp;gt; System.out.println(it.title &#43; &amp;#34; &amp;#34; &#43; it.grade)); } private void printAverage() { double total = cliens.stream().filter(it -&amp;gt; it.grade != &amp;#39;F&amp;#39;) .mapToDouble(it -&amp;gt; it.grade - 64).sum(); System.out.println(&amp;#34;------------------------&amp;#34;); System.out.println(&amp;#34;Grade Point Average = &amp;#34; &#43; total / cliens.size()); } public void printReport3() { printHeader(); printGrade(); printAverage(); } 注：如果只算非F的平均分，而可以一行搞定：
-double avg = cliens.stream().filter(it -&amp;gt; it.grade != &#39;F&#39;).mapToDouble(it -&amp;gt; it.grade - 64).average().orElse(0.0d);
-案例二，再看一段代码：
+double avg = cliens.stream() .filter(it -&amp;gt; it.grade != &amp;#39;F&amp;#39;) .mapToDouble(it -&amp;gt; it.grade - 64) .average() .orElse(0.0d); 案例二，再看一段代码：
 List&amp;lt;Integer&amp;gt; tanscationsIds = transcations.parallelStream() .filter(it -&amp;gt; it.getType() == Transcation.GROCERY) .sorted(comparing(Transcation::getValue).resersed()) .map(Transcation::getId) .collect(Collectors::toList()); 代码非常清晰：
- 过滤出类型为GROCERY的交易记录 按其value值进行倒排序 各自取其Id字段 输出Id列表  这看起来是不是像这样一条SQL语句：select t.id from tanscations as t where t.type == &#39;GROCERY&#39; order by t.value desc
+ 过滤出类型为GROCERY的交易记录 按其value值进行倒排序 各自取其Id字段 输出Id列表  这看起来是不是像这样一条SQL语句：select t.id from tanscations t where t.type == &#39;GROCERY&#39; order by t.value desc
 背后的知识 目前Java8应该在公司已广泛使用，对于Stream与Lambda应习以为常了，而不再是一种炫技。我在 跟我一起复习Java-2：集合与Stream 一文稍总结一下Stream的知识点，网上也有非常多的教程。若有同学还不熟悉他们的用法，可以多找找材料熟悉一下。
 Stream正如其名，像一条数据生产流水线，逐步叠加中间操作（算法和计算），把数据源转换为另一个数据集。
 笔者很早以前学过C#，接触过LINQ(Language Integrated Query)，它比Java的Stream和Lambda用法更为清晰简洁，先给个简单示例：
@@ -50,7 +86,7 @@ foo = [&amp;#34;A&amp;#34;, &amp;#34;a&amp;#34;, &amp;#34;b&amp;#34;, &amp;#34;B
         <tags>
           <tag>软件开发</tag>
         </tags>
-        <content type="html"> 案例 上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是盆血模型类&#43;事务脚本（逻辑过程），并给出一个盆血类设计的案例代码。凭记忆记录如下，有三个类：
+        <content type="html"> 案例 上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是贫血模型类&#43;事务脚本（逻辑过程），并给出一个贫血类设计的案例代码。凭记忆记录如下，有三个类：
  Customer: 顾客 Wallet: 顾客的钱包 Paperboy: 收银员  实现的主体逻辑是，收银员向顾客收钱。
 代码如下：
 public class Wallet { private float value; // 省略构造方法  public float getTotalMoney() { return value; } public void addMoney(float deposit) { value &#43;= deposit; } public void subtractMoney(float debit) { value -= debit; } } public class Customer { private String firstName; private String lastName; private Wallet myWallet; // 省略构造方法，与Getter } public class Paperboy { public void charge(Customer myCustomer, float payment) { Wallet theWallet = myCustomer.getWallet(); if (theWallet.getTotalMoney() &amp;gt; payment) { theWallet.subtractMoney(payment); } else { throw new NotEnoughMoneyException(); } } } 显然，案例中的Wallet与Customer类从直观上在太单薄了，而Paperboy是直接操作了顾客的钱包，把整个支付流程都写到了charge方法中。
@@ -422,7 +458,7 @@ public class DownloadCommand implements Command { @Override public String name()
  一切围绕变化：由变化驱动，反过来让系统演进的更容易应对变化（扩展性）。 分离不同变化方向：把变化的部分从主系统中分离出来，让系统更加的局部化影响。  设计模式 设计模式是从许多优秀系统中总结出的成功，可复用的经验；提供了一套通用的设计词汇与形式来描述。设计模式不有同的层次，通常分层为：
  架构模式：描述软件系统的结构组成与纲要。如云服务抽象非常多的设计模式，比如Cache-Aside，Circuit Breaker，CQRS等等，可参见Cloud Design Patterns。 设计模式：描述软件程序设计反复出现的问题描述，如GoF总结的23个基本设计模式。 实现模式：描述具体语言实现的问题，如异常处理规则 ，函数命名规则等等。  本文所说的消除重复，需要搞点设计模式，它指的是第二层。
 说真的，若去看设计模式的书籍，会陷入困惑：
- 可能会觉得过于深奥，有些枯燥无味，根本学不下去； 有时也可能会走上拿着锤子满世界找钉子的过程。  笔者曾经喜欢上设计模式，总想把代码往设计模式上靠，不是导致过度设计就是画虎类猫了。现在我也不记得每种设计模式的类图结构，模式A与模式B之间到底他们之间的区别。“黑猫白猫，会捉老鼠就是好猫”。我们学习和使用设计模式时，也不应该把重点放在“这是黄色的母马还是黑色的公马”上，而应该是这马适合长途负重、还是短距离冲刺。抓住本质（如正交性设计四原则），找准使用场景，方能应用设计模式。
+ 可能会觉得过于深奥，有些枯燥无味，根本学不下去； 有时也可能会走上拿着锤子满世界找钉子的过程。  笔者曾经喜欢上设计模式，总想把代码往设计模式上靠，不是导致过度设计就是画虎类猫了。现在我也不记得每种设计模式的类图结构，模式A与模式B之间到底他们之间的区别。“黑猫白猫，会捉老鼠就是好猫”。我们学习和使用设计模式时，也不应该把重点放在“是黄色的母马还是黑色的公马”上，而应该是这马适合长途负重、还是短距离冲刺。抓住本质（如正交性设计四原则），找准使用场景，方能应用设计模式。
 我们还是来回顾一下23种经典的设计模式（来源于公司可信考试学习材料）：
  创建型：  Factory Method：隔离创建对象的细节，使得创建对象的行为可扩展。 Abstract Factory：创建一组相关的对象对接，其中每个方法即为Factory Method。 Builder：包含对象构建的若干过程，因些天然与Template结合。 Prototype：用于以某个对象为模子创建一个新的对象。 Singleton：确保对象实例唯一。   结构型：  Adapter Class/Object：处理遗留系统的不二法宝，也可以用空方法实现接口作为抽象父类 Bridge：使用关联代替继承，解决类多维的扩展导致的类爆炸的问题 Composite：将组件组装为整体使用 Decorator：用于各个Wrapper，在原函数执行前后做一些额外的工作 Facade：封装扇出，复用树状结构减少调用者的复杂度。 Flyweight：复用变化小的对象 Proxy：对原对象所有方法进行代理   行为型：  Interpreter：用于解释执行自定义的某种语法 Template Method：框架与钩子 Chain Of Responsibility：一组对象执照既定的顺序关联起来，依次处理请求 Command：将行为抽象与解耦 Iterator：封装数据的访问行为（顺序、可见性等） Mediator：用一个中介对象来封装一系列的交到；新增一个模块处理两个模块的交互 Memento：将当前对象的状态信息保存为中一个对象，可以基于状态镜像快速恢复原状态 Observer：订阅/发布模型，用于事件驱动的设计 State：封装有限状态机的状态与状态迁移 Strategy：使用接口即使用策略，用于隔离变化 Visitor：数据与行为分离方法    再次改进 前面提到优化还有空间，原因在于命令执行拿结果还需要看到RemoteExecuteResultFuture较底层的对象。理想的情况下，我发一个命令，执行，拿到最终结果。
 过一遍设计模式，我们发现有一个命令（Command）模式。其实它非常适合于我们案例的场景。找到了使用场景，我们再来复习一下：
@@ -672,7 +708,7 @@ LGPL V2：
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-10</title>
+        <title>跟我一起复习Java-10：工具体系</title>
         <url>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</url>
         <categories>
           <category>技术</category>
@@ -722,7 +758,7 @@ jstatd服务器需要在本地主机上存在一个RMI注册表。jstatd服务�
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-9</title>
+        <title>跟我一起复习Java-9：JNI/JIT/SM</title>
         <url>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</url>
         <categories>
           <category>技术</category>
@@ -757,7 +793,7 @@ grant codeBase &amp;#34;file:${{java.ext.dirs}}/*&amp;#34; { permission java.sec
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-8</title>
+        <title>跟我一起复习Java-8：内存模型</title>
         <url>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</url>
         <categories>
           <category>技术</category>
@@ -816,7 +852,7 @@ Minor GC:
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-7</title>
+        <title>跟我一起复习Java-7：泛型</title>
         <url>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</url>
         <categories>
           <category>技术</category>
@@ -855,7 +891,7 @@ public interface GenericArrayType extends Type { Type getGenericComponentType();
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-6</title>
+        <title>跟我一起复习Java-6：反射/动态代理</title>
         <url>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</url>
         <categories>
           <category>技术</category>
@@ -893,7 +929,7 @@ Instrumentation是的个接口定义，主要提供如下方法：
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-5</title>
+        <title>跟我一起复习Java-5：字节码/类加载器</title>
         <url>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</url>
         <categories>
           <category>技术</category>
@@ -931,7 +967,7 @@ contextClassLoader是线程上下文类加载器，是从父线程那里继承�
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-4</title>
+        <title>跟我一起复习Java-4：IO体系</title>
         <url>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</url>
         <categories>
           <category>技术</category>
@@ -973,7 +1009,7 @@ FileChannel提供了map方法（MappedByteBuffer map(int mode,long position,long
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-3</title>
+        <title>跟我一起复习Java-3：并发体系</title>
         <url>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</url>
         <categories>
           <category>技术</category>
@@ -1020,7 +1056,7 @@ AQS定义两种资源共享方式：
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-2</title>
+        <title>跟我一起复习Java-2：集合/Stream</title>
         <url>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</url>
         <categories>
           <category>技术</category>
@@ -1061,7 +1097,7 @@ AQS定义两种资源共享方式：
     </entry>
     
      <entry>
-        <title>跟我一起复习Java-1</title>
+        <title>跟我一起复习Java-1：基础/正则</title>
         <url>http://lanlingzi.cn/post/technical/2019/0921_java_base_1/</url>
         <categories>
           <category>技术</category>

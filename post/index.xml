@@ -6,10 +6,23 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 08 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>程序员编码技术栈</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1114_tech_stack/</link>
+      <pubDate>Sun, 15 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1114_tech_stack/</guid>
+      <description>&lt;h1 id=&#34;写在前面&#34;&gt;写在前面&lt;/h1&gt;
+&lt;p&gt;偶尔会有同学来问我：&amp;ldquo;飞哥，我在学校是学java，来公司却按排搞c++，我不喜欢，怎么办？&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;让人信服的回答这个问题其实很难。我的理解是无论什么语言，本质是要为业务服务的，无论是java还是c++，他们都是实现业务软件的工具。在工作中，我们尽可能多的去掌握一些固化不变的基础，越基础的知识点会具有通用性，也会让自己变得更有价值。各种编程语言在语法上可能有着相同又有不同的地方，有着他们各自最佳适合的场景。透过语法层面来看，似乎我们总是能找到一些共同的基础知识体系。当你了解并熟悉这些基础的知识点之后，可能不再纠结是选java还是其它了。&lt;/p&gt;
+&lt;p&gt;当然并不是语言层面的知识不需要深入掌握，而是当工作选择需要你掌握哪种语言时，就去学习了解哪种语言。有了一些公共基础，也会触类旁通，学习起来更轻松。&lt;/p&gt;
+&lt;p&gt;本文试图抛开具体的语言，列出提纲梳理背后共同的技术栈，希望能给正在处于纠选择语言同学一些帮助。由于笔者能力、精力都有限，部分内容也是从网上收集整理，其中可能存在理解上偏差与错误。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码16：函数式让数据处理更简洁</title>
@@ -65,7 +78,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2020/1101_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
-&lt;p&gt;上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是盆血模型类+事务脚本（逻辑过程），并给出一个盆血类设计的案例代码。凭记忆记录如下，有三个类：&lt;/p&gt;
+&lt;p&gt;上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是贫血模型类+事务脚本（逻辑过程），并给出一个贫血类设计的案例代码。凭记忆记录如下，有三个类：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Customer: 顾客&lt;/li&gt;
 &lt;li&gt;Wallet: 顾客的钱包&lt;/li&gt;
@@ -643,7 +656,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-10</title>
+      <title>跟我一起复习Java-10：工具体系</title>
       <link>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</link>
       <pubDate>Sun, 06 Oct 2019 00:00:00 +0000</pubDate>
       
@@ -661,7 +674,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-9</title>
+      <title>跟我一起复习Java-9：JNI/JIT/SM</title>
       <link>http://lanlingzi.cn/post/technical/2019/1005_java_base_9/</link>
       <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
@@ -680,7 +693,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-8</title>
+      <title>跟我一起复习Java-8：内存模型</title>
       <link>http://lanlingzi.cn/post/technical/2019/1004_java_base_8/</link>
       <pubDate>Fri, 04 Oct 2019 00:00:00 +0000</pubDate>
       
@@ -697,7 +710,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-7</title>
+      <title>跟我一起复习Java-7：泛型</title>
       <link>http://lanlingzi.cn/post/technical/2019/1003_java_base_7/</link>
       <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
       
@@ -722,7 +735,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-6</title>
+      <title>跟我一起复习Java-6：反射/动态代理</title>
       <link>http://lanlingzi.cn/post/technical/2019/0929_java_base_6/</link>
       <pubDate>Sun, 29 Sep 2019 00:00:00 +0000</pubDate>
       
@@ -747,7 +760,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-5</title>
+      <title>跟我一起复习Java-5：字节码/类加载器</title>
       <link>http://lanlingzi.cn/post/technical/2019/0928_java_base_5/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
@@ -866,7 +879,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-4</title>
+      <title>跟我一起复习Java-4：IO体系</title>
       <link>http://lanlingzi.cn/post/technical/2019/0924_java_base_4/</link>
       <pubDate>Tue, 24 Sep 2019 00:00:00 +0000</pubDate>
       
@@ -891,7 +904,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-3</title>
+      <title>跟我一起复习Java-3：并发体系</title>
       <link>http://lanlingzi.cn/post/technical/2019/0923_java_base_3/</link>
       <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
       
@@ -916,7 +929,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-2</title>
+      <title>跟我一起复习Java-2：集合/Stream</title>
       <link>http://lanlingzi.cn/post/technical/2019/0922_java_base_2/</link>
       <pubDate>Sun, 22 Sep 2019 00:00:00 +0000</pubDate>
       
@@ -937,7 +950,7 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>跟我一起复习Java-1</title>
+      <title>跟我一起复习Java-1：基础/正则</title>
       <link>http://lanlingzi.cn/post/technical/2019/0921_java_base_1/</link>
       <pubDate>Sat, 21 Sep 2019 00:00:00 +0000</pubDate>
       

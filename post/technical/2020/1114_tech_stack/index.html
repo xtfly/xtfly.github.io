@@ -1,0 +1,650 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>程序员编码技术栈 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="程序员编码技术栈">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="程序员编码技术栈 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" itemprop="url">
+        程序员编码技术栈
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-15">
+    2020-11-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4958 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="写在前面">写在前面</h1>
+<p>偶尔会有同学来问我：&ldquo;飞哥，我在学校是学java，来公司却按排搞c++，我不喜欢，怎么办？&rdquo;</p>
+<p>让人信服的回答这个问题其实很难。我的理解是无论什么语言，本质是要为业务服务的，无论是java还是c++，他们都是实现业务软件的工具。在工作中，我们尽可能多的去掌握一些固化不变的基础，越基础的知识点会具有通用性，也会让自己变得更有价值。各种编程语言在语法上可能有着相同又有不同的地方，有着他们各自最佳适合的场景。透过语法层面来看，似乎我们总是能找到一些共同的基础知识体系。当你了解并熟悉这些基础的知识点之后，可能不再纠结是选java还是其它了。</p>
+<p>当然并不是语言层面的知识不需要深入掌握，而是当工作选择需要你掌握哪种语言时，就去学习了解哪种语言。有了一些公共基础，也会触类旁通，学习起来更轻松。</p>
+<p>本文试图抛开具体的语言，列出提纲梳理背后共同的技术栈，希望能给正在处于纠选择语言同学一些帮助。由于笔者能力、精力都有限，部分内容也是从网上收集整理，其中可能存在理解上偏差与错误。</p>
+<h1 id="数据结构与算法">数据结构与算法</h1>
+<p>曾有人总结，程序=数据结构+算法。毫无疑问，他们是基础，是根本。</p>
+<p>学习他们最好的方法是刷LeetCode题。我之前比较反感刷题，因为觉得编程语言的框架都实现大多数的数据结构和多种算法，大部分算法也在实际工作中使用不到。在某一次的软件教练聚餐上，让我意识的优秀人往往越爱学习。其中一位知名教练都说他会每周刷一两道题，目的是锻炼解决问题的思考能力。</p>
+<p>下面以应用的视象来看数据结构与算法，他们是不是即陌生又熟悉？不经意间发现我们从未离开他们。</p>
+<ul>
+<li>数据结构
+<ul>
+<li>集合：链表，栈，队列，编码时可能就是不停地与他们打交道</li>
+<li>二叉树
+<ul>
+<li>红黑树：应用在Java/C++ STL的tree set/map，Linux虚拟内存管理</li>
+<li>霍夫曼树：常应用在无损压缩编码</li>
+<li>B树：分B-树，B+树，B+-树，用在磁盘文件组织，数据索引和数据库索引</li>
+<li>AVL树：平衡二叉搜索树，Win系统对进程地址空间的管理</li>
+<li>字典树：用在统计和排序大量字符串</li>
+</ul>
+</li>
+<li>图
+<ul>
+<li>二分图：有两顶点集且图中每条边的的两个顶点分别位于两个顶点集中，每个顶点集中没有边直接相连接。如应用在匈牙利算法，解决指派任务</li>
+<li>有向无环图：如果一个有向图无法从某个顶点出发经过若干条边回到该点则这个图是一个有向无环图。如应用在流程编排，Spark的DAG图</li>
+<li>欧拉图：通过图（无向图或有向图）中所有边且每边仅通过一次通路，相应的回路称为欧拉回路，如应用在判断定理，邮路问题</li>
+<li>哈密顿图：图的一个回路，通过图的每一个节点一次且仅一次，就是哈密顿回路，存在哈密顿回路的图就是哈密顿图。可以解决旅行售货员，排座位问题等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>算法
+<ul>
+<li>贪心：局部最优策略能导致产生全局最优解</li>
+<li>动态规划：将待求解问题分解成若干个子问题，先求解子问题，然后从这些子问题的解得到原问题的解</li>
+<li>深度优先搜索：解决连通性问题，通常采用递归</li>
+<li>广度优先搜索：解决最短路径问题，通常采用栈</li>
+<li>最大流最小割：网络流基础，网络流的最大流等于其最小割</li>
+<li>均摊分析：少量昂贵操作的成本均摊到所有的操作上</li>
+</ul>
+</li>
+</ul>
+<h1 id="离散数学">离散数学</h1>
+<p>昨天刷手机刷到我司交付的瑞士5G网络优化项目荣获2020 GLOTEL最佳荐交付奖。前一段时间GTS的创新论坛，正好有一位教授演讲的Topic与之相关，不得不感慨数学太重要了。因为这个获奖的背后并不是简单的工程化，而是通过数学建模来解决复杂网络的优化场景，数学公式是复杂事物的抽象。</p>
+<p>不过大多数程序员不是数学科班出身，过多的数学理论对我们来说太难了。编程的基础是计算机科学，而计算机科学的基础是数学。学习数学有助于巩固编程的基础，写出更健壮的程序。</p>
+<p>计算机只能懂得离散，作为程序员就有必要了解一些离散数学知识。离散数学是数学和计算机之间的桥梁。算法的基础都是离散数学（如图论），加密的理论基础也是离散数学，编码中很多奇怪的小技巧核心也是与离散数学相关。</p>
+<p>笔者去年偶然发现一本日本人写的《程序员的数学》书，读下来就停不下来，其中不少是离散数学理论实例化，写得太有意思了：</p>
+<ul>
+<li>0的故事：无即是有，其意义更多的是空、占位符</li>
+<li>逻辑：真与假的二元世界，写代码需注意边界值，也需要兼顾完整性和排他性</li>
+<li>余数：大问题通过余数规律简化为小问题</li>
+<li>归纳法：一条腿可以往前迈一步，另一条腿无论什么情况都能迈出去，那就能够行进到无限的远方</li>
+<li>排列组合：计数的关键就在于注意“遗漏”和“重复”</li>
+<li>递归：从一般性前提推出个别性结论</li>
+<li>指数爆炸：极力求解，变相求解，近似求解，概率求解</li>
+<li>不可解问题：不可数的集合，用对角论证法和反证法</li>
+</ul>
+<p>数学如何解决问题：</p>
+<ul>
+<li>认清模式，进行抽象化：用简单的数字进行规则的探寻，对问题进行抽象化的思考</li>
+<li>由不擅长催生出的智慧：处理大规模数字、复杂判断，复杂问题可以找到规律简化为小问题</li>
+<li>幻想法则：把问题换一种思考方式，不按套路去出牌</li>
+</ul>
+<h1 id="语言理论">语言理论</h1>
+<p>以前看软件工程的材料，会看到形式化建模、形式化验证与形式化方法。由于非CS科班出身，对形式化这一词难以理解。一搜索才发现还有形式语言，自动机理念，进程代数等。它们是形式化方法基础，也是程序语言(PL)理论基础。</p>
+<p>程序语言理论就是编程语言各自特征的设计、实现、分析、表征和分类。而形式语言是经过数学定义的语言，从数学习方法的严谨性解决各类计算问题。解决这些问题需要多少资源，存储的空间与花费的时间要达到怎样程度。</p>
+<p>公司iLearning上有一门南大教授讲《程序设计语言概念》的课程，或许你听完成之后有种上帝的视角，选择什么编程语言那不再是事儿。</p>
+<p>下面关于PL的知识点，感兴趣的同学可以搜索相关材料。</p>
+<ul>
+<li>形式语言理论
+<ul>
+<li>自动机理论
+<ul>
+<li>下推自动机</li>
+<li>有限状态自动机</li>
+<li>线性有界自动机</li>
+<li>图灵机</li>
+</ul>
+</li>
+<li>文法
+<ul>
+<li>正则文法</li>
+<li>上下文无关文法</li>
+<li>无限制文法</li>
+</ul>
+</li>
+<li>形式系统
+<ul>
+<li>形式证明</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>形式语义学
+<ul>
+<li>操作语义</li>
+<li>指称语义</li>
+<li>代数语义</li>
+<li>公理语义</li>
+</ul>
+</li>
+<li>编译原理
+<ul>
+<li>中间代码(IR)</li>
+<li>编译器前端</li>
+<li>编译器后端</li>
+<li>编译方式
+<ul>
+<li>实时编译(JIT)</li>
+<li>预先编译(AOT)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="编程范式">编程范式</h1>
+<p>编程语言有上百种，能归纳如下编程范式：</p>
+<ul>
+<li>指令式：使用流程化语句和过程直接控制程序的运行与状态数据
+<ul>
+<li>过程式：核心在于模块化，在实现过程中使用了状态，依赖了外部变量，导致很容易影响附近的代码，可读性较差，后期维护成本也较高。</li>
+<li>面向对象：核心在于事物抽象，提供清晰的对象边界。结合封装、集成、多态特性，降低了代码的耦合度，提升了系统的可维护性。</li>
+</ul>
+</li>
+<li>声明式：定义计算的逻辑还不是定义具体的流程控制
+<ul>
+<li>函数式：核心在于“避免副作用”，不改变也不依赖当前函数外的数据。结合不可变数据、函数是第一等公民等特性，使函数带有自描述性，可读性较高。</li>
+<li>逻辑式：核心在于强调的是我们事先知道一系列事实，然后通过这些事实自动推出合理的结果</li>
+<li>数据流式：核心在于将数据视作数据流的形式，并用pipeline的形式做处理。典型代表是响应式编程</li>
+</ul>
+</li>
+<li>元编程：用代码生成代码
+<ul>
+<li>静态元编程：在编译期展开生成或者执行代码
+<ul>
+<li>宏：分为基于文本替换的宏(C/C++)，基于语法的宏(Rust)</li>
+<li>泛型：在强类型程序设计语言中编写代码时使用一些以后才指定的类型，在实例化时作为参数指明这些类型。Java叫泛型，C++叫模板。</li>
+</ul>
+</li>
+<li>动态元编程：
+<ul>
+<li>反射式：在运行时可以访问、检测和修改它本身状态或行为的一种能力</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="并发编程">并发编程</h1>
+<p>软件的性能是一个永恒话题，并发编程是提升性能常见有效的方式。现有在计算资源都是多核，从早期的多进程，到多线程，再到现在流行的协程，并发调度的粒度越来越细。但并发编程都需要面对的问题是：并发实体之间的如何协同，资源竞争时如何同步。个人觉得并发编程是编码中最不好掌握容易引用问题的点。</p>
+<p>多进程编程主涉及到进程间通讯，在嵌入系统中应用较多，多与操作系统相关。协程可以理解微线程，近几年已逐渐普及。多线程编程是各种语言并发基础，下面是对多线程的知识点梳理：</p>
+<ul>
+<li>并发模型
+<ul>
+<li>CSP：独立的并发实体间通过共享的通讯channel(管道)进行通信，注重的是消息传送方式（channel），不关心发送的人和接收的人是谁</li>
+<li>Actor：独立的并发实体间通过消息传递避免数据竞争，注重的处理单元，也就是Actor，而不是消息传送方式，发送消息时，都需要知道对方是谁</li>
+</ul>
+</li>
+<li>协作方式
+<ul>
+<li>Semaphone：信号量维护了一组许可证，以约束访问被限制资源的线程数</li>
+<li>Monitor：管程，使用条件变量（Condition Variable）提供的等待队列（Waiting Set）实现线程间协作</li>
+<li>CountDownLatch：计数器，通过倒计数器控制线程是否要等待</li>
+<li>CyclicBarrier：循环屏障，用于一组固定数目的线程互相等待</li>
+<li>Phaser：相位器，一种同步器能够让多个线程分别在不同阶段进行同步</li>
+<li>Exchanger：交换器，提供了线程之间能够交换对象的同步点</li>
+</ul>
+</li>
+<li>设计模式
+<ul>
+<li>Single Threaded Execution模式：同一时刻只允许一个线程操作</li>
+<li>Immutable模式：变量赋值一次后只能读取，不能改变</li>
+<li>Fork/Join：单机版的MapReduce</li>
+<li>Feature：给您一张提货单，下午来取</li>
+<li>Producer-Consumer模式：你生产蛋榚我来吃</li>
+<li>Balking模式：有人在做了？哈哈，太好了，我就不过去了</li>
+<li>Guarded Suspension模式：要等到我准备好哦，没准备好就在门口等着，准备好了再叫你</li>
+<li>Thread per Message模式：一任务一线程</li>
+<li>Worker thread模式：工作没来就一直等，工作来了就干活</li>
+<li>Thread-Specific Storage模式：线程私有物品保管箱</li>
+<li>Two-Phase Termination模式：优雅安全的关闭线程</li>
+</ul>
+</li>
+<li>互斥锁
+<ul>
+<li>同步资源方式
+<ul>
+<li>悲观锁: 认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改</li>
+<li>乐观锁: 认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据</li>
+</ul>
+</li>
+<li>同步资源表现方式
+<ul>
+<li>阻塞锁</li>
+<li>非阻塞锁
+<ul>
+<li>自旋锁: 指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁</li>
+<li>适应性自旋锁：自适应意味着自旋的时间（次数）不再固定，由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>资源竞争方式
+<ul>
+<li>公平锁：排队，多个线程按照申请锁的顺序来获取锁</li>
+<li>非公平锁：插队，多个线程获取锁的顺序并不是按照申请锁的顺序</li>
+</ul>
+</li>
+<li>资源竞争结果：
+<ul>
+<li>无锁：不锁住资源，多个线程只有一个锁能修改资源，其它线程重试</li>
+<li>偏向锁：同一线程执行同步资源时自动获取资源</li>
+<li>轻量级锁：多个线程竞争同步资源时，没有获得资源的线程自旋等待释放</li>
+<li>重量级锁：多个线程竞争同步资源时，没有获得资源的线程阻塞等待唤醒</li>
+</ul>
+</li>
+<li>锁是否多线程持有
+<ul>
+<li>共享锁：锁可被多个线程所持有</li>
+<li>独享锁：锁一次只能被一个线程所持有</li>
+</ul>
+</li>
+<li>锁是否可重入
+<ul>
+<li>可重入锁：递归锁，锁 支持 一个线程对资源的重复加锁</li>
+<li>不可重入锁：锁 不支持 一个线程 对资源的重复加锁，同一线程重入会导致死锁</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="设计模式">设计模式</h1>
+<p>设计模式是从许多优秀系统中总结出的成功，可复用的经验；提供了一套通用的设计词汇与形式来描述。</p>
+<p>设计模式的六大原则：</p>
+<ul>
+<li>开闭原则：对扩展开放，对修改关闭</li>
+<li>里氏替换原则：任何基类可以出现的地方，子类一定可以出现</li>
+<li>依赖倒置原则：针对接口编程，依赖于抽象而不依赖于具体</li>
+<li>接口隔离原则：使用多个隔离的接口，比使用单个接口要好</li>
+<li>迪米特法则：一个实体应当尽量少地与其他实体之间发生相互作用</li>
+<li>合成复用原则：尽量使用合成/聚合的方式，而不是使用继承</li>
+</ul>
+<p>面向对象设计原则:</p>
+<ul>
+<li>对接口编程而不是对实现编程</li>
+<li>优先使用对象组合而不是继承</li>
+</ul>
+<p>应对变化，正交四原则：</p>
+<ul>
+<li>消除重复：重复意味着耦合，最小化重复</li>
+<li>分离变化：识别变化方向，并对变化预留出扩展接口</li>
+<li>缩小依赖范围：依赖接口，不要依赖实现</li>
+<li>向稳定的方向依赖：定义的API应该关注What，而不是How</li>
+</ul>
+<p>经典 23 种设计模式：</p>
+<ul>
+<li>创建型模式：隐藏创建对象的逻辑，包括：工厂模式，抽象工厂模式，单例模式，建造者模式，原型模式</li>
+<li>结构型模式：组合接口和定义组合对象获得新功能，包括：适配器模式，桥接模式，过滤器模式，组合模式，装饰器模式，外观模式，享元模式，代理模式</li>
+<li>行为型模式：使对象之间的通信方式松耦、可扩展，包括： 责任链模式，命令模式，解释器模式，迭代器模式，迭代器模式，中介者模式，备忘录模式，观察者模式，状态模式，空对象模式，策略模式，模板模式，访问者模式</li>
+</ul>
+<h1 id="结语">结语</h1>
+<p>上面的提纲仅仅是从编程语言层次来发现背后的理论、数学、范式、模型、原则来展开。整个软件开发的技术栈太广太深，这些只是冰山一角，但却是最为基础。掌握基础知识点，或许会让你切换编程语言体系不再是那么困难。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/1108_code/" rel="prev" title="飞哥讲代码16：函数式让数据处理更简洁">
+        飞哥讲代码16：函数式让数据处理更简洁 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：程序员编码技术栈
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">140</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#写在前面">写在前面</a></li>
+    <li><a href="#数据结构与算法">数据结构与算法</a></li>
+    <li><a href="#离散数学">离散数学</a></li>
+    <li><a href="#语言理论">语言理论</a></li>
+    <li><a href="#编程范式">编程范式</a></li>
+    <li><a href="#并发编程">并发编程</a></li>
+    <li><a href="#设计模式">设计模式</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2020</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>
