@@ -6,10 +6,61 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 15 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 29 Nov 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码17：写好代码就要深入细节</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1129_code/</link>
+      <pubDate>Sun, 29 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1129_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;案例代码来源我们某产品：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (StringUtil.&lt;span style=&#34;color:#658b00&#34;&gt;isEmpyt&lt;/span&gt;(orgName)) {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BackParameterException(...);
+    }
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (Entry&amp;lt;String, Object&amp;gt; orgPackage: oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;entrySet&lt;/span&gt;()) {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;switch&lt;/span&gt; ( orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getKey&lt;/span&gt;() ) {
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgAssets&amp;#34;&lt;/span&gt;:
+                List&amp;lt;TApigwOrgAsset&amp;gt; orgAssets = (List&amp;lt;ApigwOrgAsset&amp;gt;) orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getValue&lt;/span&gt;();
+                List&amp;lt;TApigwAssetContent&amp;gt; orgAssetContents = (List&amp;lt;TApigwAssetContent&amp;gt;) oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;orgAssetContents&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;);
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (TApigwOrgAsset orgAsset: orgAssets) {
+                            aTApigwAssetContentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByPrimaryKey&lt;/span&gt;(orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getAstid&lt;/span&gt;());
+                            aTApigwOrgAssetMapp.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByOrgName&lt;/span&gt;(orgName, orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getZone&lt;/span&gt;());
+                        }
+                    }
+
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; || orgAssetContents == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+                    }
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+                        aTApigwOrgAssetMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(aTApigwOrgAsset);
+                    }
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwAssetContent orgAssetConent: orgAssetContents){
+                        aTApigwAssetConentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(orgAssetConent);
+                    }
+                } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (Excetption e) {
+                    threw &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;ApigwExcepiton&lt;/span&gt;(...)
+                }
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgService&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgConfigGroups&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgVariables&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>程序员编码技术栈</title>
