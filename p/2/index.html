@@ -106,6 +106,92 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0808_code/" itemprop="url">
+        飞哥讲代码11：通过封装降低耦合
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-08-08">
+    2020-08-08
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2500 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
+  <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>
+   <span style="color:#228b22">// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+</span><span style="color:#228b22"></span>   <span style="color:#8b008b;font-weight:bold">synchronized</span>(class1.<span style="color:#658b00">getStore</span>()) {
+     String value = class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">get</span>(key);
+     <span style="color:#8b008b;font-weight:bold">if</span> (value == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>        value = createValue();
+        class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">put</span>(key, value);
+     }
+   }
+
+   <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>代码的问题是很明显：</p>
+<ul>
+<li>Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。</li>
+<li>同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0808_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0726_code/" itemprop="url">
         飞哥讲代码10：提升性能，表设计很重要
         </a>
@@ -643,83 +729,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0531_code/" itemprop="url">
-        飞哥讲代码3：简洁高效的线程安全
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-05-31">
-    2020-05-31
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3382 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一中间件产品源码(Java语言)中（<code>写法一</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
-    AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
-    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">null</span> == rejectMessageCount) {
-        rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
-        AtomicLong currentValue = rejectMessageCounts.<span style="color:#658b00">putIfAbsent</span>(serviceName, rejectMessageCount);
-        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#8b008b;font-weight:bold">null</span> != currentValue) {
-            rejectMessageCount = currentValue;
-        }
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
-}
-</code></pre></div><p>上面的代码是线程安全的，但不够简洁，Java 1.8的<code>ConcurrentMap</code>提供<code>computeIfAbsent()</code>方法，可以简化为（<code>写法二</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
-    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
-}
-</code></pre></div>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0531_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -841,7 +850,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">141</span>
+        <span class="site-state-item-count">142</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

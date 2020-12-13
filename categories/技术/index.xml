@@ -6,10 +6,36 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 29 Nov 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>飞哥讲代码18：记一次问题定位分析</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1213_code/</link>
+      <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1213_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;上周一位同学找我看个问题，故事是这样的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全设计要求，需要对SSH远程执行做命令白名单&lt;/li&gt;
+&lt;li&gt;在authorized_keys中配置wrapper脚本对执行的命令进行检查&lt;/li&gt;
+&lt;li&gt;问题是部分命令能正常执行，部分命令执行之后不退出卡住&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;那个wrapper脚本的关键逻辑如下:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; ssh_exec_wrapper() {
+    &lt;span style=&#34;color:#658b00&#34;&gt;local&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;cmd&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [1]取命令行所有参数&lt;/span&gt;
+    check_cmd_in_white_list &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [2]检查命令行的是否在白名单中&lt;/span&gt;
+    &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; |sh &lt;span style=&#34;color:#228b22&#34;&gt;# [3]执行命令&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。&lt;/p&gt;
+&lt;p&gt;会卡的命令大概如下：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;orted -mca ess &amp;quot;env&amp;quot; -mca ess_base_iobid &amp;quot;833290240&amp;quot; ...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个命令长度有215个字符，其中包括有空格，双引号(&amp;quot;)，分号(;)，逗号（,）与脱字符(^)&lt;/p&gt;
+&lt;p&gt;此问题最后还是得以解决，发现是一处不起眼的写法引发的，定位会却花了1小时。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码17：写好代码就要深入细节</title>

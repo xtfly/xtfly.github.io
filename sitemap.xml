@@ -1,6 +1,50 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码18：记一次问题定位分析</title>
+        <url>http://lanlingzi.cn/post/technical/2020/1213_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 上周一位同学找我看个问题，故事是这样的：
+ 安全设计要求，需要对SSH远程执行做命令白名单 在authorized_keys中配置wrapper脚本对执行的命令进行检查 问题是部分命令能正常执行，部分命令执行之后不退出卡住  那个wrapper脚本的关键逻辑如下:
+function ssh_exec_wrapper() { local cmd=$@ # [1]取命令行所有参数 check_cmd_in_white_list $cmd # [2]检查命令行的是否在白名单中 echo $cmd |sh # [3]执行命令 } 问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。
+会卡的命令大概如下：
+orted -mca ess &amp;quot;env&amp;quot; -mca ess_base_iobid &amp;quot;833290240&amp;quot; ...
+这个命令长度有215个字符，其中包括有空格，双引号(&amp;quot;)，分号(;)，逗号（,）与脱字符(^)
+此问题最后还是得以解决，发现是一处不起眼的写法引发的，定位会却花了1小时。
+背后的知识点 结合这个问题的分析，来说说此脚本中涉及的知识点。我们找问题需要定界定位：
+ 第一步，定界是要找出问题发生的边界，问题出在命令还是脚本，去掉wrapper脚本，所有命令能正常执行，那问题在脚本中。 第二步，定位是要找出问题发生的位置，ssh_exec_wrapper中可能出问题点在于标识为[1]或[3]的地方。  $*与$@ 会卡的命令比较长，有215个字符，首先想到的是$*与$@区别：
+ 不被双引号(&amp;quot;)包含时，都以 &amp;quot;$1&amp;quot; &amp;quot;$2&amp;quot; ... &amp;quot;$n&amp;quot; 的形式输出所有参数，是数组 被双引号(&amp;quot;)包含时  $*: 把参数作为一个字符串整体，以 &amp;quot;$1 $2 ... $n&amp;quot; 的形式输出所有参数，非数组 $@: 把每个参数作为一个字符串，以 &amp;quot;$1&amp;quot; &amp;quot;$2&amp;quot; ... &amp;quot;$n&amp;quot; 的形式输出所有参数，是数组    尝试把local cmd=$@换成如下都没有解决
+ local cmd=$* local cmd=&amp;quot;$@&amp;quot; local cmd=&amp;quot;$*&amp;quot;  入参类型 再进一步分析，会卡的命令中带有空格，那疑问是传入的参数到底是整个字符串，还是数组呢？取长度的两种写法：
+ ${#cmd[*]} ${#cmd[@]}  发现上述两种写法输出的结果都 1，说明参数并非数组传入，而是整个字符串传入。居然带空格也是字符串，有点不相信自己的眼睛，再换种写法
+for it in &amp;#34;$cmd&amp;#34; do echo $it done 并没有按想像的按空格换行输出，那只有一种肯定了，出问题的命令行，是把所有参数作一个字符串传入的，通过 local cmd=$@ 获取的参数，当然也是一个字符串参数，只是这个参数中带有空格。也就能解释为什么带不带双引号(&amp;quot;)采用$*或是$@都不能解决问题。
+sh与exec 看来问题不是出在标识为[1]的地方，那就是出在标识[3]的地方，联想到无法退出的现象，再次想到命令执行方式：
+ 普通执行 sh -c $cmd 或者直接 $cmd 采用 exec $cmd  他们的区别：
+ sh：父进程会fork一个子进程，sh后面的命令在子进程中执行 exec：在原进程中执行，但是同时会终止原进程  exec会终止原进程，修改为exec $cmd，是不是就能正常退出？事与愿违，问题还没有解决，无论为修改为 sh -c $cmd 或 exec $cmd， 会报 No such file or directory 的错误，居然连要执行的命令找不到了，而采用echo cmd | sh的管道方式却能执行命令，只是不退出。
+也就是情况是这样：SSH远程执行中，直接sh -c $cmd 与 exec $cmd，其中的$cmd需完整的路径，并没有从$PATH所有路径中查找。遗憾的是我对这个问题目前还没有找到根因。
+$()与开单引号 对于命令执行，我又想到下面的两种方式：执行反引号或括号里面的内容，将结果赋值给变量。
+date1=`date &#43;%Y:%m:%d` # 备注，`是开单引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出 date2=$(date &#43;%Y:%m:%d) echo `echo \$SHELL` # 输出 /bin/bash echo $(echo \$SHELL) # 输出 $SHELL 他们的区别在于对于转义字符的处理有些不同，$()中的转义字符和我们平时使用的是一样的，开单引号中保留了转义字符本身的意义，在使用时，推荐使用$()
+单引号与双引号 那问题到底出在什么地方，发现echo $cmd |sh中对变量没有加引号，于是把它修改为echo &amp;quot;$cmd&amp;quot; | sh，问题神奇地解决了，原因是什么？我来看一下单引号与双引号的区别
+echo &amp;#34;$HOME&amp;#34; # 输出 /Users/xiao echo &amp;#39;$HOME&amp;#39; # 输出 $HOME 显然
+ 单引号里的任何字符都会原样输出，单引号字符串中的变量是无效 双引号的变量会被替换，可以出现转义字符，如\$表示单个$输出  echo的坑 经过一些验证，发现问题是出在echo的使用上，我们先来看一下简单的：
+echo *.sh # 没有带引号，它会输出当前目录下所有sh结尾的文件 echo &amp;#34;*sh&amp;#34; # 带双引号，输出字符串 *.sh echo &amp;#39;*.sh&amp;#39; # 带单引号，输出字符串 *.sh echo aaa;bbb # 不带引号，只输出aaa echo &amp;#34;aaa;bbb&amp;#34; # 带引号，输出aaa;bbb echo aa bb # 不带引号，有空格，输出aa bb 也这是本文开头所讲的脚本的问题根因，$cmd是一个字符串变量，其中含有空格，还有分号(;)，echo能正常处理空格，但遇到分号理解为另一个命令开始，orted没有完整输入而卡住不退出，我们再来看一下bash对一组命令list解释：
+Lists A list is a sequence of one or more pipelines separated by one of the operators ;, &amp;amp;, &amp;amp;&amp;amp;, or ||, and optionally terminated by one of ;, &amp;amp;, or &amp;lt;newline&amp;gt;. Of these list operators, &amp;amp;&amp;amp; and || have equal precedence, followed by ; and &amp;amp;, which have equal precedence. A sequence of one or more newlines may appear in a list instead of a semicolon to delimit commands. echo的用法echo [-n] [string ...], 说明支持空格，空格分隔变成它的多个多个参数。
+其实不只是echo，对于程序的每个字符串参数，通常需要带双引号，避免空格等特殊字符导致信息不完整，如：
+sh -c echo 1234 # 会输出空行，即只执行了sh -c echo， 因为 sh -c 只接受一个字符串参数 sh -c &amp;#34;echo 1234&amp;#34; # 会输出1234 再做个验证，有一脚本如下：
+local params=$@ echo &amp;#34;$@&amp;#34; 当执行./test.sh &amp;quot;parm1&amp;quot; &amp;quot;parm2&amp;quot; 1 2时，输出内容：parm1 parm2 1 2，参数的双引号并不会带给执行的程序。
+代码规范 从上面的问题定位分析过程，我们看到了shell脚本有太多相似，抑或细微差别的写法。这些迷惑写法也是成了魔法，都会给程序员增加心智负担，一不小心就会留下一个bug，并且还在特定的场景下才会出现问题，这给我们验证测试也带来了难度。
+每种语言设计上不可能是完美的，都会存在这样或那样的坑。我们虽然不能像孔乙己那样熟练记住回字有几种写法，但面对问题时又不得不了解各种回字之间的区别。从语言简单层面来说，应该每个字只有一个写法，只有一种含义是最清晰。
+问题带给我们的启示是，代码应该是规范整洁的，不能人为地制造迷惑。例如c&#43;&#43;中const，含义太多了，一行能写4个const，我想太多的程序员不喜欢还能这样玩，反正我不喜欢。
+class A { public: const int func(const int* const param) const {return 0;} }; 对于编程规范，最好是能整理语言层面的各种坑，规范出一种写法，同时有工具来检查提示建议修改为最佳的写法。对于Java程序员来说是幸福的，因为IntelliJ IDEA(建议大家安装商业版)已集成大量业界最佳的实践，通过不同的颜色、画线来提示我们，我们不应该对它熟视无暏。
+结语 脚本语言非常灵活，语法上有些不会做严格的检查，不规范的写法在一定情况下也能完成工作，这也给我们输出的脚本带来潜在的问题。编写代码应该遵循业界最佳实践，遵守规约，写出规范整洁的代码，避免跳进程序语言设计与API使用上的坑中。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码17：写好代码就要深入细节</title>
         <url>http://lanlingzi.cn/post/technical/2020/1129_code/</url>
         <categories>
