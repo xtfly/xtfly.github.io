@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2699 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2696 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -213,13 +213,13 @@
 </ul>
 <p><code>exec</code>会终止原进程，修改为<code>exec $cmd</code>，是不是就能正常退出？事与愿违，问题还没有解决，无论为修改为 <code>sh -c $cmd</code> 或 <code>exec $cmd</code>， 会报 <code>No such file or directory</code> 的错误，居然连要执行的命令找不到了，而采用<code>echo cmd | sh</code>的管道方式却能执行命令，只是不退出。</p>
 <p>也就是情况是这样：SSH远程执行中，直接<code>sh -c $cmd</code> 与 <code>exec $cmd</code>，其中的<code>$cmd</code>需完整的路径，并没有从<code>$PATH</code>所有路径中查找。遗憾的是我对这个问题目前还没有找到根因。</p>
-<h3 id="与开单引号"><code>$()</code>与开单引号</h3>
+<h3 id="与反引号"><code>$()</code>与反引号</h3>
 <p>对于命令执行，我又想到下面的两种方式：执行反引号或括号里面的内容，将结果赋值给变量。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#00688b">date1</span>=<span style="color:#cd5555">`</span>date +%Y:%m:%d<span style="color:#cd5555">`</span>  <span style="color:#228b22"># 备注，`是开单引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出</span>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#00688b">date1</span>=<span style="color:#cd5555">`</span>date +%Y:%m:%d<span style="color:#cd5555">`</span>  <span style="color:#228b22"># 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出</span>
 <span style="color:#00688b">date2</span>=<span style="color:#8b008b;font-weight:bold">$(</span>date +%Y:%m:%d<span style="color:#8b008b;font-weight:bold">)</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">`</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#cd5555">`</span>     <span style="color:#228b22"># 输出 /bin/bash</span> 
 <span style="color:#658b00">echo</span> <span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#8b008b;font-weight:bold">)</span>    <span style="color:#228b22"># 输出 $SHELL</span>
-</code></pre></div><p>他们的区别在于对于转义字符的处理有些不同，<code>$()</code>中的转义字符和我们平时使用的是一样的，开单引号中保留了转义字符本身的意义，在使用时，推荐使用<code>$()</code></p>
+</code></pre></div><p>他们的区别在于对于转义字符的处理有些不同，<code>$()</code>中的转义字符和我们平时使用的是一样的，反引号中保留了转义字符本身的意义，在使用时，推荐使用<code>$()</code></p>
 <h3 id="单引号与双引号">单引号与双引号</h3>
 <p>那问题到底出在什么地方，发现<code>echo $cmd |sh</code>中对变量没有加引号，于是把它修改为<code>echo &quot;$cmd&quot; | sh</code>，问题神奇地解决了，原因是什么？我来看一下单引号与双引号的区别</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$HOME</span><span style="color:#cd5555">&#34;</span>   <span style="color:#228b22"># 输出 /Users/xiao</span>
@@ -418,7 +418,7 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
             <li><a href="#与"><code>$*</code>与<code>$@</code></a></li>
             <li><a href="#入参类型">入参类型</a></li>
             <li><a href="#sh与exec"><code>sh</code>与<code>exec</code></a></li>
-            <li><a href="#与开单引号"><code>$()</code>与开单引号</a></li>
+            <li><a href="#与反引号"><code>$()</code>与反引号</a></li>
             <li><a href="#单引号与双引号">单引号与双引号</a></li>
             <li><a href="#echo的坑">echo的坑</a></li>
           </ul>
