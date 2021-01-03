@@ -6,10 +6,32 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sun, 03 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码19：C&#43;&#43;中的左右值引用</title>
+      <link>http://lanlingzi.cn/post/technical/2021/2021_code/</link>
+      <pubDate>Sun, 03 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/2021_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;元旦哪里也没有去，就呆在家里，折腾了VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=json&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
+&lt;p&gt;drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。&lt;/p&gt;
+&lt;p&gt;我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了&lt;code&gt;const T&amp;amp; &lt;/code&gt;与&lt;code&gt;T &amp;amp;&amp;amp;&lt;/code&gt;两种入参。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
+    {
+        recvMessageCallback_ = cb;
+    }
+    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
+    {
+        recvMessageCallback_ = std::move(cb);
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
+  {
+        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>飞哥讲代码18：记一次问题定位分析</title>
@@ -848,108 +870,108 @@ os.remove(file_name)
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th align=&#34;left&#34;&gt;类型&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;名称&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;说明&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;长度&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;类型&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;名称&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;说明&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;长度&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;magic&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;魔数，识别Class文件格式，0XCAFEBABE&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;4个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u4&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;magic&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;魔数，识别Class文件格式，0XCAFEBABE&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;4个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;minor_version&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;副版本号，如0x0000&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;minor_version&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;副版本号，如0x0000&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;major_version&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;主版本号，如0x0034&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;major_version&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;主版本号，如0x0034&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;constant_pool_count&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;常量池计数&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;constant_pool_count&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;常量池计数&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;cp_info&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;constant_pool&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;常量池&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;cp_info&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;constant_pool&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;常量池&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;access_flags&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;访问标志&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;access_flags&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;访问标志&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;this_class&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;类索引&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;this_class&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;类索引&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;super_class&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;父类索引&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;super_class&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;父类索引&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;interfaces_count&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;接口计数&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;interfaces_count&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;接口计数&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;interfaces&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;接口索引集合&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;interfaces&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;接口索引集合&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;fields_count&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;字段个数&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;fields_count&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;字段个数&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;field_info&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;fields&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;字段集合&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;field_info&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;fields&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;字段集合&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;methods_count&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;方法计数器&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;methods_count&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;方法计数器&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;method_info&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;methods&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;方法集合&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;method_info&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;methods&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;方法集合&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;u2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;attributes_count&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;附加属性计数&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;2个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;u2&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;attributes_count&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;附加属性计数&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;attribute_info&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;attributes&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;附加属性集合&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;n个字节&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;attribute_info&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;attributes&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;附加属性集合&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;n个字节&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;</description>
@@ -1036,60 +1058,60 @@ os.remove(file_name)
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th align=&#34;left&#34;&gt;数据类型&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;大小&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;范围&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;默认值&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;数据类型&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;大小&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;范围&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;默认值&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;byte(字节)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;8&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;-128 - 127&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;byte(字节)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;8&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;-128 - 127&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;shot(短整型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;-2^15 - 2^15-1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;shot(短整型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;16&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;-2^15 - 2^15-1&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;int(整型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;-2^31 - 2^31-1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;int(整型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;32&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;-2^31 - 2^31-1&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;long(长整型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;-2^63 - 2^63-1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;long(长整型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;64&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;-2^63 - 2^63-1&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;float(浮点型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;32&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1.4013E-45 - 3.4028E+38&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.0f&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;float(浮点型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;32&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;1.4013E-45 - 3.4028E+38&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0.0f&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;double(双精度)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;64&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;-1.7976E+308 - 1.79769E+308&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.0d&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;double(双精度)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;64&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;-1.7976E+308 - 1.79769E+308&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0.0d&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;char(字符型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;16&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000 - u\ffff&lt;/code&gt;&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;&lt;code&gt;\u0000&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;char(字符型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;16&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;\u0000 - u\ffff&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;\u0000&lt;/code&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td align=&#34;left&#34;&gt;boolean(布尔型)&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;true/false&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;false&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;boolean(布尔型)&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;1&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;true/false&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;false&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;</description>
@@ -1825,7 +1847,7 @@ Open source relational database management system
 &lt;li&gt;只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。&lt;/li&gt;
 &lt;li&gt;作为1的推论，任何类型的值都可以赋值给空接口interface{}。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;quot;。&lt;/p&gt;</description>
+&lt;p&gt;接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;quot;&lt;a href=&#34;http://en.wikipedia.org/wiki/Structural_type_system&#34;&gt;Structural Typing&lt;/a&gt;&amp;quot;。&lt;/p&gt;</description>
     </item>
     
     <item>

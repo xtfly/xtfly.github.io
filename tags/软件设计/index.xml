@@ -6,11 +6,7 @@
     <description>Recent content in 软件设计 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 24 Jun 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 24 Jun 2018 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cache设计</title>
       <link>http://lanlingzi.cn/post/technical/2018/0624_cache_design/</link>

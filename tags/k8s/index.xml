@@ -6,11 +6,7 @@
     <description>Recent content in k8s on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 20 Oct 2015 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 20 Oct 2015 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mesos与K8S的区别</title>
       <link>http://lanlingzi.cn/post/technical/2015/1020_k8s_mesos/</link>

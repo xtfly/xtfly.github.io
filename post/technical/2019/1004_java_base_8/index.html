@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">6808 字 ~14分钟</span>
+<span class="leancloud-visitors-count">6803 字 ~14分钟</span>
 </span>
       </div>
     </header>
@@ -164,7 +164,7 @@
 <p>堆分成两大块：新生代和老年代。对象产生之初在新生代，步入暮年时进入老年代，但是老年代也接纳在新生代无法容纳的超大对象。</p>
 <p>新生代：1个Eden区 + 2个Survivor区。绝大部分对象在Eden区生成，当Eden区装填满的时候，会触发Young GC。垃圾回收的时候，在Eden区实现清除策略，没有被引用的对象则直接回收。依然存活的对象会被移送到Survivor区，这个区真是名副其实的存在。</p>
 <h2 id="方法区">方法区</h2>
-<p>方法区（Method Area）也称&quot;永久代&rdquo;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。</p>
+<p>方法区（Method Area）也称&quot;永久代&quot;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。</p>
 <p>从JDK7开始移除永久代（但并没有移除，还是存在），贮存在永久代的一部分数据已经转移到了Java Heap或者是Native Heap：</p>
 <ul>
 <li>符号引用(Symbols)转移到了native heap</li>
@@ -187,7 +187,7 @@
 <p>程序计数寄存器（Program Counter Register）是最小的一块内存区域，它的作用是当前线程所执行的字节码的行号指示器，在虚拟机的模型里，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、异常处理、线程恢复等基础功能都需要依赖计数器完成。</p>
 <p>它是线程私有。每条线程都有一个独立的程序计数器。生命周期随着线程的创建而创建，随着线程的结束而死亡。是唯一一个不会出现OOM的内存区域。</p>
 <h2 id="虚拟机栈">虚拟机栈</h2>
-<p>虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&quot;栈帧&rdquo;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。</p>
+<p>虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&quot;栈帧&quot;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。</p>
 <p>虚拟机栈通过压/出栈的方式，对每个方法对应的活动栈帧进行运算处理，方法正常执行结束，肯定会跳转到另一个栈帧上。在执行的过程中，如果出现异常，会进行异常回溯，返回地址通过异常处理表确定。</p>
 <p>栈帧由下面几部分组成：</p>
 <ul>
@@ -238,7 +238,7 @@
 </ul>
 <h2 id="垃圾收集算法">垃圾收集算法</h2>
 <p><strong>新生代采用复制算法</strong></p>
-<p>新生代中因为对象都是&quot;朝生夕死的&rdquo;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。</p>
+<p>新生代中因为对象都是&quot;朝生夕死的&quot;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。</p>
 <p>GC开始时，对象只会存于Eden和From Survivor区域，To Survivor（保留空间）为空。</p>
 <p>GC进行时，Eden区所有存活的对象都被复制到To Survivor区，而From Survivor区中，仍存活的对象会根据它们的年龄值决定去向，年龄值达到年龄阈值(默认15是因为对象头中年龄战4bit，新生代每熬过一次垃圾回收，年龄+1)，则移到老年代，没有达到则复制到To Survivor。</p>
 <p><strong>老年代采用标记/清除算法或标记/整理算法</strong></p>
@@ -264,8 +264,8 @@
 </ul>
 <p><strong>老年代收集器</strong></p>
 <ul>
-<li>Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&quot;标记-整理算法&rdquo;，这个模式主要是给Client模式下的JVM使用。</li>
-<li>Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&quot;标记-整理算法&rdquo;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。</li>
+<li>Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&quot;标记-整理算法&quot;，这个模式主要是给Client模式下的JVM使用。</li>
+<li>Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&quot;标记-整理算法&quot;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。</li>
 <li>CMS：CMS收集器(Concurrent Mark Sweep)是以一种获取最短回收停顿时间为目标的收集器。重视响应，可以带来好的用户体验，被sun称为并发低停顿收集器</li>
 <li>G1：G1(garbage first:尽可能多收垃圾，避免full gc)收集器是当前最为前沿的收集器之一(1.7以后才开始有)，同cms一样也是关注降低延迟，是用于替代cms功能更为强大的新型收集器，因为它解决了cms产生空间碎片等一系列缺陷。</li>
 </ul>
@@ -418,7 +418,7 @@ Heap
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">142</span>
+        <span class="site-state-item-count">143</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -510,12 +510,12 @@ Heap
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2020</span>
+  2009 - 2021</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,0 +1,545 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码19：C&#43;&#43;中的左右值引用 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码19：C&#43;&#43;中的左右值引用">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码19：C&#43;&#43;中的左右值引用 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/2021_code/" itemprop="url">
+        飞哥讲代码19：C&#43;&#43;中的左右值引用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-01-03">
+    2021-01-03
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4140 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>元旦哪里也没有去，就呆在家里，折腾了VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=json">Round19测试</a> 中，综合成绩排第一。</p>
+<p>drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。</p>
+<p>我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了<code>const T&amp; </code>与<code>T &amp;&amp;</code>两种入参。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
+    {
+        recvMessageCallback_ = cb;
+    }
+    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
+    {
+        recvMessageCallback_ = std::move(cb);
+    }
+</code></pre></div><p>还有这种用法：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  for (auto &amp;backend : config[&#34;backends&#34;])
+  {
+        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+  }
+</code></pre></div><h2 id="背后的知识点">背后的知识点</h2>
+<p>两个<code>&amp;&amp;</code>是C++11搞出来的新特性：右值引用 (Rvalue Referene) 。它是用来实现了转移语义 (Move Sementics) 和完美转发(Perfect Forwarding)。此特性都是为了极致的性能：消除两个对象交互时不必要的对象拷贝，节省运算存储资源，提高效率。</p>
+<p>什么是左值与右值？先看代码：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">int i = 0; // 其中i是左值，0是临时值，就是右值
+const int &amp;a = 1; // 在 C++11 之前，右值是不能被引用的，最大限度就是用常量引用绑定一个右值
+</code></pre></div><p><a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a> 把右值引用讲得非常透彻，以下内容摘抄原文。</p>
+<p><strong>变量</strong>(variable)与<strong>值</strong>(value) 是两个概念：</p>
+<ul>
+<li>值只有<strong>类别</strong>(category)的划分，变量只有<strong>类型</strong>(type)的划分</li>
+<li>值不一定拥有<strong>身份 (identity)</strong>，也不一定拥有<strong>变量名</strong>（例如表达式中间结果 i + j + k）</li>
+</ul>
+<p><a href="https://en.cppreference.com/w/cpp/language/value_category">值类别(value category)</a>可以分为两种：</p>
+<ul>
+<li><strong>左值</strong>(lvalue, left value)是能被取地址、不能被移动的值</li>
+<li><strong>右值</strong>(rvalue, right value)是表达式中间结果/函数返回值（可能拥有变量名，也可能没有）</li>
+</ul>
+<p><a href="https://en.cppreference.com/w/cpp/language/reference">引用类型(reference type)</a>属于一种<a href="https://en.cppreference.com/w/cpp/language/type">变量类型(variable type)</a>, 引用类型变量的初始化和其他的值类型（非引用类型）变量不同：</p>
+<ul>
+<li>创建时，必须显式初始化，和指针不同，不允许空引用 (null reference)；但可能存在 悬垂引用 (dangling reference)</li>
+<li>相当于是其引用的值的一个<strong>别名</strong>(alias)。例如，对引用变量的<strong>赋值运算</strong> (assignment operation)会赋值到其引用的值上</li>
+<li>一旦绑定了初始值，就<strong>不能重新绑定</strong>到其他值上了，和指针不同，赋值运算不能修改引用的指向</li>
+</ul>
+<p>引用类型可以分为两种：</p>
+<ul>
+<li><strong>左值引用</strong>(l-ref, lvalue reference) 用 <code>&amp;</code> 符号引用左值（但不能引用右值）</li>
+<li><strong>右值引用</strong>(r-ref, rvalue reference) 用 <code>&amp;&amp;</code> 符号引用右值（也可以移动左值）</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void f(Data&amp;  data);  // 1, 左值引用
+void f(Data&amp;&amp; data);  // 2, 右值引用
+
+Data   data;
+
+Data&amp;  data1 = data;     // OK
+Data&amp;  data1 = Data{};   // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{}
+Data&amp;&amp; data2 = Data{};   // OK
+Data&amp;&amp; data2 = data;     // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data
+Data&amp;&amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用
+
+f(data);   // 1, OK， 左值
+f(Data{}); // 2, OK ，右值
+f(data1);  // 1, OK, 左值引用
+f(data2);  // 2, OK, 右值引用
+</code></pre></div><p>C++ 还支持了<strong>常引用</strong>(c-ref, const reference)，同时接受<strong>左值/右值</strong>进行初始化：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void g(const Data&amp; data); // 常引用
+g(data); // 接受左值
+g(Data{}); // 接受右值，Data{}这类也通常也叫纯右值
+</code></pre></div><p>常引用和右值引用都能接受右值的绑定，其区别:</p>
+<ul>
+<li>通过右值引用/常引用 初始化的右值，都可以将<a href="https://en.cppreference.com/w/cpp/language/reference_initialization#Lifetime_of_a_temporary">生命周期扩展 (lifetime extension)</a> 到绑定（扩展/延长到）该右值的引用的生命周期，</li>
+<li>初始化时 绑定了右值后，右值引用 可以修改 引用的右值，而 常引用 不能修改</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">const Data&amp; data1 = Data{};   // OK: extend lifetime
+data1.modify();               // not compile: const
+
+Data&amp;&amp; data2 = Data{};        // OK: extend lifetime
+data2.modify();               // OK: non-const
+</code></pre></div><p>如果函数重载同时接受 右值引用/常引用 参数，编译器 优先重载 右值引用参数：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void f(const Data&amp; data);  // 1, data is c-ref
+void f(Data&amp;&amp; data);       // 2, data is r-ref
+
+f(Data{});  // 2, prefer 2 over 1 for rvalue
+</code></pre></div><p>内容有些多，本文不再摘抄std:move与std:forword的说明，请继续参见<a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a></p>
+<p>小结：引入右值引用的本质是，如果一个函数或表达式返回一个对象，那是一个纯右值，也被成为临时对象，对象会在当前语句执行完毕后即销毁。如果要使用这个临时对象里的内容，为了减少拷贝，可以把它里面的指针“拿”过来，把它的指针清空，让它能正常析构。这就是使用右值引用的中心思想。</p>
+<h1 id="引用的使用场景">引用的使用场景</h1>
+<p>问题来了，C++函数传参的时候，左值引用（<code>T&amp;</code>）、右值引用（<code>T&amp;&amp;</code>）和常引用（<code>const T&amp;</code>）分别在什么场景下使用。</p>
+<p>记得以前学习C++，指针和引用都是地址的概念。引用的代码编译后与指针的通常没有什么区分，引用可以理解为指针的语法糖。正如前文提到，引用是别名，引用在定义时就被初始化，之后无法改变。</p>
+<ul>
+<li>指针存在指针的指针，并且理论上没有级数没有限制，如<code>T*** p</code></li>
+<li>引用只有一级，<code>&amp;&amp;</code>并不是引用的引用，而是右值引用</li>
+</ul>
+<p>单纯一个左值引用真实就是指针的用法，常说引用比指针安全：</p>
+<ul>
+<li>引用在定义时就与变量绑定了，而指针不一定，指针在定义后没有初始化就是野指针</li>
+<li>引用与被引用的变量是同一个地址，使引用不用进行地址操作，这样使地址是不可修改的，使访问更加安全</li>
+</ul>
+<p>普通函数的参数，整体原则是使用左值引用的值而<strong>不做修改</strong>，常见场景：</p>
+<ul>
+<li>如果传递的参数对象很小，如内置数据类型或者小型结构，则按照值传递</li>
+<li>如果传递的参数对象是数组，只能使用指针，并且通常要求是常指针</li>
+<li>如果传递的参数对象是较大的结构，可以使用常指针与常引用</li>
+<li>如果传递的参数对象是类对象，则使用常引用</li>
+</ul>
+<p>左值引用隐含有不可修改的意义，所以常引用相比引用作为传递参数很常见，由于const的只读语义，参数的值也可以是一个纯右值。若把左值引用做为函数参数，则带来歧义，函数内到底要不要修改值，若修改，则建议是采用指针：</p>
+<ul>
+<li>左值引用(T&amp;)：不推荐使用，但在std库的swap，foward，move是出于其充分设计的考虑</li>
+<li>常引用(const T&amp;)：用于传递比较大的只读上下文对象</li>
+</ul>
+<p><code>const T&amp;</code>能接受<strong>左值或右值</strong>，而<code>T&amp;&amp;</code>相较于<code>const T&amp;</code>多了一个<strong>修改右值</strong>的能力，右值引用(T&amp;&amp;)在普通的函数中两种使用场景：</p>
+<ul>
+<li>一般只用于移动构建函数与移动赋值函数，用于转移使用权</li>
+<li>用于想移到它的值的场景，结合<code>std::move</code>使用</li>
+</ul>
+<p>如果<code>T</code>是函数模板的类型参数，<code>const T&amp;</code>的意义不变，而 <code>T&amp;&amp;</code> 的意义就变了。这时<code>T&amp;&amp;</code>则是一个“转发引用”，也叫通用引用，<code>T&amp;&amp;</code>并不一定表示右值引用，它可能是个左值引用又可能是个右值引用。</p>
+<ul>
+<li>没存在感的中间层，函数模板其实并不关心是具体类型，使用 <code>T&amp;&amp;</code>可以接收左值或右值的参数，并一般配合使用 <code>std::forward</code> 来完美转发到另外的函数里</li>
+</ul>
+<p>对于函数的返回值，也是可以返回引用的：</p>
+<ul>
+<li>左值引用(T&amp;)：返回局部静态对象或类的成员对象引用，不能返回临时对象引用</li>
+<li>常引用(const T&amp;)：返回引用不可修改</li>
+<li>右值引用(T&amp;&amp;)：很少见，在std库中move与forward有使用到</li>
+</ul>
+<h1 id="回到案例">回到案例</h1>
+<p>grodon能霸榜，它能充分使用现代C++的特性，减少内存拷贝也是其中原因之一。</p>
+<p>再来看一下代码本身，为什么要重载函数，实现两个不同<code>(const T&amp;)</code>与<code>T&amp;&amp;</code>，因为RecvMessageCallback其实是std::function，当它作为函数入参：</p>
+<ul>
+<li>若只有<code>(const T&amp;)</code>函数，setRecvMessageCallback(RecvMessageCallback{})，也就可以接受lambda表达式作为函数的入参，lambda表达式生成了一个临时的std::function对象，是一个右值。如果只是简单的调用一下std::function类，那么没有问题；如果函数内部需要保存这个std::function，就必须做一次拷贝，否则当临时的对象销毁时，有可能出现引用悬空的问题。而这个拷贝是不经意的，难以发现主动优化，细节是恶魔</li>
+<li>若只有<code>T&amp;&amp;</code>函数，使用<code>std::move</code>，实现上述临时lambda对象移动转发（完美转发），不需要做一次拷贝，这样的效率更高了。但它不做了左值使用，所以还得需要<code>(const T&amp;)</code>函数</li>
+</ul>
+<p>对于stl中的容器，C++11也相应做了改进，基本上emplace_back()对应push_bakc(), emplce()对应insert()。打开源码发现emplace方法实现了完美转发(利用了c++ 11的新特性变长参数模板（variadic template），直接构造了一个新的对象，不需要拷贝或者移动内存)：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">vector&lt;_Tp, _Allocator&gt;::emplace_back(_Args&amp;&amp;... __args)
+{
+    if (this-&gt;__end_ &lt; this-&gt;__end_cap())
+    {
+        __construct_one_at_end(_VSTD::forward&lt;_Args&gt;(__args)...);
+    }
+    else
+        __emplace_back_slow_path(_VSTD::forward&lt;_Args&gt;(__args)...);
+#if _LIBCPP_STD_VER &gt; 14
+    return this-&gt;back();
+#endif
+</code></pre></div><ul>
+<li>push_back：会优先选择调用移动构造函数，如果没有才会调用拷贝构造函数</li>
+<li>emplace_back：可以减少一次拷贝或移动构造的过程，提升容器插入数据的效率</li>
+</ul>
+<p>一路学习一下，C++太难了，为了性能，对开发人员要求太高，总结记录一下:</p>
+<ul>
+<li>两种值类型: 左值和右值</li>
+<li>两种-&gt;四种引用类型:
+<ul>
+<li>左值引用(T&amp;)只能绑定左值; 常量左值引用(const T&amp;), 既可以绑定左值又可以绑定右值(将右值的生命期延长),</li>
+<li>右值引用(T&amp;&amp;)只能绑定右值; 通用引用(T&amp;&amp;)由初始化时绑定的值的类型确定(模板参数类型或auto推导)</li>
+</ul>
+</li>
+<li>独立于类型：左值和右值是独立于他们的类型，右值引用可能是左值可能是右值，已经被命名的右值引用，是左值</li>
+<li>移动语义：可以减少无谓的内存拷贝，要想实现移动语义，需要实现移动构造函数和移动赋值函数。std::move()将一个左值转换成一个右值，强制使用移动拷贝和赋值函数。</li>
+<li>完美转发：通过一个函数将参数继续转交给另一个函数进行处理，原参数可能是右值，可能是左值，如果还能继续保持参数的原有特征，那么它就是完美。std::forward()和通用引用共同实现完美转发</li>
+</ul>
+<h1 id="结语">结语</h1>
+<p>在C++中，引用的本质是指针，左值与右值的区分是进一步细化限制了指针的生命周期管理，给使用带来了灵活性，但也带来不易理解。右值引用是一个即将消亡的对象中的内容进一步转移复用，或者在函数模板中解决完美转发问题，本质都是为了减少对象的拷贝提升效率。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2020/1213_code/" rel="prev" title="飞哥讲代码18：记一次问题定位分析">
+        飞哥讲代码18：记一次问题定位分析 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码19：C&#43;&#43;中的左右值引用
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">143</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a>
+      <ul>
+        <li><a href="#背后的知识点">背后的知识点</a></li>
+      </ul>
+    </li>
+    <li><a href="#引用的使用场景">引用的使用场景</a></li>
+    <li><a href="#回到案例">回到案例</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

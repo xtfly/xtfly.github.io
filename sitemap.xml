@@ -1,6 +1,47 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码19：C&#43;&#43;中的左右值引用</title>
+        <url>http://lanlingzi.cn/post/technical/2021/2021_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag>
+        </tags>
+        <content type="html"> 案例 元旦哪里也没有去，就呆在家里，折腾了VIM配置之后又看了一些C&#43;&#43;的开源项目。国人开发的C&#43;&#43; web框架 drogon 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 Round19测试 中，综合成绩排第一。
+drogon是基于C&#43;&#43;14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。
+我10年前写过大约5年多的C&#43;&#43;代码，使用的也是传统的C&#43;&#43;，C&#43;&#43;11之后称为modern C&#43;&#43;。不再使用C&#43;&#43;做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了const T&amp;amp; 与T &amp;amp;&amp;amp;两种入参。
+void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb) { recvMessageCallback_ = cb; } void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb) { recvMessageCallback_ = std::move(cb); } 还有这种用法：
+for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;]) { backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back } 背后的知识点 两个&amp;amp;&amp;amp;是C&#43;&#43;11搞出来的新特性：右值引用 (Rvalue Referene) 。它是用来实现了转移语义 (Move Sementics) 和完美转发(Perfect Forwarding)。此特性都是为了极致的性能：消除两个对象交互时不必要的对象拷贝，节省运算存储资源，提高效率。
+什么是左值与右值？先看代码：
+int i = 0; // 其中i是左值，0是临时值，就是右值 const int &amp;amp;a = 1; // 在 C&#43;&#43;11 之前，右值是不能被引用的，最大限度就是用常量引用绑定一个右值 深入浅出 C&#43;&#43; 11 右值引用 把右值引用讲得非常透彻，以下内容摘抄原文。
+变量(variable)与值(value) 是两个概念：
+ 值只有类别(category)的划分，变量只有类型(type)的划分 值不一定拥有身份 (identity)，也不一定拥有变量名（例如表达式中间结果 i &#43; j &#43; k）  值类别(value category)可以分为两种：
+ 左值(lvalue, left value)是能被取地址、不能被移动的值 右值(rvalue, right value)是表达式中间结果/函数返回值（可能拥有变量名，也可能没有）  引用类型(reference type)属于一种变量类型(variable type), 引用类型变量的初始化和其他的值类型（非引用类型）变量不同：
+ 创建时，必须显式初始化，和指针不同，不允许空引用 (null reference)；但可能存在 悬垂引用 (dangling reference) 相当于是其引用的值的一个别名(alias)。例如，对引用变量的赋值运算 (assignment operation)会赋值到其引用的值上 一旦绑定了初始值，就不能重新绑定到其他值上了，和指针不同，赋值运算不能修改引用的指向  引用类型可以分为两种：
+ 左值引用(l-ref, lvalue reference) 用 &amp;amp; 符号引用左值（但不能引用右值） 右值引用(r-ref, rvalue reference) 用 &amp;amp;&amp;amp; 符号引用右值（也可以移动左值）  void f(Data&amp;amp; data); // 1, 左值引用 void f(Data&amp;amp;&amp;amp; data); // 2, 右值引用 Data data; Data&amp;amp; data1 = data; // OK Data&amp;amp; data1 = Data{}; // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{} Data&amp;amp;&amp;amp; data2 = Data{}; // OK Data&amp;amp;&amp;amp; data2 = data; // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data Data&amp;amp;&amp;amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用 f(data); // 1, OK， 左值 f(Data{}); // 2, OK ，右值 f(data1); // 1, OK, 左值引用 f(data2); // 2, OK, 右值引用 C&#43;&#43; 还支持了常引用(c-ref, const reference)，同时接受左值/右值进行初始化：
+void g(const Data&amp;amp; data); // 常引用 g(data); // 接受左值 g(Data{}); // 接受右值，Data{}这类也通常也叫纯右值 常引用和右值引用都能接受右值的绑定，其区别:
+ 通过右值引用/常引用 初始化的右值，都可以将生命周期扩展 (lifetime extension) 到绑定（扩展/延长到）该右值的引用的生命周期， 初始化时 绑定了右值后，右值引用 可以修改 引用的右值，而 常引用 不能修改  const Data&amp;amp; data1 = Data{}; // OK: extend lifetime data1.modify(); // not compile: const Data&amp;amp;&amp;amp; data2 = Data{}; // OK: extend lifetime data2.modify(); // OK: non-const 如果函数重载同时接受 右值引用/常引用 参数，编译器 优先重载 右值引用参数：
+void f(const Data&amp;amp; data); // 1, data is c-ref void f(Data&amp;amp;&amp;amp; data); // 2, data is r-ref f(Data{}); // 2, prefer 2 over 1 for rvalue 内容有些多，本文不再摘抄std:move与std:forword的说明，请继续参见深入浅出 C&#43;&#43; 11 右值引用
+小结：引入右值引用的本质是，如果一个函数或表达式返回一个对象，那是一个纯右值，也被成为临时对象，对象会在当前语句执行完毕后即销毁。如果要使用这个临时对象里的内容，为了减少拷贝，可以把它里面的指针“拿”过来，把它的指针清空，让它能正常析构。这就是使用右值引用的中心思想。
+引用的使用场景 问题来了，C&#43;&#43;函数传参的时候，左值引用（T&amp;amp;）、右值引用（T&amp;amp;&amp;amp;）和常引用（const T&amp;amp;）分别在什么场景下使用。
+记得以前学习C&#43;&#43;，指针和引用都是地址的概念。引用的代码编译后与指针的通常没有什么区分，引用可以理解为指针的语法糖。正如前文提到，引用是别名，引用在定义时就被初始化，之后无法改变。
+ 指针存在指针的指针，并且理论上没有级数没有限制，如T*** p 引用只有一级，&amp;amp;&amp;amp;并不是引用的引用，而是右值引用  单纯一个左值引用真实就是指针的用法，常说引用比指针安全：
+ 引用在定义时就与变量绑定了，而指针不一定，指针在定义后没有初始化就是野指针 引用与被引用的变量是同一个地址，使引用不用进行地址操作，这样使地址是不可修改的，使访问更加安全  普通函数的参数，整体原则是使用左值引用的值而不做修改，常见场景：
+ 如果传递的参数对象很小，如内置数据类型或者小型结构，则按照值传递 如果传递的参数对象是数组，只能使用指针，并且通常要求是常指针 如果传递的参数对象是较大的结构，可以使用常指针与常引用 如果传递的参数对象是类对象，则使用常引用  左值引用隐含有不可修改的意义，所以常引用相比引用作为传递参数很常见，由于const的只读语义，参数的值也可以是一个纯右值。若把左值引用做为函数参数，则带来歧义，函数内到底要不要修改值，若修改，则建议是采用指针：
+ 左值引用(T&amp;amp;)：不推荐使用，但在std库的swap，foward，move是出于其充分设计的考虑 常引用(const T&amp;amp;)：用于传递比较大的只读上下文对象  const T&amp;amp;能接受左值或右值，而T&amp;amp;&amp;amp;相较于const T&amp;amp;多了一个修改右值的能力，右值引用(T&amp;amp;&amp;amp;)在普通的函数中两种使用场景：
+ 一般只用于移动构建函数与移动赋值函数，用于转移使用权 用于想移到它的值的场景，结合std::move使用  如果T是函数模板的类型参数，const T&amp;amp;的意义不变，而 T&amp;amp;&amp;amp; 的意义就变了。这时T&amp;amp;&amp;amp;则是一个“转发引用”，也叫通用引用，T&amp;amp;&amp;amp;并不一定表示右值引用，它可能是个左值引用又可能是个右值引用。
+ 没存在感的中间层，函数模板其实并不关心是具体类型，使用 T&amp;amp;&amp;amp;可以接收左值或右值的参数，并一般配合使用 std::forward 来完美转发到另外的函数里  对于函数的返回值，也是可以返回引用的：
+ 左值引用(T&amp;amp;)：返回局部静态对象或类的成员对象引用，不能返回临时对象引用 常引用(const T&amp;amp;)：返回引用不可修改 右值引用(T&amp;amp;&amp;amp;)：很少见，在std库中move与forward有使用到  回到案例 grodon能霸榜，它能充分使用现代C&#43;&#43;的特性，减少内存拷贝也是其中原因之一。
+再来看一下代码本身，为什么要重载函数，实现两个不同(const T&amp;amp;)与T&amp;amp;&amp;amp;，因为RecvMessageCallback其实是std::function，当它作为函数入参：
+ 若只有(const T&amp;amp;)函数，setRecvMessageCallback(RecvMessageCallback{})，也就可以接受lambda表达式作为函数的入参，lambda表达式生成了一个临时的std::function对象，是一个右值。如果只是简单的调用一下std::function类，那么没有问题；如果函数内部需要保存这个std::function，就必须做一次拷贝，否则当临时的对象销毁时，有可能出现引用悬空的问题。而这个拷贝是不经意的，难以发现主动优化，细节是恶魔 若只有T&amp;amp;&amp;amp;函数，使用std::move，实现上述临时lambda对象移动转发（完美转发），不需要做一次拷贝，这样的效率更高了。但它不做了左值使用，所以还得需要(const T&amp;amp;)函数  对于stl中的容器，C&#43;&#43;11也相应做了改进，基本上emplace_back()对应push_bakc(), emplce()对应insert()。打开源码发现emplace方法实现了完美转发(利用了c&#43;&#43; 11的新特性变长参数模板（variadic template），直接构造了一个新的对象，不需要拷贝或者移动内存)：
+vector&amp;lt;_Tp, _Allocator&amp;gt;::emplace_back(_Args&amp;amp;&amp;amp;... __args) { if (this-&amp;gt;__end_ &amp;lt; this-&amp;gt;__end_cap()) { __construct_one_at_end(_VSTD::forward&amp;lt;_Args&amp;gt;(__args)...); } else __emplace_back_slow_path(_VSTD::forward&amp;lt;_Args&amp;gt;(__args)...); #if _LIBCPP_STD_VER &amp;gt; 14 return this-&amp;gt;back(); #endif  push_back：会优先选择调用移动构造函数，如果没有才会调用拷贝构造函数 emplace_back：可以减少一次拷贝或移动构造的过程，提升容器插入数据的效率  一路学习一下，C&#43;&#43;太难了，为了性能，对开发人员要求太高，总结记录一下:
+ 两种值类型: 左值和右值 两种-&amp;gt;四种引用类型:  左值引用(T&amp;amp;)只能绑定左值; 常量左值引用(const T&amp;amp;), 既可以绑定左值又可以绑定右值(将右值的生命期延长), 右值引用(T&amp;amp;&amp;amp;)只能绑定右值; 通用引用(T&amp;amp;&amp;amp;)由初始化时绑定的值的类型确定(模板参数类型或auto推导)   独立于类型：左值和右值是独立于他们的类型，右值引用可能是左值可能是右值，已经被命名的右值引用，是左值 移动语义：可以减少无谓的内存拷贝，要想实现移动语义，需要实现移动构造函数和移动赋值函数。std::move()将一个左值转换成一个右值，强制使用移动拷贝和赋值函数。 完美转发：通过一个函数将参数继续转交给另一个函数进行处理，原参数可能是右值，可能是左值，如果还能继续保持参数的原有特征，那么它就是完美。std::forward()和通用引用共同实现完美转发  结语 在C&#43;&#43;中，引用的本质是指针，左值与右值的区分是进一步细化限制了指针的生命周期管理，给使用带来了灵活性，但也带来不易理解。右值引用是一个即将消亡的对象中的内容进一步转移复用，或者在函数模板中解决完美转发问题，本质都是为了减少对象的拷贝提升效率。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码18：记一次问题定位分析</title>
         <url>http://lanlingzi.cn/post/technical/2020/1213_code/</url>
         <categories>
@@ -27,11 +68,11 @@ sh与exec 看来问题不是出在标识为[1]的地方，那就是出在标识[
  sh：父进程会fork一个子进程，sh后面的命令在子进程中执行 exec：在原进程中执行，但是同时会终止原进程  exec会终止原进程，修改为exec $cmd，是不是就能正常退出？事与愿违，问题还没有解决，无论为修改为 sh -c $cmd 或 exec $cmd， 会报 No such file or directory 的错误，居然连要执行的命令找不到了，而采用echo cmd | sh的管道方式却能执行命令，只是不退出。
 也就是情况是这样：SSH远程执行中，直接sh -c $cmd 与 exec $cmd，其中的$cmd需完整的路径，并没有从$PATH所有路径中查找。遗憾的是我对这个问题目前还没有找到根因。
 $()与反引号 对于命令执行，我又想到下面的两种方式：执行反引号或括号里面的内容，将结果赋值给变量。
-date1=`date &#43;%Y:%m:%d` # 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出 date2=$(date &#43;%Y:%m:%d) echo `echo \$SHELL` # 输出 /bin/bash echo $(echo \$SHELL) # 输出 $SHELL 他们的区别在于对于转义字符的处理有些不同，$()中的转义字符和我们平时使用的是一样的，反引号中保留了转义字符本身的意义，在使用时，推荐使用$()
+date1=`date &#43;%Y:%m:%d` # 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出 date2=$(date &#43;%Y:%m:%d) echo `echo \$SHELL` # 输出 /bin/bash  echo $(echo \$SHELL) # 输出 $SHELL 他们的区别在于对于转义字符的处理有些不同，$()中的转义字符和我们平时使用的是一样的，反引号中保留了转义字符本身的意义，在使用时，推荐使用$()
 单引号与双引号 那问题到底出在什么地方，发现echo $cmd |sh中对变量没有加引号，于是把它修改为echo &amp;quot;$cmd&amp;quot; | sh，问题神奇地解决了，原因是什么？我来看一下单引号与双引号的区别
 echo &amp;#34;$HOME&amp;#34; # 输出 /Users/xiao echo &amp;#39;$HOME&amp;#39; # 输出 $HOME 显然
  单引号里的任何字符都会原样输出，单引号字符串中的变量是无效 双引号的变量会被替换，可以出现转义字符，如\$表示单个$输出  echo的坑 经过一些验证，发现问题是出在echo的使用上，我们先来看一下简单的：
-echo *.sh # 没有带引号，它会输出当前目录下所有sh结尾的文件 echo &amp;#34;*sh&amp;#34; # 带双引号，输出字符串 *.sh echo &amp;#39;*.sh&amp;#39; # 带单引号，输出字符串 *.sh echo aaa;bbb # 不带引号，只输出aaa echo &amp;#34;aaa;bbb&amp;#34; # 带引号，输出aaa;bbb echo aa bb # 不带引号，有空格，输出aa bb 也这是本文开头所讲的脚本的问题根因，$cmd是一个字符串变量，其中含有空格，还有分号(;)，echo能正常处理空格，但遇到分号理解为另一个命令开始，orted没有完整输入而卡住不退出，我们再来看一下bash对一组命令list解释：
+echo *.sh # 没有带引号，它会输出当前目录下所有sh结尾的文件 echo &amp;#34;*sh&amp;#34; # 带双引号，输出字符串 *.sh  echo &amp;#39;*.sh&amp;#39; # 带单引号，输出字符串 *.sh  echo aaa;bbb # 不带引号，只输出aaa echo &amp;#34;aaa;bbb&amp;#34; # 带引号，输出aaa;bbb echo aa bb # 不带引号，有空格，输出aa bb  也这是本文开头所讲的脚本的问题根因，$cmd是一个字符串变量，其中含有空格，还有分号(;)，echo能正常处理空格，但遇到分号理解为另一个命令开始，orted没有完整输入而卡住不退出，我们再来看一下bash对一组命令list解释：
 Lists A list is a sequence of one or more pipelines separated by one of the operators ;, &amp;amp;, &amp;amp;&amp;amp;, or ||, and optionally terminated by one of ;, &amp;amp;, or &amp;lt;newline&amp;gt;. Of these list operators, &amp;amp;&amp;amp; and || have equal precedence, followed by ; and &amp;amp;, which have equal precedence. A sequence of one or more newlines may appear in a list instead of a semicolon to delimit commands. echo的用法echo [-n] [string ...], 说明支持空格，空格分隔变成它的多个多个参数。
 其实不只是echo，对于程序的每个字符串参数，通常需要带双引号，避免空格等特殊字符导致信息不完整，如：
 sh -c echo 1234 # 会输出空行，即只执行了sh -c echo， 因为 sh -c 只接受一个字符串参数 sh -c &amp;#34;echo 1234&amp;#34; # 会输出1234 再做个验证，有一脚本如下：
@@ -219,10 +260,10 @@ Commit机制不是万金油：
 所以代码的看护并非能通过Commit机制一劳永逸，需要开发人员善用工具自已主动发现问题；也需要Committer不定期的代码全局地再次Review。“像老牛吃草一样进行反刍咀嚼”，把之前积累的片断MR（MergeRequest）代码完全地消化掉。
 相互改进 代码一旦写出，就已走上腐化的道路上。尤其是在多人团队开发的项目，多人协作性差也很容易加重腐化的速度。像我们家里的环境，即使你没有乱扔东西，一段时间之后也会到处布满灰尘，需要经常打扫保持房屋的干净，但问题是 谁来打扫 ？代码开发也是如此，童子军有一条军规：
  始终保持露营地比你发现它的时间还要干净。
- 如果你在地上发现一点脏东西，不管是谁弄的，都清理掉它，要为了下一拨露营的人改善环境。这其实是一个我为人人的精神，代码开发也是应该是如此。事不过三，当你发现相似代码出现三处时，不管是不是你写的，都应该立即去思考重构，提取为公共能力。公共能力即可方便自己，也更能方便他人。所谓&amp;quot;众人拾柴火焰高&amp;rdquo;，只有我为人人了，人人为我才能成为可能，代码的改进才能形成良性的内循环。
+ 如果你在地上发现一点脏东西，不管是谁弄的，都清理掉它，要为了下一拨露营的人改善环境。这其实是一个我为人人的精神，代码开发也是应该是如此。事不过三，当你发现相似代码出现三处时，不管是不是你写的，都应该立即去思考重构，提取为公共能力。公共能力即可方便自己，也更能方便他人。所谓&amp;quot;众人拾柴火焰高&amp;quot;，只有我为人人了，人人为我才能成为可能，代码的改进才能形成良性的内循环。
 我们不应该通过吹捧 重构 对现有代码的问题进行全盘革命，或者热衷于把 重构 弄成一门政治业绩。重构就是在日常开发中持续地改进代码可维护性，可读性&amp;hellip;重构发生在开发新需求时，发生在代码Review时，发生在解决问题时。重构是每个开发人员份内的事，大凡需要大的代码重构（非架构重构）时说明没有把重构融入开发活动。我们不应该经常提及 重构，而是多鼓励小进改。这让我想到公司以前的宣传：&amp;ldquo;小改进，大奖励&amp;rdquo;。
 我们在写代码时通常不希望被别人打扰，不是非得要拉个espace电话，发个espace消息就是协作了。Git就是代码开发最好的协作平台。每次从仓库Pull代码时，我们可以花点时间来看看有哪些同学做哪些修改：是否改过自己写的代码，为什么这样修改，对我学习哪些可取之处？有什么新开发公共能力，这次是否我能使用上？只有用心地发现，才会有相互改时的基础。
-正如上面的案例，当我们发现相似代码提取封装时，就会涉及到对他人写的代码修改。通常我们去修改他人代码的主观能动性不强，原因可能很多，最重要是怕出问题还被责问：看你把我的代码改出问题来了吧。作为原始作者可以&amp;quot;虚怀若谷，安之若素&amp;rdquo;。若你觉得再有问题，那就把它改得更好，拿代码来交流最有说服力。
+正如上面的案例，当我们发现相似代码提取封装时，就会涉及到对他人写的代码修改。通常我们去修改他人代码的主观能动性不强，原因可能很多，最重要是怕出问题还被责问：看你把我的代码改出问题来了吧。作为原始作者可以&amp;quot;虚怀若谷，安之若素&amp;quot;。若你觉得再有问题，那就把它改得更好，拿代码来交流最有说服力。
 结语 每天我们都在输出代码，也可能自己写的代码正被重写。不同的场景下，原先没有问题的代码也可能变成不太合适。优秀的代码绝不是一成不变的代码，源自满足新的诉求而不断地被改进，不同人的改进。目前软件开发早已不是单打独斗，团队协作开发，应该把代码的相互改进融入到个人日常开发中。我为人人，人人为我，形成良性的内循环。
 </content>
     </entry>
@@ -241,7 +282,7 @@ Commit机制不是万金油：
 def handle(self, data, rules): rule_type = rules[&amp;#39;type&amp;#39;] # 1 rule_list = rules[&amp;#39;rules&amp;#39;] # 2 res = None if str(rule_type).lower() != RULES_MAPPING: raise ValueError(&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;) for rule in rule_list: col_name = rule[&amp;#39;column&amp;#39;] # 2 if rule[&amp;#39;function&amp;#39;].lower() == &amp;#39;cast&amp;#39;: # 3 mapping_dict, other = self.parse_cast(rule[&amp;#39;mapping&amp;#39;]) res = data[col_name].apply(self.case_func, args=(mapping_dict, other)) elif rule[&amp;#39;function&amp;#39;].lower() == &amp;#39;in&amp;#39;: mapping_dict, other = self.parse_in(rule[&amp;#39;mapping&amp;#39;]) res = data[col_name].apply(self.in_func, args=(mapping_dict, other)) elif rule[&amp;#39;function&amp;#39;].lower() == &amp;#39;binning&amp;#39;: res = data[col_name].apply(self.binning_func, args=(rule[&amp;#39;mapping&amp;#39;])) else: raise ValueError(&amp;#39;not supported function&amp;#39;) # 4  return res 代化之后的代码：
 def handle(self, data: DataFrame, rules: Rule) -&amp;gt; Series: # 1 if rules.type != MappingHandler.RULES_TYPE: raise ValueError(f&amp;#34;type of rule should be &amp;#39;{MappingHandler.RULES_TYPE}&amp;#39;&amp;#34;) # 6 rule_list = rules.nested_rules: # 8 res = None for item in rule_list: rule = Rule(item) # 2 col_name = self.get_col_name(rule.column) func_name = rule.function # 4 if func_name == MappingHandler.KEY_CAST: # 3 mapping_dict, other = self.parse_cast(rule.mapping, data[col_name].dtype) # 5 res = data[col_name].apply(self.case_func, args=(mapping_dict, other)) elif func_name == MappingHandler.KEY_IN: mapping_dict, other = self.parse_in(rule.mapping, data[col_name].dtype) res = data[col_name].apply(self.in_func, args=(mapping_dict, other)) elif func_name == MappingHandler.KEY_BINNING: res = data[col_name].apply(self.binning_func, args=(rule.mapping)) else: raise ValueError(f&amp;#39;not supported function {func_name}&amp;#39;) # 7 return res class Rule(object): # 2 KEY_TYPE = &amp;#39;type&amp;#39; # ... 省略其它的常量定义 def __init__(self, rules: Dict[str, Any]): self.rules = rules @property def type(self) -&amp;gt; str: # 2 return str(self.rules[Rule.KEY_TYPE]).lower() if Rule.KEY_TYPE in self.rules else None # ... 省略其它属性 咋一看，似乎没有什么大的变化，代码反而变多了。我来说说做了哪些改进：
 优化前的存在潜在问题（数字代表问题出现的地方）：
- [1] rules实际类型为Dict，对dict的取值方式是采用rules[&amp;lsquo;type&amp;rsquo;]这种方法，在Python3之后，若无对应的Key，会抛KeyError异常。 [2] 从dict取出的值无类型推导，IDE无法联想，也无法类型检查纠错。 [3] 多次调用rule[&#39;function&#39;].lower()，最坏场景下需要三次从Dict取值与调用lower()方法。 [4] 最后的抛异常信息不完整&amp;rsquo;not supported function&amp;rsquo;，应该给出具体的function值。  优化后的改进点（数字代表改点的地方）：
+ [1] rules实际类型为Dict，对dict的取值方式是采用rules[&amp;lsquo;type&amp;rsquo;]这种方法，在Python3之后，若无对应的Key，会抛KeyError异常。 [2] 从dict取出的值无类型推导，IDE无法联想，也无法类型检查纠错。 [3] 多次调用rule[&#39;function&#39;].lower()，最坏场景下需要三次从Dict取值与调用lower()方法。 [4] 最后的抛异常信息不完整&amp;rsquo;not supported function&#39;，应该给出具体的function值。  优化后的改进点（数字代表改点的地方）：
  [1] 方法的入参与出参采用python typing新语法，通过对变量的类型标注，让IDE帮助你联想与纠错，增加代码的可读性。 [2] 对Dict对象进行包装为Rule对象，原有直接通过Key下标取值，变成Rule的属性，在属性方法中对是否存在做检查。 [3] 所有的字面字符串都换成了常量大写，更符合编码规范。注：Python语言上并无常量，通过约定俗成的变量名全大写来表示这是一个常量。 [4] 减少rule[&amp;lsquo;function&amp;rsquo;].lower()调用次数，先赋值给一临时变量。 [5] 通过data[col_name].dtype 取出数据实际类型，并在parse_xxx方法对支持类型做检查。 [6] 第一个ValueError的异常信息中rules_mapping采用常量替换，避免修改了常量时而没有修改异常字符串。 [7] 补充第二个ValueError的异常信息，把实际的func_name抛出，方便定位问题。 [8] 变量就近声明，可以减少作用域范围。注：此类优化并不明显，有些代码检查工具规定变量声明离它使用的地方不能超过5行。  说了这么多，有人可能会开始质疑了，优化前的代码也没有什么大问题，可读性也还行，能正常工作。你这样优化是不是有点太过于吹毛求疵了。代码就在这，代码到底要不要这样去打磨，每个人心中都有一杆称，只要哪怕你觉得其中一条优化点对你有所启发，那就采纳吧。
 背后的知识 Python是动态脚本语言，不需要显示数据类型声明，缺少静态语言类型检查机制。有人戏称：动态一时爽，重构火葬场。
  优点：动态语言由于类型到运行时才确定，对于输入输出并不要一一对应，满足其调用约束即可。动态性带来了灵活性，有很多高级用法，编写的代码数量更少，看起来更加简洁，提升了开发效率。 缺点：最大问题是代码难以阅读，变量与方法的作用需要查阅大量上下文同时靠人肉去做类型推导，修改重构都很麻烦。  所以现在动态语言的发展趋势是也增加类型机制，如JavaScript之上的TypeScript，Python中的Typing标注。
@@ -253,7 +294,7 @@ Python的Typing标注是在3.5版本引入，其语法是可以归纳为两点�
 减少理解代码花费的时间，有两个层次：
  代码直观上很容易理解。 IDE等工具能准确地查找代码间调用关系。  在&amp;laquo;编写可读代码的艺术&amp;raquo;一书中，对于如何提升代码的可读性总结三个层次：
  表层上的改进：在命名方法（变量名，方法名），变量声明，代码格式，注释等方面的改进。 控制流和逻辑的改进：在控制流，逻辑表达式上让代码变得更容易理解。 结构上的改进：善于抽取逻辑，借助自然语言的描述来改善代码。  回到案例本身来看，前面列出8个细小的改进，其实也在遵循着上述所讲的表层上改进原则。光代码的可读性就能写一本了，百度百科上有 编写可读代码的艺术 一书的介绍，如果你没有时间，可以看看它的目录，也可以知晓些有哪些技巧手段。
-小重构 最近心声与管理优化报上有一篇谈到：写软件是一门&amp;quot;手艺活&amp;rdquo;，要写好就得熟能生巧。虽文章中论据可能会受到挑战，但我是非常赞成其立意的。写好代码需要有匠心，匠心就需要对其倾注爱心，出于爱心就会不断追求，追求中不避艰苦，是追求中自得其乐。软件的生命周期70%的时间是维护期，代码一旦写完，只是刚刚开始，代码需要匠心持续地打磨优化。
+小重构 最近心声与管理优化报上有一篇谈到：写软件是一门&amp;quot;手艺活&amp;quot;，要写好就得熟能生巧。虽文章中论据可能会受到挑战，但我是非常赞成其立意的。写好代码需要有匠心，匠心就需要对其倾注爱心，出于爱心就会不断追求，追求中不避艰苦，是追求中自得其乐。软件的生命周期70%的时间是维护期，代码一旦写完，只是刚刚开始，代码需要匠心持续地打磨优化。
 但我们写的代码却是一旦提交上库之后，可能忙于下个迭代的需求开发，再也不会回头来看自己写的代码。我们是做商品的工人，而不是做工艺品的手艺人。绝大部人的不会在写完代码来思考是否可有改进的空间，增加可读性、可维护性。及时对自己代码的小重构就是对代码不断打磨，打磨则需要有一颗匠心。
 还有一个原因，我们害怕出错，因为重构可会导致问题。没有被问题折磨的程序员在技术上不会有长进的，错误可以让我们很快接近真理。每个迭代写完代码，我们应该来审视自己的代码，不是组织上行为要求，而是出于自己的追求。及时的小重构效果往往会好于被动地需求驱动重构。
 重构的理由不需要什么高大上的理论支持，也不需要响天震地的口号，而是像手艺人一样不为繁华易匠心，把代码当成自己的作品，倾注对其的爱心。
@@ -892,7 +933,7 @@ grant codeBase &amp;#34;file:${{java.ext.dirs}}/*&amp;#34; { permission java.sec
  -Xms：最小堆容量，默认是物理内存的1/64。 -Xmx：最大堆容量，默认是物理内存的1/4。  上下界调节的方式：
  默认空余堆内存小于40%时，JVM 就会增大堆直到-Xmx 的最大限制，可以由 -XX:MinHeapFreeRatio 指定。 默认空余堆内存大于70%时，JVM 会减少堆直到-Xms的最小限制，可以由 -XX:MaxHeapFreeRatio 指定。  堆分成两大块：新生代和老年代。对象产生之初在新生代，步入暮年时进入老年代，但是老年代也接纳在新生代无法容纳的超大对象。
 新生代：1个Eden区 &#43; 2个Survivor区。绝大部分对象在Eden区生成，当Eden区装填满的时候，会触发Young GC。垃圾回收的时候，在Eden区实现清除策略，没有被引用的对象则直接回收。依然存活的对象会被移送到Survivor区，这个区真是名副其实的存在。
-方法区 方法区（Method Area）也称&amp;quot;永久代&amp;rdquo;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。
+方法区 方法区（Method Area）也称&amp;quot;永久代&amp;quot;，它用于存储虚拟机加载的类信息、常量、静态变量、是各个线程共享的内存区域。默认最小值为16MB，最大值为64MB。它是一片连续的堆空间，永久代的垃圾收集是和老年代(old generation)捆绑在一起的，因此无论谁满了，都会触发永久代和老年代的垃圾收集。
 从JDK7开始移除永久代（但并没有移除，还是存在），贮存在永久代的一部分数据已经转移到了Java Heap或者是Native Heap：
  符号引用(Symbols)转移到了native heap 字面量(interned strings)转移到了java heap 类的静态变量(class statics)转移到了java heap  从JDK8开始使用元空间（Metaspace），元空间的大小受本地内存限制。通过下面的参数可以设置：
  -XX:MetaspaceSize：class metadata的初始空间配额，以bytes为单位，达到该值就会触发垃圾收集进行类型卸载，同时GC会对该值进行调整：如果释放了大量的空间，就适当的降低该值；如果释放了很少的空间，那么在不超过MaxMetaspaceSize（如果设置了的话），适当的提高该值 -XX:MaxMetaspaceSize：可以为class metadata分配的最大空间。默认是没有限制的  上下界调节的方式：
@@ -900,7 +941,7 @@ grant codeBase &amp;#34;file:${{java.ext.dirs}}/*&amp;#34; { permission java.sec
 JVM使用一个块分配器(chunking allocator)来管理Metaspace空间的内存分配。块的大小依赖于类加载器的类型。其中有一个全局的可使用的块列表（a global free list of chunks）。当类加载器需要一个块的时候，类加载器从全局块列表中取出一个块，添加到它自己维护的块列表中。当类加载器死亡，它的块将会被释放，归还给全局的块列表。块（chunk）会进一步被划分成blocks,每个block存储一个元数据单元(a unit of metadata)。Chunk中Blocks的分配线性的（pointer bump）。这些chunks被分配在内存映射空间(memory mapped(mmapped) spaces)之外。在一个全局的虚拟内存映射空间（global virtual mmapped spaces）的链表，当任何虚拟空间变为空时，就将该虚拟空间归还回操作系统。
 程序计数寄存器 程序计数寄存器（Program Counter Register）是最小的一块内存区域，它的作用是当前线程所执行的字节码的行号指示器，在虚拟机的模型里，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、异常处理、线程恢复等基础功能都需要依赖计数器完成。
 它是线程私有。每条线程都有一个独立的程序计数器。生命周期随着线程的创建而创建，随着线程的结束而死亡。是唯一一个不会出现OOM的内存区域。
-虚拟机栈 虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&amp;quot;栈帧&amp;rdquo;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。
+虚拟机栈 虚拟机栈(JVM Stack)是java方法执行的内存模型。每个方法被执行的时候都会创建一个&amp;quot;栈帧&amp;quot;，用于存储局部变量表(包括参数)、操作栈、方法出口等信息。每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。声明周期与线程相同，是线程私有的。
 虚拟机栈通过压/出栈的方式，对每个方法对应的活动栈帧进行运算处理，方法正常执行结束，肯定会跳转到另一个栈帧上。在执行的过程中，如果出现异常，会进行异常回溯，返回地址通过异常处理表确定。
 栈帧由下面几部分组成：
  局部变量表：存放方法参数和局部变量 操作数栈：是一个初始状态为空的桶式结构栈，在方法执行过程中，会有各种指令往栈中写入和提取信息 动态连接：每个栈帧中包含一个在常量池中对当前方法的引用，目的是支持方法调用过程的动态连接 方法返回地址：方法执行时有两种退出情况，正常退出（RETURN、IRETURN、ARETURN指令），异常退出  本地方法栈 本地方法栈(Native Stack)与虚拟机栈基本类似，区别在于虚拟机栈为虚拟机执行的java方法服务，而本地方法栈则是为Native方法服务。(栈的空间大小远远小于堆)。
@@ -918,7 +959,7 @@ Java堆是GC回收的“重点区域”。堆中基本存放着所有对象实�
 可作为GC Roots的对象有四种：
  虚拟机栈(栈桢中的本地变量表)中的引用的对象，就是平时所指的java对象，存放在堆中。 方法区中的类静态属性引用的对象，一般指被static修饰引用的对象，加载类的时候就加载到内存中。 方法区中的常量引用的对象 本地方法栈中JNI（native方法)引用的对象  要真正宣告对象死亡需经过两个过程：
  可达性分析后没有发现引用链 查看对象是否有finalize方法，如果有重写且在方法内完成自救（比如再建立引用），还是可以抢救一下，注意这边一个类的finalize只执行一次，这就会出现一样的代码第一次自救成功第二次失败的情况。[如果类重写finalize且还没调用过，会将这个对象放到一个叫做F-Queue的序列里，这边finalize不承诺一定会执行，这么做是因为如果里面死循环的话可能会时F-Queue队列处于等待，严重会导致内存崩溃，这是我们不希望看到的。  垃圾收集算法 新生代采用复制算法
-新生代中因为对象都是&amp;quot;朝生夕死的&amp;rdquo;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。
+新生代中因为对象都是&amp;quot;朝生夕死的&amp;quot;，适用于复制算法。它优化了标记/清除算法的效率和内存碎片问题。由于存活率低，不需要复制保留那么大的区域造成空间上的浪费，因此不需要按1:1（原有区域:保留空间）划分内存区域，而是将内存分为一块Eden空间和From Survivor、To Survivor（保留空间），三者默认比例为8:1:1，优先使用Eden区，若Eden区满，则将对象复制到第二块内存区上。但是不能保证每次回收都只有不多于10%的对象存货，所以Survivor区不够的话，则会依赖老年代年存进行分配。
 GC开始时，对象只会存于Eden和From Survivor区域，To Survivor（保留空间）为空。
 GC进行时，Eden区所有存活的对象都被复制到To Survivor区，而From Survivor区中，仍存活的对象会根据它们的年龄值决定去向，年龄值达到年龄阈值(默认15是因为对象头中年龄战4bit，新生代每熬过一次垃圾回收，年龄&#43;1)，则移到老年代，没有达到则复制到To Survivor。
 老年代采用标记/清除算法或标记/整理算法
@@ -928,7 +969,7 @@ GC进行时，Eden区所有存活的对象都被复制到To Survivor区，而Fro
 三种算法的对比
  效率：复制算法 &amp;gt; 标记/整理算法 &amp;gt; 标记/清除算法（标记/清除算法有内存碎片问题，给大对象分配内存时可能会触发新一轮垃圾回收） 内存整齐率：复制算法 = 标记/整理算法 &amp;gt; 标记/清除算法 内存利用率：标记/整理算法 = 标记/清除算法 &amp;gt; 复制算法  垃圾收集器 新生代收集器
  Serial：Serial是单线程收集器，Serial收集器只能使用一条线程进行收集工作，在收集的时候必须得停掉其它线程，等待收集工作完成其它线程才可以继续工作。对于Client模式下的jvm来说是个好的选择。 ParNew收集器：可以认为是Serial的升级版，因为它支持多线程GC。运行在Server模式下新生代首选的收集器。 Parallel Scavenge：采用复制算法的收集器，和ParNew一样支持多线程。该收集器重点关心的是吞吐量。也成为&amp;quot;吞吐量优先&amp;quot;收集器。  老年代收集器
- Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&amp;quot;标记-整理算法&amp;rdquo;，这个模式主要是给Client模式下的JVM使用。 Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&amp;quot;标记-整理算法&amp;rdquo;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。 CMS：CMS收集器(Concurrent Mark Sweep)是以一种获取最短回收停顿时间为目标的收集器。重视响应，可以带来好的用户体验，被sun称为并发低停顿收集器 G1：G1(garbage first:尽可能多收垃圾，避免full gc)收集器是当前最为前沿的收集器之一(1.7以后才开始有)，同cms一样也是关注降低延迟，是用于替代cms功能更为强大的新型收集器，因为它解决了cms产生空间碎片等一系列缺陷。  GC分类  Minor GC：在年轻代Young space(包括Eden区和Survivor区)中的垃圾回收称之为 Minor GC,Minor GC只会清理年轻代。 Major GC：Major GC清理老年代(old GC)，但是通常也可以指和Full GC是等价，因为收集老年代的时候往往也会伴随着升级年轻代，收集整个Java堆。所以有人问的时候需问清楚它指的是full GC还是old GC。 Full GC：Full GC是对新生代、老年代、永久代（jdk1.8后没有这个概念了）统一的回收。 Mixed GC：只有G1有这个模式，收集整个young gen以及部分old gen的GC。  触发GC点 简单来说，触发的条件就是GC算法区域满了或将满了。
+ Serial Old：和新生代的Serial一样为单线程，Serial的老年代版本，不过它采用&amp;quot;标记-整理算法&amp;quot;，这个模式主要是给Client模式下的JVM使用。 Parallel Old：支持多线程，Parallel Scavenge的老年版本，jdk6开始出现， 采用&amp;quot;标记-整理算法&amp;quot;。Parallel Old的出现结合Parallel Scavenge，真正的形成“吞吐量优先”的收集器组合。 CMS：CMS收集器(Concurrent Mark Sweep)是以一种获取最短回收停顿时间为目标的收集器。重视响应，可以带来好的用户体验，被sun称为并发低停顿收集器 G1：G1(garbage first:尽可能多收垃圾，避免full gc)收集器是当前最为前沿的收集器之一(1.7以后才开始有)，同cms一样也是关注降低延迟，是用于替代cms功能更为强大的新型收集器，因为它解决了cms产生空间碎片等一系列缺陷。  GC分类  Minor GC：在年轻代Young space(包括Eden区和Survivor区)中的垃圾回收称之为 Minor GC,Minor GC只会清理年轻代。 Major GC：Major GC清理老年代(old GC)，但是通常也可以指和Full GC是等价，因为收集老年代的时候往往也会伴随着升级年轻代，收集整个Java堆。所以有人问的时候需问清楚它指的是full GC还是old GC。 Full GC：Full GC是对新生代、老年代、永久代（jdk1.8后没有这个概念了）统一的回收。 Mixed GC：只有G1有这个模式，收集整个young gen以及部分old gen的GC。  触发GC点 简单来说，触发的条件就是GC算法区域满了或将满了。
 Minor GC:
  当年轻代中eden区分配满的时候触发。 值得一提的是因为Minor GC后部分存活的对象会已到老年代(比如对象熬过15轮)，所以过后old gen的占用量通常会变高。  Full GC:
  手动调用System.gc()方法 ，增加了full GC频率，不建议使用而是让jvm自己管理内存，可以设置-XX:&#43; DisableExplicitGC来禁止RMI调用System.gc 发现perm gen（如果存在永久代的话)需分配空间但已经没有足够空间 老年代空间不足，比如说新生代的大对象大数组晋升到老年代就可能导致老年代空间不足。 CMS GC时出现Promotion Faield 统计得到的Minor GC晋升到旧生代的平均大小大于老年代的剩余空间。这个比较难理解，这是HotSpot为了避免由于新生代晋升到老年代导致老年代空间不足而触发的FUll GC。比如程序第一次触发Minor GC后，有5m的对象晋升到老年代，姑且现在平均算5m，那么下次Minor GC发生时，先判断现在老年代剩余空间大小是否超过5m，如果小于5m，则HotSpot则会触发full GC  GC日志 JVM的GC日志的主要参数包括如下几个：
@@ -1178,7 +1219,7 @@ AQS定义两种资源共享方式：
 运用reduce我们可以做sum,min,max,average，这些常用的reduce，stream api已经为我们封装了对应的方法。
  reduce(T iden, BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 T reduce(BinaryOperator b)： 可以将流中元素反复结合起来，得到一个值，返回 Optional reduce(U identity, BiFunction a, BinaryOperator combiner)： 可以将流中元素反复结合起来，得到一个值，返回 Optional  三个参数时是最难以理解的。 分析下它的三个参数：
  identity: 一个初始化的值；这个初始化的值其类型是泛型U，与Reduce方法返回的类型一致；注意此时Stream中元素的类型是T，与U可以不一样也可以一样，这样的话操作空间就大了；不管Stream中存储的元素是什么类型，U都可以是任何类型，如U可以是一些基本数据类型的包装类型Integer、Long等；或者是String，又或者是一些集合类型ArrayList等 accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的 combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作  collect Collectors里常用搜集器
- toList：list.stream().collect(Collectors.toList()) toSet：list.stream().collect(Collectors.toSet()) toCollection：list.stream().collect(Collectors.toCollection()) counting：计算流中元素的个数， list.stream().collect(Collectors.counting()) summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary)) averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary)) summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage() joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(&amp;rdquo;,&amp;quot;)) maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary))) minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary))) reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum)) collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size)) groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status)) partitiongBy：根据true/fase对流分组，返回Map, toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream() .collect(toMap(t -&amp;gt; t.getId(), Function.identity(), (k1, k2) -&amp;gt; k1, LinkedHashMap::new)) toConcurrentMap: 线程安全的Map   注：以上内容收集于互联网多篇文章，在此感谢原作者们。
+ toList：list.stream().collect(Collectors.toList()) toSet：list.stream().collect(Collectors.toSet()) toCollection：list.stream().collect(Collectors.toCollection()) counting：计算流中元素的个数， list.stream().collect(Collectors.counting()) summingInt：对流中的元素的整数求和, list.stream().collect(Collectors.summingInt(Employee::getSalary)) averagingInt：对流中的元素的整数求平均值，list.stream().collect(Collectors.averagingInt(Employee::getSalary)) summarizingInt：对流中的元素的整数求统计值，list.stream().collect(Collectors.summarizingInt(Employee::getSalary)).getAverage() joining：连接每个字符串，list.stream().map(Employee::getName).collect(Collectors.joining(&amp;quot;,&amp;quot;)) maxBy：根据比较器选择最大值，list.stream().collect(Collectors.maxBy(comparingInt(Employee::getSalary))) minBy：根据比较器选择最小值，list.stream().collect(Collectors.minBy(comparingInt(Employee::getSalary))) reduce：list.stream().collect(Collectors.reduc(0, Employee::getSalary, Integer::sum)) collectingAndThen：list.stream().collect(Collectors.collectingAndThen(Collectors.toList(), List::size)) groupBy：根据属性对流分组，返回Map，属性为K，list.stream().collect(Collectors.groupBy(Employee::status)) partitiongBy：根据true/fase对流分组，返回Map, toMap：toMap最少应接受两个参数，一个用来生成key，另外一个用来生成value。当key重复时，会抛出异常;当value为null时，会抛出异常，list.stream() .collect(toMap(t -&amp;gt; t.getId(), Function.identity(), (k1, k2) -&amp;gt; k1, LinkedHashMap::new)) toConcurrentMap: 线程安全的Map   注：以上内容收集于互联网多篇文章，在此感谢原作者们。
 </content>
     </entry>
     
@@ -2042,7 +2083,7 @@ $TTL 6h //第1行 $ORIGIN abc.com. //第2行 @ 3600 IN SOA ns1.ddd.com. root.ddd
 第9-11行，定义了该域名的3个权威DNS服务器。通常NS记录的TTL大些为宜，这里为2天。设置过小只会增加服务器无谓的负担，同时解析稳定性会受影响。
 第12-15行，比较简单，是两个A,CNAME,MX记录，不再讨论了。
 名词解释：
- SOA记录：权威记录从这里开始，它定义了3-8行这些重要的参数。 A记录：记录域名到IP之间的关联。 CAME记录：让张三住到李四家里，这时张三李四是同一个地址。 MX记录：定义了发往XXX@ABC.COM邮箱的邮件服务器地址。 TXT记录：这个记录的内容是文本格式如126.COM的TXT为&amp;quot;v=spf1 include:spf.163.com -all&amp;rdquo;,TXT通常用于邮件服务器来标识自己的身份避免被认为是垃圾邮件服务器。这里不再深入讨论。 其他不常用记录类型没有列出！  域名安全 网络安全不应该只停留在口头上，事实证明网络安全隐患遍布互联网。近期Twitter与Baidu出现的问题如出一辙。以下多出自本人见解未必全面，仅供探讨。
+ SOA记录：权威记录从这里开始，它定义了3-8行这些重要的参数。 A记录：记录域名到IP之间的关联。 CAME记录：让张三住到李四家里，这时张三李四是同一个地址。 MX记录：定义了发往XXX@ABC.COM邮箱的邮件服务器地址。 TXT记录：这个记录的内容是文本格式如126.COM的TXT为&amp;quot;v=spf1 include:spf.163.com -all&amp;quot;,TXT通常用于邮件服务器来标识自己的身份避免被认为是垃圾邮件服务器。这里不再深入讨论。 其他不常用记录类型没有列出！  域名安全 网络安全不应该只停留在口头上，事实证明网络安全隐患遍布互联网。近期Twitter与Baidu出现的问题如出一辙。以下多出自本人见解未必全面，仅供探讨。
 网络安全层面   互联网线路的安全隐患，如数据包中途探嗅与篡改、骨干路由器被入侵等，这个层面是网络运营商的问题，我们作为互联网用户是无力涉及的。
   服务器安全隐患，包括操作系统、运行的软件及服务器自身的物理安全问题等。提升服务器安全总的原则是“一多一少”，一多是做个勤快的管理员，多多关注软件的BUG公布并及时升级软件。一少是尽量少的运行非必要的程序，尽量少的向互联网开放网络端口。举个简单的例子，互联网上很大部分的服务器都向外开放SQL数据库的监听端口，真不知道管理员是怎么想的。
   一度被人遗忘的角落就是域名的安全，究其原因主要是很少人真正认识域名与DNS体系，缺乏相关的技术支持。
@@ -2736,7 +2777,7 @@ BenchmarkSetValues 500000 4050 ns/op
         </tags>
         <content type="html"> 概述 Go语言中的接口很特别，而且提供了难以置信的一系列灵活性和抽象性。接口是一个自定义类型，它是一组方法的集合，要有方法为接口类型就被认为是该接口。从定义上来看，接口有两个特点:
  接口本质是一种自定义类型，因此不要将Go语言中的接口简单理解为C&#43;&#43;/Java中的接口，后者仅用于声明方法签名。 接口是一种特殊的自定义类型，其中没有数据成员，只有方法（也可以为空）。  接口是完全抽象的，因此不能将其实例化。然而，可以创建一个其类型为接口的变量，它可以被赋值为任何满足该接口类型的实际类型的值。接口的重要特性是：
- 只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。 作为1的推论，任何类型的值都可以赋值给空接口interface{}。  接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;rdquo;Structural Typing&amp;quot;。
+ 只要某个类型实现了接口所有的方法，那么我们就说该类型实现了此接口。该类型的值可以赋给该接口的值。 作为1的推论，任何类型的值都可以赋值给空接口interface{}。  接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&amp;quot;Structural Typing&amp;quot;。
 方法 Go语言中同时有函数和方法。一个方法就是一个包含了接受者的函数，接受者可以是命名类型或者结构体类型的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。
 type User struct { Name string Email string } func (u User) Notify() error // User 类型的值可以调用接受者是值的方法 damon := User{&amp;#34;AriesDevil&amp;#34;, &amp;#34;ariesdevil@xxoo.com&amp;#34;} damon.Notify() // User 类型的指针同样可以调用接受者是值的方法 alimon := &amp;amp;User{&amp;#34;A-limon&amp;#34;, &amp;#34;alimon@ooxx.com&amp;#34;} alimon.Notify() User的结构体类型，定义了一个该类型的方法叫做Notify，该方法的接受者是一个User类型的值。要调用Notify方法我们需要一个 User类型的值或者指针。Go调用和解引用指针使得调用可以被执行。注意，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。
 我们可以修改Notify方法，让它的接受者使用指针类型：
@@ -4257,7 +4298,7 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK STATIC_ASSERT(4 == sizeof
         <content type="html">   宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。
   宏的展开是一行，所以宏中的注释不能使用//，只能使用/* */。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。
   宏的参数一般情况下使用时要用()括起来，如: #define MAX(a, b) a /2 &amp;gt; b ? a /2 : b MAX(3,4)使用没有问题，但MAX(3&#43;4, 4)却有问题，因为宏的参数仅为符号替换。 应用定义为#define MAX(a, b) (a) / 2 &amp;gt; (b) ? (a) /2 : (b)
-   宏的连接符分为#与## #表示一个符号直接转换为字符串，如 #define CAT(x) &amp;quot;First &amp;quot;#x &amp;quot; Third&amp;quot; const char * pszStr = CAT(Second); str的内容就是&amp;quot;First Second Third&amp;rdquo;，也就是说#会把其后的符号直接加上双引号。 ##符号会连接两个符号，从而产生新的符号(词法层次)，例如： #define NAME( x ) name_##x char* NAME( szlanny ); 宏被展开后将成为：char* name_szlanny;
+   宏的连接符分为#与## #表示一个符号直接转换为字符串，如 #define CAT(x) &amp;quot;First &amp;quot;#x &amp;quot; Third&amp;quot; const char * pszStr = CAT(Second); str的内容就是&amp;quot;First Second Third&amp;quot;，也就是说#会把其后的符号直接加上双引号。 ##符号会连接两个符号，从而产生新的符号(词法层次)，例如： #define NAME( x ) name_##x char* NAME( szlanny ); 宏被展开后将成为：char* name_szlanny;
   宏中如有存在if等语句产生的分支，要使用do{}while(0)包起来，如 #define TEST(a ) if ( 0 == a ) dosomething() 如果在下面使用是会存在问题
   if ( 1 == b) TEST(a ): else { dootherthing(); } 那当代码展开之后，宏中的if与外面的else是一起匹配，而不是else与if ( 1 == b)匹配。 所以上述宏要修改为
 #define TEST(a ) do {/ if ( 0 == a ) { dosomething(); } }while(0) 对于可变参宏，可以使用__VA_ARGS__，GCC支持它，但并非所有的编译器支持，如果你的代码要跨平台，慎用。  #define LOG( format, ... ) printf( format, __VA_ARGS__ ) LOG( &amp;#34;%s %d&amp;#34;, str, count ); __VA_ARGS__被自动替换为参数列表。

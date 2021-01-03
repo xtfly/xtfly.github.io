@@ -217,7 +217,7 @@
 <p>对于命令执行，我又想到下面的两种方式：执行反引号或括号里面的内容，将结果赋值给变量。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#00688b">date1</span>=<span style="color:#cd5555">`</span>date +%Y:%m:%d<span style="color:#cd5555">`</span>  <span style="color:#228b22"># 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出</span>
 <span style="color:#00688b">date2</span>=<span style="color:#8b008b;font-weight:bold">$(</span>date +%Y:%m:%d<span style="color:#8b008b;font-weight:bold">)</span>
-<span style="color:#658b00">echo</span> <span style="color:#cd5555">`</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#cd5555">`</span>     <span style="color:#228b22"># 输出 /bin/bash</span> 
+<span style="color:#658b00">echo</span> <span style="color:#cd5555">`</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#cd5555">`</span>     <span style="color:#228b22"># 输出 /bin/bash </span>
 <span style="color:#658b00">echo</span> <span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#8b008b;font-weight:bold">)</span>    <span style="color:#228b22"># 输出 $SHELL</span>
 </code></pre></div><p>他们的区别在于对于转义字符的处理有些不同，<code>$()</code>中的转义字符和我们平时使用的是一样的，反引号中保留了转义字符本身的意义，在使用时，推荐使用<code>$()</code></p>
 <h3 id="单引号与双引号">单引号与双引号</h3>
@@ -232,11 +232,11 @@
 <h3 id="echo的坑">echo的坑</h3>
 <p>经过一些验证，发现问题是出在echo的使用上，我们先来看一下简单的：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> *.sh      <span style="color:#228b22"># 没有带引号，它会输出当前目录下所有sh结尾的文件</span>
-<span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;*sh&#34;</span>     <span style="color:#228b22"># 带双引号，输出字符串 *.sh</span> 
-<span style="color:#658b00">echo</span> <span style="color:#cd5555">&#39;*.sh&#39;</span>    <span style="color:#228b22"># 带单引号，输出字符串 *.sh</span> 
+<span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;*sh&#34;</span>     <span style="color:#228b22"># 带双引号，输出字符串 *.sh </span>
+<span style="color:#658b00">echo</span> <span style="color:#cd5555">&#39;*.sh&#39;</span>    <span style="color:#228b22"># 带单引号，输出字符串 *.sh </span>
 <span style="color:#658b00">echo</span> aaa;bbb   <span style="color:#228b22"># 不带引号，只输出aaa</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;aaa;bbb&#34;</span> <span style="color:#228b22"># 带引号，输出aaa;bbb</span>
-<span style="color:#658b00">echo</span> aa bb     <span style="color:#228b22"># 不带引号，有空格，输出aa bb</span>  
+<span style="color:#658b00">echo</span> aa bb     <span style="color:#228b22"># 不带引号，有空格，输出aa bb  </span>
 </code></pre></div><p>也这是本文开头所讲的脚本的问题根因，$cmd是一个字符串变量，其中含有空格，还有分号(;)，echo能正常处理空格，但遇到分号理解为另一个命令开始，orted没有完整输入而卡住不退出，我们再来看一下bash对一组命令list解释：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Lists
     A  list  is a sequence of one or more pipelines separated by one of the
@@ -282,6 +282,10 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/2021_code/" rel="next" title="飞哥讲代码19：C&#43;&#43;中的左右值引用">
+        <i class="fa fa-chevron-left"></i> 飞哥讲代码19：C&#43;&#43;中的左右值引用
+        </a>
     
     </div>
 
@@ -355,7 +359,7 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">142</span>
+        <span class="site-state-item-count">143</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -442,12 +446,12 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2020</span>
+  2009 - 2021</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2986 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2979 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -213,7 +213,7 @@
 <li>[1] rules实际类型为Dict，对dict的取值方式是采用rules[&lsquo;type&rsquo;]这种方法，在Python3之后，若无对应的Key，会抛KeyError异常。</li>
 <li>[2] 从dict取出的值无类型推导，IDE无法联想，也无法类型检查纠错。</li>
 <li>[3] 多次调用<code>rule['function'].lower()</code>，最坏场景下需要三次从Dict取值与调用lower()方法。</li>
-<li>[4] 最后的抛异常信息不完整&rsquo;not supported function&rsquo;，应该给出具体的function值。</li>
+<li>[4] 最后的抛异常信息不完整&rsquo;not supported function'，应该给出具体的function值。</li>
 </ul>
 <p>优化后的改进点（数字代表改点的地方）：</p>
 <ul>
@@ -262,7 +262,7 @@
 </ul>
 <p>回到案例本身来看，前面列出8个细小的改进，其实也在遵循着上述所讲的表层上改进原则。光代码的可读性就能写一本了，百度百科上有 <a href="https://baike.baidu.com/item/%E7%BC%96%E5%86%99%E5%8F%AF%E8%AF%BB%E4%BB%A3%E7%A0%81%E7%9A%84%E8%89%BA%E6%9C%AF/5840017?fr=aladdin">编写可读代码的艺术</a> 一书的介绍，如果你没有时间，可以看看它的目录，也可以知晓些有哪些技巧手段。</p>
 <h1 id="小重构">小重构</h1>
-<p>最近心声与管理优化报上有一篇谈到：写软件是一门&quot;手艺活&rdquo;，要写好就得熟能生巧。虽文章中论据可能会受到挑战，但我是非常赞成其立意的。写好代码需要有匠心，匠心就需要对其倾注爱心，出于爱心就会不断追求，追求中不避艰苦，是追求中自得其乐。软件的生命周期70%的时间是维护期，代码一旦写完，只是刚刚开始，代码需要匠心持续地打磨优化。</p>
+<p>最近心声与管理优化报上有一篇谈到：写软件是一门&quot;手艺活&quot;，要写好就得熟能生巧。虽文章中论据可能会受到挑战，但我是非常赞成其立意的。写好代码需要有匠心，匠心就需要对其倾注爱心，出于爱心就会不断追求，追求中不避艰苦，是追求中自得其乐。软件的生命周期70%的时间是维护期，代码一旦写完，只是刚刚开始，代码需要匠心持续地打磨优化。</p>
 <p>但我们写的代码却是一旦提交上库之后，可能忙于下个迭代的需求开发，再也不会回头来看自己写的代码。我们是做商品的工人，而不是做工艺品的手艺人。绝大部人的不会在写完代码来思考是否可有改进的空间，增加可读性、可维护性。及时对自己代码的小重构就是对代码不断打磨，打磨则需要有一颗匠心。</p>
 <p>还有一个原因，我们害怕出错，因为重构可会导致问题。没有被问题折磨的程序员在技术上不会有长进的，错误可以让我们很快接近真理。每个迭代写完代码，我们应该来审视自己的代码，不是组织上行为要求，而是出于自己的追求。及时的小重构效果往往会好于被动地需求驱动重构。</p>
 <p>重构的理由不需要什么高大上的理论支持，也不需要响天震地的口号，而是像手艺人一样不为繁华易匠心，把代码当成自己的作品，倾注对其的爱心。</p>
@@ -359,7 +359,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">142</span>
+        <span class="site-state-item-count">143</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -438,12 +438,12 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2020</span>
+  2009 - 2021</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.74.3</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

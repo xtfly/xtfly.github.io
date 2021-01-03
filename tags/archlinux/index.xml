@@ -6,11 +6,7 @@
     <description>Recent content in Archlinux on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>从Archlinux到Manjaro&#43;i3 WM</title>
       <link>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</link>

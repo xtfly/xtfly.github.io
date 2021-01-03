@@ -6,11 +6,7 @@
     <description>Recent content in 微服务 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 07 Feb 2017 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 07 Feb 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>再说说微服务</title>
       <link>http://lanlingzi.cn/post/technical/2017/0207_msa_think/</link>

@@ -6,11 +6,7 @@
     <description>Recent content in Debian on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 31 Dec 2015 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="http://lanlingzi.cn/tags/debian/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 31 Dec 2015 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/debian/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>虚拟与现实</title>
       <link>http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/</link>
