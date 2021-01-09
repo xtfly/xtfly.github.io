@@ -106,6 +106,89 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0912_code/" itemprop="url">
+        飞哥讲代码13：好代码须匠心打磨
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-09-12">
+    2020-09-12
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2979 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：</p>
+<p>优化前的代码：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
+        rule_type = rules[<span style="color:#cd5555">&#39;type&#39;</span>] <span style="color:#228b22"># 1</span>
+        rule_list = rules[<span style="color:#cd5555">&#39;rules&#39;</span>] <span style="color:#228b22"># 2</span>
+        res = None
+
+        <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#658b00">str</span>(rule_type).lower() != RULES_MAPPING:
+            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#34;type of rule should be &#39;rules_mapping&#39;&#34;</span>)
+
+        <span style="color:#8b008b;font-weight:bold">for</span> rule <span style="color:#8b008b">in</span> rule_list:
+            col_name = rule[<span style="color:#cd5555">&#39;column&#39;</span>] <span style="color:#228b22"># 2</span>
+            <span style="color:#8b008b;font-weight:bold">if</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;cast&#39;</span>: <span style="color:#228b22"># 3</span>
+                mapping_dict, other = self.parse_cast(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
+                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
+            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;in&#39;</span>:
+                mapping_dict, other = self.parse_in(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
+                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
+            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;binning&#39;</span>:
+                res = data[col_name].apply(self.binning_func, args=(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>]))
+            <span style="color:#8b008b;font-weight:bold">else</span>:
+                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#39;not supported function&#39;</span>) <span style="color:#228b22"># 4 </span>
+        <span style="color:#8b008b;font-weight:bold">return</span> res
+</code></pre></div><p>代化之后的代码：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0912_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0815_code/" itemprop="url">
         飞哥讲代码12：好代码应表意直白
         </a>
@@ -654,94 +737,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0613_code/" itemprop="url">
-        飞哥讲代码5：消除重复，需要搞点设计模式
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-13">
-    2020-06-13
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4367 字 ~9分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一平台产品源码(Java语言)中：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleDownload</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            initSshClient();
-            Future&lt;RemoteExecuteResult&gt; feture = downloadPackage();
-            <span style="color:#8b008b;font-weight:bold">return</span> feture;
-        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
-            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;CMC download package failed&#34;</span>, e);
-            closeSshClient();
-            <span style="color:#8b008b;font-weight:bold">throw</span> e;
-        }
-    }
-
-    <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleLoad</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            initSshClient();
-            Future&lt;RemoteExecuteResult&gt; feture = loadPackage();
-            <span style="color:#8b008b;font-weight:bold">return</span> feture;
-        } <span style="color:#8b008b;font-weight:bold">catch</span> (SspException e) {
-            LOGGER.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Load site package failed&#34;</span>, e);
-            closeSshClient();
-            <span style="color:#8b008b;font-weight:bold">throw</span> e;
-        }
-    }
-
-    <span style="color:#228b22">// 下面还有几个类似的方法，不再一一列表
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0613_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -863,7 +858,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">143</span>
+        <span class="site-state-item-count">144</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

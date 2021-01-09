@@ -6,15 +6,46 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 03 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 08 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码20：窥看C&#43;&#43;的模板</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0108_code/</link>
+      <pubDate>Fri, 08 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0108_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;这次我们还是通过对Drogon的实现分析，一起来窥看与学习一下C++模板特性。&lt;/p&gt;
+&lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码所示：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
+{
+  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+    METHOD_LIST_BEGIN
+    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
+    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
+  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述样例代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无反射时，通过函数指针可以解决，但函数必须是固定参数&lt;/li&gt;
+&lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;需要替换的参数，并且参数的类型可能是string, int, long, long long等类型，是无固定参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;像Java, Go等语言由于有底层Runtime框架(JVM, GoRuntime)，实现了运行期的反射机制，路由到对应的函数实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码19：C&#43;&#43;中的左右值引用</title>
-      <link>http://lanlingzi.cn/post/technical/2021/2021_code/</link>
+      <link>http://lanlingzi.cn/post/technical/2021/0103_code/</link>
       <pubDate>Sun, 03 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/post/technical/2021/2021_code/</guid>
+      <guid>http://lanlingzi.cn/post/technical/2021/0103_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
-&lt;p&gt;元旦哪里也没有去，就呆在家里，折腾了VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=json&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
+&lt;p&gt;元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=composite&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
 &lt;p&gt;drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。&lt;/p&gt;
 &lt;p&gt;我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了&lt;code&gt;const T&amp;amp; &lt;/code&gt;与&lt;code&gt;T &amp;amp;&amp;amp;&lt;/code&gt;两种入参。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)

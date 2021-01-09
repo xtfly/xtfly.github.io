@@ -103,7 +103,7 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/2021_code/" itemprop="url">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0103_code/" itemprop="url">
         飞哥讲代码19：C&#43;&#43;中的左右值引用
         </a>
       </h1>
@@ -142,13 +142,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4140 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4137 字 ~9分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
-<p>元旦哪里也没有去，就呆在家里，折腾了VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=json">Round19测试</a> 中，综合成绩排第一。</p>
+<p>元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=composite">Round19测试</a> 中，综合成绩排第一。</p>
 <p>drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。</p>
 <p>我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了<code>const T&amp; </code>与<code>T &amp;&amp;</code>两种入参。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
@@ -319,6 +319,10 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
+        <a href="http://lanlingzi.cn/post/technical/2021/0108_code/" rel="next" title="飞哥讲代码20：窥看C&#43;&#43;的模板">
+        <i class="fa fa-chevron-left"></i> 飞哥讲代码20：窥看C&#43;&#43;的模板
+        </a>
+    
     </div>
 
     <div class="post-nav-prev post-nav-item">
@@ -391,7 +395,7 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">143</span>
+        <span class="site-state-item-count">144</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
