@@ -15,7 +15,7 @@
       <guid>http://lanlingzi.cn/post/technical/2021/0108_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。&lt;/p&gt;
-&lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码所示：&lt;/p&gt;
+&lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
 {
   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
@@ -30,12 +30,12 @@
     &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
     &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述样例代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;无反射时，通过函数指针可以解决，但函数必须是固定参数&lt;/li&gt;
-&lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;需要替换的参数，并且参数的类型可能是string, int, long, long long等类型，是无固定参数&lt;/li&gt;
+&lt;li&gt;无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式&lt;/li&gt;
+&lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;替换参数，参数的类型可能是string, int, long等类型，是无固定参数&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;像Java, Go等语言由于有底层Runtime框架(JVM, GoRuntime)，实现了运行期的反射机制，路由到对应的函数实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。&lt;/p&gt;</description>
+&lt;p&gt;像Java等语言由于有底层Runtime框架(JVM)，实现了运行期的反射机制。借助反射把请求动态路由到对应的处理函数，代码实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。&lt;/p&gt;</description>
     </item>
     
     <item>
