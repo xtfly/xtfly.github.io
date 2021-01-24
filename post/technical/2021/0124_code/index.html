@@ -1,0 +1,554 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0124_code/" itemprop="url">
+        飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-01-24">
+    2021-01-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4092 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>本文虽分析的是C++源码，但是对Evnoy的设计思想分析，并不影响其它语言开发者阅读。</p>
+<h1 id="案例">案例</h1>
+<p>Envoy是Service Mesh框架Istio推荐的SideCar，基于C++开发(大量使用了Google开源C++项目<a href="https://abseil.io/">absl</a>)，具有高性能的特点，被广大微服务框架爱好者所熟悉。它的高性能一方面也源自它的优秀线程模型，我们可以通过这篇 <a href="https://www.sohu.com/a/244966023_268033">Envoy为什么能战胜Ngnix——线程模型分析篇</a> 可以进一步了解它的设计思路。这是对Envoy架构师的 <a href="https://blog.envoyproxy.io/envoy-threading-model-a8d44b922310">博文</a> 翻译，原文内容较深入较长，总结如下：</p>
+<ul>
+<li>采用单进程多线程的线程模型，其中一个主线程控制一些零散的协作任务</li>
+<li>若干worker线程负责连接监听，以及连接请求消息的过滤、转发</li>
+<li>一旦监听器接受了连接，连接的后续生命周期都绑定到单个工作线程</li>
+<li>使用非阻塞的网络调用，配置的Worker数与CPU核数(线程线)一致，即可完成大部分工作负载</li>
+</ul>
+<p>上述做法也是最为常见的多线程设计模式，似乎没有什么特别之处。但写过C++多线程的同学就会知道其中的痛苦，虽然主线程与Worker线程职责分离了，但是xDS会随时动态更新监听器/路由/集群等信息，Worker线程又需要实时查询这些信息以作出变更。这涉及到数据的线程安全，若采用传统的多线程加锁获取共享数据，必然会影响到连接处理请求的性能。</p>
+<p>出于高性能的诉求，Envoy采用无锁编程(针对上述数据访问)方案。主线程把需要同步的数据通过Slot推送给Worker线程，由Worker线程在沉寂期完成数据更新，这样需要访问此类数据时就不需要加锁。这就是Envoy中线程模型中最为巧妙的地方。先借用原博文中的一张图片描述一下：</p>
+<p><img src="http://lanlingzi.cn/images/2021/envoy_thread_slot.png" alt="envoy_thread_slot"></p>
+<p>我们以Envoy 1.13.8的源码来看一下如何做到无锁编程，Slot数据推送是结合C++的TLS（thread local stroage）特性使用的。核心代码实现相当的优雅和<strong>高内聚</strong>，我们可以在 <a href="https://github.com/envoyproxy/envoy/tree/main/include/envoy/thread_local">这里</a> 与<a href="https://github.com/envoyproxy/envoy/tree/main/source/common/thread_local">这里</a> 找到他们。</p>
+<ul>
+<li>前者主要定义了Slot与SlotAllocator接口</li>
+<li>后者主要实现Slot对象的管理与其数据推送
+<ul>
+<li>SlotAllocator接口实者InstanceImp：对Slot对象的管理，以及支持集中管理各线程TLS上的Slot数据</li>
+<li>Slot接口实现者SlotImpl：提供set/get函数来设置与获取数据，屏蔽对象上的数据的存储与同步细节</li>
+</ul>
+</li>
+</ul>
+<p>实现逻辑核心思路如下：</p>
+<ul>
+<li>主线程维护一个Slot对象列表，可以通过index直接访问Slot对象</li>
+<li>主线程分配置Slot槽位，每个Slot上可以存储不同类型的数据，如xDS数据</li>
+<li>主线程对Slot对象设置数据时，则把数据发送到所有worker线程作为一个正常的事件循环处理，让Worker线程也把数据设置到它的TLS上，从来在TLS上具有与主线程相同的Slot对象</li>
+<li>Worker线程处理其它事件时，可以从对应的Slot上获取它的所能获取的数据</li>
+</ul>
+<h1 id="dispatcher">Dispatcher</h1>
+<p>为了弄清楚主线程与Worker线程的交互，先要了解一下Enovy中的Dispatcher机制，我们可以从 <a href="https://bbs.huaweicloud.com/blogs/145117">源码分析——Envoy Dispatcher</a> 了解到：</p>
+<ul>
+<li>每一个worker线程运行一个非阻塞的EventLoop</li>
+<li>Dispatcher是一接口，它本质上实现是一个EventLoop，其承担了任务队列、网络事件处理、定时器、信号处理等核心功能</li>
+<li>Envoy复用了Libevent中的event_base，Envoy在Libevent的基础上进行了二次封装并抽象出一些事件类，如FileEvent、SignalEvent、Timer等</li>
+<li>Dispatcher的内部有一个任务队列，会有一个工作线程专门处理任务队列中的任务</li>
+<li>Worker外可以通过Dispatcher的post函数将任务投递到worker的任务队列中，交给Dispatcher的线程去处理</li>
+</ul>
+<p>Dispatcher是一个典型生产-消费设计模式。</p>
+<h1 id="slot">Slot</h1>
+<p>SlotImpl实现了Slot接口，是InstanceImpl的内部类。它负责维护数据，我们先来看一下其set函数实现:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::SlotImpl::set(InitializeCb cb) { <span style="color:#228b22">// [4] 参数InitializeCb
+</span><span style="color:#228b22"></span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!parent_.shutdown_);
+
+  <span style="color:#228b22">// [2] dispatcher.post推送事件
+</span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">for</span> (Event::Dispatcher&amp; dispatcher : parent_.registered_threads_) {
+    <span style="color:#228b22">// See the header file comments for still_alive_guard_ for why we capture index_.
+</span><span style="color:#228b22"></span>    dispatcher.post(wrapCallback(
+        [index = index_, cb, &amp;dispatcher]() -&gt; <span style="color:#00688b;font-weight:bold">void</span> { setThreadLocal(index, cb(dispatcher)); }));
+  }
+
+  <span style="color:#228b22">// [3] Handle main thread.
+</span><span style="color:#228b22"></span>  setThreadLocal(index_, cb(*parent_.main_thread_dispatcher_));
+}
+</code></pre></div><p>从上述代码中可以看出：</p>
+<ul>
+<li>[1] Slot对象<strong>存放数据只能是主线程</strong>调用</li>
+<li>[2] 给每个注册的工作线程推送数据，调用dispatcher.post压入一个lambda的回调函数，在此回调函数会调用setThreadLocal函数来把数据放在Worker线程的TLS中，其中index_是Slot对象槽位号</li>
+<li>[3] 再调用主线程的setThreadLocal来把数据放在主线程的TLS中，因为主线程也可以在收到其它事件来获了相应的槽位数据</li>
+<li>[4] <code>InitializeCb</code>是一个回调函数，它传递dispatcher参数，返回要存储的对象指针。主线程与工作线程实际存储的数据都是通过调用<code>InitializeCb</code>函数来拿到真实要存放的数据<code>ThreadLocalObjectSharedPtr</code>，对于同一个<code>InitializeCb</code>函数，会在不同的工作线程中调用多次，相当于对槽位数据进行拷贝</li>
+</ul>
+<p>InitializeCb参见：<code>using InitializeCb = std::function&lt;ThreadLocalObjectSharedPtr(Event::Dispatcher&amp; dispatcher)&gt;</code></p>
+<p>再来看一下setThreadLocal函数的实现:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// [1] 把对象加入到TLS列表中
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::setThreadLocal(<span style="color:#00688b;font-weight:bold">uint32_t</span> index, ThreadLocalObjectSharedPtr object) {
+  <span style="color:#8b008b;font-weight:bold">if</span> (thread_local_data_.data_.size() &lt;= index) {
+    thread_local_data_.data_.resize(index + <span style="color:#b452cd">1</span>);
+  }
+
+  thread_local_data_.data_[index] = object;
+}
+
+<span style="color:#228b22">// [2]前面的thread_local_data_.data_类型如下
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">ThreadLocalData</span> {
+    Event::Dispatcher* dispatcher_{};
+    std::vector&lt;ThreadLocalObjectSharedPtr&gt; data_;
+};
+
+<span style="color:#228b22">// [3]thread_local_data_
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">thread_local</span> InstanceImpl::ThreadLocalData InstanceImpl::thread_local_data_;
+</code></pre></div><p>从上述代码中可以看出：</p>
+<ul>
+<li>[1] <code>thread_local_data_.data_</code> 支持存储多个对象，数组大小不够，则扩充，每个index对应Slot的槽位号</li>
+<li>[2] <code>thread_local_data_.data_</code> 的类型是一个struct，包括dispatcher指针(每个注册的线程)，以及存储的对象列表（不同的Slot存储不同的数据）</li>
+<li>[3] <code>thread_local_data_</code> 是InstanceImpl的静态成员，它一个TLS对象。thread_local是C++11新引入，thread_local关键字修饰的变量具有线程周期(thread duration)，这些变量(或者说对象）在线程开始的时候被生成(allocated)，在线程结束的时候被销毁(deallocated)</li>
+</ul>
+<p>再来看一下get函数实现：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> InstanceImpl::SlotImpl::currentThreadRegisteredWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
+  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_.size() &gt; index;
+}
+
+ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::getWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
+  ASSERT(currentThreadRegisteredWorker(index)); <span style="color:#228b22">// [1] 判断是否当前工作线程的Slot是否存在
+</span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_[index]; <span style="color:#228b22">// [2] 根据槽位号取对应的数据
+</span><span style="color:#228b22"></span>}
+
+ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#008b45">getWorker</span>(index_); }
+</code></pre></div><p>从上述代码中可以看出：</p>
+<ul>
+<li>get函数直接调用getWorker函数</li>
+<li>[1] 判断Slot的槽位在当前线程的TLS是否存在</li>
+<li>[2] 根据槽位号index_从当前线程的TLS上取对应的数据</li>
+</ul>
+<p>Slot接口还提供两个函数来直接传递数据给所有注册的线程：</p>
+<ul>
+<li>相同点：机制与set函数实现类似，采用<code>dispatcher.post</code>把数据分发给各注册线程处理，通过回调<code>UpdateCb</code>函数来产生数据</li>
+<li>不同点：不会把<code>UpdateCb</code>函数产生数据更新到TLS；TLS中存储的数据适合于多次需要读取的场景，<code>runOnAllThreads</code>函数适合一次数据传递，不需要长期存储</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 更新，UpdateCb产生数据
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb, <span style="color:#8b008b;font-weight:bold">const</span> Event::PostCb&amp; complete_cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 所有线程完成回调complete_cb
+</span></code></pre></div><p>小结：</p>
+<ul>
+<li>Slot.set函数是根据slot的槽位号index_设置数据到TLS上，通过dispatcher.post让各自的注册的dispatcher调用InitializeCb来产生数据，并设置到各自的线程TLS上，即把数据同步到各自线程的TLS中存储</li>
+<li>Slot.get函数是根据slot的槽位号index_从TLS上获取数据，而不是从一个共享的地方获取数据，实现了无锁读取数据</li>
+</ul>
+<h1 id="slotallocator">SlotAllocator</h1>
+<p>InstanceImpl实现SlotAllocator接口，先来看一下allocateSlot函数实现：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">SlotPtr InstanceImpl::allocateSlot() {
+  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
+
+  <span style="color:#8b008b;font-weight:bold">if</span> (free_slot_indexes_.empty()) { <span style="color:#228b22">// [2] 空闲的Slot槽位号不够
+</span><span style="color:#228b22"></span>    SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, slots_.size());
+    slots_.push_back(slot.get());
+    <span style="color:#8b008b;font-weight:bold">return</span> slot;
+  }
+  <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">uint32_t</span> idx = free_slot_indexes_.front(); <span style="color:#228b22">// [3] 从空闲的队首取一个
+</span><span style="color:#228b22"></span>  free_slot_indexes_.pop_front();
+  ASSERT(idx &lt; slots_.size());
+  SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, idx);
+  slots_[idx] = slot.get();
+  <span style="color:#8b008b;font-weight:bold">return</span> slot;
+}
+</code></pre></div><p>主要代码逻辑：</p>
+<ul>
+<li>[1] 分配Slot槽位，只能是主线程，分配Slot与给Slot设置数据都在主线程上，所以不需要加锁</li>
+<li>[2] InstanceImpl维护一个空闲槽位号列表，当空闲不够，则分配一个新的</li>
+<li>[3] 有空闲槽位，则创建Slot对象，并获取Slot在主线程TLS上存储的对象</li>
+</ul>
+<p>再来看一下registerThread函数实现：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::registerThread(Event::Dispatcher&amp; dispatcher, <span style="color:#00688b;font-weight:bold">bool</span> main_thread) {
+  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
+
+  <span style="color:#8b008b;font-weight:bold">if</span> (main_thread) {  <span style="color:#228b22">// [2] 当是注册主线程时
+</span><span style="color:#228b22"></span>    main_thread_dispatcher_ = &amp;dispatcher;
+    thread_local_data_.dispatcher_ = &amp;dispatcher;
+  } <span style="color:#8b008b;font-weight:bold">else</span> {  <span style="color:#228b22">// [3] 当是注册工作线程时
+</span><span style="color:#228b22"></span>    ASSERT(!containsReference(registered_threads_, dispatcher));
+    registered_threads_.push_back(dispatcher);
+    dispatcher.post([&amp;dispatcher] { thread_local_data_.dispatcher_ = &amp;dispatcher; });
+  }
+}
+</code></pre></div><p>主要代码逻辑：</p>
+<ul>
+<li>[1] 注册工作线程只能在主线程中完成，即主线程创建工作线程时，由工作线程的WorkerImpl实现者在其构造函数中调用registerThread</li>
+<li>[2] 主线程也需要注册，因为allocateSlot函数也会调用slot.get()，用于获取主线程产生的数据</li>
+<li>[3] 工作线程不允许重复注册，并通过dispatcher.post，把工作线程的dispatcher设置到其线程的TLS对象thread_local_data_上</li>
+</ul>
+<p>此外，InstanceImpl还提供removeSlot函数，会删除Slot对象，在SlotImpl析构函数中调用removeSlot函数，释放一个空闲槽位。</p>
+<p>小结：</p>
+<ul>
+<li>主线程创建工作线程，在工作线程的构造方法中，调用InstanceImpl.registerThread注册工作线程的dispatcher给InstanceImpl</li>
+<li>主线程创建其它对象（xDS/runtime/statflush/admin等），在这些对象的构造方法中，调用InstanceImpl.allocateSlot来产生槽位存储相应的数据</li>
+<li>主线程接收取xDS等更新消息时，调用对应的对象持有的slot对象的set函数，把数据同步给所有注册的工作线程</li>
+</ul>
+<h1 id="结语">结语</h1>
+<p>Envoy通过InstanceImpl对象集中管理多个工作线程需要使用的数据，通过对不同类型数据分配Slot对象来存储，所有线程采用TLS方式来持有相同的Slot对象，Slot对象屏蔽了对象的存储与同步。当Slot在设置数据的时候，会同时分发到所有线程执行数据设置逻辑，从而所有线程的Slot对象数据异步更新。天下没有完美的方案，其本质是采用复制来减少对共享数据加锁访问，达到数据最终一致性。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0108_code/" rel="prev" title="飞哥讲代码20：窥探C&#43;&#43;的模板">
+        飞哥讲代码20：窥探C&#43;&#43;的模板 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">145</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a></li>
+    <li><a href="#dispatcher">Dispatcher</a></li>
+    <li><a href="#slot">Slot</a></li>
+    <li><a href="#slotallocator">SlotAllocator</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

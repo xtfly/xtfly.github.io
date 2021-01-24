@@ -6,7 +6,24 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 08 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 24 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0124_code/</link>
+      <pubDate>Sun, 24 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0124_code/</guid>
+      <description>&lt;p&gt;本文虽分析的是C++源码，但是对Evnoy的设计思想分析，并不影响其它语言开发者阅读。&lt;/p&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;Envoy是Service Mesh框架Istio推荐的SideCar，基于C++开发(大量使用了Google开源C++项目&lt;a href=&#34;https://abseil.io/&#34;&gt;absl&lt;/a&gt;)，具有高性能的特点，被广大微服务框架爱好者所熟悉。它的高性能一方面也源自它的优秀线程模型，我们可以通过这篇 &lt;a href=&#34;https://www.sohu.com/a/244966023_268033&#34;&gt;Envoy为什么能战胜Ngnix——线程模型分析篇&lt;/a&gt; 可以进一步了解它的设计思路。这是对Envoy架构师的 &lt;a href=&#34;https://blog.envoyproxy.io/envoy-threading-model-a8d44b922310&#34;&gt;博文&lt;/a&gt; 翻译，原文内容较深入较长，总结如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采用单进程多线程的线程模型，其中一个主线程控制一些零散的协作任务&lt;/li&gt;
+&lt;li&gt;若干worker线程负责连接监听，以及连接请求消息的过滤、转发&lt;/li&gt;
+&lt;li&gt;一旦监听器接受了连接，连接的后续生命周期都绑定到单个工作线程&lt;/li&gt;
+&lt;li&gt;使用非阻塞的网络调用，配置的Worker数与CPU核数(线程线)一致，即可完成大部分工作负载&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码20：窥探C&#43;&#43;的模板</title>
       <link>http://lanlingzi.cn/post/technical/2021/0108_code/</link>
