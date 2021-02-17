@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4937 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4943 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -363,9 +363,9 @@
     <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
   }
 
-  T <span style="color:#008b45">pop</span>() {
-      T t;
-      <span style="color:#8b008b;font-weight:bold">while</span>(!pop_with_wait(t)) {
+  <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pop</span>(T&amp; t) {
+      <span style="color:#228b22">// 队列空则休眠
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">while</span>(!pop_without_wait(t)) {
           usleep(<span style="color:#b452cd">5</span>);
       }
       <span style="color:#8b008b;font-weight:bold">return</span> t;
