@@ -145,12 +145,12 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4936 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4937 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>本文虽采有C++实现，但JDK也有对应的两种实现，学习Java的同学也可阅读一并了解一下。</p>
+    <p>本文虽是C++代码讲解，但JDK也有对应的两种实现，学习Java的同学也可阅读一并了解一下。</p>
 <h1 id="背景">背景</h1>
 <p>在多线程的并发模型中，无论是CSP还是Actor模式，都需要个借助一个通道来在多个线程间传递消息来通讯。队列在计算机中非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。</p>
 <p>节前定位某一C++开发的部件的性能问题，涉及到阻塞队列唤醒时延问题。队列是采用ACE提供ACE_Message_Queue，使用场景是单生产/单消费。</p>
