@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4943 字 ~10分钟</span>
+<span class="leancloud-visitors-count">5815 字 ~12分钟</span>
 </span>
       </div>
     </header>
@@ -152,8 +152,8 @@
 <p>在多线程的并发模型中，无论是CSP还是Actor模式，都需要个借助一个通道来在多个线程间传递消息来通讯。队列在计算机中非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。</p>
 <p>节前定位某一C++开发的部件的性能问题，涉及到阻塞队列唤醒时延问题。队列是采用ACE提供ACE_Message_Queue，使用场景是单生产/单消费。</p>
 <p>ACE_Message_Queue的模型是仿照System V streams提供的队列设施设计的。消息块ACE_Message_Block是消息队列中的固定的对象结构。ACE中大量采用了设计模式，代码一层套一层的，这也使得代码变得复杂不容易看懂。ACE_Message_Queue为了支持在多线程或单线程不同场景使用，采用了基于traits策略，通过模板参数来指定是需要支持多线程。</p>
-<p>在Java语言中，JDK中有BlockingQueue与ConcurrentLinkedQueue，开源高性能的Disruptor框架实现了无锁队列。</p>
-<p>为了确定ACE提供的队列是否存在调度性能问题，需要进行对比测试，但由于此部件编译环境还是suse11，gcc的版本还是4.X，并不支持c++11，也没有采用Boost库(它提供无锁队列)。那我们就来参考一些开源实现来实现自己的多线程安全的队列，顺带学习一下队列背后的机制。</p>
+<p>在Java语言中，JDK中有ArrayBlockingQueue/LinkedBlockingQueue（有锁，有界）与ConcurrentLinkedQueue/LinkedTransferQueue（无锁，无界），开源高性能的Disruptor框架实现了无锁队列。</p>
+<p>为了判断ACE提供的队列是否存在调度性能问题（纯入队到出队需要40~50us时延，并且出现抖动历害），需要进行对比测试，但由于此部件编译环境还是suse11，gcc的版本还是4.X，不支持c++11，也未采用Boost库(它提供无锁队列)。那我们就来参考一些开源实现来实现自己的多线程安全的队列，顺带学习一下队列背后的机制。</p>
 <h1 id="有锁队列">有锁队列</h1>
 <p>队列的底层结构通常是一个链表，但C++程序又是对内存极其敏感的，动态的创建删除链表节点会申请与释放内存，长时间运行会导致内存空洞问题。肯定不能采用普通链表了，同时考虑队列长度一定要有上限设置，否则过大会出现内存问题。即两点要求：</p>
 <ul>
@@ -263,7 +263,7 @@
 <p>C++的Boost也提供了无锁队列实现(单生产者/单消费者)，但Boost也是一个庞大的库，我们先不引入，还是手写一个。无锁队列可以说历史悠久了，无锁队列实现主要有两篇论文可参考:</p>
 <ul>
 <li>[论文1]数组方式：John D. Valois 1994《<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.8674&amp;rep=rep1&amp;type=pdf">Implementing Lock-Free Queues</a>》</li>
-<li>[论文2]链表方式： Maged M. Michael 和 Michael L. Scott 1996《<a href="https://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf">Simple, Fast, and Practical Non-Blocking and Blocking ConcurrentQueue Algorithms</a>》</li>
+<li>[论文2]链表方式： Maged M. <em>M</em>ichael 和 Michael L. <em>S</em>cott 1996《<a href="https://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf">Simple, Fast, and Practical Non-Blocking and Blocking ConcurrentQueue Algorithms</a>》，简称MSQueue</li>
 </ul>
 <p>同样我需要考虑不能动态申请与释放内存，还得采用循环队列数组实现。C++的CAS也有像JavaJDK提供相应的高阶封装，但在C++11才提供。对于GCC编译器，支持多个原子操作（<a href="http://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Atomic-Builtins.html">GCC Atomic Builtins</a>），我们需要使用两个函数：</p>
 <ul>
@@ -368,7 +368,6 @@
 </span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">while</span>(!pop_without_wait(t)) {
           usleep(<span style="color:#b452cd">5</span>);
       }
-      <span style="color:#8b008b;font-weight:bold">return</span> t;
   }
 
 <span style="color:#8b008b;font-weight:bold">private</span>:
@@ -395,7 +394,7 @@
 <li>[4] 循环队列的tail_ + 1，可能存在多线程操作，通过CAS确保只有一个线程在获以得的系统调度时间片上原子操作</li>
 <li>[5] 通过CAS之后，可以真正插入值，则节点的head指向队列的tail，标识有值</li>
 </ul>
-<p>上面的注释还是难以理解，先忽略数组方式，假定有一个单向的堆栈，节点如下定义（参见<a href="https://www.ibm.com/developerworks/cn/aix/library/au-multithreaded_structures2/index.html">设计不使用互斥锁的并发数据结构</a>）：</p>
+<p>上面的注释还是难以理解，先忽略数组方式，假定有一个堆栈，节点如下定义（参见<a href="https://www.ibm.com/developerworks/cn/aix/library/au-multithreaded_structures2/index.html">设计不使用互斥锁的并发数据结构</a>）：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span> { 
     T data; 
     Node* next;
@@ -411,7 +410,7 @@
         }
     }
 }
-</code></pre></div><p>若是多线程：</p>
+</code></pre></div><p>若是多线程，逻辑如下，采用CAS，关键是需要采用循环不断判断(Re-Try-Loop)：</p>
 <ul>
 <li>可能有两个或更多线程同时试图把数据压入堆栈， 假设线程 A 试图把 20 压入堆栈，线程 B 试图压入 30</li>
 <li>而线程 A 先获得了时间片，在 n-&gt;next = top 指令结束之后，调度程序暂停了线程 A</li>
@@ -419,17 +418,26 @@
 <li>接着线程 A 恢复执行，显然对于这个线程 *top 和 n-&gt;next 不匹配，因为线程 B 修改了 top 位置的内容</li>
 <li>代码回到循环的开头，指向正确的 top 指针（线程 B 修改后的）调用 CAS，把 20 压入堆栈后结束</li>
 </ul>
-<p>采用CAS，代码的关键是需要采用循环不断判断(Re-Try-Loop)。</p>
-<p>学习Java的同学，可以参考JDK中ConcurrentLinkedQueue，它是基于论文2实现，你同学可以对着它的源码了解一下。</p>
-<h1 id="对比分析">对比分析</h1>
-<p>我们通常会认为，无锁队列会比较有锁队列的性能高，但无锁队列有一个缺点，当队列为空或满时，调用者怎么处理？这涉及到线程的休眠，通常的休眠采用nanosleep/usleep来解决。但它们与pthread_cond_wait的面临的问题是一样的，需要系统调度唤醒。像Linux这种非实时操作系统，只要存在唤醒就会出现调度上时延。</p>
-<p>事实上，我们对有锁队列与无锁队列进行性能测试：</p>
+<p>学习Java的同学，可以参考JDK中ConcurrentLinkedQueue源码，它是基于论文2实现，你可以对着它的源码了解一下其机制。</p>
+<h1 id="等待策略">等待策略</h1>
+<p>我们通常会认为，无锁队列会比较有锁队列的性能高，但无锁队列有一个缺点，当队列为空或满时，调用者怎么处理？这涉及到线程的等待，通常的等待采用nanosleep/usleep休眠来解决。但它们与pthread_cond_wait面临的问题是一样的，需要系统调度唤醒。像Linux这种非实时操作系统，只要存在唤醒就会出现调度上的时延。</p>
+<p>事实上，我们在单生产/单消费场景下，对有锁队列与无锁队列进行性能测试：</p>
 <ul>
 <li>带usleep的无锁队列 与 有锁队列是在平均唤醒时延上是差不多的，这取决于系统的调度算法</li>
-<li>不带usleep的无锁队列，会导致空闲时CPU空转，由于不存在唤醒，也就不存在唤醒时延问题，的确系统平均时延下降了，但CPU占用会上升</li>
+<li>不带usleep的无锁队列，会导致空闲时CPU空转，因为不存在唤醒，也就不存在唤醒时延问题。平均时延的确下降了，但CPU占用也上升了</li>
 </ul>
-<p>无锁队列并不是为了性能而生，它能解决有锁队列可能代码问题出现死锁或崩溃(假设会崩溃)的问题，因为锁一定需要释放才能被其它的线程使用。无锁队列也可能带来一定的性能问题，因为它的实现需要Re-Try-Loop，若这个Loop中的CAS长期处理失败状态，会加重无谓的CPU占用。</p>
+<p>无锁队列并不是为了性能而生(要看使用的场景)，它解决了有锁队列可能代码问题导致出现死锁或崩溃(假设会崩溃)的问题，因为锁是一定需要释放才能被其它的线程使用。无锁队列也可能带来一定的性能问题，因为它的实现需要Re-Try-Loop，若这个Loop中的CAS长期处理失败状态（生产或消费的线程过多），会加重无谓的CPU占用。</p>
 <p>注：实际对比验证并不是前面参照开源实现的无锁队列，而是使用另一成熟老产品已实现的无锁队列，代码中部分还存在汇编代码优化(公司资产不便贴出代码)。</p>
+<p>除了sleep函数，linux下还提供sched_yield函数，它的作用是让当前线程放弃CPU使用权，同时把这个线程移动到它静态优先级的调度队列末尾，并且从调度队列中找一个合适的线程来运行。如果当前线程的线程优先级列表是最高的，那么该函数立刻返回，当前线程将继续运行。合理地使用sched_yield将有助于减少竞争来提高性能。</p>
+<p>参考Java的Disruptor中实现几种等待策略(<a href="https://tech.meituan.com/2016/11/18/disruptor.html">高性能队列——Disruptor</a>)</p>
+<ul>
+<li>BlockingWaitStrategy: 加锁，吞吐量和延迟并不重要的场景</li>
+<li>BusySpinWaitStrategy: 自旋，通过不断重试，减少切换线程导致的系统调用，而降低延迟。</li>
+<li>PhasedBackoffWaitStrategy: 自旋 + yield + 自定义策略，吞吐量和延迟并不重要的场景</li>
+<li>SleepingWaitStrategy: 自旋 + yield + sleep, 性能和CPU资源之间有很好的折中。延迟不均匀</li>
+<li>TimeoutBlockingWaitStrategy: 加锁 + 超时限制， 吞吐量和延迟并不重要的场景</li>
+<li>YieldingWaitStrategy: 自旋 + yield + 自旋， 性能和CPU资源之间有很好的折中。延迟比较均匀</li>
+</ul>
 <h1 id="系统调度">系统调度</h1>
 <p>前面所提到pthread_cond_wait与usleep，它都是阻塞调用，会进入系统队列等待再次被调度。线程从创建、运行到结束总是处于下面四个状态：</p>
 <ul>
@@ -440,12 +448,24 @@
 </ul>
 <p>linux内核的三种调度策略：</p>
 <ul>
-<li>SCHED_OTHER： 分时调度策略，系统默认</li>
-<li>SCHED_FIFO： 实时调度策略，先到先服务</li>
+<li>SCHED_OTHER：分时调度策略，系统默认</li>
+<li>SCHED_FIFO：实时调度策略，先到先服务</li>
 <li>SCHED_RR：实时调度策略，时间片轮转</li>
 </ul>
-<p>在测试中，我们调整了进程的调度策略（SCHED_OTHER -&gt; SCHED_RR），发现有采用有锁队列也在达到我们预期想要的结果。</p>
-<p>更多的系统调度知识可以参见：<a href="https://blog.csdn.net/yusiguyuan/article/details/12164787">linux内核&ndash;进程调度</a> 与 <a href="https://www.ibm.com/developerworks/cn/linux/kernel/l-kn26sch/">Linux 2.6 调度系统分析</a></p>
+<p>在测试中，我们调整了进程的调度策略（SCHED_OTHER -&gt; SCHED_RR），发现有采用有锁队列也在达到我们预期想要的结果（平均时延下降了，时延也平稳了）。 注：pthread_create创建线程时可以指定线程调度的策略与优先级，也可以采用chrt命令来更改调度策略与优先级，不过都需要root权限。</p>
+<p>这里点一下SCHED_RR，操作系统对待相同优先级别的线程是平等，操作系统以轮叫循环的方式分配时间片给最高优先级的线程。当我们把进程的内的线程调度都设置为SCHED_RR，则分给他们的时间片更小，也更均匀，所以时延也平衡了。</p>
+<p>我们能不能把应用进程设置为实时调度策略？设计实时进程的时候要谨慎，这类进程变得至高无上，也可能轻易托跨整个系统：</p>
+<ul>
+<li>任何一个CPU密集型循环在一个实时进程中会继续无止境地运行下去</li>
+<li>实时进程会好用系统上一切资源，可能出现让系统其他进程等不到处理时间</li>
+<li>如果不会出现死循环，存在调用阻塞，且时延敏感则可以考虑实时调度熏</li>
+</ul>
+<p>网上找了三篇系统调度文章：</p>
+<ul>
+<li>入门：<a href="https://blog.csdn.net/weixin_34381687/article/details/86753753">Linux系统调度原理浅析</a></li>
+<li>初阶：<a href="https://blog.csdn.net/yusiguyuan/article/details/12164787">linux内核&ndash;进程调度</a></li>
+<li>高阶：<a href="https://www.ibm.com/developerworks/cn/linux/kernel/l-kn26sch/">Linux 2.6 调度系统分析</a></li>
+</ul>
 <h1 id="结语">结语</h1>
 <p>队列是多线程编程的基础设施，各种语言都有现成的实现。文章中的代码应该不是最优的，网上也有很多文章介绍无锁队列的，也有针对不同场景（SPSC/MPMC，Single/Multi Producer/Consumer）的极致优化，并不是无锁就比有锁性能好，还得看场景。这次为了把遇到的性能问题进一步验证对比缩小范围，面向搜索编程与学习，打开了解队列的实现机制。从模仿编写代码中我们可以初步了解到C++中的pthread互斥锁的用法、gcc的atomic内建能力，以及操作系统的调度机制。</p>
     </div>
@@ -594,7 +614,7 @@
     <li><a href="#背景">背景</a></li>
     <li><a href="#有锁队列">有锁队列</a></li>
     <li><a href="#无锁队列">无锁队列</a></li>
-    <li><a href="#对比分析">对比分析</a></li>
+    <li><a href="#等待策略">等待策略</a></li>
     <li><a href="#系统调度">系统调度</a></li>
     <li><a href="#结语">结语</a></li>
   </ul>
