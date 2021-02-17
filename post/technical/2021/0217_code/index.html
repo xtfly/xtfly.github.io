@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4935 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4936 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -447,7 +447,7 @@
 <p>在测试中，我们调整了进程的调度策略（SCHED_OTHER -&gt; SCHED_RR），发现有采用有锁队列也在达到我们预期想要的结果。</p>
 <p>更多的系统调度知识可以参见：<a href="https://blog.csdn.net/yusiguyuan/article/details/12164787">linux内核&ndash;进程调度</a> 与 <a href="https://www.ibm.com/developerworks/cn/linux/kernel/l-kn26sch/">Linux 2.6 调度系统分析</a></p>
 <h1 id="结语">结语</h1>
-<p>队列是多线程编程的基础设施，各种语言都有现成的实现。文章中的代码应该不是最优的，网上也有很多文章介绍无锁队列的，也有针对不同场景（SPSC/MPMC，Single/Multi Producer/Consumer）的极致优化，并是无锁就比有锁性能好，还得看场景。这次为了把遇到的性能问题进一步验证对比缩小范围，面向搜索编程与学习，打开了解队列的实现机制。从模仿编写代码中我们可以初步了解到c++中的pthread互斥锁的用法、gcc的atomic内建能力，以及操作系统的调度机制。</p>
+<p>队列是多线程编程的基础设施，各种语言都有现成的实现。文章中的代码应该不是最优的，网上也有很多文章介绍无锁队列的，也有针对不同场景（SPSC/MPMC，Single/Multi Producer/Consumer）的极致优化，并不是无锁就比有锁性能好，还得看场景。这次为了把遇到的性能问题进一步验证对比缩小范围，面向搜索编程与学习，打开了解队列的实现机制。从模仿编写代码中我们可以初步了解到C++中的pthread互斥锁的用法、gcc的atomic内建能力，以及操作系统的调度机制。</p>
     </div>
     <footer class="post-footer">
      
