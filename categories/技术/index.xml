@@ -15,9 +15,9 @@
       <guid>http://lanlingzi.cn/post/technical/2021/0217_code/</guid>
       <description>&lt;p&gt;本文虽是C++代码讲解，但JDK也有对应的两种实现，学习Java的同学也可阅读一并了解一下。&lt;/p&gt;
 &lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
-&lt;p&gt;在多线程的并发模型中，无论是CSP还是Actor模式，都需要个借助一个通道来在多个线程间传递消息来通讯。队列在计算机中非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。&lt;/p&gt;
-&lt;p&gt;节前定位某一C++开发的部件的性能问题，涉及到阻塞队列唤醒时延问题。队列是采用ACE提供ACE_Message_Queue，使用场景是单生产/单消费。&lt;/p&gt;
-&lt;p&gt;ACE_Message_Queue的模型是仿照System V streams提供的队列设施设计的。消息块ACE_Message_Block是消息队列中的固定的对象结构。ACE中大量采用了设计模式，代码一层套一层的，这也使得代码变得复杂不容易看懂。ACE_Message_Queue为了支持在多线程或单线程不同场景使用，采用了基于traits策略，通过模板参数来指定是需要支持多线程。&lt;/p&gt;
+&lt;p&gt;在多线程的并发模型中，无论是CSP还是Actor模式，都需要借助一个通道来在多个线程间传递消息来通讯。队列在计算机中是非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。&lt;/p&gt;
+&lt;p&gt;节前定位某一C++开发的部件的性能问题，涉及到阻塞队列唤醒延迟问题。队列是采用ACE提供ACE_Message_Queue，使用场景是单生产/单消费。&lt;/p&gt;
+&lt;p&gt;ACE_Message_Queue的模型是仿照System V streams提供的队列设施设计的。消息块ACE_Message_Block是消息队列中的固定的对象结构。ACE大量采用了设计模式，代码一层套一层的，这也使得代码变得复杂不容易看懂。ACE_Message_Queue为了支持在多线程或单线程不同场景使用，采用了基于traits策略，通过模板参数来指定是需否要支持多线程。&lt;/p&gt;
 &lt;p&gt;在Java语言中，JDK中有ArrayBlockingQueue/LinkedBlockingQueue（有锁，有界）与ConcurrentLinkedQueue/LinkedTransferQueue（无锁，无界），开源高性能的Disruptor框架实现了无锁队列。&lt;/p&gt;</description>
     </item>
     
