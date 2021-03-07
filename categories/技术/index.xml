@@ -6,7 +6,38 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 17 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0307_code/</link>
+      <pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0307_code/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;C/C++把内存管理权限交给了程序员。自由越大责任越大。如果内存只借不还，则产生内存泄露。如果随意借了还得不及时，则可能产生内存空洞。&lt;/p&gt;
+&lt;p&gt;前一段时间定位某一组件(C++代码)的性能问题。现网会开启atop记录此机器的资源使用，发现此组件进程最后内存的虚拟内存(VIRT)达到达8.3G，常驻内存(RES)达到4.2G。而在实验室对比测试的内存占用也就100M多。区别在于实验室测试环境运行时间不长，而出问题的是长时间运行的。&lt;/p&gt;
+&lt;p&gt;排除内存泄露之外，我们怀疑出现了大量离散的内存空洞，原因：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码层面：
+&lt;ul&gt;
+&lt;li&gt;代码中大量的直接new/delete内存，未有任何内存复用&lt;/li&gt;
+&lt;li&gt;申请的内存未做字节对齐(注：字节对齐主要提升CPU访问效率，也能减少内存占用)&lt;/li&gt;
+&lt;li&gt;申请的内存有大有小，大的有10K，小的有几十个bytes&lt;/li&gt;
+&lt;li&gt;申请与释放时间跨度大，有些跨不同的线程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;资源层面：
+&lt;ul&gt;
+&lt;li&gt;VIRT与RES内存占用远超时实际业务流程所需要的内存&lt;/li&gt;
+&lt;li&gt;CPU sys占用也不低&lt;/li&gt;
+&lt;li&gt;业务处理出现抖动，可能申请内存变慢导致&lt;/li&gt;
+&lt;li&gt;实验室测试内存占用低，上涨VIRT与RES内存应该日积月累&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由于为了恢复业务，出问题的进程已重启，无法再捕捉其它一些信息，只也能先事后诸葛，根据现象推导原因。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码22：C&#43;&#43;线程安全队列</title>
       <link>http://lanlingzi.cn/post/technical/2021/0217_code/</link>

@@ -1,0 +1,604 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码23：C/C&#43;&#43;内存空洞 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码23：C/C&#43;&#43;内存空洞">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码23：C/C&#43;&#43;内存空洞 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0307_code/" itemprop="url">
+        飞哥讲代码23：C/C&#43;&#43;内存空洞
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-03-07">
+    2021-03-07
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">7081 字 ~15分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>C/C++把内存管理权限交给了程序员。自由越大责任越大。如果内存只借不还，则产生内存泄露。如果随意借了还得不及时，则可能产生内存空洞。</p>
+<p>前一段时间定位某一组件(C++代码)的性能问题。现网会开启atop记录此机器的资源使用，发现此组件进程最后内存的虚拟内存(VIRT)达到达8.3G，常驻内存(RES)达到4.2G。而在实验室对比测试的内存占用也就100M多。区别在于实验室测试环境运行时间不长，而出问题的是长时间运行的。</p>
+<p>排除内存泄露之外，我们怀疑出现了大量离散的内存空洞，原因：</p>
+<ul>
+<li>代码层面：
+<ul>
+<li>代码中大量的直接new/delete内存，未有任何内存复用</li>
+<li>申请的内存未做字节对齐(注：字节对齐主要提升CPU访问效率，也能减少内存占用)</li>
+<li>申请的内存有大有小，大的有10K，小的有几十个bytes</li>
+<li>申请与释放时间跨度大，有些跨不同的线程</li>
+</ul>
+</li>
+<li>资源层面：
+<ul>
+<li>VIRT与RES内存占用远超时实际业务流程所需要的内存</li>
+<li>CPU sys占用也不低</li>
+<li>业务处理出现抖动，可能申请内存变慢导致</li>
+<li>实验室测试内存占用低，上涨VIRT与RES内存应该日积月累</li>
+</ul>
+</li>
+</ul>
+<p>由于为了恢复业务，出问题的进程已重启，无法再捕捉其它一些信息，只也能先事后诸葛，根据现象推导原因。</p>
+<p>我惊讶的是，为什么这个性能敏感的组件内存管理是如此的粗犷。现在我还对内存管理印象深刻，在十多年前刚进入我司，所在部门部长就经常对我们谆谆教导(原话不记得了，意思类似):</p>
+<blockquote>
+<p>我们做的电信级的软件，全年停机不能超过5分钟，系统稳定性非常重要，内存不能随意申请与释放，否则日积月累，出现内存问题，导致运行不稳定&hellip;..</p>
+</blockquote>
+<p>十多年前内存还是极其稀缺的资源(32位只有4G地址空间，用户态实际可用3G)，所以我们那一批程序员，对字节对齐，内存在栈/堆上分配，内存复用等内存使用都认识深刻，小心谨慎。当后来运行在X86 64位通用服务器上，内存变成廉价了，大家可能又开始忽略了对内存极致使用，也就出现各种内存使用不当问题。本以为这应该是C/C++程序员本能的思考，家常便饭。但事实是铁打营盘，流水的兵，大家的认识并不完全相同与深刻，也是我想写这一篇博文直接的原因。个人知识也可能存在老化与偏差，有问题请大家指正。</p>
+<h1 id="内存分配">内存分配</h1>
+<p>linux下glibc实现了malloc/free以及一组其它的函数，支持应用程序动态内存管理，内存分配器是ptmalloc2。分配器是用户态程序与内核内存管理的桥梁:</p>
+<ul>
+<li>用户态程序调用malloc申请内存，分配器向内核申请内存，再返回给用户态</li>
+<li>为了分配的高效性，通常预先分配一块大于用户请求的内存，采用算法来管理此内存</li>
+<li>用户态调用free释放内存，分配器可能并没有立即把内存还给内核，而是缓存起来标识空闲，以便下次复用</li>
+</ul>
+<p>简言之，glibc中的ptmalloc实现了一套内存管理机制，减少频繁向内核直接申请内存。分配器中涉及到两个核心概念：</p>
+<ul>
+<li>chunk：表示一块内存，chunk是glibc内存管理的最小单位</li>
+<li>arena：表示分配区，每个线程在申请内存时会获取一个，分配区分为主分配区(只有一个)和多个非主分配区。主分配区可以使用brk和mmap向内核申请虚拟内存，非主分配区只能使用nmap</li>
+</ul>
+<p>ptmalloc使用下面系统调用函数向内核申请内存，他们分配的都是虚拟内存，在第一次访问已分配的虚拟地址空间的时候，发生缺页中断，操作系统负责分配物理内存，然后建立虚拟内存和物理内存之间的映射关系：</p>
+<ul>
+<li>brk/sbrk：通过移动Heap堆顶指针brk，达到增加内存目的</li>
+<li>mmap/munmap：通过文件影射的方式，把文件映射到mmap区</li>
+</ul>
+<p>free释放的内存并不是都会马上归还给内核，分配器统一管理Heap和mmap映射区域中的空闲的chunk，当用户进行下一次分配请求时，分配器会先试图在空闲的chunk中挑选一块给用户，这样就避免了频繁的系统调用，降低了内存分配的开销。</p>
+<p>arena将大小相同或相近chunk用双向链表链接起来，这样一个链表被称为一个bin。分配器一共维护了128个bin。分配器采用几个不同的链表来管理chunk：</p>
+<ul>
+<li>大小规律的bin：
+<ul>
+<li>small bins：小于512字节，编号是2到64，同一个small bin中的chunk具有相同的大小。相邻的small bins中的chunk大小相差为8B。</li>
+<li>large bins：大于512字节，large bins中的每一个bin分别包含了一个给定范围内的chunk，其中的chunk 按大小序排列。相同大小的chunk同样按照最近使用顺序排列。</li>
+</ul>
+</li>
+<li>大小无规律的bin：
+<ul>
+<li>fast bins：为管理小块chunk（32位为64字节，64位为160字节）的链表，应对频繁申请小块内存的场景</li>
+<li>unsorted bins：fastbin中整合的chunk和small chunk、 large chunk释放之后的chunk被放入unsorted bin，加速内存申请释放</li>
+</ul>
+</li>
+</ul>
+<p>ptmalloc的内存分配算法比较复杂，本文进步详细介绍，有兴趣的同学请自行搜索材料，分配过程如下：</p>
+<ul>
+<li>小内存：获取分配区(arena)并加锁 -&gt; fast bins -&gt; small bins -&gt; 合并fast bins加入unsorted bins -&gt; unsorted bins合并，加入small bins或者large bins -&gt; small bins -&gt; large bins -&gt; top chunk（低于mmap阈值） -&gt; mmap（高于mmap 阈值）</li>
+<li>大内存(&gt;128K, M_TRIM_THRESHOLD)：直接mmap</li>
+</ul>
+<p>每个进程只有一个主分配区，ptmalloc根据系统对arena的争用情况动态增加非主arena的数量，arena的数量一旦增加，就不会再减少：</p>
+<ul>
+<li>当线程A持有主arena的锁，将在主arena所管理的内存中分配</li>
+<li>当线程B获取主arena的锁失败，则会新一个arena，个数上限默认是Core*8</li>
+</ul>
+<p>当线程很多的情况下，锁等待的时间就会延长，导致malloc性能下降。一次加锁操作有100ns延迟，这会导致ptmalloc在多线程竞争情况下性能不理想。</p>
+<p>扩展阅读：<a href="https://www.jianshu.com/p/2fedeacfa797">glibc内存管理那些事儿</a></p>
+<h1 id="内存空洞">内存空洞</h1>
+<p>glibc的算法并不很好。brk申请的内存，其释放只能从堆顶开始。中间部分的内存即使通过free释放掉，但仍然是被当前程序所占用，并未彻底释放到堆中，无法供其他程序使用。常见的一个问题，申请很多内存，然后又释放，只要有一小块没释放，glibc就必须要等待这一小块也释放了，才把整个大块释放，极端情况下，可能会造成上个G内存的浪费。</p>
+<p>因此很多人诟病glibc内存管理的实现，在高并发性能低下和内存碎片化问题都比较严重，有能力的大厂就自己开发内存管理库来代替glibc，最著名的两个：</p>
+<ul>
+<li>google: tcmalloc</li>
+<li>facebook: jemalloc</li>
+</ul>
+<p>扩展阅读：<a href="http://www.cnhalo.net/2016/06/13/memory-optimize/">内存优化总结:ptmalloc、tcmalloc和jemalloc</a></p>
+<p>glibc为什么会出现碎片化，存在内存空洞。glic管理的内存唯一释放的条件是堆顶存在128k（M_TRIM_THRESHOLD）或以上的空闲区时才会释放。频繁地请求和释放不同大小的内存，必然导致内存碎片问题的产生。</p>
+<p>操作系统提到内存碎片，又分为两种：</p>
+<ul>
+<li>内部碎片：是由于采用固定大小的内存分区，当一个进程不能完全使用分给它的固定内存区域时就产生了内部碎片，通常内部碎片难以完全避免。</li>
+<li>外部碎片：是由于某些未分配的连续内存区域太小，以至于不能满足任意进程的内存分配请求，从而不能被进程利用的内存区域。</li>
+</ul>
+<p>简言之，固定块大小会产生内部碎片，不固定大小动态分配产生外部碎片。</p>
+<p>以glic实现为例，内部碎片：</p>
+<ul>
+<li>假定有空闲chunkA(16K), chunkB(18K), chunkC(24K)</li>
+<li>malloc 20k内存，只有chunkC可使用，则浪费4K内存，这4K即为内部内存碎片。</li>
+</ul>
+<p>外部碎片，假设brk当前地址是512k：</p>
+<ul>
+<li>malloc 40k内存，即chunkA，brk = 512k + 40k = 552k</li>
+<li>malloc 50k内存，即chunkB，brk = 552k + 50k = 602k</li>
+<li>malloc 60k内存，即chunkC，brk = 602k + 60k = 662k</li>
+<li>free chunkA，释放的内存是位于[512k, 552k]之间，无法通过移动brk指针，将区域内内存交还内核。因此在[512k, 552k]的区域内便形成了一个内存空洞，即外部内存碎片。</li>
+</ul>
+<p>另外在多线程情况下，不同线程从不同的arena分配内存，也会导致不同arena的空闲chunk不能即时分配，这样会加剧内存碎片的存在。</p>
+<p>既然brk从堆采用移动指针的方式会产生碎片，为什么glibc不全部使用mmap来实现呢? 而是仅仅对于大于128k的大块内存才使用mmap？</p>
+<p>进程向OS申请和释放地址空间的接口brk/mmap都是系统调用，频繁调用系统调用都比较消耗系统资源。 mmap申请的内存被munmap后，重新申请会产生更多的缺页中断。linux的页默认大小是4K，如使用 mmap分配1M空间，第一次调用产生了大量缺页中断 (1M/4K次) ，当munmap后再次分配1M空间，会再次产生大量缺页中断。缺页中断是内核行为，这会导致CPU sys占用很高。如果使用mmap分配小内存，会导致地址空间的分片更多。</p>
+<p>内核把页(Page)作为内存管理的基本单位，并提供不同的内核分配算法：</p>
+<ul>
+<li>Buddy算法：把空闲的页以2的n次方为单位进行管理，把空闲的页以2的n次方为单位进行管理，Buddy算法的优点是避免了内存的外部碎片，但长期运行后，大片的内存会比较少。</li>
+<li>slab算法：频繁的分配/释放内存必然导致系统性能的下降，所以有必要为频繁分配/释放的对象建立高速缓存，slab层即内核中管理高速缓存的机制。</li>
+</ul>
+<p>用户态的malloc是通过brk/mmap系统调用每次向内核分配一组连续的页，而频繁的申请和释放内存页会导致内存中分散存在许多不连续的页，这样当某一时刻要申请一块较大的连续内存时，虽然系统内存余量足够，即很多页是空闲的，但找不到一大块连续的内存供使用，这个是内核级的外部碎片。</p>
+<h1 id="内存观察">内存观察</h1>
+<p>在Linux下，系统提供free/top/atop工具来观察内存的占用情况。其中top工具会显示六种数据：</p>
+<ul>
+<li>VIRT：表示进程&quot;需要&quot;虚拟占用的总内存，只是要应用程序要求的，就全算在这里，不管它真的用了没有</li>
+<li>RES：表示进程&quot;真实&quot;常驻占用的内存，但占用的内存还包括被换出的SWAP，以及其它进程申请的共享内存，RES并不包含已SWAP OUT的内存</li>
+<li>SWAP：表示进程使用的虚拟内存中被换出的内存，top命令默认不会显示（f健选择显示）</li>
+<li>SHR：表示进程占用的共享内存，除了自身进程的共享内存，还包括其他进程的共享内存</li>
+<li>CODE：表示可执行代码占用的物理内存，top命令默认不会显示（f健选择显示）</li>
+<li>DATA：表示可执行代码以外的部分(数据段+栈)占用的物理内存，这一块是真正的该程序要求的数据空间，是真正在运行中要使用的。top命令默认不会显示（f健选择显示）</li>
+</ul>
+<p>top描述进程内存使用的数据是来源于<code>/proc/$pid/statm</code>文件。通常我们观察内存的占用是看RES的值，它不含有交换出去的空间，但基本可以说RES是进程当前使用的内存量。</p>
+<p>对应的task_statm函数来获取进程的内存使用状况:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">task_statm</span>(<span style="color:#8b008b;font-weight:bold">struct</span> mm_struct *mm, <span style="color:#00688b;font-weight:bold">int</span> *shared, <span style="color:#00688b;font-weight:bold">int</span> *text,
+               <span style="color:#00688b;font-weight:bold">int</span> *data, <span style="color:#00688b;font-weight:bold">int</span> *resident)
+{
+        *shared = get_mm_counter(mm, file_rss);
+        *text = (PAGE_ALIGN(mm-&gt;end_code) - (mm-&gt;start_code &amp; PAGE_MASK))
+                                                           &gt;&gt; PAGE_SHIFT;
+        *data = mm-&gt;total_vm - mm-&gt;shared_vm;
+        *resident = *shared + get_mm_counter(mm, anon_rss);
+        <span style="color:#8b008b;font-weight:bold">return</span> mm-&gt;total_vm;
+}
+</code></pre></div><ul>
+<li>shared：PageCache中实际使用的物理内存的页数，对应top中SHR</li>
+<li>text：代码所占用的页数，对应top中CODE</li>
+<li>data：总虚拟内存页数减去共享的虚拟内存页数，对应top中DATA</li>
+<li>resident：所有使用的物理内存的页数，对应top中RES</li>
+<li>mm-&gt;total_vm：进程虚拟内存的寻址空间大小，对应top中VIRT</li>
+</ul>
+<p>他们的关系：</p>
+<ul>
+<li>VIRT = SWAP + RES</li>
+<li>RES = CODE + DATA</li>
+</ul>
+<p>再从应用程序代码来看：</p>
+<ul>
+<li>通过malloc或new申请了一块内存，若1G，则VIRT会上涨1G，不管它有没有使用到</li>
+<li>申请的内存若没有使用（只malloc或new，没有操作内存地址），或者只使用其中一小部分，如申请1G，但实现只使用了100M，则RES只会上涨100M，而不是1G</li>
+</ul>
+<p>top/atop命令并不能观察是否存在内存空洞。glibc提供malloc与free用于申请与释放内存，封装向系统调用。我们可以采用设置LD_PRELOAD来对malloc与free进行拦截，从而对内存使用观察。常见的Valgrind内存检测工具即是采用此方式。glibc还提供了malloc_stats函数，用于统计本进程具体的内存使用情况。我们可以通过gdb attach进程，调用此函数来观察内存占用：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">(gdb) call malloc_stats()
+Arena <span style="color:#b452cd">0</span>:                      <span style="color:#228b22">// 第一个arena，这里只有一个线程
+</span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本线程从操作系统获得的动态内存
+</span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本线程在使用的动态内存
+</span><span style="color:#228b22"></span>Total (incl. mmap):           <span style="color:#228b22">// 总的使用情况，各个线程使用动态内存的累加值
+</span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本进程从操作系统获得的动态内存
+</span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本进程在使用的动态内存
+</span><span style="color:#228b22"></span>max mmap regions =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// 统计使用mmap区域的个数，当一次申请内存超过128KB，会增加mmap区域
+</span><span style="color:#228b22"></span>max mmap bytes   =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// mmap区域对应内存大小
+</span></code></pre></div><p>malloc_stats函数能够打印出glibc内存分配统计信息，包括brk和mmap内存分配情况。从上面显示信息再结合前面介绍的知识点，可能包括了多个arena分配区域总共分配的空间和正在使用的空间，较长时间运行之后，其差值（system bytes-in use bytes）基本就是出现的空洞内存。glibc还提供malloc_info函数，可以输出XML格式记录更为详细的内存使用情况。</p>
+<p>我们还可以进一步观察/proc/buddyinfo中的信息，buddy算法会把所有的空闲页放到11个链表中，每个链表管理大小为（1, 2, 4&hellip;1024）个连续空闲页的内存块。当系统需要分配内存时，就可以从buddy系统中获取。如果在buddyinfo出现内存碎片，会降低系统性能，并有可能影响整个系统的正常运行。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>减少内存碎片，整体的原则还是有一些的：</p>
+<ul>
+<li>减少动态内存分配，尽量使用栈空间，但栈空间通常只有2M，不能在栈上分配较大对象，否则会导致栈溢出</li>
+<li>分配内存和释放的内存尽量在同一个函数，同一个线程，快速回收</li>
+<li>不要反复申请释放小内存（&lt;128K）</li>
+<li>申请较大的内存时，大小是2的指数次幂，减少跨页</li>
+<li>应用层采用内存池来提升内存复用</li>
+</ul>
+<p>在应用层做内存池是常见的技巧，不同的场景也有不同的策略：</p>
+<ul>
+<li>[1]固定大小内存池：适用于频繁分固定大小</li>
+<li>[2]分箱内存池：适用于可预测的不同固定大小的分配和释放</li>
+<li>[3]单线程内存块：申请固定一块内存给此线程使用，简单实现是申请时移动指针，释放不用回收只析构；复杂实现类似实现一个Stack</li>
+</ul>
+<p>假定我们的程序是多线程模式，线程间通过队列来分发消息，则我们可以采用上述的[1]与[3]相结合：</p>
+<ul>
+<li>队列消息采用固定大小内存池，并支持多线程</li>
+<li>其它线程内的对象分配采用大Buffer，线程级复用</li>
+</ul>
+<p>当然由于采用不同的策略，申请与释放若不匹配，搞混了就会出现大问题。最为简单的还是集成tcmalloc或jemalloc这类优秀的内存管理框架，减少应用层的感知。真期待我司能有自己开源的malloc框架，而不担心出了问题无法定位，以及涉A问题。</p>
+<p>最后简单介绍一下ACE的 <a href="https://tool.oschina.net/uploads/apidocs/ace/libace-doc/a00628.html">ACE_Static_Allocator</a>与<a href="https://tool.oschina.net/uploads/apidocs/ace/libace-doc/a00173.html">ACE_Dynamic_Cached_Allocator</a> 实现，他们正好可用于上述场景。</p>
+<p>ACE_Static_Allocator(继承ACE_Static_Allocator_Base)，静态内存分配器。它一次性分配大块内存，可用于线程级复用。</p>
+<p>ACE_Static_Allocator_Base主要成员变量：</p>
+<ul>
+<li>char *buffer_：缓冲区首地址</li>
+<li>size_t size_：缓冲区的大小</li>
+<li>size_t offset_：当前分配位置</li>
+</ul>
+<p>ACE_Static_Allocator_Base主要方法：</p>
+<ul>
+<li>malloc：分配指定大小的内存，实质就是buffer_ + offset_ + nbytes，当超过size_时分配失败</li>
+<li>free：释放指定的内存块，实质是空操作</li>
+</ul>
+<p>ACE_Dynamic_Cached_Allocator, 动态内存分配器。它一次性先分配大块内存，固定大小划分多个chunk，且支持多线程。它内部的结构主要是维护一个空闲链表，链表节点对象为ACE_Cached_Mem_Pool_Node，实现了set_next和get_next</p>
+<p>ACE_Cached_Mem_Pool_Node只一个成员变量：</p>
+<ul>
+<li>ACE_Cached_Mem_Pool_Node<!-- raw HTML omitted -->* next_：指向下一个节点</li>
+</ul>
+<p>ACE_Cached_Mem_Pool_Node主要方法：</p>
+<ul>
+<li>add：加入一个节点到空闲链表</li>
+<li>remove：移除一个空闲节点</li>
+</ul>
+<p>ACE_Dynamic_Cached_Allocator主要成员变量：</p>
+<ul>
+<li>char *pool_：预先申请的大块内存, 总大小为 <code>chunk_size_*n_chunks</code></li>
+<li>ACE_Locked_Free_List&lt; ACE_Cached_Mem_Pool_Node&lt; char &gt;, ACE_LOCK &gt; free_list_：  空闲节点管理</li>
+<li>size_t chunk_size_：记录块的大小，用于判断malloc的大小是否超过它，若超过分配失败</li>
+</ul>
+<p>ACE_Dynamic_Cached_Allocator主要方法：</p>
+<ul>
+<li>malloc：分配内存，实际就是返回 free_list_.remove()-&gt;addr()</li>
+<li>free：释放内存，实际就是 free_list_.add ((ACE_Cached_Mem_Pool_Node<!-- raw HTML omitted --> *) ptr)，注意，它是直接类型强转哦</li>
+</ul>
+<p>ACE_Dynamic_Cached_Allocator的实现巧妙在于free_list_，链表的节点是ACE_Cached_Mem_Pool_Node，它的内存不需要再从其它地方申请，而是直接使用内存池中chunk的内存，每个chunk的内存在池中给Node使用，在池外则上业务使用。</p>
+<h1 id="结语">结语</h1>
+<p>频繁的动态内存申请与释放，会留下一些未用内存空间（空洞），这些空洞可能不大，但如果我们不能利用，空闲空间分散，形成很多小空洞，可能无法满足新的内存申请要求。系统长期运行后，会是一个严重问题。内存问题，涉及到操作系统的底层知识，水很深，需要我们掌握其原理与机制，才能有针对性减少内存问题，提升程序的运行效率。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0217_code/" rel="prev" title="飞哥讲代码22：C&#43;&#43;线程安全队列">
+        飞哥讲代码22：C&#43;&#43;线程安全队列 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码23：C/C&#43;&#43;内存空洞
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#内存分配">内存分配</a></li>
+    <li><a href="#内存空洞">内存空洞</a></li>
+    <li><a href="#内存观察">内存观察</a></li>
+    <li><a href="#解决方案">解决方案</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

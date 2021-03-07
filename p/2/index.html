@@ -106,6 +106,103 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1108_code/" itemprop="url">
+        飞哥讲代码16：函数式让数据处理更简洁
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-08">
+    2020-11-08
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2514 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非<code>F</code>级别课程统计平均分数：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CourseGrade</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> String title;
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">char</span> grade;
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ReportCard</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> String studentName;
+    <span style="color:#8b008b;font-weight:bold">public</span> ArrayList&lt;CourseGrade&gt; cliens;
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport</span>() {
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
+        Iterator&lt;CourseGrade&gt; grades = cliens.<span style="color:#658b00">iterator</span>();
+        CourseGrade grade;
+        <span style="color:#00688b;font-weight:bold">double</span> avg = 0.<span style="color:#658b00">0d</span>;
+        <span style="color:#8b008b;font-weight:bold">while</span> (grades.<span style="color:#658b00">hasNext</span>()) {
+            grade = grades.<span style="color:#658b00">next</span>();
+            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(grade.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + grade.<span style="color:#658b00">grade</span>);
+            <span style="color:#8b008b;font-weight:bold">if</span> (!(grade.<span style="color:#658b00">grade</span> == <span style="color:#cd5555">&#39;F&#39;</span>)) {
+                avg = avg + grade.<span style="color:#658b00">grade</span> - 64;
+            }
+        }
+        avg = avg / cliens.<span style="color:#658b00">size</span>();
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span> + avg);
+    }
+}
+</code></pre></div><p>上面的代码有哪些问题呢:</p>
+<ul>
+<li>成员变量采用public，缺少数据封装性</li>
+<li>没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题</li>
+<li>avg这个变量多个用途，即是总分，又是平均分</li>
+<li>cliens变量名难以理解</li>
+<li><code>!(grade.grade == 'F')</code> 有点反直觉</li>
+<li>while循环干了两件事，打印每课的成绩，也统计了分数</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1108_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1101_code/" itemprop="url">
         飞哥讲代码15：写代码从事物认识开始
         </a>
@@ -685,82 +782,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0705_code/" itemprop="url">
-        飞哥讲代码8：提升性能，线程级缓存复用
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-05">
-    2020-07-05
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2399 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：</p>
-<blockquote>
-<p>■■(工号) 2019-08-27 14:50<br>
-飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下<br>
-◆◆◆(工号) 2019-08-27 14:51<br>
-好<br>
-■■(工号) 2019-08-28 10:39<br>
-飞哥，性能有提升， 8W8 压到了 9W7<br>
-提升了1W</p>
-</blockquote>
-<p>一个下午的时间，到底发生了什么，对代码做了什么优化，性能提升将近1W TPS？</p>
-<p>出现性能瓶颈的组件是平台一个很成熟的中间件，从x86切换到arm下性能基准测试情况如下：</p>
-<ul>
-<li>组网：3 client + 1 server</li>
-<li>环境：4VM(arm 8C64G) VS 4VM(x86 8C64G）</li>
-<li>基准测试：TPS x86 VS arm = 1 VS 0.6</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0705_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -884,7 +905,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">146</span>
+        <span class="site-state-item-count">147</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
