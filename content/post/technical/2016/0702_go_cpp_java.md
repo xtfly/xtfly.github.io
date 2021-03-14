@@ -6,7 +6,7 @@ categories:
 draft: true
 tags:
  - "go"
- - "cpp"
+ - "c++"
  - "java"
 toc: true
 ---

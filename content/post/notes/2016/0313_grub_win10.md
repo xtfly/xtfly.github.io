@@ -4,7 +4,7 @@ date: "2016-03-13"
 categories:
  - "笔记"
 tags:
- - "Archlinux"
+ - "Linux"
  - "Win10"
  - "grub2"
 

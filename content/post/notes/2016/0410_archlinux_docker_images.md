@@ -4,7 +4,7 @@ date: "2016-04-10"
 categories:
  - "笔记"
 tags:
- - "Archlinux"
+ - "Linux"
  - "Docker"
 
 ---

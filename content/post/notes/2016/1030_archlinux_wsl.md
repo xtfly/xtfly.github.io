@@ -4,7 +4,7 @@ date: "2016-10-30"
 categories:
  - "笔记"
 tags:
- - "Archlinux"
+ - "Linux"
  - "WSL"
 toc: true
 

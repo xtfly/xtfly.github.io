@@ -4,8 +4,7 @@ date: "2018-04-15"
 categories:
  - "笔记"
 tags:
- - "Archlinux"
- - "Manjaro"
+ - "Linux"
 
 ---
 

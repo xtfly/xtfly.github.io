@@ -1,77 +1,72 @@
 ---
-title: "[c++]自己实现的queue"
+title: "c++实现的queue"
 date: "2009-06-20"
 categories:
  - "技术"
 tags:
- - "cpp"
-
+ - "c++"
+toc: true
 ---
+
 
 周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
 <!--more-->
 
-## 顺序存储实现：
+## 顺序存储
 
-```
+```c++
 template<typename T, size_t SIZE>  
-class Queue  
-{  
+class Queue {  
 public:  
-    Queue() :  m_front(0), m_rear(0)  
-    {  
+    Queue() :  m_front(0), m_rear(0) {  
+    }
+  
+    ~Queue() {  
     }  
-    ~Queue()  
-    {  
-    }  
-    void clear()  
-    {  
+  
+    void clear() {  
         m_front = 0;  
         m_rear = 0;  
     }  
-    const bool empty() const  
-    {  
+  
+    const bool empty() const  {  
         return m_front == m_rear;  
     }  
-    const int size() const  
-    {  
+  
+    const int size() const {  
         int s = (m_rear - m_front + (int)SIZE) % (int)SIZE ;  
         return s;  
     }  
-    bool push(const T& t)  
-    {  
+  
+    bool push(const T& t) {  
         int pos = (m_rear + 1) % (int)SIZE;  
         //printf("/n m_rear = %d", pos);  
-        if (pos == m_front)  
-        {  
+        if (pos == m_front) {  
             return false;// it's full  
         }  
         m_rear = pos;  
         m_data[m_rear] = t;  
         return true;  
-    }  
-    T& pop()  
-    {  
-        if (empty())  
-        {  
+    } 
+  
+    T& pop() {  
+        if (empty()) {  
             throw Error<T>("Overflow");  
         }  
         m_front = (m_front + 1) % (int)SIZE;  
         //printf("/n m_front = %d", m_front);  
         return m_data[m_front];  
     }  
-    T& getfront()  
-    {  
+  
+    T& getfront() {  
         return m_data[m_front];  
     }  
+    
     // 遍历所有的节点  
-    void traverse( void (*func)(T&) )  
-    {  
+    void traverse( void (*func)(T&) ) {  
         if ( empty() ) { return;}  
-        for (int idx = m_front + 1; idx != m_rear + 1; idx++)  
-        {  
-            if ( idx == (int)SIZE)  
-            {  
+        for (int idx = m_front + 1; idx != m_rear + 1; idx++) {  
+            if ( idx == (int)SIZE) {  
                 idx %= (int)SIZE;  
             }  
             //printf("/n idx = %d", idx);  
@@ -85,40 +80,37 @@ private:
 };  
 ```
 
-## 链表存储实现：
+## 链表存储
 
-```
+```c++
 template<typename T>  
-struct QNode  
-{  
-    QNode() : m_pNext(NULL)  
-    {  
+struct QNode  {  
+    QNode() : m_pNext(NULL) {  
     }  
+    
     T m_data;  
     QNode* m_pNext;  
 };  
+
 template<typename T>  
-class LQueue  
-{  
+class LQueue {  
     typedef QNode<T> TQNode;  
 public:  
-    LQueue()  
-    {  
+    LQueue() {  
         TQNode* pTemp = NULL;  
         NEW(pTemp, TQNode() );  
         m_pFront = m_pRear = pTemp;  
         m_size = 0;  
     }  
-    ~LQueue()  
-    {  
+    
+    ~LQueue() {  
         clear();  
         DELETE(m_pFront);  
     }  
-    void clear()  
-    {  
+    
+    void clear() {  
         TQNode* pTemp = m_pFront->m_pNext;  
-        while(NULL != pTemp )  
-        {  
+        while(NULL != pTemp ) {  
             TQNode* pTemp2 = pTemp->m_pNext;  
             DELETE(pTemp);  
             pTemp = pTemp2;  
@@ -126,13 +118,14 @@ public:
         m_pFront->m_pNext = NULL;  
         m_size = 0;  
     }  
-    const bool empty() const  
-    {  
+    
+    const bool empty() const {  
         return m_pFront == m_pRear;  
     }  
+    
     const int size() const { return m_size;}  
-    bool push(const T& t)  
-    {  
+    
+    bool push(const T& t) {  
         TQNode* pTemp = NULL;  
         NEW(pTemp, TQNode() );  
         if ( NULL == pTemp) { return false;}  
@@ -143,12 +136,12 @@ public:
         m_size++;  
         return true;  
     }  
-    T pop()  
-    {  
-        if (empty())  
-        {  
+    
+    T pop() {  
+        if (empty()) {  
             throw Error<T>("Overflow");  
         }  
+      
         TQNode* pTemp = m_pFront->m_pNext;  
         T t = pTemp->m_data;  
         m_pFront->m_pNext = pTemp->m_pNext;  
@@ -160,23 +153,21 @@ public:
         m_size--;  
         return t;  
     }  
-    T& getfront()  
-    {  
-        if (empty())  
-        {  
+    
+    T& getfront() {  
+        if (empty()) {  
             throw Error<T>("Overflow");  
         }  
         TQNode* pTemp = m_pFront->m_pNext;  
         T t = pTemp->m_data;  
         return t;  
     }  
+    
     // 遍历所有的节点  
-    void traverse( void (*func)(T&) )  
-    {  
+    void traverse( void (*func)(T&) ) {  
         if ( empty() ) { return;}  
         TQNode* pTemp = m_pFront->m_pNext;  
-        while(NULL != pTemp)  
-        {  
+        while(NULL != pTemp) {  
             func(pTemp->m_data);  
             pTemp = pTemp->m_pNext;  
         }  
@@ -188,15 +179,14 @@ private:
 };  
 ```
 
-## 测试代码：
+## 测试代码
 
-```
-void print_queue(int& a)  
-{  
+```c++
+void print_queue(int& a) {  
     printf("%d/t", a);  
 }  
-void test_queue()  
-{  
+
+void test_queue() {  
     LQueue<int> queue;  
     //Queue<int, 4> queue;  
     queue.push(1);  
@@ -220,4 +210,4 @@ void test_queue()
     printf("/n4 : size: %d /n", queue.size() );  
     queue.traverse(print_queue);  
 }  
- ```
+```

@@ -4,7 +4,7 @@ date: "2016-02-21"
 categories:
  - "笔记"
 tags:
- - "Mac"
+ - "MacOS"
  - "Shell"
 toc: true
 

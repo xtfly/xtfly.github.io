@@ -1,28 +1,24 @@
 ---
-title: "C++技巧之名字空间namespace"
+title: "c++技巧之名字空间namespace"
 date: "2009-07-13"
 categories:
  - "技术"
 tags:
- - "cpp"
+ - "c++"
 
 ---
 
 
 C开发人员会经常使用`#define`即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了`namespace`名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。
 ```
-namespace outspname  
-{   
+namespace outspname {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = "33333";  
    void test();  
 
-   namespace inspname  
-   {  
+   namespace inspname {  
       enum { A, B, C};  
-      class Klass  
-      {  
-      };  
+      class Klass {};  
    }  
 }
 ```
@@ -42,7 +38,7 @@ namespace outspname
        using outspname::inspname::A;  
        const int local = A;  
     }
-    ```  
+    ```
 
 
 * 通过一个使用指令把该名字空间下所有的名字变成可用。
@@ -58,39 +54,34 @@ namespace outspname
          Klass* p = new Klass();  
       }    
     }
-    ```  
+    ```
 
     但使用`using namespace`这种用法时，要注意下面一点，如在某个.h中声明了有`testname::test`的方法。
     ```
-    namespace testname  
-    {  
+    namespace testname {  
        void test(int param);  
     }
-    ```  
-
-    在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。
+    ```
+    
+在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。
     ```
     using testname;  
-    void test(int param)  
-    {  
+    void test(int param) {  
     }
-    ```  
-
-    正确的使用方式是:
     ```
-    namespace testname  
-    {  
-       void test(int param)  
-       {  
+    
+    正确的使用方式是:
+```
+    namespace testname {  
+       void test(int param) {  
        }  
     }  
     ```
-
+    
     或者是
     ```
-    void testname::test(int param)  
-    {  
-    }  
+    void testname::test(int param) {  
+}  
     ```
 
 
@@ -104,22 +95,20 @@ namespace outspname
 * 无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：
 
     ```
-    namespace   
-    {  
+    namespace {  
       const int CVAR1 = 1;  
       void test();  
     }  
     ```
-
-    但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
-
-    ```
-    namespace $$$  
-    {  
+    
+但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
+    
+```
+    namespace $$$ {  
       const int CVAR1 = 1;  
       void test();  
     }
-
+    
     using namespace $$$;
 
     ```

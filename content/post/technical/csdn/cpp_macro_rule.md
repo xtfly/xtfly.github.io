@@ -1,10 +1,10 @@
 ---
-title: "C++技巧之宏Macro应用"
+title: "c++技巧之宏Macro应用"
 date: "2009-06-12"
 categories:
  - "技术"
 tags:
- - "cpp"
+ - "c++"
 
 ---
 

@@ -1,10 +1,10 @@
 ---
-title: "用C++模板来展示new与delete操作符原理"
+title: "用c++模板来展示new与delete操作符原理"
 date: "2009-06-08"
 categories:
  - "技术"
 tags:
- - "cpp"
+ - "c++"
 
 ---
 
@@ -20,7 +20,7 @@ new []与delete []是针对数组操作符，要注意是通过new []分配的�
 
 下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
 
-```
+```c++
 void* operator new(std::size_t) throw (std::bad_alloc);
 void* operator new[](std::size_t) throw (std::bad_alloc);
 void operator delete(void*) throw();
@@ -28,7 +28,8 @@ void operator delete[](void*) throw();
 ```
 
 使用举例:
-```
+
+```c++
 int* p1 = new int();
 delete p2;
 
@@ -38,15 +39,13 @@ delete [] p2;
 
 终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。
 
-```
+```c++
 /**
  * A simulation of c++ new T() & new T(param) operation
  */  
-struct NewObj
-{
+struct NewObj {
     template <typename T>
-    inline void operator()(T*& pObj)
-    {
+    inline void operator()(T*& pObj) {
         // allocate memory form heap
         void * pBuff = malloc(sizeof(T));
         // call constructor
@@ -54,8 +53,7 @@ struct NewObj
     }
 
     template <typename T, typename P>
-    inline void operator()(T*& pObj, const P& param)
-    {
+    inline void operator()(T*& pObj, const P& param) {
         // allocate memory form heap
         void * pBuff = malloc(sizeof(T));
         // call constructor, pass one param
@@ -66,11 +64,9 @@ struct NewObj
 /**
  * A simulation of c++ delete T operation
  */  
-struct DeleteObj  
-{  
+struct DeleteObj {  
     template <typename T>  
-    inline void operator()(T*& pObj)  
-    {  
+    inline void operator()(T*& pObj) {  
         if ( NULL == pObj ) { return ;}  
         // call destructor  
         pObj->~T();  
@@ -83,11 +79,9 @@ struct DeleteObj
 /**
  * A simulation of c++ new T[N]() operation
  */  
-struct NewObjArray  
-{  
+struct NewObjArray {  
     template <typename T>  
-    inline void operator()(T*& pObj, unsigned int size)  
-    {  
+    inline void operator()(T*& pObj, unsigned int size) {  
         // save the number of array elements in the beginning of the space.  
         long * pBuff = (long *) malloc (sizeof(T) * size + sizeof(long));  
         *((unsigned int *) pBuff) = size;  
@@ -98,8 +92,7 @@ struct NewObjArray
         // save the pointer to the start of the array.  
         pObj = pT;  
         // now iterate and construct every object in place.  
-        for (unsigned int i = 0; i < size; i++)  
-        {  
+        for (unsigned int i = 0; i < size; i++) {  
             new((void *) pT) T();  
             pT++;  
         }  
@@ -110,17 +103,14 @@ struct NewObjArray
 /**
  * A simulation of c++ delete [] T operation
  */  
-struct DeleteObjArray  
-{  
+struct DeleteObjArray {  
     template <typename T>  
-    inline void operator()(T*& pObj)  
-    {  
+    inline void operator()(T*& pObj) {  
         unsigned int size = *((unsigned int *) ((long *) pObj - 1));  
 
         T * pT = pObj;  
         // call destructor on every element in the array.  
-        for (unsigned int i = 0; i < size; i++)  
-        {  
+        for (unsigned int i = 0; i < size; i++) {  
             pT->~T();  
             pT++;  
         }  
@@ -132,19 +122,18 @@ struct DeleteObjArray
 ```
 
 测试代码:
-```
-struct TestClass  
-{  
+
+```c++
+struct TestClass {  
     TestClass() : mem1(0), mem2(0)  {}  
 
     TestClass(int m) : mem1(m), mem2(0) {}  
-
+  
     int mem1;  
     long mem2;  
 };  
 
-void test_new_delete()  
-{  
+void test_new_delete()  {  
     TestClass* p1 = NULL;  
     NewObj()(p1);  
     printf("%p/n", p1);  
@@ -164,5 +153,5 @@ void test_new_delete()
 }  
 ```
 
- ---------------------------------------
- >测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要`#include<new>`，使用`#include<stdlib.h>`会导致编译不过，因为`in-place construtor`是C++中的新玩意。
+---------------------------------------
+ > 测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要`#include<new>`，使用`#include<stdlib.h>`会导致编译不过，因为`in-place construtor`是C++中的新玩意。

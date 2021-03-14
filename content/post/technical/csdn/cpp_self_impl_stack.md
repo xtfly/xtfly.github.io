@@ -1,64 +1,56 @@
 ---
-title: "[c++]自己实现的stack"
+title: "c++实现的stack"
 date: "2009-06-11"
 categories:
  - "技术"
 tags:
- - "cpp"
-
+ - "c++"
+toc: true
 ---
 
 还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
 <!--more-->
 
-公用的宏与异常类:
+## 公共宏与异常类
 
-```
+```c++
 #define NEW(var, T) do { /  
    try {                 /  
        var = new T;      /  
-   }catch(...) {         /  
+   } catch(...) {        /  
        var = NULL;       /  
    }                     /  
-}while(0)  
+} while(0)  
 
 #define DELETE(var) do { /  
-    if(NULL != var)      /  
-    {                    /  
+    if(NULL != var) {    /  
        delete var;       /  
        var = NULL;       /  
     }                    /  
-}while(0)  
+} while(0)  
 
 template<typename T>  
-struct Error  
-{  
-   Error(const char* pszInfo = "Overflow")  
-   {  
+struct Error {  
+   Error(const char* pszInfo = "Overflow") {  
      printf("/nThrow a error, Info :%s/n", pszInfo);  
    }  
 };
 ```
+## 顺序存储
 
 顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。
 
-```
+```c++
 template<typename T, size_t SIZE>  
-class Stack  
-{  
+class Stack {  
 public:  
     Stack() :  
-        m_size(0)  
-    {  
+        m_size(0) {  
     }  
-    ~Stack()  
-    {  
-    }  
+    ~Stack() {}  
 
-    bool push(const T& t)  
-    {  
-        if (m_size == SIZE)  
-        {  
+    bool push(const T& t) {  
+        if (m_size == SIZE) {  
             return false;  
         }  
 
@@ -67,45 +59,35 @@ public:
         return true;  
     }  
 
-    T& pop()  
-    {  
-        if (0 == m_size)  
-        {  
+    T& pop() {  
+        if (0 == m_size) {  
             throw Error<T> ("Overflow");  
-        }  
-        else  
-        {  
+        } else {  
             T& t = m_data[m_size];  
             m_size--;  
             return t;  
         }  
     }  
 
-    void clear()  
-    {  
+    void clear() {  
         m_size = 0;  
     }  
 
-    const bool empty() const  
-    {  
+    const bool empty() const {  
         return 0 == m_size;  
     }  
 
-    const size_t size() const  
-    {  
+    const size_t size() const {  
         return m_size;  
     }  
 
     // 遍历所有的节点  
-    void traverse(void(*func)(T&))  
-    {  
-        if (empty())  
-        {  
+    void traverse(void(*func)(T&)) {  
+        if (empty()) {  
             return;  
         }  
 
-        for (size_t idx = 0; idx < m_size; ++idx)  
-        {  
+        for (size_t idx = 0; idx < m_size; ++idx) {  
             func(m_data[idx]);  
         }  
     }  
@@ -116,52 +98,46 @@ private:
 };  
 ```
 
+## 链式存储
+
 链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。
 
-```
+```c++
 template<typename T>  
-struct SNode  
-{  
+struct SNode {  
     T m_data;  
     SNode* m_pNext;  
 
     SNode() :  
-        m_pNext(NULL)  
-    {  
+        m_pNext(NULL) {  
     }  
 };  
 
 template<typename T>  
-class LStack  
-{  
+class LStack {  
     typedef SNode<T> TNode;  
 public:  
     LStack() :  
         m_size(0)  
     {  
         NEW(m_pTop, TNode());  
-        if (NULL != m_pTop)  
-        {  
+        if (NULL != m_pTop) {  
             m_pTop->m_pNext = NULL;  
         }  
     }  
 
-    ~LStack()  
-    {  
+    ~LStack() {  
         clear();  
         DELETE(m_pTop);  
     }  
 
-    void clear()  
-    {  
-        if (NULL == m_pTop)  
-        {  
+    void clear() {  
+        if (NULL == m_pTop) {  
             return;  
         }  
 
         TNode* pTemp = m_pTop->m_pNext;  
-        while (NULL != pTemp)  
-        {  
+        while (NULL != pTemp) {  
             TNode* pTemp2 = pTemp->m_pNext;  
             DELETE(pTemp);  
             pTemp = pTemp2;  
@@ -170,18 +146,15 @@ public:
         m_size = 0;  
     }  
 
-    const bool empty() const  
-    {  
+    const bool empty() const {  
         return (NULL == m_pTop || NULL == m_pTop->m_pNext) ? true : false;  
     }  
 
-    const size_t size() const  
-    {  
+    const size_t size() const {  
         return m_size;  
     }  
 
-    bool push(const T& t)  
-    {  
+    bool push(const T& t) {  
         if (NULL == m_pTop)  
         {  
             return false;  
@@ -189,8 +162,7 @@ public:
 
         TNode* pTemp = NULL;  
         NEW(pTemp, TNode());  
-        if (NULL == pTemp)  
-        {  
+        if (NULL == pTemp) {  
             return false;  
         }  
         pTemp->m_data = t;  
@@ -202,11 +174,9 @@ public:
         return true;  
     }  
 
-    T pop()  
-    {  
+    T& pop() {  
         TNode* pTemp = m_pTop->m_pNext;  
-        if (NULL == pTemp)  
-        {  
+        if (NULL == pTemp) {  
             throw Error<T> ("Overflow");  
         }  
 
@@ -218,15 +188,12 @@ public:
     }  
 
     // 遍历所有的节点  
-    void traverse(void(*func)(T&))  
-    {  
-        if (empty())  
-        {  
+    void traverse(void(*func)(T&)) {  
+        if (empty()) {  
             return;  
         }  
         TNode* pTemp = m_pTop->m_pNext;  
-        while (NULL != pTemp)  
-        {  
+        while (NULL != pTemp) {  
             func(pTemp->m_data);  
             pTemp = pTemp->m_pNext;  
         }  
@@ -238,16 +205,14 @@ private:
 };
 ```
 
-测试代码：
+## 测试代码
 
-```
-void print_stack(int& a)  
-{  
+```c++
+void print_stack(int& a) {  
     printf("%d/t", a);  
 }  
 
-void test_stack()  
-{  
+void test_stack() {  
     printf("stack test /n");  
     //Stack<int, 4> stack;  
     LStack<int> stack;  
