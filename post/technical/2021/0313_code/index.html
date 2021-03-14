@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3831 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3848 字 ~8分钟</span>
 </span>
       </div>
     </header>
@@ -150,7 +150,7 @@
     <blockquote>
 <p>《泾溪》&ndash; 杜荀鹤<br>
 泾溪石险人兢慎，终岁不闻倾覆人。<br>
-却是平流无石处，时时闻说有沉论。</p>
+却是平流无石处，时时闻说有沉沦。</p>
 </blockquote>
 <h1 id="案例">案例</h1>
 <p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
@@ -176,7 +176,7 @@
 <p>Consider signing data with hmac if you need to ensure that it has not been tampered with.</p>
 </blockquote>
 <p>简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。</p>
-<p>pickle是一种基于栈的编程语言，目前发展到python3.8已有5个版本协议。我们使用python2先看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:</p>
+<p>pickle是一种基于栈的编程语言，目前发展到python3.8已有5个协议版本。我们先使用python2来看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cposix
 system
 p0
@@ -185,7 +185,7 @@ p1
 tp2
 Rp3
 .
-</code></pre></div><p>这是pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：</p>
+</code></pre></div><p>这里涉及到pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：</p>
 <ul>
 <li>指令处理器(Instruction processor)：解释与执行指令，遇到<code>.</code>结束</li>
 <li>栈区(stack)：数据处理过程中的暂存区，通过进出栈完成数据操作</li>
@@ -201,7 +201,7 @@ Rp3
 <li><code>.</code>：结束整个pickle反序列化过程</li>
 <li><code>p1~p3</code>：将栈顶数据存入memo中，后面的数字是编号</li>
 </ul>
-<p>当然pickle还有其它的指令，这里就不再一一列出了，更多的指令可以查看pickle的源码<a href="https://github.com/python/cpython/blob/master/Lib/pickle.py#L111">pickle.py</a>。</p>
+<p>当然pickle还有其它的指令，这里就不再一一列了，更多的指令可以查看pickle的源码<a href="https://github.com/python/cpython/blob/master/Lib/pickle.py#L111">pickle.py</a>。</p>
 <p>pickle反序列化漏洞出在<a href="https://docs.python.org/3/library/pickle.html#object.__reduce__"><code>__reduce__</code></a>函数上，当采用C语言定义Python扩展类型时，若想pickle此类型，则需要告诉python如何pickle它们。一旦
 <code>__reduce__</code>函数定义，pickle序列化时会被调用，它要么返回一个代表全局名称的字符串，要么返回一个元组。这个元组包含2到6个元素，其中包括：</p>
 <ul>
@@ -215,19 +215,19 @@ Rp3
 <p>就是由于个这个元组，跟pickle中的指令<code>R</code>可被利用之机：&ldquo;该元组作为可调用参数的对象并执行该对象&rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然<code>__reduce__</code>返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。</p>
 <h1 id="解决办法">解决办法</h1>
 <p>正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
-        <span style="color:#228b22"># Subclasses may override this.</span>
-        sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
-        <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
-            <span style="color:#8b008b;font-weight:bold">if</span> (module, name) <span style="color:#8b008b">in</span> _compat_pickle.NAME_MAPPING:
-                module, name = _compat_pickle.NAME_MAPPING[(module, name)]
-            <span style="color:#8b008b;font-weight:bold">elif</span> module <span style="color:#8b008b">in</span> _compat_pickle.IMPORT_MAPPING:
-                module = _compat_pickle.IMPORT_MAPPING[module]
-        <span style="color:#658b00">__import__</span>(module, level=<span style="color:#b452cd">0</span>)
-        <span style="color:#8b008b;font-weight:bold">if</span> self.proto &gt;= <span style="color:#b452cd">4</span>:
-            <span style="color:#8b008b;font-weight:bold">return</span> _getattribute(sys.modules[module], name)[<span style="color:#b452cd">0</span>]
-        <span style="color:#8b008b;font-weight:bold">else</span>:
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+    <span style="color:#228b22"># Subclasses may override this.</span>
+    sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
+    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
+        <span style="color:#8b008b;font-weight:bold">if</span> (module, name) <span style="color:#8b008b">in</span> _compat_pickle.NAME_MAPPING:
+            module, name = _compat_pickle.NAME_MAPPING[(module, name)]
+        <span style="color:#8b008b;font-weight:bold">elif</span> module <span style="color:#8b008b">in</span> _compat_pickle.IMPORT_MAPPING:
+            module = _compat_pickle.IMPORT_MAPPING[module]
+    <span style="color:#658b00">__import__</span>(module, level=<span style="color:#b452cd">0</span>)
+    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &gt;= <span style="color:#b452cd">4</span>:
+        <span style="color:#8b008b;font-weight:bold">return</span> _getattribute(sys.modules[module], name)[<span style="color:#b452cd">0</span>]
+    <span style="color:#8b008b;font-weight:bold">else</span>:
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
 </code></pre></div><p>默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的<code>c</code>指令导入模块时，就会调用它。</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
 
@@ -319,7 +319,7 @@ hook = Hook()
 <p>当然上面的演示只是让替换现有函数看起来美观一些，若应用层代码能拿到hook对象，还是可以找回来原始函数，这就是可以绕开了安全检查（逃逸）。若避免逃逸还需要禁止各种可能的绕过：比如禁止导入hook模块，禁上执行hook代码，禁止执行被hook函数的源码等等。</p>
 <p>再扩展一下，基于上述的机制，我们可以实现一套安全库，用于尽可能减少代码出现潜在的安全风险，把已知经验沉淀下来：比如路径检查，执行命令检查，端口检查，反序列化检查，代码执行检查，xml实体攻击检查，高风险函数禁用等等。我们搞安全，不仅仅是要做CheckList，更加要沉淀代码复用。</p>
 <h1 id="结语">结语</h1>
-<p>代码安全问题随处可见，犯错的成本很低。道路千万条，安全第一条，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。</p>
+<p>代码安全问题随处可见，犯错的成本很低。&ldquo;道路千万条，安全第一条&rdquo;，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。</p>
     </div>
     <footer class="post-footer">
      
