@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>[c&#43;&#43;]自己实现的stack - 蘭陵N梓記</title>
+    <title>c&#43;&#43;实现的stack - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="[c&#43;&#43;]自己实现的stack">
+    <meta property="og:title" content="c&#43;&#43;实现的stack">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="[c&#43;&#43;]自己实现的stack - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43;实现的stack - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/" itemprop="url">
-        [c&#43;&#43;]自己实现的stack
+        c&#43;&#43;实现的stack
         </a>
       </h1>
       <div class="post-meta">
@@ -142,183 +142,154 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">681 字 ~2分钟</span>
+<span class="leancloud-visitors-count">687 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。</p>
-<p>公用的宏与异常类:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define NEW(var, T) do { /  
-   try {                 /  
-       var = new T;      /  
-   }catch(...) {         /  
-       var = NULL;       /  
+<h2 id="公共宏与异常类">公共宏与异常类</h2>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define NEW(var, T) do { /  
+</span><span style="color:#1e889b"></span>   <span style="color:#8b008b;font-weight:bold">try</span> {                 /  
+       var = <span style="color:#8b008b;font-weight:bold">new</span> T;      /  
+   } <span style="color:#8b008b;font-weight:bold">catch</span>(...) {        /  
+       var = <span style="color:#658b00">NULL</span>;       /  
    }                     /  
-}while(0)  
+} <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#b452cd">0</span>)  
 
-#define DELETE(var) do { /  
-    if(NULL != var)      /  
-    {                    /  
-       delete var;       /  
-       var = NULL;       /  
+<span style="color:#1e889b">#define DELETE(var) do { /  
+</span><span style="color:#1e889b"></span>    <span style="color:#8b008b;font-weight:bold">if</span>(<span style="color:#658b00">NULL</span> != var) {    /  
+       <span style="color:#8b008b;font-weight:bold">delete</span> var;       /  
+       var = <span style="color:#658b00">NULL</span>;       /  
     }                    /  
-}while(0)  
+} <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#b452cd">0</span>)  
 
-template&lt;typename T&gt;  
-struct Error  
-{  
-   Error(const char* pszInfo = &#34;Overflow&#34;)  
-   {  
-     printf(&#34;/nThrow a error, Info :%s/n&#34;, pszInfo);  
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Error</span> {  
+   Error(<span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span>* pszInfo = <span style="color:#cd5555">&#34;Overflow&#34;</span>) {  
+     printf(<span style="color:#cd5555">&#34;/nThrow a error, Info :%s/n&#34;</span>, pszInfo);  
    }  
 };
-</code></pre></div><p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, size_t SIZE&gt;  
-class Stack  
-{  
-public:  
+</code></pre></div><h2 id="顺序存储">顺序存储</h2>
+<p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Stack</span> {  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
     Stack() :  
-        m_size(0)  
-    {  
+        m_size(<span style="color:#b452cd">0</span>) {  
     }  
-    ~Stack()  
-    {  
-    }  
+    ~Stack() {}  
 
-    bool push(const T&amp; t)  
-    {  
-        if (m_size == SIZE)  
-        {  
-            return false;  
+    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (m_size == SIZE) {  
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;  
         }  
 
         m_data[m_size] = t;  
         m_size++;  
-        return true;  
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
     }  
 
-    T&amp; pop()  
-    {  
-        if (0 == m_size)  
-        {  
-            throw Error&lt;T&gt; (&#34;Overflow&#34;);  
-        }  
-        else  
-        {  
+    T&amp; pop() {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#b452cd">0</span> == m_size) {  
+            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt; (<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
+        } <span style="color:#8b008b;font-weight:bold">else</span> {  
             T&amp; t = m_data[m_size];  
             m_size--;  
-            return t;  
+            <span style="color:#8b008b;font-weight:bold">return</span> t;  
         }  
     }  
 
-    void clear()  
-    {  
-        m_size = 0;  
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
+        m_size = <span style="color:#b452cd">0</span>;  
     }  
 
-    const bool empty() const  
-    {  
-        return 0 == m_size;  
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#b452cd">0</span> == m_size;  
     }  
 
-    const size_t size() const  
-    {  
-        return m_size;  
+    <span style="color:#8b008b;font-weight:bold">const</span> size_t <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#8b008b;font-weight:bold">return</span> m_size;  
     }  
 
-    // 遍历所有的节点  
-    void traverse(void(*func)(T&amp;))  
-    {  
-        if (empty())  
-        {  
-            return;  
+    <span style="color:#228b22">// 遍历所有的节点  
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>(<span style="color:#00688b;font-weight:bold">void</span>(*func)(T&amp;)) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+            <span style="color:#8b008b;font-weight:bold">return</span>;  
         }  
 
-        for (size_t idx = 0; idx &lt; m_size; ++idx)  
-        {  
+        <span style="color:#8b008b;font-weight:bold">for</span> (size_t idx = <span style="color:#b452cd">0</span>; idx &lt; m_size; ++idx) {  
             func(m_data[idx]);  
         }  
     }  
 
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
     T m_data[SIZE];  
     size_t m_size;  
 };  
-</code></pre></div><p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;  
-struct SNode  
-{  
+</code></pre></div><h2 id="链式存储">链式存储</h2>
+<p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">SNode</span> {  
     T m_data;  
     SNode* m_pNext;  
 
     SNode() :  
-        m_pNext(NULL)  
-    {  
+        m_pNext(<span style="color:#658b00">NULL</span>) {  
     }  
 };  
 
-template&lt;typename T&gt;  
-class LStack  
-{  
-    typedef SNode&lt;T&gt; TNode;  
-public:  
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LStack</span> {  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> SNode&lt;T&gt; TNode;  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
     LStack() :  
-        m_size(0)  
+        m_size(<span style="color:#b452cd">0</span>)  
     {  
         NEW(m_pTop, TNode());  
-        if (NULL != m_pTop)  
-        {  
-            m_pTop-&gt;m_pNext = NULL;  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> != m_pTop) {  
+            m_pTop-&gt;m_pNext = <span style="color:#658b00">NULL</span>;  
         }  
     }  
 
-    ~LStack()  
-    {  
+    ~LStack() {  
         clear();  
         DELETE(m_pTop);  
     }  
 
-    void clear()  
-    {  
-        if (NULL == m_pTop)  
-        {  
-            return;  
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == m_pTop) {  
+            <span style="color:#8b008b;font-weight:bold">return</span>;  
         }  
 
         TNode* pTemp = m_pTop-&gt;m_pNext;  
-        while (NULL != pTemp)  
-        {  
+        <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#658b00">NULL</span> != pTemp) {  
             TNode* pTemp2 = pTemp-&gt;m_pNext;  
             DELETE(pTemp);  
             pTemp = pTemp2;  
         }  
-        m_pTop-&gt;m_pNext = NULL;  
-        m_size = 0;  
+        m_pTop-&gt;m_pNext = <span style="color:#658b00">NULL</span>;  
+        m_size = <span style="color:#b452cd">0</span>;  
     }  
 
-    const bool empty() const  
-    {  
-        return (NULL == m_pTop || NULL == m_pTop-&gt;m_pNext) ? true : false;  
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#8b008b;font-weight:bold">return</span> (<span style="color:#658b00">NULL</span> == m_pTop || <span style="color:#658b00">NULL</span> == m_pTop-&gt;m_pNext) ? <span style="color:#658b00">true</span> : <span style="color:#658b00">false</span>;  
     }  
 
-    const size_t size() const  
-    {  
-        return m_size;  
+    <span style="color:#8b008b;font-weight:bold">const</span> size_t <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#8b008b;font-weight:bold">return</span> m_size;  
     }  
 
-    bool push(const T&amp; t)  
-    {  
-        if (NULL == m_pTop)  
+    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == m_pTop)  
         {  
-            return false;  
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;  
         }  
 
-        TNode* pTemp = NULL;  
+        TNode* pTemp = <span style="color:#658b00">NULL</span>;  
         NEW(pTemp, TNode());  
-        if (NULL == pTemp)  
-        {  
-            return false;  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == pTemp) {  
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;  
         }  
         pTemp-&gt;m_data = t;  
         pTemp-&gt;m_pNext = m_pTop-&gt;m_pNext;  
@@ -326,82 +297,75 @@ public:
 
         m_size++;  
 
-        return true;  
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
     }  
 
-    T pop()  
-    {  
+    T&amp; pop() {  
         TNode* pTemp = m_pTop-&gt;m_pNext;  
-        if (NULL == pTemp)  
-        {  
-            throw Error&lt;T&gt; (&#34;Overflow&#34;);  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == pTemp) {  
+            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt; (<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
         }  
 
         T t = pTemp-&gt;m_data;  
         m_pTop-&gt;m_pNext = pTemp-&gt;m_pNext;  
         DELETE(pTemp);  
         m_size--;  
-        return t;  
+        <span style="color:#8b008b;font-weight:bold">return</span> t;  
     }  
 
-    // 遍历所有的节点  
-    void traverse(void(*func)(T&amp;))  
-    {  
-        if (empty())  
-        {  
-            return;  
+    <span style="color:#228b22">// 遍历所有的节点  
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>(<span style="color:#00688b;font-weight:bold">void</span>(*func)(T&amp;)) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+            <span style="color:#8b008b;font-weight:bold">return</span>;  
         }  
         TNode* pTemp = m_pTop-&gt;m_pNext;  
-        while (NULL != pTemp)  
-        {  
+        <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#658b00">NULL</span> != pTemp) {  
             func(pTemp-&gt;m_data);  
             pTemp = pTemp-&gt;m_pNext;  
         }  
     }  
 
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
     TNode* m_pTop;  
     size_t m_size;  
 };
-</code></pre></div><p>测试代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print_stack(int&amp; a)  
-{  
-    printf(&#34;%d/t&#34;, a);  
+</code></pre></div><h2 id="测试代码">测试代码</h2>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_stack</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
+    printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
 }  
 
-void test_stack()  
-{  
-    printf(&#34;stack test /n&#34;);  
-    //Stack&lt;int, 4&gt; stack;  
-    LStack&lt;int&gt; stack;  
+<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_stack</span>() {  
+    printf(<span style="color:#cd5555">&#34;stack test /n&#34;</span>);  
+    <span style="color:#228b22">//Stack&lt;int, 4&gt; stack;  
+</span><span style="color:#228b22"></span>    LStack&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; stack;  
 
-    stack.push(1);  
-    stack.push(2);  
-    stack.push(3);  
+    stack.push(<span style="color:#b452cd">1</span>);  
+    stack.push(<span style="color:#b452cd">2</span>);  
+    stack.push(<span style="color:#b452cd">3</span>);  
     stack.pop();  
     stack.pop();  
     stack.pop();  
-    stack.push(1);  
-    stack.push(2);  
-    stack.push(3);  
+    stack.push(<span style="color:#b452cd">1</span>);  
+    stack.push(<span style="color:#b452cd">2</span>);  
+    stack.push(<span style="color:#b452cd">3</span>);  
 
-    printf(&#34;/n1 : size: %d /n&#34;, stack.size());  
+    printf(<span style="color:#cd5555">&#34;/n1 : size: %d /n&#34;</span>, stack.size());  
     stack.traverse(print_stack);  
 
     stack.pop();  
-    printf(&#34;/n2 : size: %d /n&#34;, stack.size());  
+    printf(<span style="color:#cd5555">&#34;/n2 : size: %d /n&#34;</span>, stack.size());  
     stack.traverse(print_stack);  
 
-    stack.push(4);  
-    printf(&#34;/n3 : size: %d /n&#34;, stack.size());  
+    stack.push(<span style="color:#b452cd">4</span>);  
+    printf(<span style="color:#cd5555">&#34;/n3 : size: %d /n&#34;</span>, stack.size());  
     stack.traverse(print_stack);  
 
     stack.pop();  
-    printf(&#34;/n4 : size: %d /n&#34;, stack.size());  
+    printf(<span style="color:#cd5555">&#34;/n4 : size: %d /n&#34;</span>, stack.size());  
     stack.traverse(print_stack);  
 
     stack.clear();  
-    printf(&#34;/n5 : size: %d /n&#34;, stack.size());  
+    printf(<span style="color:#cd5555">&#34;/n5 : size: %d /n&#34;</span>, stack.size());  
     stack.traverse(print_stack);  
 }  
 </code></pre></div>
@@ -411,7 +375,7 @@ void test_stack()
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -420,16 +384,16 @@ void test_stack()
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/" rel="next" title="C&#43;&#43;技巧之宏Macro应用">
-        <i class="fa fa-chevron-left"></i> C&#43;&#43;技巧之宏Macro应用
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/" rel="next" title="c&#43;&#43;技巧之宏Macro应用">
+        <i class="fa fa-chevron-left"></i> c&#43;&#43;技巧之宏Macro应用
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/" rel="prev" title="用C&#43;&#43;模板来展示new与delete操作符原理">
-        用C&#43;&#43;模板来展示new与delete操作符原理 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/" rel="prev" title="用c&#43;&#43;模板来展示new与delete操作符原理">
+        用c&#43;&#43;模板来展示new与delete操作符原理 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -450,7 +414,7 @@ void test_stack()
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：[c&#43;&#43;]自己实现的stack
+            标题：c&#43;&#43;实现的stack
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -475,7 +439,16 @@ void test_stack()
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -487,7 +460,7 @@ void test_stack()
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -539,6 +512,23 @@ void test_stack()
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#公共宏与异常类">公共宏与异常类</a></li>
+        <li><a href="#顺序存储">顺序存储</a></li>
+        <li><a href="#链式存储">链式存储</a></li>
+        <li><a href="#测试代码">测试代码</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 
@@ -554,7 +544,7 @@ void test_stack()
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

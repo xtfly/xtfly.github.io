@@ -6,7 +6,455 @@
     <description>Recent content in Java on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 06 Oct 2019 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 29 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码17：写好代码就要深入细节</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1129_code/</link>
+      <pubDate>Sun, 29 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1129_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;案例代码来源我们某产品：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (StringUtil.&lt;span style=&#34;color:#658b00&#34;&gt;isEmpyt&lt;/span&gt;(orgName)) {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BackParameterException(...);
+    }
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (Entry&amp;lt;String, Object&amp;gt; orgPackage: oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;entrySet&lt;/span&gt;()) {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;switch&lt;/span&gt; ( orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getKey&lt;/span&gt;() ) {
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgAssets&amp;#34;&lt;/span&gt;:
+                List&amp;lt;TApigwOrgAsset&amp;gt; orgAssets = (List&amp;lt;ApigwOrgAsset&amp;gt;) orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getValue&lt;/span&gt;();
+                List&amp;lt;TApigwAssetContent&amp;gt; orgAssetContents = (List&amp;lt;TApigwAssetContent&amp;gt;) oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;orgAssetContents&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;);
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (TApigwOrgAsset orgAsset: orgAssets) {
+                            aTApigwAssetContentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByPrimaryKey&lt;/span&gt;(orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getAstid&lt;/span&gt;());
+                            aTApigwOrgAssetMapp.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByOrgName&lt;/span&gt;(orgName, orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getZone&lt;/span&gt;());
+                        }
+                    }
+
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; || orgAssetContents == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+                    }
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+                        aTApigwOrgAssetMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(aTApigwOrgAsset);
+                    }
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwAssetContent orgAssetConent: orgAssetContents){
+                        aTApigwAssetConentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(orgAssetConent);
+                    }
+                } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (Excetption e) {
+                    threw &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;ApigwExcepiton&lt;/span&gt;(...)
+                }
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgService&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgConfigGroups&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgVariables&amp;#34;&lt;/span&gt;:
+                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码16：函数式让数据处理更简洁</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1108_code/</link>
+      <pubDate>Sun, 08 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1108_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非&lt;code&gt;F&lt;/code&gt;级别课程统计平均分数：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String title;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; grade;
+}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ReportCard&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String studentName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; ArrayList&amp;lt;CourseGrade&amp;gt; cliens;
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;printReport&lt;/span&gt;() {
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Report card for &amp;#34;&lt;/span&gt; + studentName);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Course Title       Grade&amp;#34;&lt;/span&gt;);
+        Iterator&amp;lt;CourseGrade&amp;gt; grades = cliens.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+        CourseGrade grade;
+        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;double&lt;/span&gt; avg = 0.&lt;span style=&#34;color:#658b00&#34;&gt;0d&lt;/span&gt;;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (grades.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+            grade = grades.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;();
+            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(grade.&lt;span style=&#34;color:#658b00&#34;&gt;title&lt;/span&gt; + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;    &amp;#34;&lt;/span&gt; + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt;);
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (!(grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;F&amp;#39;&lt;/span&gt;)) {
+                avg = avg + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; - 64;
+            }
+        }
+        avg = avg / cliens.&lt;span style=&#34;color:#658b00&#34;&gt;size&lt;/span&gt;();
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Grade Point Average = &amp;#34;&lt;/span&gt; + avg);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码有哪些问题呢:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;成员变量采用public，缺少数据封装性&lt;/li&gt;
+&lt;li&gt;没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题&lt;/li&gt;
+&lt;li&gt;avg这个变量多个用途，即是总分，又是平均分&lt;/li&gt;
+&lt;li&gt;cliens变量名难以理解&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;!(grade.grade == &#39;F&#39;)&lt;/code&gt; 有点反直觉&lt;/li&gt;
+&lt;li&gt;while循环干了两件事，打印每课的成绩，也统计了分数&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码15：写代码从事物认识开始</title>
+      <link>http://lanlingzi.cn/post/technical/2020/1101_code/</link>
+      <pubDate>Sun, 01 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/1101_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是贫血模型类+事务脚本（逻辑过程），并给出一个贫血类设计的案例代码。凭记忆记录如下，有三个类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Customer: 顾客&lt;/li&gt;
+&lt;li&gt;Wallet: 顾客的钱包&lt;/li&gt;
+&lt;li&gt;Paperboy: 收银员&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;实现的主体逻辑是，收银员向顾客收钱。&lt;/p&gt;
+&lt;p&gt;代码如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; value;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getTotalMoney&lt;/span&gt;() { &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; value; }
+    
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;addMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; deposit) {
+        value += deposit;
+    }
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;subtractMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; debit) {
+        value -= debit;
+    }
+}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Customer&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String firstName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String lastName;
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Wallet myWallet;
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法，与Getter
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Paperboy&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;charge&lt;/span&gt;(Customer myCustomer, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; payment) {
+        Wallet theWallet = myCustomer.&lt;span style=&#34;color:#658b00&#34;&gt;getWallet&lt;/span&gt;();
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;getTotalMoney&lt;/span&gt;() &amp;gt; payment) {
+            theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;subtractMoney&lt;/span&gt;(payment);
+        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; NotEnoughMoneyException();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码12：好代码应表意直白</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0815_code/</link>
+      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0815_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。&lt;/p&gt;
+&lt;p&gt;代码一：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;run&lt;/span&gt;() {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(!(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;())) {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;) {
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMills&lt;/span&gt;() &amp;gt; 0L) {
+                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;()) {
+                            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt;;
+                        }
+                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;wait&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMillis&lt;/span&gt;());
+                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略主要业务逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IntrruptedExecption e) {
+                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    }
+                } &lt;span style=&#34;color:#228b22&#34;&gt;// 注意：这个while之后并没有其它的逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            }
+        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt;(Throwable e) {
+            &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。&lt;/li&gt;
+&lt;li&gt;第一个while判断是 &lt;code&gt;否定之否定&lt;/code&gt; 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。&lt;/li&gt;
+&lt;li&gt;代码有bug(嵌套太深隐藏了bug)，当超过最大时间时，若没有设置stopped标识位，空循环占CPU。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;建议优化：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。&lt;/li&gt;
+&lt;li&gt;去掉&lt;code&gt;否定之否定&lt;/code&gt;。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码11：通过封装降低耦合</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0808_code/</link>
+      <pubDate>Sat, 08 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0808_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, String&amp;gt; store = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;();
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; List&amp;lt;Class2&amp;gt; queue = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+    &lt;span style=&#34;color:#228b22&#34;&gt;//... 省略其它的字段与其Getter/Setter方法
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
+  &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+   &lt;span style=&#34;color:#228b22&#34;&gt;// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;()) {
+     String value = class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (value == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+        &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        value = createValue();
+        class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(key, value);
+     }
+   }
+
+   &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码的问题是很明显：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。&lt;/li&gt;
+&lt;li&gt;同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码10：提升性能，表设计很重要</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0726_code/</link>
+      <pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0726_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;案例一&lt;/strong&gt;：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytesInternel&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:127)
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;Accessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(Accessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:897)
+at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getString&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:154)
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码9：提升性能，线程数合适就行</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0718_code/</link>
+      <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0718_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;两周前，参与某一老产品的性能优化有如下收获：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同事说，我配置了 &lt;strong&gt;1000个线程&lt;/strong&gt; ，但是总消耗时间还是需要 &lt;strong&gt;10分钟&lt;/strong&gt; 左右，似乎没有真正的并发。&lt;/li&gt;
+&lt;li&gt;经过分析代码，狂改一通代码，结果是：只配置了 &lt;strong&gt;32个线程&lt;/strong&gt; ，总消耗时间下降至 &lt;strong&gt;44秒&lt;/strong&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(cache) {  &lt;span style=&#34;color:#228b22&#34;&gt;// 这个是全局锁，极大影响并发
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {  
+            desc = getDescription(....);  &lt;span style=&#34;color:#228b22&#34;&gt;// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; CopyOnWriteMap(cache) &lt;span style=&#34;color:#228b22&#34;&gt;// 对象Copy
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(key, desc);
+        }
+    }
+}
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; desc;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码8：提升性能，线程级缓存复用</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0705_code/</link>
+      <pubDate>Sun, 05 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0705_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;■■(工号) 2019-08-27 14:50&lt;br&gt;
+飞哥，下午有时间吗？▲▲的性能瓶颈的问题想跟你讨论一下&lt;br&gt;
+◆◆◆(工号) 2019-08-27 14:51&lt;br&gt;
+好&lt;br&gt;
+■■(工号) 2019-08-28 10:39&lt;br&gt;
+飞哥，性能有提升， 8W8 压到了 9W7&lt;br&gt;
+提升了1W&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一个下午的时间，到底发生了什么，对代码做了什么优化，性能提升将近1W TPS？&lt;/p&gt;
+&lt;p&gt;出现性能瓶颈的组件是平台一个很成熟的中间件，从x86切换到arm下性能基准测试情况如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;组网：3 client + 1 server&lt;/li&gt;
+&lt;li&gt;环境：4VM(arm 8C64G) VS 4VM(x86 8C64G）&lt;/li&gt;
+&lt;li&gt;基准测试：TPS x86 VS arm = 1 VS 0.6&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码6：消除重复，需要配置代码分离</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0621_code/</link>
+      <pubDate>Sun, 21 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0621_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一平台产品前端源码(Java语言)中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;constructConstrainMap&lt;/span&gt;() {
+    Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;();
+    Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdPatten&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;&lt;/span&gt;);
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMin&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;);
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMax&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;256&amp;#34;&lt;/span&gt;);
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdValue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;);
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;noEcho&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;false&amp;#34;&lt;/span&gt;);
+    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;description&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;com.huawei.....&amp;#34;&lt;/span&gt;);
+    typeConstrainMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(TPropType.&lt;span style=&#34;color:#658b00&#34;&gt;IAA_S_IMAGE_ID&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;value&lt;/span&gt;(), imageConstrainPatternMap)
+
+    Map&amp;lt;String, String&amp;gt; netWorkConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+    Map&amp;lt;String, String&amp;gt; containerConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 其它的Constrain代码 ...
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码5：消除重复，需要搞点设计模式</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0613_code/</link>
+      <pubDate>Sat, 13 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0613_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;RemoteExecuteHandler&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleDownload&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+            initSshClient();
+            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage();
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
+        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
+            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;CMC download package failed&amp;#34;&lt;/span&gt;, e);
+            closeSshClient();
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
+        }
+    }
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleLoad&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+            initSshClient();
+            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage();
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
+        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
+            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Load site package failed&amp;#34;&lt;/span&gt;, e);
+            closeSshClient();
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
+        }
+    }
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有几个类似的方法，不再一一列表
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码4：消除重复，需要了解框架机制</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0605_code/</link>
+      <pubDate>Fri, 05 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0605_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中（&lt;code&gt;代码一&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory instance = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServiceFactory();
+
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory &lt;span style=&#34;color:#008b45&#34;&gt;getInstance&lt;/span&gt;() {
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; instance;
+    }
+
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateDesignServie appTemplateDesignServie;
+   
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateExportServie appTemplateExportServie;
+    
+    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再来看另一平台服务的代码(Java语言)（&lt;code&gt;代码二&lt;/code&gt;）：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码3：简洁高效的线程安全</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0531_code/</link>
+      <pubDate>Sun, 31 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0531_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一中间件产品源码(Java语言)中（&lt;code&gt;写法一&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+    AtomicLong rejectMessageCount = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(serviceName);
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; == rejectMessageCount) {
+        rejectMessageCount = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong();
+        AtomicLong currentValue = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;putIfAbsent&lt;/span&gt;(serviceName, rejectMessageCount);
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ( &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; != currentValue) {
+            rejectMessageCount = currentValue;
+        }
+    }
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCount;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码是线程安全的，但不够简洁，Java 1.8的&lt;code&gt;ConcurrentMap&lt;/code&gt;提供&lt;code&gt;computeIfAbsent()&lt;/code&gt;方法，可以简化为（&lt;code&gt;写法二&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;computeIfAbsent&lt;/span&gt;(serviceName, (key)-&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong());
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码1：确保资源被释放</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0516_code/</link>
+      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
+src_path, src_file = os.path.split(file_name)
+tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+tmp_file.writeline(file_gz.realines())
+file_gz.close()
+tmp_file.close()
+os.remove(file_name)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
+&lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;能正确释放资源的建议写法是:&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>跟我一起复习Java-10：工具体系</title>
       <link>http://lanlingzi.cn/post/technical/2019/1006_java_base_10/</link>

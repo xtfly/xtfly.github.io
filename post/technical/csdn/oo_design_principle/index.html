@@ -142,12 +142,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1357 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1368 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。</p>
+    <h2 id="为什么要有设计">为什么要有设计</h2>
+<p>如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。</p>
 <p>导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：</p>
 <ul>
 <li>过于僵硬</li>
@@ -169,6 +170,7 @@
 </ul>
 <p>在面向对象的语言中，数据的抽象化、继承、封装和多态性是几项最重要的语言特性，这些特性使得一个系统可以在更高的层次上提供可复用性。数据的抽象化和继承关系使得概念和定义可以复用；多态性使得实现和应用可以复用；而抽象化和封装可以保持和促进系统的可维护性。</p>
 <p>在一个设计得当的系统中，每一个模块都相对于其它模块独立存在，并只保持与其它模块的尽可能少的通信。这样一来，在其中某一个模块发生代码修改的时候，这个修改的压力不会传递到其它的模块。</p>
+<h2 id="设计原则">设计原则</h2>
 <p>常见的设计原则有：</p>
 <ul>
 <li>
@@ -214,16 +216,16 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" rel="next" title="C&#43;&#43;技巧之名字空间namespace">
-        <i class="fa fa-chevron-left"></i> C&#43;&#43;技巧之名字空间namespace
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" rel="next" title="c&#43;&#43;技巧之名字空间namespace">
+        <i class="fa fa-chevron-left"></i> c&#43;&#43;技巧之名字空间namespace
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" rel="prev" title="[C&#43;&#43;] STL容器中erase方法的不同陷阱">
-        [C&#43;&#43;] STL容器中erase方法的不同陷阱 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" rel="prev" title="c&#43;&#43; STL容器erase方法的不同陷阱">
+        c&#43;&#43; STL容器erase方法的不同陷阱 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -269,7 +271,16 @@
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -281,7 +292,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -333,6 +344,21 @@
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#为什么要有设计">为什么要有设计</a></li>
+        <li><a href="#设计原则">设计原则</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 
@@ -348,7 +374,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

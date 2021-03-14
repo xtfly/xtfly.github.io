@@ -6,13 +6,76 @@
     <description>Recent content in Tags on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>python</title>
+      <link>http://lanlingzi.cn/tags/python/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/python/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>软件开发</title>
       <link>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/</link>
-      <pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;</title>
+      <link>http://lanlingzi.cn/tags/c&#43;&#43;/</link>
+      <pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shell</title>
+      <link>http://lanlingzi.cn/tags/shell/</link>
+      <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/shell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>http://lanlingzi.cn/tags/java/</link>
+      <pubDate>Sun, 29 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>设计模式</title>
+      <link>http://lanlingzi.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sat, 13 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>c</title>
+      <link>http://lanlingzi.cn/tags/c/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Go</title>
+      <link>http://lanlingzi.cn/tags/go/</link>
+      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/tags/go/</guid>
       <description></description>
     </item>
     
@@ -31,15 +94,6 @@
       <pubDate>Sun, 13 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/opensource/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>http://lanlingzi.cn/tags/java/</link>
-      <pubDate>Sun, 06 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/java/</guid>
       <description></description>
     </item>
     
@@ -89,20 +143,11 @@
     </item>
     
     <item>
-      <title>Archlinux</title>
-      <link>http://lanlingzi.cn/tags/archlinux/</link>
+      <title>Linux</title>
+      <link>http://lanlingzi.cn/tags/linux/</link>
       <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://lanlingzi.cn/tags/archlinux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Manjaro</title>
-      <link>http://lanlingzi.cn/tags/manjaro/</link>
-      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/manjaro/</guid>
+      <guid>http://lanlingzi.cn/tags/linux/</guid>
       <description></description>
     </item>
     
@@ -193,15 +238,6 @@
       <pubDate>Tue, 07 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Go</title>
-      <link>http://lanlingzi.cn/tags/go/</link>
-      <pubDate>Fri, 03 Feb 2017 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/go/</guid>
       <description></description>
     </item>
     
@@ -341,24 +377,6 @@
     </item>
     
     <item>
-      <title>Mac</title>
-      <link>http://lanlingzi.cn/tags/mac/</link>
-      <pubDate>Sun, 21 Feb 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/mac/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Shell</title>
-      <link>http://lanlingzi.cn/tags/shell/</link>
-      <pubDate>Sun, 21 Feb 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/shell/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>软件重构</title>
       <link>http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E9%87%8D%E6%9E%84/</link>
       <pubDate>Sat, 23 Jan 2016 00:00:00 +0000</pubDate>
@@ -409,15 +427,6 @@
       <pubDate>Thu, 31 Dec 2015 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/debian/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Linux</title>
-      <link>http://lanlingzi.cn/tags/linux/</link>
-      <pubDate>Thu, 31 Dec 2015 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/linux/</guid>
       <description></description>
     </item>
     
@@ -508,15 +517,6 @@
       <pubDate>Sat, 22 Aug 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/tags/%E5%8E%86%E5%8F%B2/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>cpp</title>
-      <link>http://lanlingzi.cn/tags/cpp/</link>
-      <pubDate>Mon, 13 Jul 2009 00:00:00 +0000</pubDate>
-      
-      <guid>http://lanlingzi.cn/tags/cpp/</guid>
       <description></description>
     </item>
     

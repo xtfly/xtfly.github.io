@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4137 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4150 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -205,7 +205,7 @@ Data&amp;&amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转�
 f(data);   // 1, OK， 左值
 f(Data{}); // 2, OK ，右值
 f(data1);  // 1, OK, 左值引用
-f(data2);  // 2, OK, 右值引用
+f(data2);  // 1, OK, data2是右值引用，但是一个左值
 </code></pre></div><p>C++ 还支持了<strong>常引用</strong>(c-ref, const reference)，同时接受<strong>左值/右值</strong>进行初始化：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void g(const Data&amp; data); // 常引用
 g(data); // 接受左值
@@ -312,6 +312,8 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
      
     <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
     
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
+    
 </div>
 
 
@@ -395,7 +397,7 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -479,7 +481,7 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

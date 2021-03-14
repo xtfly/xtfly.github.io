@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>C&#43;&#43;的仿函数与动态语言的闭包 - 蘭陵N梓記</title>
+    <title>c&#43;&#43;的仿函数与动态语言的闭包 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="C&#43;&#43;的仿函数与动态语言的闭包">
+    <meta property="og:title" content="c&#43;&#43;的仿函数与动态语言的闭包">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="C&#43;&#43;的仿函数与动态语言的闭包 - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43;的仿函数与动态语言的闭包 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/" itemprop="url">
-        C&#43;&#43;的仿函数与动态语言的闭包
+        c&#43;&#43;的仿函数与动态语言的闭包
         </a>
       </h1>
       <div class="post-meta">
@@ -142,17 +142,18 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">804 字 ~2分钟</span>
+<span class="leancloud-visitors-count">809 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
+    <h2 id="闭包">闭包</h2>
+<p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
 10.times{|n| sum += n}   
 print sum
 </code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
-<p>我们还来看看<code>Python</code>写的闭包：</p>
+<p>我们再来看看<code>Python</code>写的闭包：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
@@ -164,6 +165,7 @@ print add8(100)
 <li>另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。比如参考资源中就有这样的的定义：在实现深约束时，需要创建一个能显式表示引用环境的东西，并将它与相关的子程序捆绑在一起，这样捆绑起来的整体被称为闭包。</li>
 </ul>
 <p>这两种定义在某种意义上是对立的，一个认为闭包是函数，另一个认为闭包是函数和引用环境组成的整体。虽然有些咬文嚼字，但可以肯定第二种说法更确切。闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。</p>
+<h2 id="仿函数">仿函数</h2>
 <p>什么是仿函数，我们先用C++来写个例子：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">struct comparer {  
   bool operator()(int a, int b) const {  
@@ -171,8 +173,7 @@ print add8(100)
   }  
 };  
 
-int main(int, char**)  
-{  
+int main(int, char**) {  
    std::vector&lt;int&gt; vec;  
    std::sort(vec.begin(), vec.end(), comparer());  
    return 0;  
@@ -184,7 +185,7 @@ int main(int, char**)
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -193,16 +194,16 @@ int main(int, char**)
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" rel="next" title="[C&#43;&#43;] STL容器中erase方法的不同陷阱">
-        <i class="fa fa-chevron-left"></i> [C&#43;&#43;] STL容器中erase方法的不同陷阱
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" rel="next" title="c&#43;&#43; STL容器erase方法的不同陷阱">
+        <i class="fa fa-chevron-left"></i> c&#43;&#43; STL容器erase方法的不同陷阱
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/" rel="prev" title="C&#43;&#43;技巧之栈变量的析构应用">
-        C&#43;&#43;技巧之栈变量的析构应用 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/" rel="prev" title="c&#43;&#43;技巧之栈变量的析构应用">
+        c&#43;&#43;技巧之栈变量的析构应用 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -223,7 +224,7 @@ int main(int, char**)
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：C&#43;&#43;的仿函数与动态语言的闭包
+            标题：c&#43;&#43;的仿函数与动态语言的闭包
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -248,7 +249,16 @@ int main(int, char**)
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -260,7 +270,7 @@ int main(int, char**)
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -312,6 +322,21 @@ int main(int, char**)
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#闭包">闭包</a></li>
+        <li><a href="#仿函数">仿函数</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 
@@ -327,7 +352,7 @@ int main(int, char**)
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

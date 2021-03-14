@@ -69,7 +69,8 @@
       <pubDate>Fri, 03 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/oo_design_principle/</guid>
-      <description>&lt;p&gt;如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。&lt;/p&gt;
+      <description>&lt;h2 id=&#34;为什么要有设计&#34;&gt;为什么要有设计&lt;/h2&gt;
+&lt;p&gt;如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。&lt;/p&gt;
 &lt;p&gt;导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;过于僵硬&lt;/li&gt;

@@ -6,7 +6,47 @@
     <description>Recent content in Linux on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 31 Dec 2015 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 15 Apr 2018 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从Archlinux到Manjaro&#43;i3 WM</title>
+      <link>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</link>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2018/0415_manjaro_i3/</guid>
+      <description>&lt;p&gt;这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/1.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;http://lanlingzi.cn/images/screenshot/manjaro/2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Archlinux on WSL</title>
+      <link>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</link>
+      <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2016/1030_archlinux_wsl/</guid>
+      <description>&lt;p&gt;最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>制作Archlinux Docker基础Image</title>
+      <link>http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/</link>
+      <pubDate>Sun, 10 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2016/0410_archlinux_docker_images/</guid>
+      <description>&lt;p&gt;想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。&lt;/p&gt;
+&lt;p&gt;正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本&lt;a href=&#34;https://github.com/docker/docker/blob/master/contrib/mkimage-arch.sh&#34;&gt;mkimage-arch.sh&lt;/a&gt;，于是把它做了些改造，制作过程记录一下：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Grub引导Win10</title>
+      <link>http://lanlingzi.cn/post/notes/2016/0313_grub_win10/</link>
+      <pubDate>Sun, 13 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/notes/2016/0313_grub_win10/</guid>
+      <description>&lt;p&gt;个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。&lt;/p&gt;
+&lt;p&gt;安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>虚拟与现实</title>
       <link>http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/</link>
@@ -14,7 +54,7 @@
       
       <guid>http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG&#34; alt=&#34;Debian&#34;&gt;&lt;/p&gt;
-&lt;p&gt;万万没想到，在即将迎来2016年时，微信，科技新闻中都在传&lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。&lt;/p&gt;</description>
+&lt;p&gt;万万没想到，在即将迎来2016年时，微信科技新闻中都在转发 &lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。&lt;/p&gt;</description>
     </item>
     
   </channel>

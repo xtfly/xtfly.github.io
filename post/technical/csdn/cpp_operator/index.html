@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>C&#43;&#43;技巧之operator操作符 - 蘭陵N梓記</title>
+    <title>c&#43;&#43;技巧之operator操作符 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="C&#43;&#43;技巧之operator操作符">
+    <meta property="og:title" content="c&#43;&#43;技巧之operator操作符">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="C&#43;&#43;技巧之operator操作符 - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43;技巧之operator操作符 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_operator/" itemprop="url">
-        C&#43;&#43;技巧之operator操作符
+        c&#43;&#43;技巧之operator操作符
         </a>
       </h1>
       <div class="post-meta">
@@ -142,40 +142,38 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">418 字 ~1分钟</span>
+<span class="leancloud-visitors-count">424 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得<code>operator</code>比较好玩。C++有时它的确是个耐玩的东东。<code>operator</code>它有两种用法，一种是<code>operator overloading</code>（操作符重载），一种是<code>operator casting</code>（操作隐式转换）。</p>
-<h2 id="operator-overloading">operator overloading</h2>
+    <h2 id="背景">背景</h2>
+<p>这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得<code>operator</code>比较好玩。C++有时它的确是个耐玩的东东。<code>operator</code>它有两种用法，一种是<code>operator overloading</code>（操作符重载），一种是<code>operator casting</code>（操作隐式转换）。</p>
+<h2 id="两种用法">两种用法</h2>
+<h3 id="operator-overloading">operator overloading</h3>
 <p>C++可以通过operator 重载操作符，格式如下：类型<code>T operator 操作符 ()</code>，如比重载<code>+</code>，如下所示</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; class A  
-{  
-public:  
-    const T operator + (const T&amp; rhs)  
-    {  
-     return this-&gt;m_ + rhs;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
+    <span style="color:#8b008b;font-weight:bold">const</span> T <span style="color:#8b008b;font-weight:bold">operator</span> + (<span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs) {  
+     <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;m_ + rhs;  
     }  
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
     T m_;  
 };
 </code></pre></div><p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt; struct A  
-{  
-   T operator()(const T&amp; lhs, const T&amp; rhs){ return lhs-rhs;}  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+   T <span style="color:#008b45">operator</span>()(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; lhs, <span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs){ <span style="color:#8b008b;font-weight:bold">return</span> lhs-rhs;}  
 };  
-</code></pre></div><h2 id="operator-casting">operator casting</h2>
+</code></pre></div><h3 id="operator-casting">operator casting</h3>
 <p>C++可以通过operator 重载隐式转换，格式如下： <code>operator</code> 类型<code>T ()</code>，如下所示</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">class A  
-{  
-public:  
-   operator B* () { return this-&gt;b_;}   
-   operator const B* () const {return this-&gt;b_;}      
-   operator B&amp; () { return *this-&gt;b_;}  
-   operator const B&amp; () const {return *this-&gt;b_;}   
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
+   <span style="color:#8b008b;font-weight:bold">operator</span> B* () { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
+   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B* () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}      
+   <span style="color:#8b008b;font-weight:bold">operator</span> B&amp; () { <span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}  
+   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B&amp; () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
 
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
    B* b_;  
 };  
 </code></pre></div><p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
@@ -185,7 +183,7 @@ private:
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -194,16 +192,16 @@ private:
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/" rel="next" title="C&#43;&#43;技巧之栈变量的析构应用">
-        <i class="fa fa-chevron-left"></i> C&#43;&#43;技巧之栈变量的析构应用
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/" rel="next" title="c&#43;&#43;技巧之栈变量的析构应用">
+        <i class="fa fa-chevron-left"></i> c&#43;&#43;技巧之栈变量的析构应用
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/" rel="prev" title="[c&#43;&#43;]自己实现的queue">
-        [c&#43;&#43;]自己实现的queue <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/" rel="prev" title="c&#43;&#43;实现的queue">
+        c&#43;&#43;实现的queue <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -224,7 +222,7 @@ private:
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：C&#43;&#43;技巧之operator操作符
+            标题：c&#43;&#43;技巧之operator操作符
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -261,7 +259,7 @@ private:
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -328,7 +326,7 @@ private:
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

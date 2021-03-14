@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>[c&#43;&#43;]自己实现的queue - 蘭陵N梓記</title>
+    <title>c&#43;&#43;实现的queue - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="[c&#43;&#43;]自己实现的queue">
+    <meta property="og:title" content="c&#43;&#43;实现的queue">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="[c&#43;&#43;]自己实现的queue - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43;实现的queue - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/" itemprop="url">
-        [c&#43;&#43;]自己实现的queue
+        c&#43;&#43;实现的queue
         </a>
       </h1>
       <div class="post-meta">
@@ -142,209 +142,198 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">553 字 ~2分钟</span>
+<span class="leancloud-visitors-count">546 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。</p>
-<h2 id="顺序存储实现">顺序存储实现：</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T, size_t SIZE&gt;  
-class Queue  
-{  
-public:  
-    Queue() :  m_front(0), m_rear(0)  
-    {  
+<h2 id="顺序存储">顺序存储</h2>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Queue</span> {  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
+    Queue() :  m_front(<span style="color:#b452cd">0</span>), m_rear(<span style="color:#b452cd">0</span>) {  
+    }
+  
+    ~Queue() {  
     }  
-    ~Queue()  
-    {  
+  
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
+        m_front = <span style="color:#b452cd">0</span>;  
+        m_rear = <span style="color:#b452cd">0</span>;  
     }  
-    void clear()  
-    {  
-        m_front = 0;  
-        m_rear = 0;  
+  
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span>  {  
+        <span style="color:#8b008b;font-weight:bold">return</span> m_front == m_rear;  
     }  
-    const bool empty() const  
-    {  
-        return m_front == m_rear;  
+  
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#00688b;font-weight:bold">int</span> s = (m_rear - m_front + (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE ;  
+        <span style="color:#8b008b;font-weight:bold">return</span> s;  
     }  
-    const int size() const  
-    {  
-        int s = (m_rear - m_front + (int)SIZE) % (int)SIZE ;  
-        return s;  
-    }  
-    bool push(const T&amp; t)  
-    {  
-        int pos = (m_rear + 1) % (int)SIZE;  
-        //printf(&#34;/n m_rear = %d&#34;, pos);  
-        if (pos == m_front)  
-        {  
-            return false;// it&#39;s full  
-        }  
+  
+    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+        <span style="color:#00688b;font-weight:bold">int</span> pos = (m_rear + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
+        <span style="color:#228b22">//printf(&#34;/n m_rear = %d&#34;, pos);  
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (pos == m_front) {  
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;<span style="color:#228b22">// it&#39;s full  
+</span><span style="color:#228b22"></span>        }  
         m_rear = pos;  
         m_data[m_rear] = t;  
-        return true;  
-    }  
-    T&amp; pop()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
+    } 
+  
+    T&amp; pop() {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
         }  
-        m_front = (m_front + 1) % (int)SIZE;  
-        //printf(&#34;/n m_front = %d&#34;, m_front);  
-        return m_data[m_front];  
+        m_front = (m_front + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
+        <span style="color:#228b22">//printf(&#34;/n m_front = %d&#34;, m_front);  
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
     }  
-    T&amp; getfront()  
-    {  
-        return m_data[m_front];  
+  
+    T&amp; getfront() {  
+        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
     }  
-    // 遍历所有的节点  
-    void traverse( void (*func)(T&amp;) )  
-    {  
-        if ( empty() ) { return;}  
-        for (int idx = m_front + 1; idx != m_rear + 1; idx++)  
-        {  
-            if ( idx == (int)SIZE)  
-            {  
-                idx %= (int)SIZE;  
+    
+    <span style="color:#228b22">// 遍历所有的节点  
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
+        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> idx = m_front + <span style="color:#b452cd">1</span>; idx != m_rear + <span style="color:#b452cd">1</span>; idx++) {  
+            <span style="color:#8b008b;font-weight:bold">if</span> ( idx == (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) {  
+                idx %= (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
             }  
-            //printf(&#34;/n idx = %d&#34;, idx);  
-            func(m_data[idx]);  
+            <span style="color:#228b22">//printf(&#34;/n idx = %d&#34;, idx);  
+</span><span style="color:#228b22"></span>            func(m_data[idx]);  
         }  
     }  
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
     T m_data[SIZE];  
-    int m_front;  
-    int m_rear;  
+    <span style="color:#00688b;font-weight:bold">int</span> m_front;  
+    <span style="color:#00688b;font-weight:bold">int</span> m_rear;  
 };  
-</code></pre></div><h2 id="链表存储实现">链表存储实现：</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">template&lt;typename T&gt;  
-struct QNode  
-{  
-    QNode() : m_pNext(NULL)  
-    {  
+</code></pre></div><h2 id="链表存储">链表存储</h2>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">QNode</span>  {  
+    QNode() : m_pNext(<span style="color:#658b00">NULL</span>) {  
     }  
+    
     T m_data;  
     QNode* m_pNext;  
 };  
-template&lt;typename T&gt;  
-class LQueue  
-{  
-    typedef QNode&lt;T&gt; TQNode;  
-public:  
-    LQueue()  
-    {  
-        TQNode* pTemp = NULL;  
+
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LQueue</span> {  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> QNode&lt;T&gt; TQNode;  
+<span style="color:#8b008b;font-weight:bold">public</span>:  
+    LQueue() {  
+        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
         NEW(pTemp, TQNode() );  
         m_pFront = m_pRear = pTemp;  
-        m_size = 0;  
+        m_size = <span style="color:#b452cd">0</span>;  
     }  
-    ~LQueue()  
-    {  
+    
+    ~LQueue() {  
         clear();  
         DELETE(m_pFront);  
     }  
-    void clear()  
-    {  
+    
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        while(NULL != pTemp )  
-        {  
+        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp ) {  
             TQNode* pTemp2 = pTemp-&gt;m_pNext;  
             DELETE(pTemp);  
             pTemp = pTemp2;  
         }  
-        m_pFront-&gt;m_pNext = NULL;  
-        m_size = 0;  
+        m_pFront-&gt;m_pNext = <span style="color:#658b00">NULL</span>;  
+        m_size = <span style="color:#b452cd">0</span>;  
     }  
-    const bool empty() const  
-    {  
-        return m_pFront == m_pRear;  
+    
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+        <span style="color:#8b008b;font-weight:bold">return</span> m_pFront == m_pRear;  
     }  
-    const int size() const { return m_size;}  
-    bool push(const T&amp; t)  
-    {  
-        TQNode* pTemp = NULL;  
+    
+    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> { <span style="color:#8b008b;font-weight:bold">return</span> m_size;}  
+    
+    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
         NEW(pTemp, TQNode() );  
-        if ( NULL == pTemp) { return false;}  
+        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#658b00">NULL</span> == pTemp) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;}  
         pTemp-&gt;m_data = t;  
         pTemp-&gt;m_pNext = m_pRear-&gt;m_pNext;  
         m_pRear-&gt;m_pNext = pTemp;  
         m_pRear = pTemp;  
         m_size++;  
-        return true;  
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
     }  
-    T pop()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
+    
+    T <span style="color:#008b45">pop</span>() {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
         }  
+      
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
         T t = pTemp-&gt;m_data;  
         m_pFront-&gt;m_pNext = pTemp-&gt;m_pNext;  
-        if (NULL == m_pFront-&gt;m_pNext)  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == m_pFront-&gt;m_pNext)  
         {  
             m_pRear = m_pFront;  
         }  
         DELETE(pTemp);  
         m_size--;  
-        return t;  
+        <span style="color:#8b008b;font-weight:bold">return</span> t;  
     }  
-    T&amp; getfront()  
-    {  
-        if (empty())  
-        {  
-            throw Error&lt;T&gt;(&#34;Overflow&#34;);  
+    
+    T&amp; getfront() {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
         }  
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
         T t = pTemp-&gt;m_data;  
-        return t;  
+        <span style="color:#8b008b;font-weight:bold">return</span> t;  
     }  
-    // 遍历所有的节点  
-    void traverse( void (*func)(T&amp;) )  
-    {  
-        if ( empty() ) { return;}  
+    
+    <span style="color:#228b22">// 遍历所有的节点  
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
+        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
         TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        while(NULL != pTemp)  
-        {  
+        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp) {  
             func(pTemp-&gt;m_data);  
             pTemp = pTemp-&gt;m_pNext;  
         }  
     }  
-private:  
+<span style="color:#8b008b;font-weight:bold">private</span>:  
     TQNode* m_pFront;  
     TQNode* m_pRear;  
-    int m_size;  
+    <span style="color:#00688b;font-weight:bold">int</span> m_size;  
 };  
-</code></pre></div><h2 id="测试代码">测试代码：</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void print_queue(int&amp; a)  
-{  
-    printf(&#34;%d/t&#34;, a);  
+</code></pre></div><h2 id="测试代码">测试代码</h2>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_queue</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
+    printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
 }  
-void test_queue()  
-{  
-    LQueue&lt;int&gt; queue;  
-    //Queue&lt;int, 4&gt; queue;  
-    queue.push(1);  
-    queue.push(2);  
-    queue.push(3);  
+
+<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_queue</span>() {  
+    LQueue&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; queue;  
+    <span style="color:#228b22">//Queue&lt;int, 4&gt; queue;  
+</span><span style="color:#228b22"></span>    queue.push(<span style="color:#b452cd">1</span>);  
+    queue.push(<span style="color:#b452cd">2</span>);  
+    queue.push(<span style="color:#b452cd">3</span>);  
     queue.pop();  
     queue.pop();  
     queue.pop();  
-    queue.push(1);  
-    queue.push(2);  
-    queue.push(3);  
-    printf(&#34;/n1 : size: %d /n&#34;, queue.size() );  
+    queue.push(<span style="color:#b452cd">1</span>);  
+    queue.push(<span style="color:#b452cd">2</span>);  
+    queue.push(<span style="color:#b452cd">3</span>);  
+    printf(<span style="color:#cd5555">&#34;/n1 : size: %d /n&#34;</span>, queue.size() );  
     queue.traverse(print_queue);  
     queue.pop();  
-    printf(&#34;/n2 : size: %d /n&#34;, queue.size() );  
+    printf(<span style="color:#cd5555">&#34;/n2 : size: %d /n&#34;</span>, queue.size() );  
     queue.traverse(print_queue);  
-    queue.push(4);  
-    printf(&#34;/n3 : size: %d /n&#34;, queue.size() );  
+    queue.push(<span style="color:#b452cd">4</span>);  
+    printf(<span style="color:#cd5555">&#34;/n3 : size: %d /n&#34;</span>, queue.size() );  
     queue.traverse(print_queue);  
     queue.clear();  
-    printf(&#34;/n4 : size: %d /n&#34;, queue.size() );  
+    printf(<span style="color:#cd5555">&#34;/n4 : size: %d /n&#34;</span>, queue.size() );  
     queue.traverse(print_queue);  
 }  
 </code></pre></div>
@@ -354,7 +343,7 @@ void test_queue()
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -363,16 +352,16 @@ void test_queue()
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_operator/" rel="next" title="C&#43;&#43;技巧之operator操作符">
-        <i class="fa fa-chevron-left"></i> C&#43;&#43;技巧之operator操作符
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_operator/" rel="next" title="c&#43;&#43;技巧之operator操作符">
+        <i class="fa fa-chevron-left"></i> c&#43;&#43;技巧之operator操作符
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/" rel="prev" title="C&#43;&#43;技巧之断言Assert">
-        C&#43;&#43;技巧之断言Assert <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/" rel="prev" title="c&#43;&#43;技巧之断言Assert">
+        c&#43;&#43;技巧之断言Assert <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -393,7 +382,7 @@ void test_queue()
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：[c&#43;&#43;]自己实现的queue
+            标题：c&#43;&#43;实现的queue
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -418,7 +407,16 @@ void test_queue()
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -430,7 +428,7 @@ void test_queue()
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -482,6 +480,22 @@ void test_queue()
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#顺序存储">顺序存储</a></li>
+        <li><a href="#链表存储">链表存储</a></li>
+        <li><a href="#测试代码">测试代码</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 
@@ -497,7 +511,7 @@ void test_queue()
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

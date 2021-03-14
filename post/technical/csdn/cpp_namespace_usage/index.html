@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>C&#43;&#43;技巧之名字空间namespace - 蘭陵N梓記</title>
+    <title>c&#43;&#43;技巧之名字空间namespace - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="C&#43;&#43;技巧之名字空间namespace">
+    <meta property="og:title" content="c&#43;&#43;技巧之名字空间namespace">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="C&#43;&#43;技巧之名字空间namespace - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43;技巧之名字空间namespace - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/" itemprop="url">
-        C&#43;&#43;技巧之名字空间namespace
+        c&#43;&#43;技巧之名字空间namespace
         </a>
       </h1>
       <div class="post-meta">
@@ -142,24 +142,20 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1011 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1024 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname  
-{   
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname {   
    const int CVAR1 = 1;  
    const char* const CVAR2 = &#34;33333&#34;;  
    void test();  
 
-   namespace inspname  
-   {  
+   namespace inspname {  
       enum { A, B, C};  
-      class Klass  
-      {  
-      };  
+      class Klass {};  
    }  
 }
 </code></pre></div><p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
@@ -186,52 +182,59 @@
   }    
 }
 </code></pre></div><p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname  
-{  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname {  
    void test(int param);  
 }
-</code></pre></div><p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">using testname;  
-void test(int param)  
-{  
-}
-</code></pre></div><p>正确的使用方式是:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname  
-{  
-   void test(int param)  
-   {  
-   }  
-}  
-</code></pre></div><p>或者是</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void testname::test(int param)  
-{  
-}  
 </code></pre></div></li>
-<li>
-<p>名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace oin = outspname::inspname;  
-</code></pre></div></li>
-<li>
-<p>无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace   
-{  
-  const int CVAR1 = 1;  
-  void test();  
+</ul>
+<p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。
+<code>using testname;   void test(int param) {   }</code></p>
+<pre><code>正确的使用方式是:
+</code></pre>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    namespace testname {  
+       void test(int param) {  
+       }  
+    }  
+    ```
+    
+    或者是
+    ```
+    void testname::test(int param) {  
 }  
-</code></pre></div><p>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace $$$  
-{  
+    ```
+
+
+* 名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：
+
+    ```
+    namespace oin = outspname::inspname;  
+    ```
+
+
+* 无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：
+
+    ```
+    namespace {  
+      const int CVAR1 = 1;  
+      void test();  
+    }  
+    ```
+    
+但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
+    
+</code></pre></div><pre><code>namespace $$$ {  
   const int CVAR1 = 1;  
   void test();  
 }
 
 using namespace $$$;
 
-</code></pre></div><p>其中<code>$$$</code>在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，<code>usingnamesapce  $$$</code>只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。</p>
-</li>
-<li>
-<p>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</p>
-</li>
+```
+
+其中`$$$`在其所在的作用域里具有惟一性的名字，每个编译单元里的无名名字空间也是互不相同的，`usingnamesapce  $$$`只是当前的编译单元的隐含名字，所以不能跨编译单元使用无名名字空间中的名字。假设上面的test方法在是a.h与a.cpp中定义与实现的，但在b.h或b.cpp中就不能直接使用test方法或CVAR1。因为在b的这个编译单元中链接的是b这个编译单元中的test符号，并非a编译单元中的test符号，也就会出现未定符号。
+</code></pre>
+<ul>
+<li>要避免名字空间使用很短的名字，也不能太长，更不能嵌套太深了，个人觉得不要超过4层。</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -239,7 +242,7 @@ using namespace $$$;
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -278,7 +281,7 @@ using namespace $$$;
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：C&#43;&#43;技巧之名字空间namespace
+            标题：c&#43;&#43;技巧之名字空间namespace
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -315,7 +318,7 @@ using namespace $$$;
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -382,7 +385,7 @@ using namespace $$$;
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

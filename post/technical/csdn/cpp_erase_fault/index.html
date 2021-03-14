@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>[C&#43;&#43;] STL容器中erase方法的不同陷阱 - 蘭陵N梓記</title>
+    <title>c&#43;&#43; STL容器erase方法的不同陷阱 - 蘭陵N梓記</title>
     <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
     
-    <meta property="og:title" content="[C&#43;&#43;] STL容器中erase方法的不同陷阱">
+    <meta property="og:title" content="c&#43;&#43; STL容器erase方法的不同陷阱">
     <meta property="og:site_name" content="蘭陵N梓記">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="[C&#43;&#43;] STL容器中erase方法的不同陷阱 - 蘭陵N梓記" />
+    <meta name="title" content="c&#43;&#43; STL容器erase方法的不同陷阱 - 蘭陵N梓記" />
     <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
     <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
     <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
@@ -104,7 +104,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/" itemprop="url">
-        [C&#43;&#43;] STL容器中erase方法的不同陷阱
+        c&#43;&#43; STL容器erase方法的不同陷阱
         </a>
       </h1>
       <div class="post-meta">
@@ -142,75 +142,63 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">784 字 ~2分钟</span>
+<span class="leancloud-visitors-count">790 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">typedef std::map&lt;std::string, std::string&gt; TStrMap;  
-typedef TStrMap::iterator TStrMapIter;  
+    <h2 id="陷阱">陷阱</h2>
+<p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> std::map&lt;std::string, std::string&gt; TStrMap;  
+<span style="color:#8b008b;font-weight:bold">typedef</span> TStrMap::iterator TStrMapIter;  
+
 TStrMap strmap;  
-TStrMapIter iter = strmap.find(&#34;somekey&#34;);  
+TStrMapIter iter = strmap.find(<span style="color:#cd5555">&#34;somekey&#34;</span>);  
 strmap.erase(iter);
 </code></pre></div><p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
 <p>但有时我们一不注意，却会这样使用，这是错误的:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();++iter)  
-{  
-   if (&#34;somevalue&#34; == iter-&gt;second )  
-   {  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();++iter) {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
      strmap.erase(iter);  
    }  
 }  
 </code></pre></div><p><code>iter</code>所指的元素删除之后，<code>++iter</code>是错误的，会导致程序的未知结果，<code>iter</code>一般是不会移到指向下一个元素。</p>
+<h2 id="解决办法">解决办法</h2>
 <p>对于<code>map</code>与<code>list</code>这样的链式存储结构。我们一般可以有两种解决办法:</p>
-<h5 id="方法一">方法一</h5>
+<h3 id="方法一">方法一</h3>
 <p>使用<code>erase(iter++)</code>，因为<code>iter2 = iter++</code>是<code>iter</code>先移到指向下一个节点，而<code>iter2</code>还是指向当前的节点。注意理解<code>iter++</code>与<code>++iter</code>的区别。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();)  
-{  
-   if (&#34;somevalue&#34; == iter-&gt;second )  
-   {  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();)  {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
      strmap.erase(iter++);  
-   }  
-   else  
-   {  
+   } <span style="color:#8b008b;font-weight:bold">else</span> {  
      ++iter;   
    }  
 }
-</code></pre></div><h5 id="方法二">方法二</h5>
+</code></pre></div><h3 id="方法二">方法二</h3>
 <p><code>erase</code>的返回值会指向下一个节点，记把下一节点赋给一个变量。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">for(TStrMapIter iter= strmap.begin(); iter!= strmap.end();)  
-{  
-   if (&#34;somevalue&#34; == iter-&gt;second )  
-   {  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();) {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
      iter = strmap.erase(iter);  
-   }  
-   else  
-   {  
+   } <span style="color:#8b008b;font-weight:bold">else</span> {  
      ++iter;  
    }  
 }  
 </code></pre></div><p>但对于顺序存储的vector也可以使用上述两种方法吗？很遗憾，第一种用法却是错误的，但第二种用法是正确的。因为顺序存储的容器一旦erase时，会涉及到数据移动，iterator所指的位置还是那个位置，但元素却移动了，iter++之后已不再你想要的元素位置了。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void test_vector_erase()  
-{  
-    typedef std::vector&lt;int&gt; TIntVec;  
-    typedef TIntVec::iterator TIntVecIter;  
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_vector_erase</span>() {  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> std::vector&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; TIntVec;  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> TIntVec::iterator TIntVecIter;  
     TIntVec vec;  
 
-    vec.push_back(1);  
-    vec.push_back(2);  
-    vec.push_back(3);  
-    vec.push_back(4);  
+    vec.push_back(<span style="color:#b452cd">1</span>);  
+    vec.push_back(<span style="color:#b452cd">2</span>);  
+    vec.push_back(<span style="color:#b452cd">3</span>);  
+    vec.push_back(<span style="color:#b452cd">4</span>);  
 
-    for (TIntVecIter iter = vec.begin(); iter != vec.end();)  
-    {  
+    <span style="color:#8b008b;font-weight:bold">for</span> (TIntVecIter iter = vec.begin(); iter != vec.end();) {  
         std::cout &lt;&lt; *iter &lt;&lt; std::endl;  
-        if (0 == *iter % 2)  
-        {  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#b452cd">0</span> == *iter % <span style="color:#b452cd">2</span>) {  
             vec.erase(iter++);  
-        }  
-        else  
-        {  
+        } <span style="color:#8b008b;font-weight:bold">else</span> {  
             ++iter;  
         }  
     }  
@@ -222,7 +210,7 @@ strmap.erase(iter);
  
 <div class="post-tags">     
      
-    <a href="http://lanlingzi.cn/tags/cpp" rel="tag" title="cpp">#cpp#</a>
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
     
 </div>
 
@@ -239,8 +227,8 @@ strmap.erase(iter);
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/" rel="prev" title="C&#43;&#43;的仿函数与动态语言的闭包">
-        C&#43;&#43;的仿函数与动态语言的闭包 <i class="fa fa-chevron-right"></i>
+        <a href="http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/" rel="prev" title="c&#43;&#43;的仿函数与动态语言的闭包">
+        c&#43;&#43;的仿函数与动态语言的闭包 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -261,7 +249,7 @@ strmap.erase(iter);
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：[C&#43;&#43;] STL容器中erase方法的不同陷阱
+            标题：c&#43;&#43; STL容器erase方法的不同陷阱
         <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
         <br />关注：lanlingthink（览聆时刻）
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
@@ -286,7 +274,16 @@ strmap.erase(iter);
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-inner">
 
-    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
       <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
         src="http://lanlingzi.cn/img/author.jpg"
@@ -298,7 +295,7 @@ strmap.erase(iter);
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">147</span>
+        <span class="site-state-item-count">148</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -350,6 +347,26 @@ strmap.erase(iter);
 
     </section>
     
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#陷阱">陷阱</a></li>
+        <li><a href="#解决办法">解决办法</a>
+          <ul>
+            <li><a href="#方法一">方法一</a></li>
+            <li><a href="#方法二">方法二</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
   </div>
 </aside>
 
@@ -365,7 +382,7 @@ strmap.erase(iter);
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.80.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

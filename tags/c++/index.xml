@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>c&#43;&#43; on 蘭陵N梓記</title>
+    <link>http://lanlingzi.cn/tags/c&#43;&#43;/</link>
+    <description>Recent content in c&#43;&#43; on 蘭陵N梓記</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 07 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码23：C/C&#43;&#43;内存空洞</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0307_code/</link>
+      <pubDate>Sun, 07 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0307_code/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;C/C++把内存管理权限交给了程序员。自由越大责任越大。如果内存只借不还，则产生内存泄露。如果随意借了还得不及时，则可能产生内存空洞。&lt;/p&gt;
+&lt;p&gt;前一段时间定位某一组件(C++代码)的性能问题。现网会开启atop记录此机器的资源使用，发现此组件进程最后内存的虚拟内存(VIRT)达到达8.3G，常驻内存(RES)达到4.2G。而在实验室对比测试的内存占用也就100M多。区别在于实验室测试环境运行时间不长，而出问题的是长时间运行的。&lt;/p&gt;
+&lt;p&gt;排除内存泄露之外，我们怀疑出现了大量离散的内存空洞，原因：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码层面：
+&lt;ul&gt;
+&lt;li&gt;代码中大量的直接new/delete内存，未有任何内存复用&lt;/li&gt;
+&lt;li&gt;申请的内存未做字节对齐(注：字节对齐主要提升CPU访问效率，也能减少内存占用)&lt;/li&gt;
+&lt;li&gt;申请的内存有大有小，大的有10K，小的有几十个bytes&lt;/li&gt;
+&lt;li&gt;申请与释放时间跨度大，有些跨不同的线程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;资源层面：
+&lt;ul&gt;
+&lt;li&gt;VIRT与RES内存占用远超时实际业务流程所需要的内存&lt;/li&gt;
+&lt;li&gt;CPU sys占用也不低&lt;/li&gt;
+&lt;li&gt;业务处理出现抖动，可能申请内存变慢导致&lt;/li&gt;
+&lt;li&gt;实验室测试内存占用低，上涨VIRT与RES内存应该日积月累&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由于为了恢复业务，出问题的进程已重启，无法再捕捉其它一些信息，只也能先事后诸葛，根据现象推导原因。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码22：C&#43;&#43;线程安全队列</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0217_code/</link>
+      <pubDate>Wed, 17 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0217_code/</guid>
+      <description>&lt;p&gt;本文虽是C++代码讲解，但JDK也有对应的两种实现，学习Java的同学也可阅读一并了解一下。&lt;/p&gt;
+&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;在多线程的并发模型中，无论是CSP还是Actor模式，都需要借助一个通道来在多个线程间传递消息来通讯。队列在计算机中是非常重要的一种数据结构，队列典型的特征是先进先出（FIFO），符合流水线业务流程。在进程间通信、网络通信之间经常采用队列做缓存，缓解数据处理压力。&lt;/p&gt;
+&lt;p&gt;节前定位某一C++开发的部件的性能问题，涉及到阻塞队列唤醒延迟问题。队列是采用ACE提供ACE_Message_Queue，使用场景是单生产/单消费。&lt;/p&gt;
+&lt;p&gt;ACE_Message_Queue的模型是仿照System V streams提供的队列设施设计的。消息块ACE_Message_Block是消息队列中的固定的对象结构。ACE大量采用了设计模式，代码一层套一层的，这也使得代码变得复杂不容易看懂。ACE_Message_Queue为了支持在多线程或单线程不同场景使用，采用了基于traits策略，通过模板参数来指定是需否要支持多线程。&lt;/p&gt;
+&lt;p&gt;在Java语言中，JDK中有ArrayBlockingQueue/LinkedBlockingQueue（有锁，有界）与ConcurrentLinkedQueue/LinkedTransferQueue（无锁，无界），开源高性能的Disruptor框架实现了无锁队列。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0124_code/</link>
+      <pubDate>Sun, 24 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0124_code/</guid>
+      <description>&lt;p&gt;本文虽分析的是C++源码，但是对Evnoy的设计思想分析，并不影响其它语言开发者阅读。&lt;/p&gt;
+&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;Envoy是Service Mesh框架Istio推荐的SideCar，基于C++开发(大量使用了Google开源C++项目&lt;a href=&#34;https://abseil.io/&#34;&gt;absl&lt;/a&gt;)，具有高性能的特点，被广大微服务框架爱好者所熟悉。它的高性能一方面也源自它的优秀线程模型，我们可以通过这篇 &lt;a href=&#34;https://www.sohu.com/a/244966023_268033&#34;&gt;Envoy为什么能战胜Ngnix——线程模型分析篇&lt;/a&gt; 可以进一步了解它的设计思路。这是对Envoy架构师的 &lt;a href=&#34;https://blog.envoyproxy.io/envoy-threading-model-a8d44b922310&#34;&gt;博文&lt;/a&gt; 翻译，原文内容较深入较长，总结如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采用单进程多线程的线程模型，其中一个主线程控制一些零散的协作任务&lt;/li&gt;
+&lt;li&gt;若干worker线程负责连接监听，以及连接请求消息的过滤、转发&lt;/li&gt;
+&lt;li&gt;一旦监听器接受了连接，连接的后续生命周期都绑定到单个工作线程&lt;/li&gt;
+&lt;li&gt;使用非阻塞的网络调用，配置的Worker数与CPU核数(线程线)一致，即可完成大部分工作负载&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码20：窥探C&#43;&#43;的模板</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0108_code/</link>
+      <pubDate>Fri, 08 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0108_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。&lt;/p&gt;
+&lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
+{
+  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+    METHOD_LIST_BEGIN
+    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
+    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
+  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式&lt;/li&gt;
+&lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;替换参数，参数的类型可能是string, int, long等类型，是无固定参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;像Java等语言由于有底层Runtime框架(JVM)，实现了运行期的反射机制。借助反射把请求动态路由到对应的处理函数，代码实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码19：C&#43;&#43;中的左右值引用</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0103_code/</link>
+      <pubDate>Sun, 03 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0103_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=composite&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
+&lt;p&gt;drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。&lt;/p&gt;
+&lt;p&gt;我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了&lt;code&gt;const T&amp;amp; &lt;/code&gt;与&lt;code&gt;T &amp;amp;&amp;amp;&lt;/code&gt;两种入参。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
+    {
+        recvMessageCallback_ = cb;
+    }
+    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
+    {
+        recvMessageCallback_ = std::move(cb);
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
+  {
+        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>飞哥讲代码1：确保资源被释放</title>
+      <link>http://lanlingzi.cn/post/technical/2020/0516_code/</link>
+      <pubDate>Sat, 16 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
+src_path, src_file = os.path.split(file_name)
+tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+tmp_file.writeline(file_gz.realines())
+file_gz.close()
+tmp_file.close()
+os.remove(file_name)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
+&lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;能正确释放资源的建议写法是:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;技巧之名字空间namespace</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</link>
+      <pubDate>Mon, 13 Jul 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
+      <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname {   
+   const int CVAR1 = 1;  
+   const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
+   void test();  
+
+   namespace inspname {  
+      enum { A, B, C};  
+      class Klass {};  
+   }  
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43; STL容器erase方法的不同陷阱</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</link>
+      <pubDate>Wed, 01 Jul 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
+      <description>&lt;h2 id=&#34;陷阱&#34;&gt;陷阱&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; TStrMap::iterator TStrMapIter;  
+
+TStrMap strmap;  
+TStrMapIter iter = strmap.find(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;somekey&amp;#34;&lt;/span&gt;);  
+strmap.erase(iter);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;的仿函数与动态语言的闭包</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</link>
+      <pubDate>Mon, 29 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
+      <description>&lt;h2 id=&#34;闭包&#34;&gt;闭包&lt;/h2&gt;
+&lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
+10.times{|n| sum += n}   
+print sum
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
+&lt;p&gt;我们再来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
+    return lambda y: x + y  
+add8 = addx(8)  
+print add8(100)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;技巧之栈变量的析构应用</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</link>
+      <pubDate>Thu, 25 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_stack_usage/</guid>
+      <description>&lt;h2 id=&#34;栈变量&#34;&gt;栈变量&lt;/h2&gt;
+&lt;p&gt;栈变量有一个好处，就是它退栈时会自动析构，并且在栈上对象生成比在堆上分配效率高很多。但每个线程的栈空间是有限的(创建线程时可以设置)，所以一般的临时小对象都会在栈上分配。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;技巧之operator操作符</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</link>
+      <pubDate>Wed, 24 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_operator/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;这篇博文是以前很久写的，贴在我的早期一个blog中，今天google一下，发现还真有不少人转载，可惜并不注明出处。那时觉得&lt;code&gt;operator&lt;/code&gt;比较好玩。C++有时它的确是个耐玩的东东。&lt;code&gt;operator&lt;/code&gt;它有两种用法，一种是&lt;code&gt;operator overloading&lt;/code&gt;（操作符重载），一种是&lt;code&gt;operator casting&lt;/code&gt;（操作隐式转换）。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;实现的queue</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</link>
+      <pubDate>Sat, 20 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_queue/</guid>
+      <description>&lt;p&gt;周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;技巧之断言Assert</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</link>
+      <pubDate>Sun, 14 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_static_assert/</guid>
+      <description>&lt;p&gt;断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;技巧之宏Macro应用</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</link>
+      <pubDate>Fri, 12 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_macro_rule/</guid>
+      <description>&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;宏不要用来定义常量，因为宏变量是没有类型安全，也没有名字空间约束，会造成名字的污染。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;宏的展开是一行，所以宏中的注释不能使用&lt;code&gt;//&lt;/code&gt;，只能使用&lt;code&gt;/* */&lt;/code&gt;。宏的代码也不能gdb跟踪，宏中代码逻辑要尽量简单。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;宏的参数一般情况下使用时要用()括起来，如:
+&lt;code&gt;#define MAX(a, b) a /2 &amp;gt; b ? a /2  : b&lt;/code&gt;
+MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅为符号替换。
+应用定义为&lt;code&gt;#define MAX(a, b)  (a) / 2 &amp;gt;  (b) ?  (a) /2 : (b)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;实现的stack</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</link>
+      <pubDate>Thu, 11 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_self_impl_stack/</guid>
+      <description>&lt;p&gt;还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>用c&#43;&#43;模板来展示new与delete操作符原理</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</link>
+      <pubDate>Mon, 08 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_new_delete/</guid>
+      <description>&lt;p&gt;C++中的new与delete可以认为是C中的malloc与free的升级版本。new包含两部分:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一部分是与malloc功能相同，是从堆上面申请内存块&lt;/li&gt;
+&lt;li&gt;第二部是调用类的构造方法来初始化刚申请的内存。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。&lt;/p&gt;
+&lt;p&gt;new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;常见的几个排序算法</title>
+      <link>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</link>
+      <pubDate>Sun, 07 Jun 2009 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/csdn/cpp_aglos/</guid>
+      <description>&lt;p&gt;前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
