@@ -106,6 +106,107 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1129_code/" itemprop="url">
+        飞哥讲代码17：写好代码就要深入细节
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-29">
+    2020-11-29
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4058 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>案例代码来源我们某产品：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
+        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
+        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
+            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
+                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
+                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
+                <span style="color:#8b008b;font-weight:bold">try</span> {
+                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
+                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
+                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
+                        }
+                    }
+
+                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
+                        <span style="color:#8b008b;font-weight:bold">break</span>;
+                    }
+                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
+                    }
+                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
+                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
+                    }
+                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
+                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
+                }
+                <span style="color:#8b008b;font-weight:bold">break</span>;
+            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1129_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" itemprop="url">
         程序员编码技术栈
         </a>
@@ -701,73 +802,6 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0726_code/" itemprop="url">
-        飞哥讲代码10：提升性能，表设计很重要
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-26">
-    2020-07-26
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3080 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
-<p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
-at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
-at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
-at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
-...
-</code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0726_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -891,7 +925,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">148</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

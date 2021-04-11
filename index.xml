@@ -6,7 +6,25 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码25：突破内存限制</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0411_code/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0411_code/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;最近调研低成本的大数据量的数据分析框架，搜索发现有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.douban.com/note/752805208/&#34;&gt;使用Python包Vaex读入并分析100G数据&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://my.oschina.net/u/4604431/blog/4561727&#34;&gt;Vaex：突破pandas，快速分析100GB大数据集&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://baijiahao.baidu.com/s?id=1671080188522713952&amp;amp;wfr=spider&amp;amp;for=pc&#34;&gt;这场Spark、Dask、Vaex、Pandas的正面交锋，谁赢了？&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://baijiahao.baidu.com/s?id=1631752978489322985&amp;amp;wfr=spider&amp;amp;for=pc&#34;&gt;Vaex：一种具有超级字符串功能的DataFrame Python库&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些文章都在介绍&lt;a href=&#34;https://vaex.io/&#34;&gt;Vaex&lt;/a&gt;，第三篇文章中有多种分析框架不同场景应用的性能对比。Vaex由于它采取内存映射、惰性计算的设计，可以在百亿级数据集上进行秒级的统计分析和可视化展示，使得它能在数据分析领域有它一席位置。&lt;/p&gt;
+&lt;p&gt;作为一名屌丝程度员，在性能倍增的背景下，极其想扒一扒它的代码，探索它是如何做到的。笔者也简单做了一些的验证(数据文件采用Parquet)，它的确是秒级完成千万级数据量基于列式存储的数值统计分析(求mean,std,var等)、多列之间的计算以及按列条件过滤。这些计算不需要使用大量的内存，但象join，groupby聚合这类复杂的计算，它还是把数据加载到内存中计算。它的API也没有Pandas灵活与丰富，所以并不能完全取代Pandas。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码24：从Python Pickle漏洞说起</title>
       <link>http://lanlingzi.cn/post/technical/2021/0313_code/</link>

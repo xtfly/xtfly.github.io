@@ -106,6 +106,81 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1003_java_base_7/" itemprop="url">
+        跟我一起复习Java-7：泛型
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-10-03">
+    2019-10-03
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4348 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="泛型">泛型</h1>
+<p>泛型是Java 5的一项新特性，它的本质是参数化类型（Parameterized Type）的应用，也就是说所操作的数据类型被指定为一个参数，在用到的时候在指定具体的类型。这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口和泛型方法。</p>
+<p>泛型使类型（类和接口）在定义类、接口和方法时成为参数，好处在于：</p>
+<ul>
+<li>强化类型安全，由于泛型在编译期进行类型检查，从而保证类型安全，减少运行期的类型转换异常</li>
+<li>提高代码复用，泛型能减少重复逻辑，编写更简洁的代码</li>
+<li>类型依赖关系更加明确，接口定义更加优好，增强了代码和文档的易读性</li>
+</ul>
+<h2 id="实现">实现</h2>
+<p>Java 5推出了泛型，也就是在原本的基础上加上了编译时类型检查的语法糖。泛型对于JVM来说是透明的，有泛型的和没有泛型的代码，通过编译器编译后所生成的二进制代码是完全相同的。这个语法糖的实现被称为擦除。Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。</p>
+<p>无论何时定义一个泛型类型，都自动提供一个相应的原始类型(Raw Type，这里的原始类型并不是指int、boolean等基本数据类型)，原始类型的类名称就是带有泛型参数的类删去泛型参数后的类型名称，而原始类型会擦除(Erased)类型变量，并且把它们替换为限定类型(如果没有指定限定类型，则擦除为Object类型)。</p>
+<p>泛型变量的类型的使用：</p>
+<ul>
+<li>在调用泛型方法的时候，可以指定泛型，也可以不指定泛型</li>
+<li>在不指定泛型的情况下，泛型变量的类型为 该方法中的几种类型的同一个父类的最小级，直到Object</li>
+<li>在指定泛型的时候，该方法中的几种类型必须是该泛型实例类型或者其子类</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/1003_java_base_7/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0929_java_base_6/" itemprop="url">
         跟我一起复习Java-6：反射/动态代理
         </a>
@@ -758,76 +833,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0615_execption/" itemprop="url">
-        优雅地使用异常
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-15">
-    2019-06-15
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2757 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="异常与错误码">异常与错误码</h1>
-<p>在开发业务系统代码，我们会经常与异常与错误码打交道，但有时傻傻地分不清楚。编写代码时，到底是使用异常还是返回错误码，一直以来都被程序员们广泛争论。</p>
-<p>我们先来看看他们的区别，在编程语言上区别：</p>
-<ul>
-<li>异常：与面向对象编程结合紧密，它是一个类型系统，表示程序运行时发生错误的信号，一种识别及响应错误情况的一致性机制。</li>
-<li>错误码：与面向过程编程结合紧密，它通常是一串数字，表示处理函数返回业务流程错误的结果，错误码很容易被忽略且经常被忽略。</li>
-</ul>
-<p>在接口定义上区别：</p>
-<ul>
-<li>异常： 面向代码开发者，通常用于在代码实现层，尤其是在面对象语言中，接口定义异常需要方法签名，以强制要求接口使用都处理异常。</li>
-<li>错误码：面向客户界面，通常用于对外接口响应非正常结果定义，自定义错误码以增加接口的交互体验与问题定位。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0615_execption/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -952,7 +957,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">148</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
