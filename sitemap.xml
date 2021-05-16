@@ -15,7 +15,7 @@
 在数据分析领域，Python生态中有Pandas这类非常优秀的库，它对DataFrame(可以理解一张数据库表存储的数据集合)提供非常简单的API，支持对数据集的过滤、聚合、归并、填充与计算等，很方便地对数据进行清洗和加工。但它也并不是像Java的Stream一样操作，示例如下：
 # 过滤graded是B并且loan_amnt大于5000，取出loan_amnt这一列，并对这一列的值倒排序 df[(df[&amp;#34;grade&amp;#34;] == &amp;#34;B&amp;#34;) &amp;amp; (df[&amp;#34;loan_amnt&amp;#34;] &amp;gt; 5000)][&amp;#34;loan_amnt&amp;#34;].sort_values(ascending=False) 但Pandas并不是声明式编程，不会像Java的Stream一样分为中间操作与最终操作，当调用最终操作才执行计算。像上面的df[(df[&amp;quot;grade&amp;quot;] == &amp;quot;B&amp;quot;) &amp;amp; (df[&amp;quot;loan_amnt&amp;quot;] &amp;gt; 5000)]已经是执行过滤操作了。若只是对内存中的数据集合做一些操作，Pandas又过于厚重，杀鸡用牛刀了。
 基础 Python的官方文档有一章节 函数式编程指引，从文档介绍来看，Python的函数式编程的内置能力还是非常基础。稍总结一下：
- 数据的生成：迭代器，生成器，列表推导式 数据的操作：  内置函数：提供一些高阶函数，如map，filter，zip， sorted，all，any itertools模块：提供一些计算，组合，过滤，分组等函数，如count，chain，filterfalse，takewhile，combinations，groupby operator模块：提供一些操作符的函数，如add(数学运算), not_(逻辑运算), and_(位运算), eq(比较), is_(确认对象) functools模块：常用的cmp_to_key，partial，reduce   函数：小函数和lambda表达式，不过lambda比较鸡肋  从上面可以看出，可能由于Python发展的历史原因，Python在数据集合操作上提供的对函数式编程编程并不是很系统化，有点七零八落的。在Python中，怎么样的写法才算是函数式编程，示例如下：
+ 数据的生成：迭代器，生成器，列表推导式 数据的操作：  内置函数：提供一些高阶函数，如map，filter，zip， sorted，all，any itertools模块：提供一些计算，组合，过滤，分组等函数，如count，chain，filterfalse，takewhile，combinations，groupby operator模块：提供一些操作符的函数，如add(数学运算), not_(逻辑运算), and_(位运算), eq(比较), is_(确认对象) functools模块：常用的cmp_to_key，partial，reduce   函数：小函数和lambda表达式，不过lambda比较鸡肋  从上面可以看出，可能由于Python发展的历史原因，Python在数据集合操作上提供的对函数式编程并不是很系统化，有点七零八落的。在Python中，怎么样的写法才算是函数式编程，示例如下：
 # 过程式 result = [] for x in range(5): result.append(x**2) # 函数式，列表推导式 result = [x**2 for x in range(5)] # 函数式，内置函数&#43;lambda表达式 result = map(lambda x: x**2, range(5)) 再来一个稍复杂的例子：
 from operator import add from functools import reduce # 计算下面字符中的数字的和 v = &amp;#39;a b c 1 2 3 4 5&amp;#39; reduce(add, map(int, filter(lambda x: x.isdigit(), v.split()))) # reduce(add, Iterator[int])可以使用sum sum(map(int, filter(lambda x: x.isdigit(), v.split()))) 在Python中函数已是一等公民了，函数可以作为变量，也可以是参数，函数内嵌套定义函数。Java的Stream是结合面向对象设计基础上提供pipeline执行流来支持函数式调用，Python虽然支持面向对象设计，但遗憾的是并没有像Stream这样的类型来简化函数式调用，而是纯函数的嵌套调用，在代码可读性上会差不少，尤其那么多括号匹配。
 进阶 无副作用 函数式编程范式要求函数是无副作用的，它体现在对输入的数据本身无修改，对函数内部外部无状态修改。反例：
@@ -40,7 +40,7 @@ from functional import seq v = &amp;#39;a b c 1 2 3 4 5&amp;#39; seq(v.split())\
 数据集合来源：
  seq.range(10) seq.open(filepath) seq.json(filepath)， seq.jsonl(filepath) seq.csv(filepath)， seq.csv_dict_reader(filepath) seq.sqlite3(filepath, &amp;lsquo;select * from data&amp;rsquo;)  结果数据集合导出：
  to_file(path) to_csv(path) to_json(path)，to_jsonl(path) to_sqlite3(conn, tablename_or_query, *args, **kwargs) to_pandas(columns=None)  其它 对于PyFunctional的使用，上面的讲解只例举一小部分，尤其是它丰富的Transformations，Actions API，可以看出它已经完全能胜任数据集的过滤，分组，聚合，转换、计算等操作。API使用可以参考其官方文档。
-结语 函数式让数据处理更简洁，Python内置的功能还是相对基础，并没有系列化支持，开源第三方库Fn.py与PyFunctional又在不同层次与不同方向支持函数式编程。本文不是第三方库API完整介绍，而是从实际工作中问题出发，本着学习与探索的精神，挖掘Python函数式编程不足与如何改进。
+结语 函数式让数据处理更简洁，Python内置的功能还是相对基础，并没有系统化支持，开源第三方库Fn.py与PyFunctional又在不同层次与不同方向支持函数式编程。本文不是第三方库API完整介绍，而是从实际工作中问题出发，本着学习与探索的精神，挖掘Python函数式编程不足与如何改进。
 </content>
     </entry>
     
