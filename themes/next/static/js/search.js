@@ -21,7 +21,6 @@ $(document).ready(function () {
             },
             success: function( xmlResponse ) {
                 // get the contents from search data
-                console.log("xxxx");
                 isfetched = true;
                 $('.popup').detach().appendTo('.header-inner');
                 var datas = $( "entry", xmlResponse ).map(function() {
