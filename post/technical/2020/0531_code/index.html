@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3382 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3381 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -203,7 +203,7 @@
 <p>回到案例的代码，再来对比说明一下</p>
 <ul>
 <li>写法三：采用synchronized锁get+put，则锁的范围过大，完全把ConcurrentHashMap中分段/Hash冲突加锁给废了</li>
-<li>写法一：putIfAbsent方法（底层是putValue）无论1.8版本或它之前的版本，相比synchronized锁get+put进一步降低了锁的粒度</li>
+<li>写法一：putIfAbsent方法（底层是putValue）无论1.8版本或它之前的版本，相比synchronized锁get+put进一步降低了锁的粒度</li>
 <li>写法二：1.8版本针对不存在则put操作场景提供更为简单的API，涉及到线程安全的可见性</li>
 </ul>
 <h1 id="线程安全">线程安全</h1>
