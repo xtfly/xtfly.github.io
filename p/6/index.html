@@ -106,6 +106,77 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0706_logging/" itemprop="url">
+        正确地打印日志
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-07-06">
+    2019-07-06
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3818 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="日志种类">日志种类</h1>
+<p>软件记录日志非常重要，公司已积累了非常多的日志输出经验，也制定了不少的规范。通常会把业务软件系统的日志分为如下几种：</p>
+<p>用于软件问题定界定位的日志：</p>
+<ul>
+<li>调试日志：其目的是为了快速定位问题的根源，主要记录程序的执行轨迹，充当软件的调试器。</li>
+<li>运行日志：其目的是为了跟踪程序的指标变化，主要记录程序各种关键指标数据统计，运行环境数据。</li>
+<li>接口日志：其目的是为了快速对问题边界排查，主要记录接口的输入信息，以及处理结果。</li>
+</ul>
+<p>用于用户行为安全审计的日志：</p>
+<ul>
+<li>操作日志：其目的是为了跟踪用户操作安全审计，主要记录用户操作行为轨迹，操作什么资源内容，其结果是什么。</li>
+<li>安全日志：其目的是为了跟踪用户安全变更审计，主要记录用户的登录录出事件，权限修改等安全事件或行为。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0706_logging/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0615_execption/" itemprop="url">
         优雅地使用异常
         </a>
@@ -580,75 +651,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0523_dep_couple/" itemprop="url">
-        降低模块间耦合
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-23">
-    2019-05-23
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3505 字 ~7分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>提到耦合，必须先提依赖。依赖不可避免，而是尽可能地降低耦合。</p>
-<h1 id="依赖">依赖</h1>
-<p>模块依赖指模块之间发生了关系，如模块A调用了模块B的接口，则模块A依赖了模块B。依赖的英语是Dependency。</p>
-<p>模块依赖是系统内不可避免的，复杂的系统都是分而治之，软件架构活动中最重要的事就是如何正确把系统分解，并定义他们之间关系。存在关系就会存在依赖，依赖是系统分解的必然产物。如果一个系统内的模块间不存在任何的关联，那他们应该划分为不同的系统；一个模块没有与其它的模块发生关联，那这个模块就应该不存在这个系统中。</p>
-<p>模块的依赖关系，按生命周期阶段可分为：</p>
-<ul>
-<li><strong>开发态依赖</strong>：如开发模块A时，需要依赖其它模块提供的接口，数据结构等文件依赖；还有一种如测试依赖，仅仅发生在开发阶段，在测试时，需要依赖测试数据，测试框架等，测试完成就不需要了。</li>
-<li><strong>运行态依赖</strong>：在系统运行时，模块A必须依赖其它模块提供能力才能完成某种完整的功能或服务，依赖的形态可能是本地或远程接口，集中配置数据，模型数据信息等。</li>
-</ul>
-<p>开发态依赖可能引发运行态依赖，但运行态依赖不一定需要在开发态就依赖。我们经常关注的是运行态依赖导致的问题，目前的微服务架构设计，减少了开发态的依赖，把依赖导致的问题后移到运行态。</p>
-<p>模块之间最好还是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是系统整体拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0523_dep_couple/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -773,7 +775,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">149</span>
+        <span class="site-state-item-count">150</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

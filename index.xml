@@ -6,7 +6,26 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码26：Python函数式编程</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0515_code/</link>
+      <pubDate>Sat, 15 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0515_code/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;最近笔者写Python代码比较多，同时又有多种编程语言的开发经验，现在的语言设计上大多趋同。当需要对数据集合操作时，非常喜欢java的stream声明式处理数据，萌生在Python中模仿Java的写法。虽然java的API易用性与Scala/Kotlin相比，还是有很大的差距，但与Python比起来，还是强不少。&lt;/p&gt;
+&lt;p&gt;我们先来看一下Java的玩法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;List&amp;lt;Integer&amp;gt; tanscationsIds = transcations.&lt;span style=&#34;color:#658b00&#34;&gt;parallelStream&lt;/span&gt;()
+        .&lt;span style=&#34;color:#658b00&#34;&gt;filter&lt;/span&gt;(it -&amp;gt; it.&lt;span style=&#34;color:#658b00&#34;&gt;getType&lt;/span&gt;() == Transcation.&lt;span style=&#34;color:#658b00&#34;&gt;GROCERY&lt;/span&gt;)
+        .&lt;span style=&#34;color:#658b00&#34;&gt;sorted&lt;/span&gt;(comparing(Transcation::getValue).&lt;span style=&#34;color:#658b00&#34;&gt;resersed&lt;/span&gt;())
+        .&lt;span style=&#34;color:#658b00&#34;&gt;map&lt;/span&gt;(Transcation::getId)
+        .&lt;span style=&#34;color:#658b00&#34;&gt;collect&lt;/span&gt;(Collectors::toList());
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 &lt;a href=&#34;http://lanlingzi.cn/post/technical/2020/1108_code/&#34;&gt;飞哥讲代码16：函数式让数据处理更简洁&lt;/a&gt; 简单介绍了函数式在数据集合操作上的便利。&lt;/p&gt;
+&lt;p&gt;在数据分析领域，Python生态中有Pandas这类非常优秀的库，它对DataFrame(可以理解一张数据库表存储的数据集合)提供非常简单的API，支持对数据集的过滤、聚合、归并、填充与计算等，很方便地对数据进行清洗和加工。但它也并不是像Java的Stream一样操作，示例如下：&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码25：突破内存限制</title>
       <link>http://lanlingzi.cn/post/technical/2021/0411_code/</link>

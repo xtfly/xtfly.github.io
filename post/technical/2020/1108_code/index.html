@@ -259,7 +259,7 @@
 std::sort(foo, foo+<span style="color:#b452cd">5</span>, [](<span style="color:#00688b;font-weight:bold">int</span> a,<span style="color:#00688b;font-weight:bold">int</span> b){<span style="color:#8b008b;font-weight:bold">return</span> a &gt; b;});
 </code></pre></div><p>Python提供functools库来简化一些函数式编程（还是相当的弱），一个简单示例：</p>
 <div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">foo = [&#34;A&#34;, &#34;a&#34;, &#34;b&#34;, &#34;B&#34;]
-sorted(iterable, key=functools.cmp_to_key(locale.strcoll))
+sorted(foo, key=functools.cmp_to_key(locale.strcoll))
 </code></pre></div><h1 id="函数式编程">函数式编程</h1>
 <p>当然，面向对象语言中增加lambda这类特征不能就称为函数式编程了，大部分只不过是语法糖。是采用什么编程范式不在于语言的语法，而是在于思维方式。</p>
 <p>在上一篇 <a href="http://lanlingzi.cn/post/technical/2020/1101_code/">飞哥讲代码15：写代码从事物认识开始</a> 要使用面向对象的思维对现实世界来建模。面向对象编程(OOP)在过去20多年非常成功，而函数式编程(FP)也不断地发展，他们相生相息，各自解决不同的场景问题：</p>
@@ -381,7 +381,7 @@ sorted(iterable, key=functools.cmp_to_key(locale.strcoll))
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">149</span>
+        <span class="site-state-item-count">150</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

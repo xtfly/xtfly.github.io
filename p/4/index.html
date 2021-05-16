@@ -106,6 +106,83 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0531_code/" itemprop="url">
+        飞哥讲代码3：简洁高效的线程安全
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-05-31">
+    2020-05-31
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3382 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>下面的代码来自我们某一中间件产品源码(Java语言)中（<code>写法一</code>）：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+    AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
+    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">null</span> == rejectMessageCount) {
+        rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
+        AtomicLong currentValue = rejectMessageCounts.<span style="color:#658b00">putIfAbsent</span>(serviceName, rejectMessageCount);
+        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#8b008b;font-weight:bold">null</span> != currentValue) {
+            rejectMessageCount = currentValue;
+        }
+    }
+    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
+}
+</code></pre></div><p>上面的代码是线程安全的，但不够简洁，Java 1.8的<code>ConcurrentMap</code>提供<code>computeIfAbsent()</code>方法，可以简化为（<code>写法二</code>）：</p>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
+}
+</code></pre></div>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0531_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0523_code/" itemprop="url">
         飞哥讲代码2：把大象装进冰箱要几步
         </a>
@@ -669,73 +746,6 @@ os.remove(file_name)
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1004_java_base_8/" itemprop="url">
-        跟我一起复习Java-8：内存模型
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-10-04">
-    2019-10-04
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">6803 字 ~14分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="内存模型">内存模型</h1>
-<p><img src="http://lanlingzi.cn/images/java/java_memory3.webp" alt="java_memory3.png"></p>
-<h2 id="堆">堆</h2>
-<p>堆（Heap）是JVM所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，该内存区域存放了对象实例及数组（但不是所有的对象实例都在堆中）。堆由垃圾收集器自动回收，是OOM故障最主要的发源地。</p>
-<p>通过下两个参数来分配堆使用的内存大小：</p>
-<ul>
-<li>-Xms：最小堆容量，默认是物理内存的1/64。</li>
-<li>-Xmx：最大堆容量，默认是物理内存的1/4。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/1004_java_base_8/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -856,7 +866,7 @@ os.remove(file_name)
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">149</span>
+        <span class="site-state-item-count">150</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
