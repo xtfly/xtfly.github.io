@@ -6,7 +6,28 @@
     <description>Recent content in Posts on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 15 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>软件开发漫谈1：commit协作</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0606/</link>
+      <pubDate>Sun, 06 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0606/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;我司代码Commit机制建设日驱完善，对代码的质量守护发挥越来越重要的作用。作为一名Committer，发现日常工作还有一些可以改进的。例如例行MR代码Review，除一些规范类、安全类与业务类的问题之外，鲜有代码设计类问题提出，以及即时修改。原因可能有多种，如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;大多是增量功能开发，不需要新的设计&lt;/li&gt;
+&lt;li&gt;每次MR的代码量很少，看不出设计意图&lt;/li&gt;
+&lt;li&gt;设计类问题修改可能涉及面广，存在重构工作量而不愿意修改，也担心引发其它问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这可能都是表象，深其层次可能是不同阶段的人群对代码不同程度的追求或者软件文化问题:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;刚加入软件开发的萌新，大多都是想着及时完成PL或主管给我的开发任务，一个迭代一个迭代地被动开展工作，不会有太多好代码的经验与思考。我们似乎也没有可向他们责全求备的，他们很努力。&lt;/li&gt;
+&lt;li&gt;工作几年之后，有追求的程序员会思考如何把代码写得更好。甚至不惜一切代价，仔细的打磨自己的 “作品”。我们应鼓励这一种钻研精神，这样才能不断的提升自我满足岗位的需要。但进度要求可能逐渐磨灭对好代码钻研的追求。&lt;/li&gt;
+&lt;li&gt;工作时间越来越长的老人，思考的层次也会随之变化，一部分可能会认为代码本身局部的好坏并不是最重要，关键是以最小的成本交付需求；一部分可能会看得比较深远，不能只满足当前的需求，还要考虑可持续发展，为将来设计。我们总会有理由赞成这个而反对那个，让老人难以发挥应有价值。&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码26：Python函数式编程</title>
       <link>http://lanlingzi.cn/post/technical/2021/0515_code/</link>

@@ -106,6 +106,75 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1005_java_base_9/" itemprop="url">
+        跟我一起复习Java-9：JNI/JIT/SM
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-10-05">
+    2019-10-05
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3911 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="jni">JNI</h1>
+<p>JNI是Java Native Interface的缩写，通过使用 Java本地接口书写程序，可以确保代码在不同的平台上方便移植。JNI标准成为java平台的一部分，它允许Java代码和其他语言写的代码进行交互。JNI一开始是为了本地已编译语言，尤其是C和C++而设计的，但是它并不妨碍你使用其他编程语言，只要调用约定受支持就可以了。</p>
+<p>JNI开发流程主要分为以下6步：</p>
+<ol>
+<li>编写声明了native方法的Java类</li>
+<li>将Java源代码编译成class字节码文件</li>
+<li>用javah -jni命令生成.h头文件（javah是jdk自带的一个命令，-jni参数表示将class中用native声明的函数生成jni规则的函数）</li>
+<li>用本地代码实现.h头文件中的函数</li>
+<li>将本地代码编译成动态库（<code>windows：*.dll，linux/unix：*.so，mac os x：*.jnilib</code>）</li>
+<li>拷贝动态库至 java.library.path 本地库搜索目录下，并运行Java程序</li>
+</ol>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/1005_java_base_9/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/1004_java_base_8/" itemprop="url">
         跟我一起复习Java-8：内存模型
         </a>
@@ -710,125 +779,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0921_java_base_1/" itemprop="url">
-        跟我一起复习Java-1：基础/正则
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-21">
-    2019-09-21
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1844 字 ~4分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="基本数据类型">基本数据类型</h1>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">数据类型</th>
-<th style="text-align:left">大小</th>
-<th style="text-align:left">范围</th>
-<th style="text-align:left">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">byte(字节)</td>
-<td style="text-align:left">8</td>
-<td style="text-align:left">-128 - 127</td>
-<td style="text-align:left">0</td>
-</tr>
-<tr>
-<td style="text-align:left">shot(短整型)</td>
-<td style="text-align:left">16</td>
-<td style="text-align:left">-2^15 - 2^15-1</td>
-<td style="text-align:left">0</td>
-</tr>
-<tr>
-<td style="text-align:left">int(整型)</td>
-<td style="text-align:left">32</td>
-<td style="text-align:left">-2^31 - 2^31-1</td>
-<td style="text-align:left">0</td>
-</tr>
-<tr>
-<td style="text-align:left">long(长整型)</td>
-<td style="text-align:left">64</td>
-<td style="text-align:left">-2^63 - 2^63-1</td>
-<td style="text-align:left">0</td>
-</tr>
-<tr>
-<td style="text-align:left">float(浮点型)</td>
-<td style="text-align:left">32</td>
-<td style="text-align:left">1.4013E-45 - 3.4028E+38</td>
-<td style="text-align:left">0.0f</td>
-</tr>
-<tr>
-<td style="text-align:left">double(双精度)</td>
-<td style="text-align:left">64</td>
-<td style="text-align:left">-1.7976E+308 - 1.79769E+308</td>
-<td style="text-align:left">0.0d</td>
-</tr>
-<tr>
-<td style="text-align:left">char(字符型)</td>
-<td style="text-align:left">16</td>
-<td style="text-align:left"><code>\u0000 - u\ffff</code></td>
-<td style="text-align:left"><code>\u0000</code></td>
-</tr>
-<tr>
-<td style="text-align:left">boolean(布尔型)</td>
-<td style="text-align:left">1</td>
-<td style="text-align:left">true/false</td>
-<td style="text-align:left">false</td>
-</tr>
-</tbody>
-</table>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0921_java_base_1/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -953,7 +903,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">150</span>
+        <span class="site-state-item-count">151</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -1044,16 +994,8 @@
     </div>
   </div>
 
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-    var hm = document.createElement("script");
-    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+  
+
 <script type="text/javascript">
   if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
     window.Promise = null;

@@ -1,0 +1,431 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>软件开发漫谈1：commit协作 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="软件开发漫谈1：commit协作">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="软件开发漫谈1：commit协作 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0606/" itemprop="url">
+        软件开发漫谈1：commit协作
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-06-06">
+    2021-06-06
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4576 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>我司代码Commit机制建设日驱完善，对代码的质量守护发挥越来越重要的作用。作为一名Committer，发现日常工作还有一些可以改进的。例如例行MR代码Review，除一些规范类、安全类与业务类的问题之外，鲜有代码设计类问题提出，以及即时修改。原因可能有多种，如：</p>
+<ul>
+<li>大多是增量功能开发，不需要新的设计</li>
+<li>每次MR的代码量很少，看不出设计意图</li>
+<li>设计类问题修改可能涉及面广，存在重构工作量而不愿意修改，也担心引发其它问题</li>
+</ul>
+<p>这可能都是表象，深其层次可能是不同阶段的人群对代码不同程度的追求或者软件文化问题:</p>
+<ul>
+<li>刚加入软件开发的萌新，大多都是想着及时完成PL或主管给我的开发任务，一个迭代一个迭代地被动开展工作，不会有太多好代码的经验与思考。我们似乎也没有可向他们责全求备的，他们很努力。</li>
+<li>工作几年之后，有追求的程序员会思考如何把代码写得更好。甚至不惜一切代价，仔细的打磨自己的 “作品”。我们应鼓励这一种钻研精神，这样才能不断的提升自我满足岗位的需要。但进度要求可能逐渐磨灭对好代码钻研的追求。</li>
+<li>工作时间越来越长的老人，思考的层次也会随之变化，一部分可能会认为代码本身局部的好坏并不是最重要，关键是以最小的成本交付需求；一部分可能会看得比较深远，不能只满足当前的需求，还要考虑可持续发展，为将来设计。我们总会有理由赞成这个而反对那个，让老人难以发挥应有价值。</li>
+</ul>
+<p>软件开发是一项由多人参与知识生产活动，所以关注软件的质量不能只看软件本身而不看人。人，才是决定软件研发活动的核心要素。我理解现行的Commit机制也是一种软件工程管理实践手段，而非一种至底向上自发形成的开发文化。</p>
+<p>工程管理必然会涉及到的要素有：人，目标，时间，协作。在我司也经常会提到质量，进度，成本三者关系。通常是要以最小的成本，快速的进度，构建出高质量的软件。软件开发既然是一个知识生产活动，具有不确定性，没有人能预先评估一项知识工作需要确切的时间才能正确地完成。</p>
+<p>Commit活动中人与人产生了关联，由于交流，代码的修正，返工带来意想之外的工作量，正是协作的结果，也给开发带来时间上的不确定性。但这些协作的影响可能不会正视，因为版本或迭代计划不能受其影响。IDP开发流程中有一个环节是风险管理，对不确定性进行管控，以期达成目标。因此我们需要为commit活动留出Buffer，正视人之间的关联协作影响。</p>
+<h1 id="何为协作">何为协作</h1>
+<p>团队中每个人，知识背景不同，获取信息的不同，角色与分工也不同，因而导致对一个问题探讨的上下文也不相同。我们共同捕捉的开发软件需求就好似一头大象，各自只获得局部的知识，却自以为掌控了全局。引入到commit活动中，我们会存在一种所有MR都有Review，所有Review都已修改而满足要求的假象。操作流程中都是正确的，却达不到我们终其目标：即完成了需求开发，也达成了CleanCode目标。流程会让我们规范化去做事，但不能驱使我们做正确的事。</p>
+<p>正如前面提到的，我们遇到的开发团队是呈阶梯状的。这会是年龄、经验，知识与资历等多方面的阶梯化。不同阶梯对同一件事的理解与处理方式是不相同的。这需要我们协作，协作先要沟通。代码是团队协作沟通直接的语言，代码托管平台是协作平台，Commit活动是协作的方式之一。</p>
+<p>我司一直有师傅带新人的优秀传统，师傅不是一个职位，也不会加工资。师傅除了以往负责新人在试用期的工作安排、学习、业务传承，企业文化引导等。如何让新人快速磨合，HR是不会也不可能深入到开发活动中，往往行走在日常开发活动中的潜规则对新人影响很大。在代码开发过程，师傅们应该积极利用Commit活动，通过对代码检视，发现问题，帮助软件能力提升，养成良好的工作习惯。</p>
+<p>任命的Committer要么是代码高手，要么是业务高手。软件开发中知识很多是隐性的，通过代码来沟通，Committer根据自己的经验、看问题的角度，技术或业务的思考，从而发现潜在的问题，提供可能的改进意见，把隐性的知识通过对实际的问题关注与表达，从而让软件开发发展可以持续。面向代码实际问题的协作往往好于单向的技术培训。</p>
+<p>在没有commit机制之前，也并不是没有评审活动。一般是由PL组织的评审会议，会议的好处可能把代码讲解得更清楚，也可能让其它的团队成员相互了解与学习。缺点可能是效率低下，因为人都有趋利性，对自己不感兴趣或不相关，投入就不会太充分。并且大都又喜欢把这些活动放在晚上加班搞，让大家觉得疲劳，久而久之大家觉得是一个繁重无意义的事。会议不是高效的协作，更像一种管理手段。</p>
+<p>当然Committer也不能自以为是，也不是代码的权贵。套用一句话：“只有沟通平权，才能激发创意。”，commit的协作应该是双向的反馈，不能再像开会的方式部署任务，单向地上传下达。如果审视者在Review代码时发现有不易理解的地方，或者代码提交者对于Review的意见存在异义时，而是应该当面或其它的方式进一步的沟通交流。所以从平等的角度而言，我更希望Committer不是任命的，而是相互推荐的，理想是小国寡民，无为而治。</p>
+<h1 id="如何协作">如何协作</h1>
+<p>以前刷到一个新闻，说美丽国程序员因同事不写注释，不遵循驼峰命名，括号换行，还天天<code>git push -f</code>，他最后受不了枪击了4名同事。最后自已也自杀，这是在用生命在维护代码。代码不规范，的确让人看着头痛。俗话说：没有规矩不成方圆。高效的协作，前提是大家都遵循一套都认可的规则或标准。</p>
+<p>公司制定了编程规范，各个团队有各种检查的最小集，也有各种开发工具来辅助提交代码时检查。但在MR的Commit Message上似乎并没有较好达成一致，不少团队虽在这一方制定规范，其出发好像并不是为了有效地协作，而是对Commit的溯源管理，比如要求有需求单号，问题单号等。这些存在Commit Message也没有关系，但Message最为重要的还是：</p>
+<ul>
+<li>能详细描述此次Commit的背景与动机，甚至能提醒在Review时要关注什么</li>
+<li>可带一个链接，能链接到Issue或问题单，能让Review时翻开查看知道修改的原因</li>
+</ul>
+<p>目前在一些材料中都会推荐<a href="https://zhuanlan.zhihu.com/p/62903985">Angular git commit message</a>，甚至在此基础上衍生出<a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits specificaion</a>。 业界的规范统一之后，有一好处是形成生态，相关生成工具、检查工具也会应运而生。我们就不要闭门造轮子了。</p>
+<p>CI的静态检查、门禁会自动发现代码中的基本问题，以及拦截一些不满足规范要求的问题。能自动化搞定的事情就不要让认人来搞，但毕竟工具不能代表人，所以代码提交者还得考虑Committer与Reveiwer的时间是宝贵的，有必要花时间先进行自我的检查，并不一定要搞个CheckList，但目的无外乎：</p>
+<ul>
+<li>工作做细：Commit Message是否描述详细，能帮助带来更有价值的Revive意见</li>
+<li>自我进化：确保不再出现以前Review发现的同样问题</li>
+<li>有效注释：MR既然是给人Review，那要尊重Reveiwer，不好理解的地方要恰当注释，不符合一般用法要注释强调</li>
+<li>二次确认：对提交的代码再次进行比对确认，确保是否遗漏或误操作</li>
+</ul>
+<p>一次MR多少行代码合适是一个比较有争论的话题，太少看不出全貌，太多又让人生畏。用代码行数来说一次MR是不恰当的，既然是要让人Review，就要站在如何支撑更好的Review效果来思考：</p>
+<ul>
+<li>单一：一个MR应该只解决一个问题，如实现一个需求功能点，或者是解决一个Bug。能让人快速了解代码改进是解决了什么问题，才有针对性地思考与Review</li>
+<li>短小：一个MR应该是一个完全的逻辑实现点，对于较大的需求可以拆分多个功能实现点来一次次提交，切忌一次提交一个需求完整的所有代码；也可以按实现阶段提交，如代接口定义，数据定义，框架骨干，接口实现等</li>
+<li>测试：无论什么层次的代码，应该写一点代码，自己测试一点，通过自我测试来降低一些低层错误；同样有测试用例的代码，也会让Reviewer加强对代码的理解，通过输入输出，发现一些场景是否考虑到</li>
+</ul>
+<p>有些协作不应该只是发生在代码MR阶段，正好本文开头所有讲的，设计的问题若在MR阶段提出，修改的工作量会让提交者失了修改的动力。对于代码提交者而言，应该先有对应的Iusse对代码层设计简单描述出来，通过文档协作方式，让Reviewer提前参与进来。设计不需要长篇大论，就事讨论事即可，也不需要Word文档，代码仓库的Issue或Wiki都是比较好的承载方式。</p>
+<p>这一点开源软件做得比较好，由于大家所处不同的地域，不同地时间，通过Issue把讨论过程完整记录下来。而我们集中办公反而当面交流效率更高，也让讨论的过程记录缺失。而传统要求的形式化Word文档设计随着版本的迭代，落入文档历史尘埃中，无法搜索到。若试图再通过开发人员额外的关联标注，也仅仅只是给开发人员增加工作量，并没多大的意义。</p>
+<h1 id="协作关系">协作关系</h1>
+<p>也许是我认识上不足，自从有了commit机制之后，似乎执行过程中，Committer是代码的主要责任者。所以要求Committer职责履行很好，通常会看到XXX提了多个Review意见，拒绝或打回了多次的合并。但有时不得不灵魂一问：Committer是警察还是什么，一个团队持续存在大量Review意见到底是好事还是坏事，团队能力是否提升了？</p>
+<p>站在管理激励的角度来看，把做得好的曝光是通常的做法，在开始阶段的确也能启到不错的作用。抛开管理角度来看，Committer也不要太关注自己在这方面的&quot;成绩&quot;，并一定要提出一堆问题才是合格的。我们也意识到不关注数量，更应关注质量。</p>
+<p>应该要明确的，人人都是代码的主人，每个开发人员要对自己写的代码质量负责，而不应该把责任交给Committer。对你代码能坚持提建议的人应该怀着感恩，他们也有自己编码工作。可能由于大家都是理工科出身，一些Review建议写得不清楚，甚至语言描述上唐突，我们不要抵触，更不能情绪化。对于不合理的建议可能是你不曾想到思考角度，也可能是自己的知识盲区，我们应该同样怀着谦虚的心态，毕竟你自己是最了解自己代码的意图。</p>
+<p>Commit协作是帮助大家相互提高代码质量活动，Committer与Reviewer在代码审视过程也应该保持一学习的心态，既要发现代码中的问题，也要能发现代码中亮点。尤其是Commit过程不能搞成Committer的一堂言，更不是变成间接打压了开发者的积极性。我们可以提出问题的同时，也可以尝试给出解题，解题可能不一定完整，但可能就是一个简单的提示，会激发代码作者新的思路。对于有代码中有疑惑或不清楚地方，可以探讨性提出自己的想法。</p>
+<p>同时，我们希望Committer具备全局的视角，全栈的能力，能发挥非常重要的价值，就像一夫当关的角色。Committer对团队成员给予指导是应该的，但负责整体代码质量其实很难做得到，需要多个角色共同完成，除非他是代码的绝对贡献者。我们软件开发模式并不同于开源的Committer/PMCer主导，可能前三的Commiiter贡献了90%以上，其它Contributors只是贡献少量的代码。我个人是不希望变成这样，因为committer会成为瓶颈。</p>
+<h1 id="小结">小结</h1>
+<p>笔者是Commit活动参与者，也有些困惑，从协作的角度来看待如何做好代码Commit与Review，是一些不成熟不系统化地思考，权当抛砖引玉。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0515_code/" rel="prev" title="飞哥讲代码26：Python函数式编程">
+        飞哥讲代码26：Python函数式编程 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件开发漫谈1：commit协作
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">151</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#何为协作">何为协作</a></li>
+    <li><a href="#如何协作">如何协作</a></li>
+    <li><a href="#协作关系">协作关系</a></li>
+    <li><a href="#小结">小结</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

@@ -106,6 +106,69 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0526_class/" itemprop="url">
+        类的职责单一
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-26">
+    2019-05-26
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2670 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="理解类">理解类</h1>
+<p>类（实例化产生对象）是面向对象编程中最基本的组成单元，将逻辑和数据封装其中，以提高软件的重用性、灵活性和扩展性等。它相比人类社会组成，系统/子系统、组件/（微）服务、模块/包这些相当于社会中不同层次的实体或虚拟的组织机构；而类则相当于一类自然人，一个对象相当一个自然人。一个类在系统中承担着一种的 ”角色“ ，从事一种职业。</p>
+<h1 id="单一职责">单一职责</h1>
+<p>大多数人只从事一种职业，也就是单一职责原则。若一个类只关注的就是自身职责的完成，也就是单一职责原则。</p>
+<p>面向对象设计的五个基本原则（SOLID），排在第一就是单一职责原则（SRP：Single responsibility principle）。SRP的原话解释是：There should never be more than one reason for a class to change。应该有且仅有一个原因引起类的变更。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0526_class/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0523_dep_couple/" itemprop="url">
         降低模块间耦合
         </a>
@@ -539,90 +602,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" itemprop="url">
-        Scala中的符号
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-07-21">
-    2018-07-21
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4979 字 ~10分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
-</code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
-<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
-<h1 id="泛型">泛型</h1>
-<h2 id="heading"><code>:</code></h2>
-<p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
-<ul>
-<li><code>:</code> 表示上下文界定，如<code>A：B</code> 表示 B 可以进行隐式转化的A类型</li>
-</ul>
-<p>示例：</p>
-<ul>
-<li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
-</ul>
-<h2 id="-与-"><code>&lt;:</code> 与 <code>:&gt;</code></h2>
-<ul>
-<li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
-<li><code>&gt;:</code> 表示只限定子类，如 <code>T &gt;: A</code> 表示T必须为A的父类</li>
-</ul>
-<p><code>&lt;:</code> 与 <code>:&gt;</code> 相当于java范型编程中的extends，super对泛型变量的限定。</p>
-<p>示例：</p>
-<ul>
-<li><code>T &lt;: A with B</code> 表示A和B为T上界</li>
-<li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
-<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -747,7 +726,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">150</span>
+        <span class="site-state-item-count">151</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -838,16 +817,8 @@
     </div>
   </div>
 
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-    var hm = document.createElement("script");
-    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+  
+
 <script type="text/javascript">
   if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
     window.Promise = null;

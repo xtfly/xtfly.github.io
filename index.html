@@ -106,6 +106,77 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0606/" itemprop="url">
+        软件开发漫谈1：commit协作
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-06-06">
+    2021-06-06
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4576 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>我司代码Commit机制建设日驱完善，对代码的质量守护发挥越来越重要的作用。作为一名Committer，发现日常工作还有一些可以改进的。例如例行MR代码Review，除一些规范类、安全类与业务类的问题之外，鲜有代码设计类问题提出，以及即时修改。原因可能有多种，如：</p>
+<ul>
+<li>大多是增量功能开发，不需要新的设计</li>
+<li>每次MR的代码量很少，看不出设计意图</li>
+<li>设计类问题修改可能涉及面广，存在重构工作量而不愿意修改，也担心引发其它问题</li>
+</ul>
+<p>这可能都是表象，深其层次可能是不同阶段的人群对代码不同程度的追求或者软件文化问题:</p>
+<ul>
+<li>刚加入软件开发的萌新，大多都是想着及时完成PL或主管给我的开发任务，一个迭代一个迭代地被动开展工作，不会有太多好代码的经验与思考。我们似乎也没有可向他们责全求备的，他们很努力。</li>
+<li>工作几年之后，有追求的程序员会思考如何把代码写得更好。甚至不惜一切代价，仔细的打磨自己的 “作品”。我们应鼓励这一种钻研精神，这样才能不断的提升自我满足岗位的需要。但进度要求可能逐渐磨灭对好代码钻研的追求。</li>
+<li>工作时间越来越长的老人，思考的层次也会随之变化，一部分可能会认为代码本身局部的好坏并不是最重要，关键是以最小的成本交付需求；一部分可能会看得比较深远，不能只满足当前的需求，还要考虑可持续发展，为将来设计。我们总会有理由赞成这个而反对那个，让老人难以发挥应有价值。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0606/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0515_code/" itemprop="url">
         飞哥讲代码26：Python函数式编程
         </a>
@@ -612,82 +683,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0103_code/" itemprop="url">
-        飞哥讲代码19：C&#43;&#43;中的左右值引用
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-01-03">
-    2021-01-03
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4150 字 ~9分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=composite">Round19测试</a> 中，综合成绩排第一。</p>
-<p>drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。</p>
-<p>我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了<code>const T&amp; </code>与<code>T &amp;&amp;</code>两种入参。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
-    {
-        recvMessageCallback_ = cb;
-    }
-    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
-    {
-        recvMessageCallback_ = std::move(cb);
-    }
-</code></pre></div><p>还有这种用法：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  for (auto &amp;backend : config[&#34;backends&#34;])
-  {
-        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
-  }
-</code></pre></div>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0103_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -811,7 +806,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">150</span>
+        <span class="site-state-item-count">151</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -902,16 +897,8 @@
     </div>
   </div>
 
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-    var hm = document.createElement("script");
-    hm.src = "//hm.baidu.com/hm.js?0b07433b4ab8d587dae7d34e71973839";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=58416275" charset="UTF-8"></script> 
+  
+
 <script type="text/javascript">
   if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
     window.Promise = null;
