@@ -1,0 +1,444 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>软件开发漫谈2：抽象设计 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="软件开发漫谈2：抽象设计">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="软件开发漫谈2：抽象设计 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0619/" itemprop="url">
+        软件开发漫谈2：抽象设计
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-06-19">
+    2021-06-19
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3568 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>接上篇，代码Commit活动中鲜有代码设计类问题提出，抛开客观原因之外来看，要具备较好设计能力其实并不容易。抽象是软件设计基础，抽象是有层次，有角度，有级别。抽象的概念都很好，但也让人迷惑。大师们能够从具体的事物本身，抽象出各种概念。莫过于SOLID等设计原则以及各种设计模式，我们经常看到，经常谈论，可能的现状是难以真正深入理解，并在工作中应用。抽象看似明白，实操又不知如何下手。似乎抽象不可言传，只可意会。</p>
+<p>在绘画领域，有一个流派是抽象主义，似乎通过简单线条、块面和色彩随意的的涂鸦。画家们精心的构思与创作，变成了我们外行人眼中的涂鸦，直呼看不懂，欣赏不来。或许同样在对软件开发中，看似简单架构或代码背后，可能隐藏着作者精心的思考与高度的抽象。抽象之后的结果往往大道至简，越是复杂的代码反而没有什么抽象。我们对软件解决的问题思考太少，也就难以进行抽象。</p>
+<p>本文不是对大师们的设计原则的介绍与理解，而是尝试梳理自己对抽象认知与理解。笔者很早就想写一篇关于抽象的博文，虽然做了十多年的软件开发，无奈对它感悟不深，一直不敢下手写，今天重提抽象，算是一个小总结，其中的错误请大家多多指教。</p>
+<h1 id="理解抽象">理解抽象</h1>
+<p>抽象这个词在中文中即是动词也是名词。<a href="https://baike.baidu.com/item/%E6%8A%BD%E8%B1%A1/9021828">百度百科</a>与<a href="https://zh.wikipedia.org/w/index.php?title=%E6%8A%BD%E8%B1%A1%E5%8C%96&amp;variant=zh-cn">wikipedia</a>都有详细的解释。我倾向于软件开发中所说的抽象是动词与名词的结合。先是从事物的表象中把其内核本质抽离出的<strong>过程</strong>，最后留下的精华得到一般化的概念<strong>结果</strong>。</p>
+<p>软件开发过程是对要解决的问题一个过程抽象，软件需求、架构设计、模块设计与代码实施都是逐步分解的抽象过程。每个过程都有抽象的结果，形成开发人员能够理解与交流的交付件。最终交付的软件质量好不好在于这个过程中是否能抓住问题的本质，以及能否留下精华。</p>
+<ul>
+<li>在软件产品规划和需求分析阶段，是对产品目标确定，定义软件问题域与实施整体策略，通常采用约定的习惯用语表达，提炼出业务的关键功能需求与非功能需求。</li>
+<li>在整体架构设计阶段，是对问题域形成高层的解题域，这一步往往抽像层次较高，是把业务需求抽象成系统组成，服务与组件责职，他们间的交互方式，以及概念模型，数据模型，接口模型等。</li>
+<li>在服务或模块设计阶段，是对其提供的特征与功能的抽象，通常采用面向对象或DDD设计思想，抽象出所管理的核心领域对象，对外的接口，以及持有的数据。</li>
+<li>在代码实施阶段，是对特定功能的动作抽象，通常考虑设计模式来更好的生成类与数据，灵活地组装功能，以及他们高效协作。</li>
+</ul>
+<p>软件开发过程是分层递进的抽象分解，是一个自上而下的过程，每个过程中又有包括了行为抽象与数据抽象。</p>
+<ul>
+<li>行为抽象：关注是如何把解决问题的过程分解，拆成一个个独立的功能单元。不同层次的行为在实现上相互独立，这个行为可以被替换，可以被组合，可以被复用，从而构建出复杂的系统，以便解决提出的问题。</li>
+<li>数据抽象：关注是如何概念对象与自然属性的映射，将数据表示与数据使用分离开来。在定义数据表示时，而不应该被数据的使用所束约，彼此独立。</li>
+</ul>
+<p>抽象目的是要能事物中抽取出共同的、本质性的特征，而舍弃其非本质的特征。抽象要能屏蔽差异性，对于使用者来说，并不关心你的具体实现。所以好的抽象通常具有很多的诸可性，如可复用性，可扩展性，可维护性，可演进性，可移值性。</p>
+<p>相关文章：</p>
+<ul>
+<li><a href="https://www.infoq.cn/article/tXedztawyPmAfc41kufq">当程序员具备了抽象思维</a></li>
+<li><a href="https://blog.csdn.net/y4x5M0nivSrJaY3X92c/article/details/78863467">谈谈到底什么是抽象，以及软件设计的抽象原则</a></li>
+</ul>
+<h1 id="抽象设计">抽象设计</h1>
+<p>抽象是有代价的，抽象会带来理解的复杂度。对抽象的理解也因人而异，比如数学公式，符号抽象比文字更简练与精准，但对于普通人而言可能无异于天书。同样在软件开发中的抽象，系统是变复杂了还是简单了，也取决于采用抽象的方法与抽象层次。</p>
+<p>以前刷知乎，看到理论物理学尝试对四大基本力（引力，电磁力，强相互力，弱相互力）的统一（目前还未统一），认为四种力本质是一样的，应该可以有一个统一的表达式，把物理抽象到数学方程式层面。软件开发中，也许能把一个实际的业务问题抽象成数学模型，会让程序实现变得非常简单和有趣。</p>
+<p>软件的数学抽象是非常高级层次的抽象，需要大师们或天才少年，这似乎离我们普通程度员很远。抽象设计，我们还得一步步来。</p>
+<p>第一重：那我们可以先从代码层抽象开始，尝试将一个最小的功能实现抽象成一个对象或函数来实现，通常是采用面向过程或面向对象的设计思想。</p>
+<p>面向过程思考时要注意：</p>
+<ul>
+<li>要解决的问题能否抽象出多个层次，每个层次代码做到单一层次抽象</li>
+<li>抽象出的函数是否可能复用，每个函数功能是否单一，成为可搭建的积木</li>
+</ul>
+<p>面向对象思考是要注意：</p>
+<ul>
+<li>封装性，抽象出公共的部分，隔离出不同的部分</li>
+<li>接口与实现分离，让调用都看不到实现的细节</li>
+</ul>
+<p>面向对象抽象方法通常是采用UML建模，对需求建立用例分析，根据需求找到其中的客体，再去找到这些客体之间的联系，抽象的难点在于转换映射。如何把现实中的问题映射成计算机的语言实现，而现实问题又过于复杂，通常我们直接看到问题会让我们陷入细节，难以对细节提炼，归纳，总结，形成抽象的模型。</p>
+<p>第二重：当掌握面向对象设计之后，如何让设计更灵活和优雅，最终复用性更好，而需要掌握设计模式。掌握它的关键在于发现变化并且封装变化，我们在写代码过程中要保持一种敏锐，发现可能的变化。变化点也是让你写代码产生重复或者感觉难受的地方。有人将如何发现代码设计问题总结三个原则：</p>
+<ul>
+<li>DRY原则，不要重复自己</li>
+<li>SHY原则，Shy是害羞的意思，对其它知道越少越好，遵循迪米特法则</li>
+<li>三次原则，当一段代码在三个或以上的类需要引用，则要考虑将其抽象为一个方法调用</li>
+</ul>
+<p>无论那种设计模式，其背后都潜藏着一些“永恒的真理”，背后都遵循的就是设计原则。设计原则是对面向对象思想的提炼，与设计模式相比，却又更加的抽象。</p>
+<p>第三重：数据抽象。面向对象的设计是把事物抽象为一个对象, 然后抽象出它的属性(数据)和方法(行为)。这个对象需要做一层存储映射，ORM应用而生。我们多数的软件开发，离不开两个问题：对象执行其行为之后，改变对象的状态，需要持久化到数据库中；从数据库加载对象的状态构建新的对象，再执行其行为。</p>
+<p>或者我们会有这些的疑问？对象设计是否等同表结构设计，应该不等同。数据抽象过程三层：</p>
+<ul>
+<li>分析用户需求，设计概念模型，概念模型是从用户需求的观点出发，对数据建模</li>
+<li>将概念模型转换为逻辑模型，从业务功能实现出发，对数据建模。</li>
+<li>数据库/数据仓库实现时，根据逻辑模型设计物理模型</li>
+</ul>
+<p>他们之间存在独立与联系，我们遇到的困惑是：</p>
+<ul>
+<li>概念模型与外部接口关联，当接口变化了，能否不改变逻辑模型再轻易的做到映射</li>
+<li>逻辑模型不应该关心存储结构、访问技术等细节，这也是ORM框架提供的能力</li>
+</ul>
+<p>第四重：领域划分与领域建模。即使同一事物，在解决不同的问题时, 应该使用不同的抽象。在脑海里若没有清晰的问题域, 同一事物不同抽象就硬生生的把一个事物割裂开来。</p>
+<p>领域驱动设计(DDD)强调在域专家和系统构建者之间创建通用语言。领域建模的过程是在分清问题域和问题解决域。领域是对业务工作进行归类划分，归类的方式是业务工作具有相关的知识，构成一个领域，通过对领域的分析，帮助我们挖掘、分析、理解业务工作的本质。而抽象的领域模型就是对领域内的概念类和现实世界中对象的可视化表示。</p>
+<p>以前看一篇文章提到一个系统中有各种红包，优惠券等。那他们的本质是什么，是一种票据，是发行方和拥有方之间的凭证。它按使用分类有：礼品券，提货券，代金券、红包，打折卡，满减卡等。虽然他们可以抽象为同一种事物，但他们的业务实体是有差别的，要解决的问题域不同。</p>
+<p>第五重：领域专用语言(DSL)。设计领域特定语言，实现终极业务抽象。</p>
+<p>如SQL、CSS、Makefile等DSL的抽象维度是为特定领域量身定做的，从这些抽象角度看问题往往最为简单，所以DSL在解决其特定领域的问题时比通用程序设计语言更加方便。</p>
+<p>软件设计需要通过抽象来做到与业务领域中的概念一致。由于这层的抽象，也是导致软件修改和可维护性并没有想象中的容易。我们必须不断地将业务领域中的概念转换成相应的各种设计、代码层面的模型，然后再进行修改。这种间接性直接造成了软件的复杂度。DSL是使程序尽可能地接近业务领域中的问题，从而消除不必要的间接性和复杂性。</p>
+<p>在平时的面向对象的编程中，大家或许不自觉地会使用DSL的一些方法和技巧。比如，如果我们定义了一些非常面向业务的函数，然后这些函数的集合就可以被看作一种DSL。虽然DSL和面向业务的函数之间是有一些类似之处，但他们视角与定位不同，DSL更多是从客户的角度出发看待代码，定义函数则更多的从解决问题的方案的角度看待代码。</p>
+<h1 id="结语">结语</h1>
+<p>抽象是人类特有的一种思维工具，它可以从纷繁复杂的表象中提炼出本质的特性。软件设计用抽象来表达这个世界，解决用户的需求，创建价值，软件设计是抽象的艺术。抽象虽是一个很主观的概念，但软件开发也是一门工程学科，好在前人已总结了大量模式，原则，方法，让抽象设计更具有操作性。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0606/" rel="prev" title="软件开发漫谈1：commit协作">
+        软件开发漫谈1：commit协作 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件开发漫谈2：抽象设计
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">152</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#理解抽象">理解抽象</a></li>
+    <li><a href="#抽象设计">抽象设计</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

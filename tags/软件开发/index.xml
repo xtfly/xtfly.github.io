@@ -6,7 +6,18 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 06 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>软件开发漫谈2：抽象设计</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0619/</link>
+      <pubDate>Sat, 19 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0619/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;接上篇，代码Commit活动中鲜有代码设计类问题提出，抛开客观原因之外来看，要具备较好设计能力其实并不容易。抽象是软件设计基础，抽象是有层次，有角度，有级别。抽象的概念都很好，但也让人迷惑。大师们能够从具体的事物本身，抽象出各种概念。莫过于SOLID等设计原则以及各种设计模式，我们经常看到，经常谈论，可能的现状是难以真正深入理解，并在工作中应用。抽象看似明白，实操又不知如何下手。似乎抽象不可言传，只可意会。&lt;/p&gt;
+&lt;p&gt;在绘画领域，有一个流派是抽象主义，似乎通过简单线条、块面和色彩随意的的涂鸦。画家们精心的构思与创作，变成了我们外行人眼中的涂鸦，直呼看不懂，欣赏不来。或许同样在对软件开发中，看似简单架构或代码背后，可能隐藏着作者精心的思考与高度的抽象。抽象之后的结果往往大道至简，越是复杂的代码反而没有什么抽象。我们对软件解决的问题思考太少，也就难以进行抽象。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>软件开发漫谈1：commit协作</title>
       <link>http://lanlingzi.cn/post/technical/2021/0606/</link>
