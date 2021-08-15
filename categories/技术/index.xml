@@ -6,7 +6,23 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 19 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 15 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码27：此圈复杂度，改还是不改，是个问题</title>
+      <link>http://lanlingzi.cn/post/technical/2021/0815/</link>
+      <pubDate>Sun, 15 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/0815/</guid>
+      <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
+&lt;p&gt;圈复杂度是一种代码复杂度的衡量标准。在我们的Clean Code的度量指标中很自然也少不了它的影子，通常我们会检查最大圈复杂度与平均圈复杂度。一般说来，人的记忆时长有限，当圈复杂度大于10时，就可能存在逻辑出错风险。圈复杂度也是条件复杂度，高复杂度的代码表现为条件分支多，导致代码可读性差，可测试性难，可维护性差等问题。整体的圈复杂度的确能反映代码整体是否清晰易懂，因此的确我们有必要分析与优化高复杂度的代码。&lt;/p&gt;
+&lt;p&gt;我们在实践开发中经常会遇到高圈复杂度的代码，会纠结一些单点的圈复杂度要不要修改的问题。需要对圈复杂度思辨:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;高圈复杂度是否一定高复杂&lt;/li&gt;
+&lt;li&gt;高圈复杂度是否一定可读性，可维护性差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文案例的代码并不复杂，修改圈复杂度也是老生常谈的问题。但在Clean Code的指标下，我们似乎麻木地习惯小心谨慎，不少时间花在修改一些并不增值的代码上。虽说指标是死的，人不能死板，我们不能基于不信任的指标管控来开发要求可信的代码，具体问题具体分析嘛。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>软件开发漫谈2：抽象设计</title>
       <link>http://lanlingzi.cn/post/technical/2021/0619/</link>

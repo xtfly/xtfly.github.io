@@ -106,6 +106,73 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0124_code/" itemprop="url">
+        飞哥讲代码21：C&#43;&#43;TLS在Envoy中应用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-01-24">
+    2021-01-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4126 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>本文虽分析的是C++源码，但是对Evnoy的设计思想分析，并不影响其它语言开发者阅读。</p>
+<h1 id="案例">案例</h1>
+<p>Envoy是Service Mesh框架Istio推荐的SideCar，基于C++开发(大量使用了Google开源C++项目<a href="https://abseil.io/">absl</a>)，具有高性能的特点，被广大微服务框架爱好者所熟悉。它的高性能一方面也源自它的优秀线程模型，我们可以通过这篇 <a href="https://www.sohu.com/a/244966023_268033">Envoy为什么能战胜Ngnix——线程模型分析篇</a> 可以进一步了解它的设计思路。这是对Envoy架构师的 <a href="https://blog.envoyproxy.io/envoy-threading-model-a8d44b922310">博文</a> 翻译，原文内容较深入较长，总结如下：</p>
+<ul>
+<li>采用单进程多线程的线程模型，其中一个主线程控制一些零散的协作任务</li>
+<li>若干worker线程负责连接监听，以及连接请求消息的过滤、转发</li>
+<li>一旦监听器接受了连接，连接的后续生命周期都绑定到单个工作线程</li>
+<li>使用非阻塞的网络调用，配置的Worker数与CPU核数(线程线)一致，即可完成大部分工作负载</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0124_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0108_code/" itemprop="url">
         飞哥讲代码20：窥探C&#43;&#43;的模板
         </a>
@@ -699,80 +766,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0920_code/" itemprop="url">
-        飞哥讲代码14：好代码源自相互改进
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-09-20">
-    2020-09-20
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2207 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：</p>
-<p><strong>开始：</strong> 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
-DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
-DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
-
-CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
-.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
-</code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
-<p><strong>问题：</strong> 经过一段时间，发现类似读取配置项的代码段 <em>散落</em> 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。</p>
-<p><strong>重构：</strong> 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 <em>封装</em> 对象。改进之后代码如下，并且做了一点小的容错性增强：</p>
-<ul>
-<li>[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。</li>
-<li>[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0920_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -866,6 +859,8 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
     
         
     
+        
+    
     <a class="extend next" rel="next" href="http://lanlingzi.cn/p/3/"><i class="fa fa-angle-right"></i></a>
 </nav>
 
@@ -896,7 +891,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">152</span>
+        <span class="site-state-item-count">153</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

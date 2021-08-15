@@ -106,6 +106,81 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0923_java_base_3/" itemprop="url">
+        跟我一起复习Java-3：并发体系
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-23">
+    2019-09-23
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">5372 字 ~11分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="并发体系">并发体系</h1>
+<h2 id="线程">线程</h2>
+<h3 id="线程安全">线程安全</h3>
+<p>线程安全性：当多个对象访问同一个对象时，如果不考虑这些线程运行环境的调度与交替执行，也不需要额外的同步，或者进行调用方任何其它协调操作。调用这个对象都可以获得正确的结果，那这个对象就是线程安全的。</p>
+<ul>
+<li>原子性</li>
+<li>可见性</li>
+<li>顺序的</li>
+</ul>
+<p>线程实现：</p>
+<ul>
+<li>Runnable：函数没有返回值</li>
+<li>Callable：函数有返回值</li>
+<li>Future：对于具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果、设置结果操作。</li>
+<li>FutureTask：是Future也是Runnable，又是包装了的Callable</li>
+<li>Thread：代表JVM一个线程</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0923_java_base_3/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/" itemprop="url">
         跟我一起复习Java-2：集合/Stream
         </a>
@@ -637,72 +712,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0531_layer/" itemprop="url">
-        逐层递进地编写代码
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-31">
-    2019-05-31
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2131 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="书的目录">书的目录</h1>
-<p>现在的软件类的书籍是越来越厚，尤其是语言类书籍很多通篇都是代码，需要花费很长的时间去阅读，久而之对厚厚的书就有一种莫名的恐惧感。个人看书喜欢先看一本书的目录，快速了解整本书的内容，挑选自己最感兴趣的章节直接开始阅读。</p>
-<p>目录是什么？一本书的大纲，它的精炼所在，好的目录如点睛之笔，将书中内容尽是涵盖：</p>
-<ul>
-<li>让人清楚地知道书所讲的框架内容，一目了然</li>
-<li>让人知道章节之间的逻辑关系，主次之分</li>
-<li>让人了解体察作者写作该书的思想和行文脉络</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0531_layer/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -797,6 +806,8 @@
     
         
     
+        
+    
     <a class="extend next" rel="next" href="http://lanlingzi.cn/p/7/"><i class="fa fa-angle-right"></i></a>
 </nav>
 
@@ -827,7 +838,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">152</span>
+        <span class="site-state-item-count">153</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
