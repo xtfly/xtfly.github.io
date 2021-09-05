@@ -1,0 +1,492 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>软件开发漫谈3：开发者测试 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="软件开发漫谈3：开发者测试">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="软件开发漫谈3：开发者测试 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0904/" itemprop="url">
+        软件开发漫谈3：开发者测试
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-09-04">
+    2021-09-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">5560 字 ~12分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>目前各个团队在推行开发者测试，有些执行力与能力强的团队，逐渐开展起开发者测试。我们总是有各种各样的借口，没有管道时间，不具备本地测试条件，缺少测试技能等等。很多历史代码也不是我写的，缺少测试代码，再被动去补测试，看到明显的收益，抵触很自然。</p>
+<p>开发人员不做测试吗？其实也不是，至少我见到的团队，开发人员都会对自己新写和修改的代码做测试验证。只是这个测试过程是手工的，通过搭建环境，替换软件包，再手工给接口发送消息等一些无法自动可重入的测试手段，效率低下。</p>
+<p>曾经我们也推广过LLT测试，专职测试人员与开发人员饱和式投入之后，随着软件的演进，测试代码却没有随着持续维护与更新，久而久之变成比功能代码还腐烂，今天我们重新再提开发者测试，是否也难逃LLT一样的命运？</p>
+<p>笔者虽然一直从事开发，但在十多年前被主管安排过从事支撑系统测试的工作，写过验收测试用例，写过TTCN的测试脚本，也作为测试执行者用过测试专有工具。现在再来看开发者测试，它们在测试思路、理念、工具都是不相同的。如何更好地开展开发者测试我也是满脑的困惑，参考一些资料，趁着周末有点时间整理，观点也是房屋中大象，权当漫谈的谈资。</p>
+<h1 id="三座大山">三座大山</h1>
+<h2 id="技能不够">技能不够</h2>
+<p>培训与赋能是我司软件开发中一大特色，既然开发人员测试技能不够，那就请测试专家给开发人员赋能。但开发者测试更趋于白盒测试，而现有的测试专家的能力的确很强。不过他们几乎是基于系统测试成长起来的，测试的目的是找到软件的错误，以及不满足需求的地方，包括功能，性能，DFX等。积累的测试经验其实不能解决开发者测试中遇到的问题，两者的测试方法论也不尽相同。</p>
+<p>开发测试的范围主要是包括单元测试，组件/微服务接口与功能测试。尤其是业务类软件，都比较复杂，系统内部的组件/微服务普遍存在依赖，开展开发者测试极具挑战。对于功能无依赖的类，函数开展单元测试并不需要复杂的技能要求，但若只是单点测试，投入产出比不高，这种测试也是浪费人力。</p>
+<p>当构建开发者测试时，需要配置复杂数据，复杂外部依赖Mock，构造测试用例复杂，开发者就会望而却步，大概率直接放弃。于是索性搭建环境测试，却又没有专业测试人员掌握系统级的自动化测试工具，测试用例管理工具，怎么简单就怎么来，手工测试率性而为。</p>
+<p>那是不是让测试专家给开发人员赋能现有的测试工具的使用？个人曾经支撑系统测试的经验直觉地告诉我，不合适。因为开发者测试无论单元测试，还是件/微服务测试，本质直接对代码的最基本逻辑进行的测试，是功能代码一部分。像新创编程语言，似乎越来越有这种观点，谁写的代码就谁做这方面的测试，一边写功能代码，一边写测试代码。Go语言的测试代码与功能功能放在同一个目录下，Rust语言直接把测试代码放在同一文件中。这样开发者测试的技术栈也就与所使用的开发语言一脉相承。</p>
+<p>以Java语言为例，是若使用spring-boot，spring-boot-test提供一套较为完整的测试工具集，如数据库可以基于H2，Servlet有内置的Mock，MVC有MockMvc，Rest调用有TestRestTemplate，Rest服务端有HttpMockServer等等。掌握相应的测试框架也是开发必备技能要求。</p>
+<p>技能的提升70%来源于工作中实践，20%才来自培训。所以等待有人来培训你，还不如自己撸起袖子干起来，边做边学，遇到问题事先想想是否有人探过路，给出解决办法，通过搜索能不能找到相应的案例。</p>
+<h2 id="工具不足">工具不足</h2>
+<p>一个系统中可能会依赖一些中间件，如ZK，Redis等。站在软件提供方来说，如果你的软件使用者包括开发者，则需要提供方便开发的工具集。即使这些开源软件，在我司都有相应的维护主体，所以个人建议是谁提供这些中间件，谁就要提供可用于开发者测试的框架。</p>
+<p>对于不同形态的软件，开发者测试需要搭建完整测试框架，也可能会遇到执行效率的问题，这需要有专人来解决。去年在调研什么是开发者测试时，发现Google有专职的SET（Software Engineers in Test）角色（参见《Google 软件测试之道》）。</p>
+<ul>
+<li>SET 是第一个实现所有接口和协议的人，SET 针对各个模块的依赖提供了 mock 或 fake 的实现。</li>
+<li>SET 的第一要务是可测试性，SET 需要提供程序结构和代码风格方面的建议给开发人员，这样开发人员可以更好地做单元测试，同时提供测试框架方面的建议，让开发人员可以在这些框架基础上自己写测试。</li>
+</ul>
+<p>SET角色是即要懂测试又要懂开发，但与普通开发还是有不同侧重。SET角色工作性质上首先是测试，然后才是开发，SET是间接接触目标软件，对目标软件的测试环节之上的流程改进，或者说测试技术的改进，从简单的已有工具自动化升级到定制工具的自动化，甚至是从零开发一个专项开发者测试工具；最终目的是提升测试效率，保证软件质量。我司目前有些团队开始搭建SET团队，是一个很好的探索。</p>
+<p>完善的工具体系由SET思考，洞察与规划，但也不是说就是SET一个人来完成，普通开发人员也要参与其中一起构建体系，工具体系应包括如下：</p>
+<ul>
+<li>测试手脚架</li>
+<li>依赖系统的Mock或Fake框架</li>
+<li>测试数据生成</li>
+<li>系统干扰工具</li>
+<li>故障构建工具</li>
+<li>性能分析工具</li>
+<li>&hellip;</li>
+</ul>
+<h2 id="意愿不强">意愿不强</h2>
+<p>技能不够，工具不足是开展开发者测试意愿不强的原因之一，更关键的是还没有见到开发者测试带来收益。若只是为了发现问题来说，就会容易低估或忽略了开发者测试的潜在价值：高效代码看护，促进代码重构，提升可维护性，增加可测试等。</p>
+<p>我们很多的软件开发都是项目运作方式，开发者开发某个功能之后，可能不再维护它，又去开发其它的功能。自验证与修改Bug都可以通过搭建环境来验证与解决，反正还有系统测试保障。开发者不经历软件维护的痛苦，也就感受不到开发者测试带的价值。脱离代码本身来谈开发者测试是我们观念认识问题，站在传统测试发现问题的角度来对待开发者测试不足以打动开发者。</p>
+<p>曾经的LLT风风火火一段时间，为什么不能持续下去？因为曾经我们过高地追求覆盖率指标，开展它给开发人员带来更多的工作量。高覆盖率需要测试的粒度变小，甚至Mock内部实现分支，若功能代码稍有变动，会导致测试代码几乎无法维护。追求高覆盖率掩盖了测试是为了提升软件质量的目的本身，只不过是基层管理者的靓丽绩效。而真正在一线做测试的难点与痛苦往往会在紧逼的进度、无力的导向下，使得开发者表现出了强烈的抵触情绪。</p>
+<p>这就引出一个问题，什么样的测试在你所开发的软件上能够提供最好的回报？开发人员才有意愿去开展开发者测试。</p>
+<h1 id="关注过程">关注过程</h1>
+<h2 id="正确导向">正确导向</h2>
+<p>佛家所言：你心里有什么，你看到的就是什么。如何评价开发者测试？商业组织通常会考虑目标、投入产出比等。有些团队藐视把遗留给测试阶段的缺陷密度来衡量开发者测试的效果。我不知道这会不会像覆盖率一样让开发者测试走偏。</p>
+<p>从个人认知来看，开发者测试的价值在于如下，降低遗留缺陷密度只是间接效果而非直接目标：</p>
+<ul>
+<li>重新审视代码：边开发边写测试代码，其实是对自己写的代码的深入审视。测试代码能帮助开发者方便地调试，可能发现一些通过走读不容易发现的异常情况，临界问题等，可以及时增强代码的健壮性</li>
+<li>高效代码看护：不断地往整个系统的代码中添加新功能会变得非常棘手，存在开发者测试，当代码修改时，将有希望在某种程度上得到验证，同时也能确认修改的代码对现有功能是否受到影响</li>
+<li>促进代码重构：若想写好较好的测试代码，需要扎实的软件设计的基本功，因为系统内耦合高，会导致测试困难，测试边界模糊不清，测试用例不稳定，这会促使开发者去思考如何地改进代码现有设计，对系统内部职责合理的划分，尽可能地做到高内聚低耦合</li>
+<li>增加可维护性：代码是业务的抽象，时间一长了，哪怕自己的代码，也可能难以理解。若有充足的测试代码，通过测试用例的输入与输出来了解代码的意图。有测试代码也方便调试，对于后来维护者来说，从看测试代码来了解软件实现是一种最为有效的途径</li>
+<li>增加可测试性：可测试性对软件的意义重大，当你自己去写测试代码时，会站在使用者的角度来思考你写的代码。若自己都不好测试，专业的测试人员怎么更好地测试呢？所以会促使你改进代码结构，增加观察点（如日志，事件等）</li>
+</ul>
+<p>但站在管理员与质量监管者的角度来看，定义一些显性的指标方便管理也无可厚非，不过可能可转变思路，从监管变成服务于开发者测试：</p>
+<ul>
+<li>拉比推好：我们鼓励开发者测试做得好的，让实践不断冒出。优秀的开发者，能够意识到测试的意义，进而主动的投入开发者测试</li>
+<li>修道搭桥：良好的测试开展，依赖于成熟合适的工具，做好使用推广，好的工具自然会使用，不要为收集数据而推广工具，工具要能真正给开发者带来效率提升</li>
+<li>长期投资：不要急功近利，给开发者时间，不要做成运行；做任何事情只有持续付出才有较好的回报，短期内时间成本的增加，要从长远看效果</li>
+<li>自主决策：不要搞一刀切，不同生命周期或不同重要程度的软件，开发团队可以决定开发者测试的力度，应该重在关注核心模块的代码测试</li>
+</ul>
+<h2 id="整洁架构">整洁架构</h2>
+<p>你是否有这样的经历，比如你想测一下某个类，但是发现里面的依赖错综复杂，为了测试流程能跑通，只能都stub或mock。最后发现为了测一个点写了几十个stub方法，投入的工作量很大，直接劝退继续写其它的测试代码动力。</p>
+<p>开发者测试与软件的系统设计存在千丝万缕的关联关系。系统架构、设计，部署，代码的可扩展、可测试性、可理解性等，往往都是一环扣一环，任何一环出现问题，都将制约其他环节。系统往往充满了各种变化、约束、限制和条件，这些隐式的概念往往是不能“公诸于世”的。设计存在就是为了控制住系统实现的复杂度，应对软件的变化，并将这些隐式的概念显式化。</p>
+<p>分层架构提供了层间抽象和隔离的机制，可以保证层间的契约不被破坏。分层架构有利于开展模块间并行开发和协作。每个模块只要边界清晰，便可以独立开发与独立测试。不过现实的写照同层内的模块间的耦合程度极高，开发者轻易打破设计原则，相互引用和依赖，缺失架构原则的约束和检查。</p>
+<p>所以需要设计的边界和范围，独立测试的边界、独立构建的边界，及其独立可替换的设计边界。设计边界即独立裁剪的边界，独立测试和独立交付的构建边界。如果层间之间的依赖是抽象的，那么层测试所依赖的其他层实现便可以替换为测试替身；如果层内模块之间是低耦合的，那么模块测试所依赖的其他模块也可以替换为测试替身；如果模块内类或函数之间是低耦合的，那么类或函数所依赖的其他类或函数也可以替换为测试替身。</p>
+<p>Bob大叔的一本整洁代码之道的书对我们受益匪浅，同样他的<a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"><strong>架构整洁之道</strong></a>尝试使用简单的观点将各种架构的共通之处和最终目标说清楚，只需要秉持最简单的两个观点开发：分层和依赖规则。</p>
+<p>分层分离，将各种实体间的关系进行分离，至少有一个业务逻辑层，并且有其他的接口层：</p>
+<ul>
+<li>与框架的分离：框架决不能依赖一些有限制特征的库</li>
+<li>与数据库的分离：能很方便地在多种数据库进行切换和改变，业务逻辑不能依赖这些数据库</li>
+<li>与外部结构分离：业务逻辑并不需要知道任何外部的结构</li>
+</ul>
+<p>这样就具有很好的可测试性，分离的效果是可替换性，可裁剪性，也让测试变得容易。</p>
+<p>依赖规则，代码依赖只能使由外向内，内层结构的代码不能包含有任何外层结构的信息，也是设计模式的依赖倒置原则在代码架构上放大版：</p>
+<ul>
+<li>实体层：应用的业务逻辑对象。它们封装了最通用的规则，并且当外部环境变化的时候，这些实体是最不需要被变化的</li>
+<li>用户实例层：由流入实体的数据流和流出实体的数据流实现，使得内层的实体能依靠实体内定义的业务逻辑规则来完成系统的用户需求</li>
+<li>接口适配层：这一层的目的就是进行数据的转换，将便于用户实例和实体层操作的数据结构变化成为最便于外部结构</li>
+<li>框架和驱动层：这层表达的是所有的数据应该具体最终到达的地方，比如数据库，Web框架等，他们可以随着运行环境变化，对整个系统的架构造不成什么影响</li>
+</ul>
+<p>依赖规则的简单化，这样就让测试可以由内向外展开，减少由于依赖需要构建大部的Mock或Stub。</p>
+<h2 id="重视质量">重视质量</h2>
+<p>测试本身不能改善软件的质量，从前面本文的观点来看，通过开发者测试活动，能够促进开发者改进代码结构，从面提升软件多方面的质量。开展开发者测试，还是原来的单元测试吗？不仅仅是，模块内的单元测试主要关注点：</p>
+<ul>
+<li>覆盖代码所有分支，包括正常路径和错误路径</li>
+<li>覆盖所有有效的输入/输出情况</li>
+<li>覆盖所有无效的或预期以外的输入/输出情况</li>
+<li>覆盖所有的日志文件和返回代码</li>
+</ul>
+<p>但单元测试构造成本很高，或测试用例很脆弱，历史上实践单元测试最终走向了不归路，所有开发者测试更要从需求与设计的角度来关注：</p>
+<ul>
+<li>首先编写测试用例，将迫使你在开始写代码之前至少思考一下需求和设计</li>
+<li>对每一项相关的需求进行测试，以确保需求都已实现</li>
+<li>对每一个相关的设计关注点进行测试，以确保设计已被实现</li>
+<li>对核心代码或算法进行性能测试，以确保满足规格要求</li>
+<li>对接口代码进行安全性测试，如文件遍历漏洞、SQL注入、缓冲区溢出</li>
+<li>对接口变更进行兼容性测试，以确保功能兼容，数据兼容，运行环境兼容等</li>
+</ul>
+<p>原有的单元测试与LLT测试，不可持续的原因还有是忽略测试用例代码的质量要求。破窗效应，测试代码变得难以维护，甚至放弃测试自动化。测试代码本身存在常见的问题：</p>
+<ul>
+<li>缺少用例正交设计，测试用例大量重复测试</li>
+<li>存在大量的拷贝粘贴，测试用例代码重复率高</li>
+<li>需要构建大量的前置条件，测试用例极为复杂</li>
+<li>粒度过小，函数实现朝令夕改，测试用例极为脆弱</li>
+<li>没有有效地组织合理命名，测试用例的可读性极差</li>
+<li>测试的边界不清晰，外部依赖重，测试反馈周期过长</li>
+</ul>
+<p>所以需要像重视功能代码一样重视测试代码的质量，测试用例与代码也需要设计与评审，测试代码也是产品交付件的重要组成，伴随软件开发的整个生命周期。</p>
+<h1 id="结语">结语</h1>
+<p>啰哩啰嗦说了这些多，无外乎就是重视问题，撸起袖子干起来。开发者测试需要更加敏捷，在代码架构上要Design for Testability，实施开展测试需要完整测试策略，激励机制；改善测试过程的最好办法是对过程问题进行分析与评估，而不是仅仅结果导向。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0815/" rel="prev" title="飞哥讲代码27：此圈复杂度，改还是不改，是个问题">
+        飞哥讲代码27：此圈复杂度，改还是不改，是个问题 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件开发漫谈3：开发者测试
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#三座大山">三座大山</a>
+      <ul>
+        <li><a href="#技能不够">技能不够</a></li>
+        <li><a href="#工具不足">工具不足</a></li>
+        <li><a href="#意愿不强">意愿不强</a></li>
+      </ul>
+    </li>
+    <li><a href="#关注过程">关注过程</a>
+      <ul>
+        <li><a href="#正确导向">正确导向</a></li>
+        <li><a href="#整洁架构">整洁架构</a></li>
+        <li><a href="#重视质量">重视质量</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

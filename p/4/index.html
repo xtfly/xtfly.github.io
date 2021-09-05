@@ -106,6 +106,78 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0627_code/" itemprop="url">
+        飞哥讲代码7：消除重复，需要脚本模块化
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-27">
+    2020-06-27
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2936 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>这次就不上代码了。情况是这样的，我们某一新产品，采用微服务架构，每个微服务独立的源码仓：</p>
+<ul>
+<li>每个服务都要支持手工安装，DF部署，容器部署。</li>
+<li>每个服务都要支持修改密钥，密码等。</li>
+<li>每个服务都要支持容灾，WatchDog等</li>
+</ul>
+<p>上面的功能实现都需要采用Shell脚本，当搞定一个服务时，只需要复制到其它的服务，是最为常见的做法。但这种做法也带来了大量的重复，导致维护极其困难。真是拷贝一时爽，维护成了火葬场。主要问题表现：</p>
+<ul>
+<li><strong>服务内重复：</strong> 同一服务内脚本不同场景下复制粘贴，如手工安装与DF部署，都需要创建OS用户，没有抽取公共函数复用</li>
+<li><strong>服务间重复：</strong> 不同服务间脚本复制粘贴，如同样是修改密码，只是配置文件路径不一样，配置项略有差别，没有抽取公共脚本复用。</li>
+<li><strong>缺少封装性：</strong> 部分脚本从头到尾没有任何函数提取，大块脚本从顶写到尾，全局变量到处飞，阅读极其困难。</li>
+<li><strong>健壮性不足：</strong> 脚本中的操作没有判断返回值或退出状态码，脚本没有太多的可靠性的防护。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0627_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0621_code/" itemprop="url">
         飞哥讲代码6：消除重复，需要配置代码分离
         </a>
@@ -728,67 +800,6 @@ os.remove(file_name)
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0322_engining/" itemprop="url">
-        软件工程文化
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-03-22">
-    2020-03-22
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1438 字 ~3分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="软件危机">软件危机</h1>
-<p>软件工程师的困惑：软件具有太多的不确定性，软件工程师每天日复一日的工作，大多数面对的都是自己目前不知道答案的问题。我们依赖着过去的经验，朝着大致的方向，努力地解决一个又一个问题。但历史的经验并不解决未来的问题，反面太多成功的经验可能会让我们陷入经验主义。我们也会经常责怪前人犯下的错误，需要我们去应对。我们讨厌需求的变更，它让我们曾经的付出付诸东流。变更是软件开发中不可避免的，所以我们在任何的阶段都要去适应变。即使软件发布了，也不可能一劳永逸，它像一个生命体还得继续维护。</p>
-<p>从软件项目管理角度的困惑，软件存在所谓的软件危机：软件的开发进度难以预测；软件的开发成本难以控制；软件的功能难以满足用户；软件的产品质量无法保证；软件产品难以维护&hellip;..</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0322_engining/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -911,7 +922,7 @@ os.remove(file_name)
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">153</span>
+        <span class="site-state-item-count">154</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

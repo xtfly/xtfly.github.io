@@ -106,6 +106,81 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0924_java_base_4/" itemprop="url">
+        跟我一起复习Java-4：IO体系
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-24">
+    2019-09-24
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3834 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="io体系">IO体系</h1>
+<h2 id="普通io">普通IO</h2>
+<p>整个Java.io包主要分为两大部分</p>
+<ul>
+<li>文件特征对象</li>
+<li>文件内容操作对象</li>
+</ul>
+<h3 id="文件对象">文件对象</h3>
+<p>在类Unix系统中，一切对象皆文件，文件是最为基本的对象。Java API提供了最为基本的文件对象。</p>
+<p>文件特征对象主要有如下：</p>
+<ul>
+<li>文件（File）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等</li>
+<li>文件描述符（FileDescriptor）： 主要映射到OS层的文件句柄对象</li>
+<li>文件系统（FileSystem）：子类有UnixFileSystem，WinNTFileSystem等，用于适配不同的文件系统，仅内部使用，用户层不可调用。通过DefaultFileSystem.getFileSystem获取对应平台文件系统</li>
+<li>文件特征，包括Closeable，Flushable，FileFilter，Serializable</li>
+</ul>
+<p>文件内容操作对象主要有两大类：流式操作与数据转换。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0924_java_base_4/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0923_java_base_3/" itemprop="url">
         跟我一起复习Java-3：并发体系
         </a>
@@ -647,71 +722,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2019/0602_dry/" itemprop="url">
-        拒绝重复代码
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-06-02">
-    2019-06-02
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2228 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="拒绝重复">拒绝重复</h1>
-<p>软件是让机器有了指令能执行一系列的动作，可将重复的机械劳动自动化。软件工程师们大多数会对重复都深恶痛疾，一旦发现有重复的迹象，就会想尽办法用技术手段去解决它。重复代码也意味着重复劳动，每次变更都必须要同时修改好几个地方，很容易遗漏而出镨，因而我们相信没有人喜欢重复的代码。</p>
-<p>但是，实际项目中的业务逻辑总是错综复杂，有很多看似重复的场景，却又不完全一样。虽然我们不喜欢重复，实际上受限项目时间与经验技能，又不知不觉地在制造重复。人大多都有惰性，编写代码也是从模仿开发，都会经过拷贝与粘贴的阶段，当完成了软件开发任务，再也没有回过来再看看我们写的代码。久而久之，软件中充斥着大量的重复、相似的代码。他们的持续存在造成了代码可维护性差，代码质量下降。</p>
-<p><code>Robert C.Martin</code>在他的代码整洁之道一书中写道:</p>
-<blockquote>
-<p>重复可能是软件中一切邪恶的根源，许多原则与实践规则都是为了控制与消除重复而创建。…… 软件开发领域的所有创新都是不断在尝试从源代码中消除重复。</p>
-</blockquote>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2019/0602_dry/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -838,7 +848,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">153</span>
+        <span class="site-state-item-count">154</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
