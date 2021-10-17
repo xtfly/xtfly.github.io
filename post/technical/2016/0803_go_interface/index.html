@@ -168,7 +168,7 @@
 <p>接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&quot;<a href="http://en.wikipedia.org/wiki/Structural_type_system">Structural Typing</a>&quot;。</p>
 <h2 id="方法">方法</h2>
 <p>Go语言中同时有函数和方法。一个方法就是一个包含了<a href="http://golang.org/ref/spec#Method_declarations">接受者</a>的函数，接受者可以是<a href="http://golang.org/ref/spec#Types">命名类型</a>或者<a href="http://golang.org/ref/spec#Struct_types">结构体类型</a>的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type User struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type User struct {
   Name  string
   Email string
 }
@@ -184,7 +184,7 @@ alimon := &amp;User{&#34;A-limon&#34;, &#34;alimon@ooxx.com&#34;}
 alimon.Notify()
 </code></pre></div><p><code>User</code>的结构体类型，定义了一个该类型的方法叫做<code>Notify</code>，该方法的接受者是一个<code>User</code>类型的值。要调用<code>Notify</code>方法我们需要一个 <code>User</code>类型的值或者指针。Go<a href="http://golang.org/ref/spec#Calls">调用</a>和解引用指针使得调用可以被执行。<strong>注意</strong>，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。</p>
 <p>我们可以修改<code>Notify</code>方法，让它的接受者使用指针类型：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (u *User) Notify() error
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (u *User) Notify() error
 </code></pre></div><p>再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。</p>
 <p>总结：</p>
 <ul>
@@ -193,7 +193,7 @@ alimon.Notify()
 <li>如果接收者是指针，则调用者修改的是指针指向的值本身。</li>
 </ul>
 <h2 id="接口实现">接口实现</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Notifier interface {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Notifier interface {
   Notify() error
 }
 
@@ -235,7 +235,7 @@ User does not implement Notifier (Notify method has pointer receiver)
 <p>空接口(<code>interface{}</code>)不包含任何的method，正因为如此，所有的类型都实现了<code>interface{}</code>。<code>interface{}</code>对于描述起不到任何的作用(因为它不包含任何的method），但是<code>interface{}</code>在我们需要存储任意类型的数值的时候相当有用，因为它可以存储任意类型的数值。它有点类似于C语言的<code>void*</code>类型。</p>
 <p>Go语言中的nil在概念上和其它语言的null、None、nil、NULL一样，都指代零值或空值。nil是预先说明的标识符，也即通常意义上的关键字。nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果未遵循这个<a href="http://pkg.golang.org/pkg/builtin/#Type">规则</a>，则会引发panic。</p>
 <p>在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译<a href="http://my.oschina.net/chai2010/blog/117923">Go中error类型的nil值和nil</a>。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import (
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import (
     &#34;fmt&#34;
     &#34;reflect&#34;
 )
@@ -247,7 +247,7 @@ func main() {
     fmt.Println(reflect.TypeOf(val))
 }
 </code></pre></div><p>type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
     var val interface{} = nil
     if val == nil {
         fmt.Println(&#34;val is nil&#34;)
@@ -257,7 +257,7 @@ func main() {
 }
 </code></pre></div><p>变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。</p>
 <p>进一步验证：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
     var val interface{} = (*interface{})(nil)
     if val == nil {
         fmt.Println(&#34;val is nil&#34;)
@@ -278,7 +278,7 @@ func main() {
 </li>
 <li>
 <p>switch测试</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">switch value := element.(type) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">switch value := element.(type) {
     case int:
         fmt.Printf(&#34;list[%d] is an int and its value is %d\n&#34;, index, value)
     case string:
@@ -291,7 +291,7 @@ func main() {
 <p>反射是程序运行时检查其所拥有的结构，尤其是类型的一种能力。Go语言也提供对反射的支持。</p>
 <p>在前面的<code>interface{}与nil</code>的底层实现已提到，在<code>reflect</code>包中有两个类型需要了解：<code>Type</code>和<code>Value</code>。这两个类型使得可以访问接口变量的内容，还有两个简单的函数，<code>reflect.TypeOf</code>和<code>reflect.ValueOf</code>，从接口值中分别获取<code>reflect.Type</code> 和<code>reflect.Value</code>。</p>
 <p>如同物理中的反射，在Go语言中的反射也存在它自己的镜像。从<code>reflect.Value</code>可以使用<code>Interface</code>方法还原接口值:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var x float64 = 3.4
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var x float64 = 3.4
 v := reflect.ValueOf(x)
 
 // Interface 以 interface{} 返回 v 的值。
@@ -397,7 +397,7 @@ fmt.Println(y)
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -483,7 +483,7 @@ fmt.Println(y)
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

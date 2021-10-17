@@ -157,7 +157,7 @@
 <p>培训与赋能是我司软件开发中一大特色，既然开发人员测试技能不够，那就请测试专家给开发人员赋能。但开发者测试更趋于白盒测试，而现有的测试专家的能力的确很强。不过他们几乎是基于系统测试成长起来的，测试的目的是找到软件的错误，以及不满足需求的地方，包括功能，性能，DFX等。积累的测试经验其实不能解决开发者测试中遇到的问题，两者的测试方法论也不尽相同。</p>
 <p>开发测试的范围主要是包括单元测试，组件/微服务接口与功能测试。尤其是业务类软件，都比较复杂，系统内部的组件/微服务普遍存在依赖，开展开发者测试极具挑战。对于功能无依赖的类，函数开展单元测试并不需要复杂的技能要求，但若只是单点测试，投入产出比不高，这种测试也是浪费人力。</p>
 <p>当构建开发者测试时，需要配置复杂数据，复杂外部依赖Mock，构造测试用例复杂，开发者就会望而却步，大概率直接放弃。于是索性搭建环境测试，却又没有专业测试人员掌握系统级的自动化测试工具，测试用例管理工具，怎么简单就怎么来，手工测试率性而为。</p>
-<p>那是不是让测试专家给开发人员赋能现有的测试工具的使用？个人曾经支撑系统测试的经验直觉地告诉我，不合适。因为开发者测试无论单元测试，还是件/微服务测试，本质直接对代码的最基本逻辑进行的测试，是功能代码一部分。像新创编程语言，似乎越来越有这种观点，谁写的代码就谁做这方面的测试，一边写功能代码，一边写测试代码。Go语言的测试代码与功能功能放在同一个目录下，Rust语言直接把测试代码放在同一文件中。这样开发者测试的技术栈也就与所使用的开发语言一脉相承。</p>
+<p>那是不是让测试专家给开发人员赋能现有的测试工具的使用？个人曾经支撑系统测试的经验直觉地告诉我，不合适。因为开发者测试无论单元测试，还是件/微服务测试，本质直接对代码的最基本逻辑进行的测试，是功能代码一部分。像新创编程语言，似乎越来越有这种观点，谁写的代码就谁做这方面的测试，一边写功能代码，一边写测试代码。Go语言的测试代码与功能代码放在同一个目录下，Rust语言直接把测试代码放在同一文件中。这样开发者测试的技术栈也就与所使用的开发语言一脉相承。</p>
 <p>以Java语言为例，是若使用spring-boot，spring-boot-test提供一套较为完整的测试工具集，如数据库可以基于H2，Servlet有内置的Mock，MVC有MockMvc，Rest调用有TestRestTemplate，Rest服务端有HttpMockServer等等。掌握相应的测试框架也是开发必备技能要求。</p>
 <p>技能的提升70%来源于工作中实践，20%才来自培训。所以等待有人来培训你，还不如自己撸起袖子干起来，边做边学，遇到问题事先想想是否有人探过路，给出解决办法，通过搜索能不能找到相应的案例。</p>
 <h2 id="工具不足">工具不足</h2>
@@ -266,6 +266,10 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
+        <a href="http://lanlingzi.cn/post/technical/2021/1016/" rel="next" title="软件开发漫谈4：敏捷开发">
+        <i class="fa fa-chevron-left"></i> 软件开发漫谈4：敏捷开发
+        </a>
+    
     </div>
 
     <div class="post-nav-prev post-nav-item">
@@ -338,7 +342,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -430,7 +434,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

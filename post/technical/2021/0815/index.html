@@ -157,7 +157,7 @@
 <p>本文案例的代码并不复杂，修改圈复杂度也是老生常谈的问题。但在Clean Code的指标下，我们(包括我自己)似乎早已麻木地习惯小心谨慎，不少时间花在修改一些不太增值的代码上。虽说指标是死的，人不能死板，我们不能基于不信任的指标来管控开发可信的代码，具体问题具体分析嘛。</p>
 <h1 id="案例">案例</h1>
 <p>在我们内部一个群，讨论如下c++代码怎么修改：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TagLalelKey</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TagLalelKey</span> {
     <span style="color:#00688b;font-weight:bold">int</span> unit;
     <span style="color:#00688b;font-weight:bold">int</span> entity;
     <span style="color:#00688b;font-weight:bold">int</span> mid;
@@ -215,7 +215,7 @@
 <p>上面具体的应用代码示例，请参见<a href="https://www.jianshu.com/p/60d696f27f80">控制圈复杂度的9种重构技术</a>。</p>
 <h2 id="优化方法1">优化方法1</h2>
 <p>案例中的代码显然是条件分支嵌套多，优化思路是要简化条件表达式。但<code>分解</code>或<code>合并</code>条件式似乎不能解决问题，尝试先采用逆向表达式。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp1</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp1</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
     <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &lt; k2.unit) {
         <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
     } 
@@ -248,7 +248,7 @@
 <li>替换算法，原方法逻辑上，是结构体的不同字段需要先后比较</li>
 </ul>
 <p>提到需要先后比较，可以采用队列，数组之类，再次修改代码如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp2</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp2</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
     <span style="color:#00688b;font-weight:bold">int</span> cmpVals[<span style="color:#b452cd">4</span>] = {
         k1.unit - k2.unit,
         k1.entity - k2.entity,
@@ -264,7 +264,7 @@
 </code></pre></div><p>上述的代码引入了数组与循环，减少总的if/else分支，圈复杂度下降到4。优点是当后续增加其它字段需要比较时，它具有更好的扩展性，代码结构层次不会随之进一步恶化。但这样修改的代价也比较明显，所有的比较值都提前计算了，增加性能的损耗。</p>
 <h2 id="优化方法3">优化方法3</h2>
 <p>既然方法2的代价是比较值提前计算了，那能不能改成延迟计算，再次修改代码如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">using</span> cmp_func_t = std::function&lt;<span style="color:#00688b;font-weight:bold">int</span>()&gt;;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">using</span> cmp_func_t = std::function&lt;<span style="color:#00688b;font-weight:bold">int</span>()&gt;;
 <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp3</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
     <span style="color:#8b008b;font-weight:bold">auto</span> cmpFuncs =  {
         cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.unit - k2.unit; }),
@@ -290,7 +290,7 @@
 <h1 id="另一个案例">另一个案例</h1>
 <p>再来看一个案例，下面两段代码摘抄 <a href="http://kaelzhang81.github.io/2017/06/18/%E8%AF%A6%E8%A7%A3%E5%9C%88%E5%A4%8D%E6%9D%82%E5%BA%A6/">详解圈复杂度</a>。</p>
 <p>代码片段1：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">string <span style="color:#008b45">getWeight</span>(<span style="color:#00688b;font-weight:bold">int</span> i) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">string <span style="color:#008b45">getWeight</span>(<span style="color:#00688b;font-weight:bold">int</span> i) {
         <span style="color:#8b008b;font-weight:bold">if</span> (i &lt;= <span style="color:#b452cd">0</span>)  {
                 <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;no weight&#34;</span>;
         }
@@ -309,7 +309,7 @@
         <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;super heavy&#34;</span>
 }
 </code></pre></div><p>代码片段2：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">sumOfNonPrimes</span>(<span style="color:#00688b;font-weight:bold">int</span> limit) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">sumOfNonPrimes</span>(<span style="color:#00688b;font-weight:bold">int</span> limit) {
     <span style="color:#00688b;font-weight:bold">bool</span> bAdd = <span style="color:#658b00">false</span>;
     <span style="color:#00688b;font-weight:bold">int</span> sum = <span style="color:#b452cd">0</span>;
     <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; limit; ++i) {
@@ -426,7 +426,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -513,7 +513,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

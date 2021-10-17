@@ -176,7 +176,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
 如果在下面使用是会存在问题</p>
 </li>
 </ol>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">if ( 1 == b)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">if ( 1 == b)
     TEST(a ):
 else
 {
@@ -184,12 +184,12 @@ else
 }
 </code></pre></div><p>那当代码展开之后，宏中的if与外面的else是一起匹配，而不是else与if ( 1 == b)匹配。
 所以上述宏要修改为</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define TEST(a )  do {/
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define TEST(a )  do {/
  if ( 0 == a )  { dosomething(); }  }while(0)
 </code></pre></div><ol start="6">
 <li>对于可变参宏，可以使用__VA_ARGS__，GCC支持它，但并非所有的编译器支持，如果你的代码要跨平台，慎用。</li>
 </ol>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define LOG( format, ... ) printf( format, __VA_ARGS__ )
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#define LOG( format, ... ) printf( format, __VA_ARGS__ )
  LOG( &#34;%s %d&#34;, str, count );
 </code></pre></div><p><code>__VA_ARGS__</code>被自动替换为参数列表。</p>
 <ol start="7">
@@ -283,7 +283,7 @@ else
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -350,7 +350,7 @@ else
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

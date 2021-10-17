@@ -169,7 +169,7 @@
 <p>Key类型只要能支持<code>==</code>和<code>!=</code>操作符，即可以做为Key，当两个值<code>==</code>时，则认为是同一个Key。</p>
 <h2 id="比较相等">比较相等</h2>
 <p>我们先看一下样例代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">package</span> main
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">package</span> main
 
 <span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#cd5555">&#34;fmt&#34;</span>
 
@@ -249,7 +249,7 @@
 <p>注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行<code>==</code>操作的，例如slice，那么就不能作为map的key。</p>
 <h2 id="类型判断">类型判断</h2>
 <p>判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，<code>_type</code>结构是描述最为基础的类型（<code>runtime/type.go</code>），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type _type struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type _type struct {
 	size       uintptr
 	ptrdata    uintptr 
 	hash       uint32
@@ -275,7 +275,7 @@ type slicetype struct {
 }
 ...
 </code></pre></div><p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type typeAlg struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type typeAlg struct {
 	// function for hashing objects of this type
 	// (ptr to object, seed) -&gt; hash
 	hash func(unsafe.Pointer, uintptr) uintptr
@@ -284,7 +284,7 @@ type slicetype struct {
 	equal func(unsafe.Pointer, unsafe.Pointer) bool
 }
 </code></pre></div><p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func strhash(a unsafe.Pointer, h uintptr) uintptr {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func strhash(a unsafe.Pointer, h uintptr) uintptr {
 	x := (*stringStruct)(a)
 	return memhash(x.str, h, uintptr(x.len))
 }
@@ -293,7 +293,7 @@ func strequal(p, q unsafe.Pointer) bool {
 	return *(*string)(p) == *(*string)(q)
 }
 </code></pre></div><p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
 	...
 	alg := t.key.alg
 	hash := alg.hash(key, uintptr(h.hash0)) // 1
@@ -325,7 +325,7 @@ func strequal(p, q unsafe.Pointer) bool {
 <li>在桶中找到<code>key</code>值相等的map的<code>value</code>。判断相等需调用<code>key</code>类型的<code>equal</code>方法</li>
 </ol>
 <p>到现在我们也就有了初步了解，map中的<code>key</code>访问时同时需要使用该类型的<code>hash func</code>与 <code>equal func</code>，只要<code>key</code>值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">m := make(map[interface{}]interface{})
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">m := make(map[interface{}]interface{})
 m[_key{}] = &#34;value&#34;
 if v, ok := m[_key{}];ok {
 	fmt.Println(&#34;%v&#34;, v) // output: value
@@ -425,7 +425,7 @@ if v, ok := m[_key{}];ok {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -508,7 +508,7 @@ if v, ok := m[_key{}];ok {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

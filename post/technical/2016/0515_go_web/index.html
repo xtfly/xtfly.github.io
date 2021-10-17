@@ -152,7 +152,7 @@
 <p><code>net/http</code>库中主要涉及到如下几个类型与接口：</p>
 <h3 id="request结构体">Request结构体</h3>
 <p>封装了HTTP的请求消息，其结构如下，可以很方便的地取出Method，Header与Body。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  type Request struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  type Request struct {
       Method string
       URL *url.URL
       Proto      string
@@ -175,7 +175,7 @@
   }
 </code></pre></div><h3 id="response结构体">Response结构体</h3>
 <p>封装HTTP的响应消息，其结构如下，Response会关联Request。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Response struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Response struct {
   Status     string
   StatusCode int
   Proto      string
@@ -192,19 +192,19 @@
 }
 </code></pre></div><h3 id="handler接口">Handler接口</h3>
 <p>用于构建Response。应用开发就编写各种实现该Handler接口的类型，并在该类型的ServeHTTP方法中编写服务器响应逻辑。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Handler interface {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Handler interface {
    ServeHTTP(ResponseWriter, *Request)
 }
 </code></pre></div><h3 id="responsewriter接口">ResponseWriter接口</h3>
 <p>即应用通过各种Handler操作ResponseWriter接口来构建Response。ResponseWriter实现了<code>io.Writer</code>接口，可以写入响应的Body，<code>WriteHeader</code>方法用于向HTTP响应信息写入状态码，但必须先于<code>Writer</code>方法调用。若不调用<code>WriteHeader</code>，使用<code>Write</code>方法会自动写入状态码<code>http.StatusOK</code>。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type ResponseWriter interface {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type ResponseWriter interface {
    Header() Header
    Write([]byte) (int, error)
    WriteHeader(int)
 }
 </code></pre></div><h3 id="listenandserve函数">ListenAndServe函数</h3>
 <p>启动HTTP服务，需要构建Server对象，并调用该Server的<code>ListenAndServe</code>方法，Server是HTTP服务的主控器。期结构定义如下，应用可以设置HTTP监听的地址，配置TLS，以及一些其它参数配置。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Server struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Server struct {
     Addr           string        // TCP address to listen on, &#34;:http&#34; if empty
     Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
     ReadTimeout    time.Duration // maximum duration before timing out read of the request
@@ -219,17 +219,17 @@
     nextProtoErr      error
 }
 </code></pre></div><p>Server需要关注如下几个方法，从方法名就可能知道它的用途。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (srv *Server) ListenAndServe() error
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (srv *Server) ListenAndServe() error
 func (srv *Server) Serve(l net.Listener) error
 </code></pre></div><h3 id="servemux结构体">ServeMux结构体</h3>
 <p>用于HTTP路由配置，其结构体定义如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type ServeMux struct {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type ServeMux struct {
     mu    sync.RWMutex
     m     map[string]muxEntry
     hosts bool // whether any patterns contain hostnames
 }
 </code></pre></div><p>ServeMux有如下几个方法，用于配置HTTP与URL的映射关系。其实ServeMux也是实现<code>ServeHTTP</code>接口，其ServeHTTP方法完成了ServeMux的主要功能，即根据HTTP请求找出最佳匹配的<code>Handler</code>并执行之，它本身就是一个多<code>Handler</code>封装器，是各个<code>Handler</code>执行的总入口。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (mux *ServeMux) Handle(pattern string, handler Handler)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (mux *ServeMux) Handle(pattern string, handler Handler)
 func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string)
 func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
@@ -361,7 +361,7 @@ func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -460,7 +460,7 @@ func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request)
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一中间件产品源码(Java语言)中（<code>写法一</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
     AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
     <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">null</span> == rejectMessageCount) {
@@ -162,11 +162,11 @@
     <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
 }
 </code></pre></div><p>上面的代码是线程安全的，但不够简洁，Java 1.8的<code>ConcurrentMap</code>提供<code>computeIfAbsent()</code>方法，可以简化为（<code>写法二</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
     <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
 }
 </code></pre></div><p>回想起曾经走读代码见过如下的写法（<code>写法三</code>，还是以getRejectMessageCount实现为例）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
     <span style="color:#8b008b;font-weight:bold">synchronized</span>(rejectMessageCounts) {
         AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
         <span style="color:#8b008b;font-weight:bold">if</span> (rejectMessageCount == <span style="color:#8b008b;font-weight:bold">null</span>) {
@@ -230,7 +230,7 @@
 <p><strong>锁分离</strong></p>
 <p>锁分离就是读写锁分离，JDK中ReadWriteLock维护了一对锁，读锁可允许多个读线程并发使用，写锁是独占的。</p>
 <p>ConcurrentHashMap 1.8版本中的存储结构采用黑红树，它也采用锁分离的思路，针对读取的优化，来看一下它的数据结构：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">static final class TreeBin&lt;K,V&gt; extends Node&lt;K,V&gt; {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">static final class TreeBin&lt;K,V&gt; extends Node&lt;K,V&gt; {
     // 指向TreeNode列表和根节点
     TreeNode&lt;K,V&gt; root;
     volatile TreeNode&lt;K,V&gt; first;
@@ -246,13 +246,13 @@
 <p><strong>锁粗化</strong></p>
 <p>为了保证多线程间的有效并发，会要求每个线程持有锁的时间尽量短。如果对同一个锁不停的进行请求、同步和释放，其本身也会消耗系统宝贵的资源，反而不利于性能的优化。</p>
 <p>锁粗化指可以把很多次请求的锁拿到一个锁里面。例如：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
     <span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
         <span style="color:#228b22">// 处理逻辑
 </span><span style="color:#228b22"></span>    }
 }
 </code></pre></div><p>则可以优化为：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
     <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
         <span style="color:#228b22">// 处理逻辑
 </span><span style="color:#228b22"></span>    }
@@ -356,7 +356,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -440,7 +440,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

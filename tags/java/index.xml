@@ -15,7 +15,7 @@
       <guid>http://lanlingzi.cn/post/technical/2020/1129_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;案例代码来源我们某产品：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (StringUtil.&lt;span style=&#34;color:#658b00&#34;&gt;isEmpyt&lt;/span&gt;(orgName)) {
         &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BackParameterException(...);
     }
@@ -66,7 +66,7 @@
       <guid>http://lanlingzi.cn/post/technical/2020/1108_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非&lt;code&gt;F&lt;/code&gt;级别课程统计平均分数：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String title;
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; grade;
 }
@@ -120,7 +120,7 @@
 &lt;/ul&gt;
 &lt;p&gt;实现的主体逻辑是，收银员向顾客收钱。&lt;/p&gt;
 &lt;p&gt;代码如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; value;
 
     &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法
@@ -166,7 +166,7 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。&lt;/p&gt;
 &lt;p&gt;代码一：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;run&lt;/span&gt;() {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;run&lt;/span&gt;() {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(!(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;())) {
         &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
             &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;) {
@@ -208,13 +208,13 @@
       <guid>http://lanlingzi.cn/post/technical/2020/0808_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, String&amp;gt; store = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;();
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; List&amp;lt;Class2&amp;gt; queue = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
     &lt;span style=&#34;color:#228b22&#34;&gt;//... 省略其它的字段与其Getter/Setter方法
 &lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
   &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
 &lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
    &lt;span style=&#34;color:#228b22&#34;&gt;// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
@@ -245,7 +245,7 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;案例一&lt;/strong&gt;：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
 at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytesInternel&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:127)
 at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;Accessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(Accessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:897)
 at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getString&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:154)
@@ -266,7 +266,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
 &lt;li&gt;经过分析代码，狂改一通代码，结果是：只配置了 &lt;strong&gt;32个线程&lt;/strong&gt; ，总消耗时间下降至 &lt;strong&gt;44秒&lt;/strong&gt; 。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
 &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(cache) {  &lt;span style=&#34;color:#228b22&#34;&gt;// 这个是全局锁，极大影响并发
 &lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {  
@@ -314,7 +314,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0621_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品前端源码(Java语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;constructConstrainMap&lt;/span&gt;() {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;constructConstrainMap&lt;/span&gt;() {
     Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;();
     Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
     imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdPatten&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;&lt;/span&gt;);
@@ -344,7 +344,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0613_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;RemoteExecuteHandler&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;RemoteExecuteHandler&lt;/span&gt; {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleDownload&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
         &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
             initSshClient();
@@ -382,7 +382,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0605_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中（&lt;code&gt;代码一&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory instance = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServiceFactory();
 
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory &lt;span style=&#34;color:#008b45&#34;&gt;getInstance&lt;/span&gt;() {
@@ -412,7 +412,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0531_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一中间件产品源码(Java语言)中（&lt;code&gt;写法一&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
 &lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
     AtomicLong rejectMessageCount = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(serviceName);
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; == rejectMessageCount) {
@@ -425,7 +425,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCount;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码是线程安全的，但不够简洁，Java 1.8的&lt;code&gt;ConcurrentMap&lt;/code&gt;提供&lt;code&gt;computeIfAbsent()&lt;/code&gt;方法，可以简化为（&lt;code&gt;写法二&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;computeIfAbsent&lt;/span&gt;(serviceName, (key)-&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong());
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
@@ -439,7 +439,7 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
 src_path, src_file = os.path.split(file_name)
 tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
 tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)

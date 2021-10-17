@@ -188,7 +188,7 @@
 <p>Dispatcher是一个典型生产-消费设计模式。</p>
 <h1 id="slot">Slot</h1>
 <p>SlotImpl实现了Slot接口，是InstanceImpl的内部类。它负责维护数据，我们先来看一下其set函数实现:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::SlotImpl::set(InitializeCb cb) { <span style="color:#228b22">// [4] 参数InitializeCb
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::SlotImpl::set(InitializeCb cb) { <span style="color:#228b22">// [4] 参数InitializeCb
 </span><span style="color:#228b22"></span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 是否主线程调用
 </span><span style="color:#228b22"></span>  ASSERT(!parent_.shutdown_);
 
@@ -211,7 +211,7 @@
 </ul>
 <p>InitializeCb参见：<code>using InitializeCb = std::function&lt;ThreadLocalObjectSharedPtr(Event::Dispatcher&amp; dispatcher)&gt;</code></p>
 <p>再来看一下setThreadLocal函数的实现:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// [1] 把对象加入到TLS对象data_列表中
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// [1] 把对象加入到TLS对象data_列表中
 </span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::setThreadLocal(<span style="color:#00688b;font-weight:bold">uint32_t</span> index, ThreadLocalObjectSharedPtr object) {
   <span style="color:#8b008b;font-weight:bold">if</span> (thread_local_data_.data_.size() &lt;= index) {
     thread_local_data_.data_.resize(index + <span style="color:#b452cd">1</span>);
@@ -235,7 +235,7 @@
 <li>[3] <code>thread_local_data_</code> 是InstanceImpl的静态成员，它是一个TLS对象。thread_local是C++11新引入，thread_local关键字修饰的变量具有线程周期(thread duration)，这些变量(或者说对象）在线程开始的时候被生成(allocated)，在线程结束的时候被销毁(deallocated)，thread_local的变量绑定的对象即TLS对象</li>
 </ul>
 <p>再来看一下get函数实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> InstanceImpl::SlotImpl::currentThreadRegisteredWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> InstanceImpl::SlotImpl::currentThreadRegisteredWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
   <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_.size() &gt; index;
 }
 
@@ -256,7 +256,7 @@ ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8
 <li>相同点：机制与set函数实现类似，采用<code>dispatcher.post</code>把数据分发给各注册线程处理，通过回调<code>UpdateCb</code>函数指针来产生数据</li>
 <li>不同点：不会把<code>UpdateCb</code>函数指针产生数据更新到TLS；TLS中存储的数据适合于多次需要读取的场景，<code>runOnAllThreads</code>函数适合一次数据传递，不需要长期存储</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 更新，UpdateCb产生数据
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 更新，UpdateCb产生数据
 </span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb, <span style="color:#8b008b;font-weight:bold">const</span> Event::PostCb&amp; complete_cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 所有线程完成回调complete_cb
 </span></code></pre></div><p>小结：</p>
 <ul>
@@ -265,7 +265,7 @@ ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8
 </ul>
 <h1 id="slotallocator">SlotAllocator</h1>
 <p>InstanceImpl实现SlotAllocator接口，先来看一下allocateSlot函数实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">SlotPtr InstanceImpl::allocateSlot() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">SlotPtr InstanceImpl::allocateSlot() {
   ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
 </span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
 
@@ -288,7 +288,7 @@ ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8
 <li>[3] 有空闲槽位，则创建Slot对象，并获取Slot在主线程TLS上存储的对象</li>
 </ul>
 <p>再来看一下registerThread函数实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::registerThread(Event::Dispatcher&amp; dispatcher, <span style="color:#00688b;font-weight:bold">bool</span> main_thread) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::registerThread(Event::Dispatcher&amp; dispatcher, <span style="color:#00688b;font-weight:bold">bool</span> main_thread) {
   ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
 </span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
 
@@ -409,7 +409,7 @@ ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -490,7 +490,7 @@ ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

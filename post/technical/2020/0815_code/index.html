@@ -150,7 +150,7 @@
     <h1 id="案例">案例</h1>
 <p>下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。</p>
 <p>代码一：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
     <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
         <span style="color:#8b008b;font-weight:bold">try</span> {
             <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
@@ -182,7 +182,7 @@
 <li>由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。</li>
 <li>去掉<code>否定之否定</code>。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span> () {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span> () {
     <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
         <span style="color:#8b008b;font-weight:bold">try</span> {
             <span style="color:#8b008b;font-weight:bold">if</span> ( waitNotify() ) {
@@ -216,7 +216,7 @@
     }
 }
 </code></pre></div><p>代码二：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
     <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
         bool flag = file.<span style="color:#658b00">delete</span>()
         <span style="color:#8b008b;font-weight:bold">if</span> (flag) {
@@ -233,14 +233,14 @@
 <li>存在废话</li>
 </ul>
 <p>建议优化：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
     <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
         <span style="color:#8b008b;font-weight:bold">return</span> file.<span style="color:#658b00">delete</span>()  
     }
     <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 其实这个false与上面file.delete()返回false含义不一样，本文不深究这个问题
 </span><span style="color:#228b22"></span>}
 </code></pre></div><p>代码三：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
         <span style="color:#8b008b;font-weight:bold">case</span> FOUND: {
             <span style="color:#8b008b;font-weight:bold">while</span> (iter.<span style="color:#658b00">hasNext</span>()) {
                 SelectMapedBufferResult selectMapedBuffer = iter.<span style="color:#658b00">next</span>();
@@ -266,7 +266,7 @@
 <li>对于switch分支，每个分支的处理逻辑应该提取函数。</li>
 </ul>
 <p>建议优化：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
         <span style="color:#8b008b;font-weight:bold">case</span> FOUND: 
             processFound(...)
             <span style="color:#8b008b;font-weight:bold">break</span>;
@@ -305,7 +305,7 @@
 <ul>
 <li>使用卫语句，异常条件优先返回</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> () {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> () {
     <span style="color:#8b008b;font-weight:bold">if</span> () {
         <span style="color:#8b008b;font-weight:bold">if</span> () {
             <span style="color:#228b22">// ...
@@ -315,7 +315,7 @@
     }
 }
 </code></pre></div><p>可优化为：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> (!...) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> (!...) {
     <span style="color:#8b008b;font-weight:bold">return</span> ;
 }
 
@@ -336,13 +336,13 @@
 <ul>
 <li>采用使用break，continue改变控制流程</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
     <span style="color:#8b008b;font-weight:bold">if</span> (...) {
        <span style="color:#228b22">//
 </span><span style="color:#228b22"></span>    }
 }
 </code></pre></div><p>优化为:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
     <span style="color:#8b008b;font-weight:bold">if</span> (!...) { <span style="color:#228b22">// 反着写
 </span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">continue</span>; 
     }
@@ -458,7 +458,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -541,7 +541,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

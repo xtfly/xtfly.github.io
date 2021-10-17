@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。</p>
 <h2 id="顺序存储">顺序存储</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
 <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Queue</span> {  
 <span style="color:#8b008b;font-weight:bold">public</span>:  
     Queue() :  m_front(<span style="color:#b452cd">0</span>), m_rear(<span style="color:#b452cd">0</span>) {  
@@ -213,7 +213,7 @@
     <span style="color:#00688b;font-weight:bold">int</span> m_rear;  
 };  
 </code></pre></div><h2 id="链表存储">链表存储</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">QNode</span>  {  
     QNode() : m_pNext(<span style="color:#658b00">NULL</span>) {  
     }  
@@ -308,7 +308,7 @@
     <span style="color:#00688b;font-weight:bold">int</span> m_size;  
 };  
 </code></pre></div><h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_queue</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_queue</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
     printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
 }  
 
@@ -428,7 +428,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -511,7 +511,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

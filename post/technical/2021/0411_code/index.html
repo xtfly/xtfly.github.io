@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3946 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3944 字 ~8分钟</span>
 </span>
       </div>
     </header>
@@ -186,28 +186,28 @@
 <li>聚合关系：DataFrame聚合Dataset、Column与Executor</li>
 </ul>
 <p>Dataset是数据操作的核心对象，定义数据操作各种API(如concat, merge等)，为了支持多任务并行计算，还定义了关键的chunk_iterator接口，返回一个可以计算的chunk信息迭代器。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#707a7c">@abstractmethod</span>
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">chunk_iterator</span>(self, columns, chunk_size=None, reverse=False):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#707a7c">@abstractmethod</span>
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">chunk_iterator</span>(self, columns, chunk_size=<span style="color:#8b008b;font-weight:bold">None</span>, reverse=<span style="color:#8b008b;font-weight:bold">False</span>):
     <span style="color:#8b008b;font-weight:bold">pass</span>
 </code></pre></div><p>从ExecutorLocal的execute_async函数实现来看，Executor会编历chunk_iterator函数生成结果，把每个chunk的计算分配给多个异步多线程执行，从而实现并行计算。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">async <span style="color:#8b008b;font-weight:bold">for</span> element <span style="color:#8b008b">in</span> self.thread_pool.map_async(self.process_part,      
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">async</span> <span style="color:#8b008b;font-weight:bold">for</span> element <span style="color:#8b008b">in</span> self.thread_pool.map_async(self.process_part,      
     dataset.chunk_iterator(columns, chunk_size),
     dataset.row_count,
     progress=<span style="color:#8b008b;font-weight:bold">lambda</span> p: <span style="color:#658b00">all</span>(self.signal_progress.emit(p)) <span style="color:#8b008b">and</span>
     <span style="color:#658b00">all</span>([<span style="color:#658b00">all</span>(task.signal_progress.emit(p)) <span style="color:#8b008b;font-weight:bold">for</span> task <span style="color:#8b008b">in</span> tasks]) <span style="color:#8b008b">and</span>
     <span style="color:#658b00">all</span>([<span style="color:#8b008b">not</span> task.cancelled <span style="color:#8b008b;font-weight:bold">for</span> task <span style="color:#8b008b">in</span> tasks]),
-    cancel=<span style="color:#8b008b;font-weight:bold">lambda</span>: self._cancel(run), unpack=True, run=run):
+    cancel=<span style="color:#8b008b;font-weight:bold">lambda</span>: self._cancel(run), unpack=<span style="color:#8b008b;font-weight:bold">True</span>, run=run):
     <span style="color:#8b008b;font-weight:bold">pass</span>  <span style="color:#228b22"># just eat all element</span>
 logger.debug(<span style="color:#cd5555">&#34;executing took </span><span style="color:#cd5555">%r</span><span style="color:#cd5555"> seconds&#34;</span> % (time.time() - t0))
 </code></pre></div><p>ExecutorLocal是基于Python自带asynio库。要有好的并行计算能力，关键还是看各个子Dataset如何实现chunk_iterator方法。</p>
 <h1 id="内存映射">内存映射</h1>
 <p>文件直接内存映射并不是什么黑科技，Linux下提供系统调用函数mmap。从上面的类继承关系，我们发现Vaex已提供DatasetMemoryMapped来封装文件到内存的映射。</p>
 <p>DatasetMemoryMapped._get_mapping函数支持多个文件映射到内存：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_get_mapping</span>(self, path):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_get_mapping</span>(self, path):
     <span style="color:#8b008b;font-weight:bold">assert</span> <span style="color:#8b008b">not</span> self.nommap
     <span style="color:#8b008b;font-weight:bold">if</span> path <span style="color:#8b008b">not</span> <span style="color:#8b008b">in</span> self.mapping_map:
-        <span style="color:#658b00">file</span> = <span style="color:#658b00">open</span>(path, <span style="color:#cd5555">&#34;rb+&#34;</span> <span style="color:#8b008b;font-weight:bold">if</span> self.write <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#cd5555">&#34;rb&#34;</span>)
-        fileno = <span style="color:#658b00">file</span>.fileno()
+        file = <span style="color:#658b00">open</span>(path, <span style="color:#cd5555">&#34;rb+&#34;</span> <span style="color:#8b008b;font-weight:bold">if</span> self.write <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#cd5555">&#34;rb&#34;</span>)
+        fileno = file.fileno()
         kwargs = {}
         <span style="color:#8b008b;font-weight:bold">if</span> vaex.utils.osname == <span style="color:#cd5555">&#34;windows&#34;</span>:
             kwargs[<span style="color:#cd5555">&#34;access&#34;</span>] = mmap.ACCESS_READ | <span style="color:#b452cd">0</span> <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#8b008b">not</span> self.write <span style="color:#8b008b;font-weight:bold">else</span> mmap.ACCESS_WRITE
@@ -216,7 +216,7 @@ logger.debug(<span style="color:#cd5555">&#34;executing took </span><span style=
         mapping = mmap.mmap(fileno, <span style="color:#b452cd">0</span>, **kwargs)
         <span style="color:#228b22"># TODO: we can think about adding this in py38</span>
         <span style="color:#228b22"># mapping.madvise(mmap.MADV_SEQUENTIAL)</span>
-        self.file_map[path] = <span style="color:#658b00">file</span>
+        self.file_map[path] = file
         self.fileno_map[path] = fileno
         self.mapping_map[path] = mapping
     <span style="color:#8b008b;font-weight:bold">return</span> self.mapping_map[path]
@@ -228,10 +228,10 @@ logger.debug(<span style="color:#cd5555">&#34;executing took </span><span style=
 <li>map: 同样也是系统调用，但没有进行数据拷贝，当缺页中断发生时，直接将文件从磁盘拷贝到用户空间，只进行了一次数据拷贝。</li>
 </ul>
 <p>所以，通常情况下采用内存映射的读写效率要比传统的read/write性能高。那Vaex是如何使用映射的文件对象呢，再来看一下:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_do_map</span>(self, path, offset, length, dtype):        
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_do_map</span>(self, path, offset, length, dtype):        
     <span style="color:#8b008b;font-weight:bold">if</span> self.nommap:
-        <span style="color:#658b00">file</span> = self._get_file(path)
-        column = ColumnFile(<span style="color:#658b00">file</span>, offset, length, dtype, write=self.write, path=self.path, tls=self.tls_map[path])
+        file = self._get_file(path)
+        column = ColumnFile(file, offset, length, dtype, write=self.write, path=self.path, tls=self.tls_map[path])
     <span style="color:#8b008b;font-weight:bold">else</span>:
         mapping = self._get_mapping(path)
         column = np.frombuffer(mapping, dtype=dtype, count=length, offset=offset)
@@ -240,22 +240,22 @@ logger.debug(<span style="color:#cd5555">&#34;executing took </span><span style=
 <h1 id="分批计算">分批计算</h1>
 <p>mmap只解决部分问题，即大文件的读取不需要更多的内存，以及read的效率提升。像前面文章介绍的100GB大数据集统计分析，还得结合并行计算框架，实现分批并行计算。</p>
 <p>我再来看一下DatasetMemoryMapped.chunk_iterator实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">chunk_iterator</span>(self, columns, chunk_size=None, reverse=False):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">chunk_iterator</span>(self, columns, chunk_size=<span style="color:#8b008b;font-weight:bold">None</span>, reverse=<span style="color:#8b008b;font-weight:bold">False</span>):
     <span style="color:#8b008b;font-weight:bold">if</span> self.nommap:
         <span style="color:#228b22"># we expect here a path like s3 fetching, which will benefit from multithreading</span>
         pool = get_main_io_pool()
         <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">read</span>(i1, i2, reader):
             <span style="color:#8b008b;font-weight:bold">return</span> i1, i2, reader()
         chunks_generator = self._default_lazy_chunk_iterator(self._columns, columns, chunk_size)
-        <span style="color:#8b008b;font-weight:bold">yield</span> <span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">pwait</span>(<span style="color:#658b00">buffer</span>(pmap(read, chunks_generator, pool), pool._max_workers+<span style="color:#b452cd">3</span>))
+        <span style="color:#8b008b;font-weight:bold">yield from</span> pwait(buffer(pmap(read, chunks_generator, pool), pool._max_workers+<span style="color:#b452cd">3</span>))
     <span style="color:#8b008b;font-weight:bold">else</span>:
-        <span style="color:#8b008b;font-weight:bold">yield</span> <span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">self._default_chunk_iterator</span>(self._columns, columns, chunk_size, reverse=reverse)
+        <span style="color:#8b008b;font-weight:bold">yield from</span> self._default_chunk_iterator(self._columns, columns, chunk_size, reverse=reverse)
 </code></pre></div><ul>
 <li>当未采用mmap，只是基于进程池的多任务计算，不支持按列分块</li>
 <li>当采用mmap，会调用基类的_default_chunk_iterator，其实也是调用_default_lazy_chunk_iterator</li>
 </ul>
 <p>再来看一下_default_lazy_chunk_iterator的实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_default_lazy_chunk_iterator</span>(self, array_map, columns, chunk_size, reverse=False):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">_default_lazy_chunk_iterator</span>(self, array_map, columns, chunk_size, reverse=<span style="color:#8b008b;font-weight:bold">False</span>):
     chunk_size = chunk_size <span style="color:#8b008b">or</span> <span style="color:#b452cd">1024</span>**<span style="color:#b452cd">2</span>
     chunk_count = (self.row_count + chunk_size - <span style="color:#b452cd">1</span>) // chunk_size
     chunks = <span style="color:#658b00">range</span>(chunk_count)
@@ -268,20 +268,20 @@ logger.debug(<span style="color:#cd5555">&#34;executing took </span><span style=
             chunks = {k: array_map[k][i1:i2] <span style="color:#8b008b;font-weight:bold">for</span> k <span style="color:#8b008b">in</span> columns}
             length = i2 - i1
             <span style="color:#8b008b;font-weight:bold">for</span> name, chunk <span style="color:#8b008b">in</span> chunks.items():
-                <span style="color:#8b008b;font-weight:bold">assert</span> <span style="color:#658b00">len</span>(chunk) == length, f<span style="color:#cd5555">&#39;Oops, got a chunk ({name}) of length {len(chunk)} while it is expected to be of length {length} (at {i1}-{i2}&#39;</span>
+                <span style="color:#8b008b;font-weight:bold">assert</span> <span style="color:#658b00">len</span>(chunk) == length, <span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;Oops, got a chunk (</span><span style="color:#cd5555">{</span>name<span style="color:#cd5555">}</span><span style="color:#cd5555">) of length </span><span style="color:#cd5555">{</span><span style="color:#658b00">len</span>(chunk)<span style="color:#cd5555">}</span><span style="color:#cd5555"> while it is expected to be of length </span><span style="color:#cd5555">{</span>length<span style="color:#cd5555">}</span><span style="color:#cd5555"> (at </span><span style="color:#cd5555">{</span>i1<span style="color:#cd5555">}</span><span style="color:#cd5555">-</span><span style="color:#cd5555">{</span>i2<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>
             <span style="color:#8b008b;font-weight:bold">return</span> chunks
         <span style="color:#8b008b;font-weight:bold">yield</span> i1, i2, reader
 </code></pre></div><p>代码还算好理解：根据chunk_size与row_count计算chunk_count，按每列生成自己的chunk信息，以便支任务调度时，可以分批分列并行计算。每次迭代的起始位置是i * chunk_size，结束位置是min((i + 1) * chunk_size, self.row_count)。</p>
 <p>以value_counts函数(统计函数，计算每列的唯一值的个数)的实现分析为例，内部先定义了map/reduce两个函数：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">map</span>(thread_index, i1, i2, ar):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">map</span>(thread_index, i1, i2, ar):
     <span style="color:#228b22"># 省略</span>
  <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">reduce</span>(a, b):
     <span style="color:#8b008b;font-weight:bold">return</span> a+b
-self.ds.map_reduce(<span style="color:#658b00">map</span>, <span style="color:#658b00">reduce</span>, [self.expression], delay=False, progress=progress, name=<span style="color:#cd5555">&#39;value_counts&#39;</span>, info=True, to_numpy=False)
-counters = [k <span style="color:#8b008b;font-weight:bold">for</span> k <span style="color:#8b008b">in</span> counters <span style="color:#8b008b;font-weight:bold">if</span> k <span style="color:#8b008b">is</span> <span style="color:#8b008b">not</span> None]
+self.ds.map_reduce(<span style="color:#658b00">map</span>, reduce, [self.expression], delay=<span style="color:#8b008b;font-weight:bold">False</span>, progress=progress, name=<span style="color:#cd5555">&#39;value_counts&#39;</span>, info=<span style="color:#8b008b;font-weight:bold">True</span>, to_numpy=<span style="color:#8b008b;font-weight:bold">False</span>)
+counters = [k <span style="color:#8b008b;font-weight:bold">for</span> k <span style="color:#8b008b">in</span> counters <span style="color:#8b008b;font-weight:bold">if</span> k <span style="color:#8b008b">is</span> <span style="color:#8b008b">not</span> <span style="color:#8b008b;font-weight:bold">None</span>]
 </code></pre></div><p>而map_reduce的实现，是生成一个task，加入到executor中等待执行：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">map_reduce</span>(self, <span style="color:#658b00">map</span>, <span style="color:#658b00">reduce</span>, arguments, progress=False, delay=False, info=False, to_numpy=True, ignore_filter=False, pre_filter=False, name=<span style="color:#cd5555">&#39;map reduce (custom)&#39;</span>, selection=None):
-    task = tasks.TaskMapReduce(self, arguments, <span style="color:#658b00">map</span>, <span style="color:#658b00">reduce</span>, info=info, to_numpy=to_numpy, ignore_filter=ignore_filter, selection=selection, pre_filter=pre_filter)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">map_reduce</span>(self, <span style="color:#658b00">map</span>, reduce, arguments, progress=<span style="color:#8b008b;font-weight:bold">False</span>, delay=<span style="color:#8b008b;font-weight:bold">False</span>, info=<span style="color:#8b008b;font-weight:bold">False</span>, to_numpy=<span style="color:#8b008b;font-weight:bold">True</span>, ignore_filter=<span style="color:#8b008b;font-weight:bold">False</span>, pre_filter=<span style="color:#8b008b;font-weight:bold">False</span>, name=<span style="color:#cd5555">&#39;map reduce (custom)&#39;</span>, selection=<span style="color:#8b008b;font-weight:bold">None</span>):
+    task = tasks.TaskMapReduce(self, arguments, <span style="color:#658b00">map</span>, reduce, info=info, to_numpy=to_numpy, ignore_filter=ignore_filter, selection=selection, pre_filter=pre_filter)
     progressbar = vaex.utils.progressbars(progress)
     progressbar.add_task(task, name)
     self.executor.schedule(task)
@@ -392,7 +392,7 @@ counters = [k <span style="color:#8b008b;font-weight:bold">for</span> k <span st
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -473,7 +473,7 @@ counters = [k <span style="color:#8b008b;font-weight:bold">for</span> k <span st
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

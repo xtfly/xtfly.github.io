@@ -156,7 +156,7 @@
 </ul>
 <p>实现的主体逻辑是，收银员向顾客收钱。</p>
 <p>代码如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
     <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">float</span> value;
 
     <span style="color:#228b22">// 省略构造方法
@@ -207,7 +207,7 @@
 <h1 id="代码重构">代码重构</h1>
 <p>重构的方法：采用『移』。</p>
 <p><strong>第一步</strong>：把Paperboy.change的逻辑移到Customer中，收银员看不到顾客的钱包，以及其中钱的数目。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
         myCustomer.<span style="color:#658b00">pay</span>(payment);
     }
@@ -224,7 +224,7 @@
     }
 }
 </code></pre></div><p><strong>第二步</strong>：对外屏蔽Wallet，去掉getWallet()，因为使用钱包只是一种支付方式，后续可能扩展为其它支付，如刷信用卡。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
         <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
             myWallet.<span style="color:#658b00">subtractMoney</span>(payment);
@@ -234,7 +234,7 @@
     }
 }
 </code></pre></div><p><strong>第三步</strong>：假定钱包也是个鲜活个体，也有自己的隐私。去掉getTotalMoney方法，不是暴露钱的数目，而提供判断是否足够的isEnough方法。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pay</span>(<span style="color:#00688b;font-weight:bold">float</span> payment) {
         <span style="color:#8b008b;font-weight:bold">if</span> (myWallet.<span style="color:#658b00">isEnough</span>(payment)) {
             myWallet.<span style="color:#658b00">subtractMoney</span>(payment);
@@ -374,7 +374,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -459,7 +459,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -150,10 +150,10 @@
     <h1 id="案例">案例</h1>
 <p>目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：</p>
 <p>优化前的代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
         rule_type = rules[<span style="color:#cd5555">&#39;type&#39;</span>] <span style="color:#228b22"># 1</span>
         rule_list = rules[<span style="color:#cd5555">&#39;rules&#39;</span>] <span style="color:#228b22"># 2</span>
-        res = None
+        res = <span style="color:#8b008b;font-weight:bold">None</span>
 
         <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#658b00">str</span>(rule_type).lower() != RULES_MAPPING:
             <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#34;type of rule should be &#39;rules_mapping&#39;&#34;</span>)
@@ -172,12 +172,12 @@
                 <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#39;not supported function&#39;</span>) <span style="color:#228b22"># 4 </span>
         <span style="color:#8b008b;font-weight:bold">return</span> res
 </code></pre></div><p>代化之后的代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data: DataFrame, rules: Rule) -&gt; Series: <span style="color:#228b22"># 1</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data: DataFrame, rules: Rule) -&gt; Series: <span style="color:#228b22"># 1</span>
         <span style="color:#8b008b;font-weight:bold">if</span> rules.type != MappingHandler.RULES_TYPE:
-            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(f<span style="color:#cd5555">&#34;type of rule should be &#39;{MappingHandler.RULES_TYPE}&#39;&#34;</span>) <span style="color:#228b22"># 6</span>
+            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#34;type of rule should be &#39;</span><span style="color:#cd5555">{</span>MappingHandler.RULES_TYPE<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;&#34;</span>) <span style="color:#228b22"># 6</span>
 
         rule_list = rules.nested_rules: <span style="color:#228b22"># 8</span>
-        res = None
+        res = <span style="color:#8b008b;font-weight:bold">None</span>
 
         <span style="color:#8b008b;font-weight:bold">for</span> item <span style="color:#8b008b">in</span> rule_list:
             rule = Rule(item) <span style="color:#228b22"># 2</span>
@@ -192,7 +192,7 @@
             <span style="color:#8b008b;font-weight:bold">elif</span> func_name == MappingHandler.KEY_BINNING:
                 res = data[col_name].apply(self.binning_func, args=(rule.mapping))
             <span style="color:#8b008b;font-weight:bold">else</span>:
-                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(f<span style="color:#cd5555">&#39;not supported function {func_name}&#39;</span>) <span style="color:#228b22"># 7</span>
+                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;not supported function </span><span style="color:#cd5555">{</span>func_name<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>) <span style="color:#228b22"># 7</span>
         <span style="color:#8b008b;font-weight:bold">return</span> res
 
 <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Rule</span>(<span style="color:#658b00">object</span>): <span style="color:#228b22"># 2</span>
@@ -204,7 +204,7 @@
     
     <span style="color:#707a7c">@property</span>
     <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">type</span>(self) -&gt; <span style="color:#658b00">str</span>: <span style="color:#228b22"># 2</span>
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">str</span>(self.rules[Rule.KEY_TYPE]).lower() <span style="color:#8b008b;font-weight:bold">if</span> Rule.KEY_TYPE <span style="color:#8b008b">in</span> self.rules <span style="color:#8b008b;font-weight:bold">else</span> None
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">str</span>(self.rules[Rule.KEY_TYPE]).lower() <span style="color:#8b008b;font-weight:bold">if</span> Rule.KEY_TYPE <span style="color:#8b008b">in</span> self.rules <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">None</span>
     
     <span style="color:#228b22"># ... 省略其它属性</span>
 </code></pre></div><p>咋一看，似乎没有什么大的变化，代码反而变多了。我来说说做了哪些改进：</p>
@@ -361,7 +361,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -445,7 +445,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

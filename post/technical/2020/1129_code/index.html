@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>案例代码来源我们某产品：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
     <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
         <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
     }
@@ -211,12 +211,12 @@
 <h1 id="批量插入">批量插入</h1>
 <p>前面提到采用for循环来insert，未采用批量插入，存在多条sql操作，这种操作是低效，那有没有办法解决？</p>
 <p>案例代码是采用MyBatis框架，那在对应的Mapper定义中增加saveAll方法来支持批量插入。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">pubic <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ApigwOrgAssetMapper</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">pubic <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ApigwOrgAssetMapper</span> {
     <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">insert</span>(ApigwOrgAsset apigwOrgAsset);
     <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveAll</span>(List&lt;ApigwOrgAsset&gt;) assets);
 }
 </code></pre></div><p>saveAll对应的SQL如下。为了呈现SQL，还是以xml的方式配置来讲解，建议新项目采用注解或Provider动态SQL的方式。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#8b008b;font-weight:bold">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#8b008b;font-weight:bold">&gt;</span>
       INSERT INTO ORG_ASSET (field1, field2) 
       VALUES
       <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">separator=</span><span style="color:#cd5555">&#34;,&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
@@ -225,7 +225,7 @@
 <span style="color:#8b008b;font-weight:bold">&lt;/insert&gt;</span>
 </code></pre></div><p>VALUES后面可以跟多个（a_field1, a_field2), （b_field1, b_field2)是MySQL的私有写法，并不是SQL标准，并且有一次批量插入个数上限：语句的长度默认是不能超过4M。</p>
 <p>Oracle有两种写法，也是非SQL标准：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;java.util.List&#34;</span> <span style="color:#658b00">useGeneratedKeys=</span><span style="color:#cd5555">&#34;false&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;java.util.List&#34;</span> <span style="color:#658b00">useGeneratedKeys=</span><span style="color:#cd5555">&#34;false&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
         INSERT ALL
         <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">index=</span><span style="color:#cd5555">&#34;index&#34;</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
         INTO ORG_ASSET (field1, field2) VALUES (#{it.field1},#{it.field2}）
@@ -241,7 +241,7 @@
 <li>Statement.clearBatch()：清除批处理命令</li>
 </ul>
 <p>PreparedStatement也支持批量操作，示例如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">conn = JdbcUtils.<span style="color:#658b00">getConnection</span>();
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">conn = JdbcUtils.<span style="color:#658b00">getConnection</span>();
 String sql = <span style="color:#cd5555">&#34;INSERT INTO ORG_ASSET(field1, field2) values(?,?)&#34;</span>;
 st = conn.<span style="color:#658b00">prepareStatement</span>(sql);
 <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i=1;i&lt; 2000;i++){  
@@ -266,7 +266,7 @@ st.<span style="color:#658b00">executeBatch</span>();
 <li>CachingExecutor：用于二级缓存</li>
 </ul>
 <p>若在Mybatis中采用Batch方式，则采用如下方式：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
     ApigwOrgAssetMapper mapper = session.<span style="color:#658b00">getMapper</span>(ApigwOrgAssetMapper.<span style="color:#658b00">class</span>);
     <span style="color:#8b008b;font-weight:bold">for</span> (ApigwOrgAsset apigwOrgAsset: orgAssets) {
         mapper.<span style="color:#658b00">insert</span>(apigwOrgAsset);
@@ -274,7 +274,7 @@ st.<span style="color:#658b00">executeBatch</span>();
     session.<span style="color:#658b00">flushStatements</span>();
 }
 </code></pre></div><p>若在Mybatis采用动态Provider方式，可参见：<a href="https://mybatis.org/mybatis-dynamic-sql/docs/insert.html">Batch Insert Support</a>中的样例</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
     SimpleTableMapper mapper = session.<span style="color:#658b00">getMapper</span>(SimpleTableMapper.<span style="color:#658b00">class</span>);
     List&lt;SimpleTableRecord&gt; records = getRecordsToInsert(); <span style="color:#228b22">// not shown
 </span><span style="color:#228b22"></span>
@@ -293,13 +293,13 @@ st.<span style="color:#658b00">executeBatch</span>();
     session.<span style="color:#658b00">commit</span>();
 }
 </code></pre></div><p>现有我们也有不少项目采用JPA来做ORM，JPA由于底层默认采用Hibernate，而Hibernate相比MyBatis封装对数据库更解耦，对于批量操作来得更简单：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">XXEntityRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;XXEntity, String&gt; {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">XXEntityRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;XXEntity, String&gt; {
 }
 
 <span style="color:#228b22">// 拿到Repository之后，则可以批量插入，更新
 </span><span style="color:#228b22"></span>repository.<span style="color:#658b00">saveAll</span>(list);
 </code></pre></div><p>默认情况下，它并不会采用JDBC的executeBatch执行，还需要配置：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">spring.jpa.properties.hibernate.jdbc.batch_size=500
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">spring.jpa.properties.hibernate.jdbc.batch_size=500
 spring.jpa.properties.hibernate.jdbc.batch_versioned_data=true
 spring.jpa.properties.hibernate.order_inserts=true
 spring.jpa.properties.hibernate.order_updates=true
@@ -441,7 +441,7 @@ spring.jpa.properties.hibernate.order_updates=true
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -526,7 +526,7 @@ spring.jpa.properties.hibernate.order_updates=true
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

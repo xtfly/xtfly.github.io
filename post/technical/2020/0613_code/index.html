@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一平台产品源码(Java语言)中：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">handleDownload</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
         <span style="color:#8b008b;font-weight:bold">try</span> {
             initSshClient();
@@ -182,7 +182,7 @@
 <li>方法有副作用：多个方法隐式操作了成员变量，initSshClient方法创建的SshClient对象赋值给成员变量，而应该是返回SshClient对象，作为参数传递给loadPackage与closeSshClient方法，这样多线程并发就没有问题。</li>
 </ul>
 <p>我们再来看一下downloadPackage的实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8b008b;font-weight:bold">private</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">downloadPackage</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8b008b;font-weight:bold">private</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">downloadPackage</span>() <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
         String workspace = baseOption.<span style="color:#658b00">getWorkspace</span>();
         String donwloadScript = LinuxFileSystemUtil.<span style="color:#658b00">join</span>(workspace, DOWNLOAD_SHEEL_SCRIPT);
         String resultFile = LinuxFileSystemUtil.<span style="color:#658b00">join</span>(workspace, DOWNLOAD_TASK_DIR, baseOption.<span style="color:#658b00">getExecuteId</span>(), DOWNLOAD_RESULT);
@@ -211,7 +211,7 @@
 </ul>
 <p>想到样板代码，我们应该如何优化呢？把变化的隔离开，固化不变化的这是设计模式干的活。我们先不考虑采用什么模式，尝试优化一下：</p>
 <p><strong>第一步</strong>，抽象一个命令接口：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">Command</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">Command</span> {
     <span style="color:#228b22">// 命令名称
 </span><span style="color:#228b22"></span>    String <span style="color:#008b45">name</span>();
 
@@ -219,7 +219,7 @@
 </span><span style="color:#228b22"></span>    String <span style="color:#008b45">buildCmdArgs</span>();
 }
 </code></pre></div><p><strong>第二步</strong>，固化不变化部分，那框架代码可以变成如下。先还是放在RemoteExecuteHandler中，包装SshClient实现AutoClosable接口：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">RemoteExecuteHandler</span> {
     <span style="color:#8b008b;font-weight:bold">public</span> Future&lt;RemoteExecuteResult&gt; <span style="color:#008b45">call</span>(Command command) <span style="color:#8b008b;font-weight:bold">throws</span> SspException {
         SSHExistStatus result = <span style="color:#8b008b;font-weight:bold">null</span>;
         <span style="color:#8b008b;font-weight:bold">try</span> (sshClient = createSslClient()) {
@@ -237,7 +237,7 @@
     }
 }
 </code></pre></div><p><strong>第三步</strong>，抽取变化的内容，扩展不同的Command接口实现，如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DownloadCommand</span> <span style="color:#8b008b;font-weight:bold">implements</span> Command {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">DownloadCommand</span> <span style="color:#8b008b;font-weight:bold">implements</span> Command {
     <span style="color:#707a7c">@Override</span>
     <span style="color:#8b008b;font-weight:bold">public</span> String <span style="color:#008b45">name</span>() { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;DownloadPackage&#34;</span>; }
 
@@ -335,7 +335,7 @@
 <li>现有的RemoteExecuteHandler应该是Invoker类，提供callAndWaitResult方法，用于打印命令执行前后日志，调用receiver.action执行远程命令，等待RemoteExecuteResultFuture结果，把Future异步结果转换为各自命令对应的结果。</li>
 </ul>
 <p>则客户端的代码简化为</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    RemoteExecuteReceiver receiver = <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteReceiver();
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    RemoteExecuteReceiver receiver = <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteReceiver();
     DownloadCommand downloadCmd = <span style="color:#8b008b;font-weight:bold">new</span> DownloadCommand(receiver);
     RemoteExecuteInvoker invoker = <span style="color:#8b008b;font-weight:bold">new</span> RemoteExecuteInvoker(downloadCmd);
     invoker.<span style="color:#658b00">callAndWaitResult</span>();
@@ -436,7 +436,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -520,7 +520,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

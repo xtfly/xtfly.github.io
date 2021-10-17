@@ -16,7 +16,7 @@
       <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
 &lt;p&gt;最近笔者写Python代码比较多，同时又有多种编程语言的开发经验，现在的语言设计上大多趋同。当需要对数据集合操作时，非常喜欢java的stream声明式处理数据，萌生在Python中模仿Java的写法。虽然java的API易用性与Scala/Kotlin相比，还是有很大的差距，但与Python比起来，还是强不少。&lt;/p&gt;
 &lt;p&gt;我们先来看一下Java的玩法：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
 &lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;List&amp;lt;Integer&amp;gt; tanscationsIds = transcations.&lt;span style=&#34;color:#658b00&#34;&gt;parallelStream&lt;/span&gt;()
         .&lt;span style=&#34;color:#658b00&#34;&gt;filter&lt;/span&gt;(it -&amp;gt; it.&lt;span style=&#34;color:#658b00&#34;&gt;getType&lt;/span&gt;() == Transcation.&lt;span style=&#34;color:#658b00&#34;&gt;GROCERY&lt;/span&gt;)
         .&lt;span style=&#34;color:#658b00&#34;&gt;sorted&lt;/span&gt;(comparing(Transcation::getValue).&lt;span style=&#34;color:#658b00&#34;&gt;resersed&lt;/span&gt;())
@@ -57,7 +57,7 @@
 &lt;/blockquote&gt;
 &lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
 &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
 
 &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
@@ -82,7 +82,7 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;开始：&lt;/strong&gt; 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
 DASK_PROPERTIES_PATH = HOME_PATH + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39;&lt;/span&gt;
 DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
 
@@ -106,10 +106,10 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：&lt;/p&gt;
 &lt;p&gt;优化前的代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
         rule_type = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 1&lt;/span&gt;
         rule_list = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;rules&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
-        res = None
+        res = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;None&lt;/span&gt;
 
         &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;(rule_type).lower() != RULES_MAPPING:
             &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;&lt;/span&gt;)
@@ -138,7 +138,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
 src_path, src_file = os.path.split(file_name)
 tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
 tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)

@@ -150,7 +150,7 @@
     <h1 id="案例">案例</h1>
 <p>这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。</p>
 <p>Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> : <span style="color:#8b008b;font-weight:bold">public</span> drogon::HttpController&lt;User&gt;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> : <span style="color:#8b008b;font-weight:bold">public</span> drogon::HttpController&lt;User&gt;
 {
   <span style="color:#8b008b;font-weight:bold">public</span>:
     METHOD_LIST_BEGIN
@@ -172,7 +172,7 @@
 <p>像Java等语言由于有底层Runtime框架(JVM)，实现了运行期的反射机制。借助反射把请求动态路由到对应的处理函数，代码实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。</p>
 <h2 id="注册">注册</h2>
 <p><code>METHOD_ADD</code>是一个宏，它定义在<a href="https://github.com/an-tao/drogon/blob/master/lib/inc/drogon/HttpController.h"><code>HttpController.h</code></a>文件中，代码如下:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define METHOD_LIST_BEGIN         \
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define METHOD_LIST_BEGIN         \
 </span><span style="color:#1e889b">    static void initPathRouting() \
 </span><span style="color:#1e889b">    {
 </span><span style="color:#1e889b">#define METHOD_ADD(method, pattern, ...) \
@@ -199,7 +199,7 @@
 </ul>
 <h3 id="萃取函数信息">萃取函数信息</h3>
 <p>基于模板的特化机制，定义了函数信息的萃取器<a href="https://github.com/an-tao/drogon/blob/master/lib/inc/drogon/utils/FunctionTraits.h"><code>FunctionTraits</code></a>，它用于获取上述需要知道的函数信息，其基类如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> ReturnType, <span style="color:#8b008b;font-weight:bold">typename</span>... Arguments&gt;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> ReturnType, <span style="color:#8b008b;font-weight:bold">typename</span>... Arguments&gt;
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">FunctionTraits</span>&lt;ReturnType (*)(Arguments...)&gt;
 {
     <span style="color:#8b008b;font-weight:bold">using</span> result_type = ReturnType;                        <span style="color:#228b22">// 函数返回值类型 
@@ -220,7 +220,7 @@
 </code></pre></div><p>此类模板参数是函数指针的格式，在实例化展开时需要精确匹配具体的函数指针（如前面的getInfo，newUser）。则可以定义不同的特化子类模板(子类代码不就贴了，参见<a href="https://github.com/an-tao/drogon/blob/master/lib/inc/drogon/utils/FunctionTraits.h"><code>FunctionTraits</code></a>)，在子类中来覆写class_type，isClassFunction，isClassFunction，isDrObjectClass的值，以达到正确地萃取函数的信息。</p>
 <h3 id="展开可变参数">展开可变参数</h3>
 <p>解决获取目标函数的信息之后，我们再把视线拉回到<code>HttpBinder</code>的<code>handleHttpRequest</code>方法，其定义如下:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 重载基类方法，主体逻辑由run函数模板承载
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 重载基类方法，主体逻辑由run函数模板承载
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">handleHttpRequest</span>(
         std::deque&lt;std::string&gt; &amp;pathArguments,
         <span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req,
@@ -267,7 +267,7 @@
 </code></pre></div><p>handleHttpRequest是覆写基础的方法，实现由run方法承载。两个方法run使用C++11的新特性可变模板参数，它可以递归函数方式展开参数包。通过递归函数展开参数包，提供一个参数包展开的函数和一个递归终止函数，递归终止函数正是用来终止递归的。第一个run方法中采用展开参数递归对每个参数的值进行转换，第二个run方法是一个终止函数。</p>
 <h3 id="萃取参数引用类型">萃取参数引用类型</h3>
 <p>在第一个run方法中，使用BinderArgTypeTraits用于对参数引用类型萃取。它也是一系列类模板，通过isValid值为判断是否是常左值引用与右值引用，目标函数的入参只支持这两种类型(const T &amp;与 T&amp;&amp;)。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 省略其它的模板参数，其它场景isValid = false
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 省略其它的模板参数，其它场景isValid = false
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">BinderArgTypeTraits</span>&lt;<span style="color:#8b008b;font-weight:bold">const</span> T &amp;&gt;
 {
@@ -280,10 +280,10 @@
 };
 </code></pre></div><h3 id="转换参数值">转换参数值</h3>
 <p>在第一个run方法中，通过如下方式获了实际的类型，先remove_reference剔除引用(&amp;)，再remove_cv剔除引限定符(const或volatile)：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">using</span> ValueType = <span style="color:#8b008b;font-weight:bold">typename</span> std::remove_cv&lt;<span style="color:#8b008b;font-weight:bold">typename</span> std::remove_reference&lt;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">using</span> ValueType = <span style="color:#8b008b;font-weight:bold">typename</span> std::remove_cv&lt;<span style="color:#8b008b;font-weight:bold">typename</span> std::remove_reference&lt;
         nth_argument_type&lt;<span style="color:#8b008b;font-weight:bold">sizeof</span>...(Values)&gt;&gt;::type&gt;::type;
 </code></pre></div><p>拿到实际类型之后，使用<code>ValueType()</code>创建一个此类型的对象，再通过重载不同getHandlerArgumentValue函数来达到对每个url参数（不同参数类型）的赋值转换：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// ValueType value = ValueType();
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// ValueType value = ValueType();
 </span><span style="color:#228b22">// getHandlerArgumentValue(value, std::move(v));
 </span><span style="color:#228b22">// 省略其它的方法
 </span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getHandlerArgumentValue</span>(std::string &amp;value, std::string &amp;&amp;p)
@@ -296,7 +296,7 @@
 }
 </code></pre></div><h3 id="调用目标函数">调用目标函数</h3>
 <p>在run方法中对url参数赋值转换后，就是调用目标函数，传递相应的参数。而目标函数调用通过函数模板callFunction特化实现不同的逻辑：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span>... Values,
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span>... Values,
             <span style="color:#00688b;font-weight:bold">bool</span> isClassFunction = traits::isClassFunction,
             <span style="color:#00688b;font-weight:bold">bool</span> isDrObjectClass = traits::isDrObjectClass,
             <span style="color:#00688b;font-weight:bold">bool</span> isNormal = std::is_same&lt;<span style="color:#8b008b;font-weight:bold">typename</span> traits::first_param_type,
@@ -328,7 +328,7 @@ callFunction(<span style="color:#8b008b;font-weight:bold">const</span> HttpReque
 <li>模板特化(specialization)是指模板参数在某种特定类型下的具体实现称为模板的特化</li>
 </ul>
 <p>以函数模板为例，函数模板并不是具体的函数，传参时编译器会检查实参的类型，然后产生该类型对应的函数，这一过程称为实例化，示例如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
 T add(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; left,<span style="color:#8b008b;font-weight:bold">const</span>  T&amp; right) {
 	<span style="color:#8b008b;font-weight:bold">return</span> left + right;
 }
@@ -350,7 +350,7 @@ T add(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; left,<spa
 <li>全特化和偏特化都没有引入一个全新的模板或者模板实例，只是对原来的泛型（或者非特化）模板参数隐式声明的实例提供另一种定义</li>
 <li>重载是指函数名相同，参数的数目不同或者显示地指定了模板参数。另外类模板是不能被重载。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">//模板函数
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">//模板函数
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">T1</span>,<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">T2</span>&gt;
 <span style="color:#00688b;font-weight:bold">void</span> test(T1 a,T2 b) {}
 
@@ -383,7 +383,7 @@ T add(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; left,<spa
 <li>如果没有找到最佳匹配，或者找到多个匹配程度相当的函数，则编译器报错</li>
 </ul>
 <p>在<code>HttpBinder.h</code>中有一个<code>CanConvertFromStringStream</code>内部类，用于编译期参数类型是否支持stringstream。它是典型的SFINAE的应用，代码如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
     <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">CanConvertFromStringStream</span>
     {
       <span style="color:#8b008b;font-weight:bold">private</span>:
@@ -426,7 +426,7 @@ T add(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; left,<spa
 <li>控制函数返回类型</li>
 <li>校验函数模板参数类型</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 类型偏特化，根据模板参数的某些特性进行不同类型的选择
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 类型偏特化，根据模板参数的某些特性进行不同类型的选择
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> Enable=<span style="color:#00688b;font-weight:bold">void</span>&gt;
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">check</span>;
 
@@ -468,7 +468,7 @@ is_odd(T t) {
 <li>可变参数模板函数</li>
 <li>可变参数模板类</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 可变参数模板函数
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 可变参数模板函数
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">class</span><span style="color:#a61717;background-color:#e3d2d2">... </span><span style="color:#008b45;font-weight:bold">T</span>&gt;
 <span style="color:#00688b;font-weight:bold">void</span> func(T... args);
 
@@ -483,7 +483,7 @@ is_odd(T t) {
 <li>逗号表达式展开参数包</li>
 </ul>
 <p>样例：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">//递归终止函数
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">//递归终止函数
 </span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">T</span>&gt;
 <span style="color:#00688b;font-weight:bold">void</span> print(T t) { <span style="color:#228b22">// 终止函数也可以是void print()
 </span><span style="color:#228b22"></span>   cout &lt;&lt; t &lt;&lt; endl; 
@@ -603,7 +603,7 @@ is_odd(T t) {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -702,7 +702,7 @@ is_odd(T t) {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

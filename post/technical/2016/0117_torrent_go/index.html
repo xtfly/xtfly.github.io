@@ -162,7 +162,7 @@
 <ul>
 <li>有的Tracker结构</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
 		  |
 		  | torrent file
 		  |
@@ -176,7 +176,7 @@
 </code></pre></div><ul>
 <li>Trackerless的DHT结构</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
 		  |
 		  | torrent file
 		  |
@@ -206,7 +206,7 @@
 <h2 id="taipei-torrent">Taipei Torrent</h2>
 <p>首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为<code>Taipei Torrent</code>。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。</p>
 <h3 id="代码结构">代码结构</h3>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Taipei-Torrent git:(master) tree
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Taipei-Torrent git:(master) tree
 ├── main.go
 ├── queryTracker.bash
 ├── resolveBindIP.go
@@ -233,7 +233,7 @@
     └── tracker_test.go
 </code></pre></div><h3 id="源码分析">源码分析</h3>
 <p>花了一个下午走读它的代码，代码简洁易懂，主要功能都在<code>torrent</code>目录下。每个Peer对一个torrent文件会产生一个会话，在我的笔记本记，使用Docker搭建了6个节点，发布下载77M的go的安装包，是秒级速度。如下所示：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">2016/01/17 12:13:13 Starting.
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">2016/01/17 12:13:13 Starting.
 2016/01/17 12:13:13 Listening for peers on port: 7777
 2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Tracker: [], Comment: , InfoHash: 556871e1ada306c2da5033e8fe0d4f077edbe6f7, Encoding: , Private: 0
 2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Computed missing pieces (0.35 seconds)
@@ -263,7 +263,7 @@
 <li>处理各种Channel的消息。</li>
 </ol>
 <p>还一个重要的<code>torrent\torren.go</code>的DoMessage方法，它用于是产生协议的消息，与一个peer建立TCP连接后，首先向peer发送握手消息，peer收到握手消息后回应一个握手消息。握手消息是一个长度固定为68字节的消息。消息的格式如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[pstrlen][pstr][reserved][info_hash][peer_id]
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[pstrlen][pstr][reserved][info_hash][peer_id]
 </code></pre></div><table>
 <thead>
 <tr>
@@ -291,7 +291,7 @@
 </tbody>
 </table>
 <p>对于除握手消息之外的其他所有消息，其一般的格式为：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[length prefix][message ID][payload]
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[length prefix][message ID][payload]
 </code></pre></div><p>length prefix（长度前缀）占4个字节，指明message ID和payload的长度和。message ID（消息编号）占一字节，是一个10进制的整数，指明消息的编号。payload（负载），长度未定，是消息的内容。</p>
 <ul>
 <li>
@@ -443,7 +443,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -536,7 +536,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <p>还是前一段时间需要任职资格考试，自己练习一下栈stack的简易实现，今天把它贴出来，暴露的接口与STL类似，没有实现iterator迭代器。实现有两种方式， 基于顺序存储与链式存储。栈的特点是“后进先出”，在数学表达式运算，编译语法分析中，程序函数调用时最为常见。</p>
 <h2 id="公共宏与异常类">公共宏与异常类</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define NEW(var, T) do { /  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define NEW(var, T) do { /  
 </span><span style="color:#1e889b"></span>   <span style="color:#8b008b;font-weight:bold">try</span> {                 /  
        var = <span style="color:#8b008b;font-weight:bold">new</span> T;      /  
    } <span style="color:#8b008b;font-weight:bold">catch</span>(...) {        /  
@@ -172,7 +172,7 @@
 };
 </code></pre></div><h2 id="顺序存储">顺序存储</h2>
 <p>顺序存储，模板实现，其中参数T为栈的存储类型，参数SIZE表示最大存储的个数。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
 <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Stack</span> {  
 <span style="color:#8b008b;font-weight:bold">public</span>:  
     Stack() :  
@@ -229,7 +229,7 @@
 };  
 </code></pre></div><h2 id="链式存储">链式存储</h2>
 <p>链式存储，也是模板实现，内部结构为一单向链表。入栈的元素加到链表的表头。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">SNode</span> {  
     T m_data;  
     SNode* m_pNext;  
@@ -330,7 +330,7 @@
     size_t m_size;  
 };
 </code></pre></div><h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_stack</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_stack</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
     printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
 }  
 
@@ -460,7 +460,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -544,7 +544,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

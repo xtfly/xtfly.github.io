@@ -268,7 +268,7 @@
 </ul>
 <p>top描述进程内存使用的数据是来源于<code>/proc/$pid/statm</code>文件。通常我们观察内存的占用是看RES的值，它不含有交换出去的空间，但基本可以说RES是进程当前使用的内存量。</p>
 <p>对应的task_statm函数来获取进程的内存使用状况:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">task_statm</span>(<span style="color:#8b008b;font-weight:bold">struct</span> mm_struct *mm, <span style="color:#00688b;font-weight:bold">int</span> *shared, <span style="color:#00688b;font-weight:bold">int</span> *text,
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">task_statm</span>(<span style="color:#8b008b;font-weight:bold">struct</span> mm_struct *mm, <span style="color:#00688b;font-weight:bold">int</span> *shared, <span style="color:#00688b;font-weight:bold">int</span> *text,
                <span style="color:#00688b;font-weight:bold">int</span> *data, <span style="color:#00688b;font-weight:bold">int</span> *resident)
 {
         *shared = get_mm_counter(mm, file_rss);
@@ -296,7 +296,7 @@
 <li>申请的内存若没有使用（只malloc或new，没有操作内存地址），或者只使用其中一小部分，如申请1G，但实现只使用了100M，则RES只会上涨100M，而不是1G</li>
 </ul>
 <p>top/atop命令并不能观察是否存在内存空洞。glibc提供malloc与free用于申请与释放内存，封装向系统调用。我们可以采用设置LD_PRELOAD来对malloc与free进行拦截，从而对内存使用观察。常见的Valgrind内存检测工具即是采用此方式。glibc还提供了malloc_stats函数，用于统计本进程具体的内存使用情况。我们可以通过gdb attach进程，调用此函数来观察内存占用：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">(gdb) call malloc_stats()
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">(gdb) call malloc_stats()
 Arena <span style="color:#b452cd">0</span>:                      <span style="color:#228b22">// 第一个arena，这里只有一个线程
 </span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本线程从操作系统获得的动态内存
 </span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本线程在使用的动态内存
@@ -458,7 +458,7 @@ Arena <span style="color:#b452cd">0</span>:                      <span style="co
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -540,7 +540,7 @@ Arena <span style="color:#b452cd">0</span>:                      <span style="co
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

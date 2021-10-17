@@ -149,13 +149,13 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
     <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
     <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
     <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
 </span><span style="color:#228b22"></span>}
 </code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
   <span style="color:#228b22">// ... 省略其它逻辑
 </span><span style="color:#228b22"></span>
    <span style="color:#228b22">// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
@@ -200,15 +200,15 @@
 <ul>
 <li>Scala: 叫case class，其特性就是支持类的模式匹配，应用于数据的解构使用场景，定义如下</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala"><span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(name<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">String</span>, age<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">Int</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala"><span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(name<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">String</span>, age<span style="color:#8b008b;font-weight:bold">:</span> <span style="color:#00688b;font-weight:bold">Int</span>)
 </code></pre></div><ul>
 <li>Kotlin：叫data class，与JavaBean相似，提供原生关键字，定义如下：</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8b008b;font-weight:bold">data</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(<span style="color:#8b008b;font-weight:bold">val</span> name: String, <span style="color:#8b008b;font-weight:bold">val</span> age: Int)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#8b008b;font-weight:bold">data</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span>(<span style="color:#8b008b;font-weight:bold">val</span> name: String, <span style="color:#8b008b;font-weight:bold">val</span> age: Int)
 </code></pre></div><ul>
 <li>Java：在Java14中也坐不住了，引用叫记录类(record)的概念，定义如下：</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> record <span style="color:#008b45">User</span>(String name, <span style="color:#00688b;font-weight:bold">int</span> age) {}
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> record <span style="color:#008b45">User</span>(String name, <span style="color:#00688b;font-weight:bold">int</span> age) {}
 </code></pre></div><p>各种语言概念略有差别，但都是数据类，他们共同的特点：</p>
 <ul>
 <li>都会自动生成 equals、hashCode 和 toString 方法</li>
@@ -334,7 +334,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -418,7 +418,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -150,7 +150,7 @@
     <h1 id="案例">案例</h1>
 <p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
 <p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
 at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
 at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
 at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
@@ -174,7 +174,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
 <li>为了省事，直接把生成的表DDL拷贝出来，放在flyway的安装SQL脚本中。</li>
 </ul>
 <p>hibernate为什么会对String声明为Long类型，因为在 <a href="https://github.com/hibernate/hibernate-orm/blob/5.0/hibernate-core/src/main/java/org/hibernate/dialect/Oracle9iDialect.java">Oracle9iDialect</a> 中会有如下代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, 4000, <span style="color:#cd5555">&#34;varchar2($l char)&#34;</span> );
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, 4000, <span style="color:#cd5555">&#34;varchar2($l char)&#34;</span> );
 registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, <span style="color:#cd5555">&#34;long&#34;</span> );
 </code></pre></div><p>虽然我们是配置Oracle12cDialect，但他们继承关系，Oracle12cDialect-&gt;Oracle10gDialect-&gt;Oracle9iDialect。当String长度超过4000，则使用long类型。这就掉入坑中的根因，其实从业务场景来看，根本不需要那么长的存储要求。</p>
 <p><strong>案例二</strong>，是由Blob字段的性能问题引起的。无论是哪种数据库，Clob/Blob的写入性能并不高。我们也来还原一下出现这个问题的使用过程：</p>
@@ -329,7 +329,7 @@ registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, <span styl
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -417,7 +417,7 @@ registerColumnType( Types.<span style="color:#658b00">VARCHAR</span>, <span styl
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

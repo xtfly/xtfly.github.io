@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>软件开发漫谈4：敏捷开发 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="软件开发漫谈4：敏捷开发">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="软件开发漫谈4：敏捷开发 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/1016/" itemprop="url">
+        软件开发漫谈4：敏捷开发
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-10-16">
+    2021-10-16
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4610 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>还是在国庆节前，与一位大学同学聊天，忽然聊到他公司自从引入一位印度主管之后，开始推广敏捷开发，言语中透露出对推行敏捷开发的反思。什么站立会议，Backlog墙，Burndown图，迭代回顾等，看似这些活动很美好，都是围绕提升团队生产率，让软件开发更&quot;敏捷&quot;，但事实上还不如他们以前没有这些活动更高效。一个小团队的Leader反而成了这些活动监工，搞这些活动有时甚至不如自己亲自把活干了产出来得快。每个人只完成自己的任务，没有人会记得是谁认领了什么任务，团队反而缺少了应有的协作。从迭代计划来看，也许只是时间上需要迭代的划分，难以做到每个迭代可独立交付特征。这或许所谓的只有其&quot;皮&quot;。</p>
+<p>我也有同样的感觉，联想我司10年前左右也在大力推广敏捷，并结合我司软件开发的特点，又在原有基础上进行改造。我们似乎在推广一种实践时，很容易跟风或是一刀切，人家这样玩，我们不跟着搞，似乎就是落后生产力了。总之推广是成功的，我们的优秀实践总结总会解决了XXX痛点，效率又提升了XXX。不过现在已没人再来提敏捷开发，不断的实践最终也留下一些&quot;精华&quot;，如站立会议改成Espace晨会，按月迭代计划尽可能早的部件间联调，每个C版本的AAR总结等等。</p>
+<p>我们不能说这些是没有什么用的，从一名开发人员的角度管中窥豹，主观上认为有时实操形式大于内容，这只不过算是一种惯性使然。尤其是后来加入的开发兄弟，并没有像老员工经历过打破原来的瀑布开发模型；再到可以以&quot;敏捷&quot;的名义，什么都可以简化，如不要设计文档；再到今天我们非常强调4+1视图，架构设计，需求分析，特征设计等一系列的文档输出，开发者测试等等。或许他们认为开发流程天然就是如此罢了，所以周未在家又写写漫谈敏捷开发。</p>
+<h1 id="敏捷">敏捷</h1>
+<p>什么是敏捷开发？敏捷是为了解决由于客户不能讲清楚自己的需求，产品设计不知道设计未知需求，而且客户的诉求还是经常变化，那得&quot;敏捷&quot;，减少浪费。于是敏捷开发一来可以哄客户开心（迭代交付，快速上线），二来可以哄软件产品主管开心（循序渐进，消除浪费），这足以打动多少人，也就让&quot;敏捷&quot;在众多的软件&quot;工厂&quot;一下子流行起来。</p>
+<p>今年正是敏捷宣言发布20周年。2001年2月11日至13日，在美国犹他州瓦萨奇山雪鸟滑雪胜地，17个人聚到一起，交谈、滑雪、休闲，当然还有聚餐。他们试图找到共识，最终的成果就是《敏捷软件开发宣言》（Manifesto for Agile Software Development）。参见：<a href="https://www.scrumcn.com/agile/%e6%95%8f%e6%8d%b7%e5%ae%a3%e8%a8%80%e8%af%9e%e7%94%9f%e8%ae%b0.html">敏捷宣言诞生记</a>。</p>
+<ul>
+<li><strong>个体和互动 高于 流程和工具</strong></li>
+<li><strong>工作的软件 高于 详尽的文档</strong></li>
+<li><strong>客户合作 高于 合同谈判</strong></li>
+<li><strong>响应变化 高于 遵循计划</strong></li>
+</ul>
+<p>敏捷软件开发宣言核心就是上述4句话，是他们的价值主张。我们可以从宣言看到：敏捷开发的核心是关注价值，消除浪费，以合作、迭代、变化的循序渐进开发方式，通过创造变化，响应变化在不确定和混乱的环境中取得成功。</p>
+<p>敏捷开发事实上并没有定义具体开发流程，而是提倡小步快跑，通过反复迭代，来实现产品的自我进化。相比于传统的瀑布模型，好处是灵活多变，及时调整开发计划。基于它的价值主张，敏捷的实现方法有多种，如极限编程(XP)，Scrum方法，特性驱动开发(FDD)等，每种方法的实践过程都有不同，但基础都是基于增量与迭代的过程。</p>
+<p>无论哪种实践，也沉淀了一些通用的活动：</p>
+<ul>
+<li><strong>每日站会</strong>：敏捷开发强调个体互动沟通，每日站会供大家沟通机会，团队任何人可以分享他干了什么，有什么困难，需要什么求助，下一步做什么等；通过沟通把任何问题暴露出来。为什么是站会，强调的是问题反馈与信息互通，并不是方案讨论，所以要尽可能的短，不能站立太久。</li>
+<li><strong>精简文档</strong>：敏捷开发强调&quot;可运行的软件胜过一切文档&quot;，提倡通过软件本身来和客户沟通，因为文档是文字描述，并非最终交付件，文字大家可能会理解不一致。而可以运行的软件，能通过不断地ShowCase方式呈现给客户，避免出现沟通与理解的偏差。</li>
+<li><strong>backlog墙</strong>：把需求划为多个Story，基于Story进行估算，排序，进一步确认细节，拆分。把他们做成不同颜色的索引卡片，放在墙上，大家可以挪动卡片，用来标识Backlog的重要性，谁认领了，它的状态是开发中，测试中，验证中等。当然这个墙可能是电子化的，但要投影到墙上，大家都可见。</li>
+<li><strong>结对编程</strong>：开发过程中要有沟通，遇到有问题，相信1+1&gt;2，极端的做法一个人编程，另一个人在旁边指导，然后过一段时间再交换；通常的做法，两个人负责同一个Backlog的开发，一个主导功能代码编写，一个主导测试代码编写，相互评审，过段时间再互换。</li>
+<li><strong>迭代回顾</strong>：团队通过头脑风暴，把想法写在贴纸上，再通过投票来确定下一个迭代着重进行哪些改进。通常贴纸的内容会分为三列：Good，哪些做法可以持续保持；Cloud have done better，哪些做法需要改变；Improvements：如何改进的具体的做法。使用最多的方法是<a href="https://baike.baidu.com/item/aar/6894400?fr=aladdin">AAR</a>。</li>
+<li><strong>持续集成</strong>：敏捷开发强调小步快跑，不断迭代，需要增量设计，增量开发，则持续构建显得尤其重要。持续集成需要能每日构建，执行自动化测试，快速反馈整个迭代开发代码健康状态。</li>
+<li><strong>敏捷教练</strong>：敏捷开发强调沟通，团队分工合作，那需要一个组织者，他作为整个开发过程中各种活动的组织，督促，协调等。虽名为&quot;教练&quot;，他不是管理者，但却要组织团队，分配人手，制定计划，通过多种方式来加强团队的凝聚力。</li>
+</ul>
+<h1 id="问题">问题</h1>
+<p>敏捷开发似乎通过分解需求，分解计划，以变化来响应客户的变化就可以解决软件开发危机。主导敏捷开发宣言的大佬主要来自定制软件开发，这种开发是基于已有软件平台，面向行业细分场景，需要边咨询边理清客户的诉求，所以需求变化很快。指望客户一次想明白不现实的，于是就让客户一点一点地提需求，我们一点一点的做，做出一点，就给客户看看，有问题就改，没问题就继续。</p>
+<p>但是这种一点点开发，对软件产品是没有一个完整的规划与清晰的路线。如果是一路走来方向是对的还行，最终磕磕碰碰或许也可以交付给客户一个他想要的产品。如果不是，也就到后期根本无法满足客户的诉求，没有架构设计，无法持续维护。尤其像我司大型的电信级软件系统，边走边做是极不现实的，无法构建出有竞争力，有发展潜力的软件产品。</p>
+<p>敏捷开发是无法解决大型软件开发所面临的问题的根因，可能是把需求管理，团队管理，以及开发设计都打散到一个个迭代中。</p>
+<ul>
+<li><strong>缺少完整需求视图与业务目标</strong>：通过一个个小迭代的ShowCase与客户滚动互动，并不能完整把控产品的最终形态，往往只见树木不见森林</li>
+<li><strong>开发团队的利益需要制度协调</strong>：一个个开发小团队并行开发，可能每个团队自我感觉良好，却难以相互协作，需要花更多时间来&quot;拉通&quot;</li>
+<li><strong>缺少整体产品规划与架构设计</strong>：寄希望一个个迭代开发，设计，回顾，改进，达到自我进化升级，自我完善极其不现实。软件需要长期规划，原型验证，架构设计与演进，后期维护，并不仅仅是为了需求而开发</li>
+</ul>
+<p>当然并不是敏捷开发思想不可取，也不是让开发流程只有敏捷活动了，应该取长补短。所以从我司的开发流程调整变化中，也可以看到在整体IPD框架下，融入一些敏捷活动。在实施过程中，由于缺少经验和生搬硬套，一段时间走偏并没有关系，很多认识也是螺旋性上升的。</p>
+<p>敏捷的活动实施还受限于团队的整体能力。比如人与人之间的互动，胜于过程与工具。其目的是针对问题进行直接沟通，得到快速有效的解决方法。但实际上可能我们的开发兄弟根本意识不到问题，有时碍于情面不方便在站立会议上提出问题；即使提出问题了，上级对于不同意见或者变化不包容，甚至认为问题多的同学不好管理，出现PUA。这些都会不断减弱沟通的有效性，最后结果可能就是流于形式化，团队一片详和，不能直面关键问题，找不到有效解决方法，也就无法谈及应对快速变化了。</p>
+<p>敏捷开发方法对开发人员综合能力要求极高，传统瀑布模型下分工很明确，有人做概念设计，有人做详细设计等，但敏捷要求人员不仅需要精通编码，测试工作，还得负责系统设计，也需要参与项目的需求分析、以及架构设计，还需要有很好的决策能力，能够对需求更变进行快速的响应。当人员能力不匹配时，软件开发变成了日复一日开发见不到尽头，一路带病迭代，技术债务越压越多，人员感受到是疲于解决各种问题，手拉肩扛地完成项目交付，也不见自己能力提升，没有成就感。</p>
+<h1 id="理解">理解</h1>
+<p>敏捷虽是从关注价值出发，应对变化，本质是要解放人的生产力，这才是对敏捷进一步理解。</p>
+<p>团队的凝聚力是敏捷能够实施的基石，必须相互合作。如回顾会议一味抱怨诉求不但不能解决问题，反而会可能失控导致士气低迷。像毛主席一样能把马列主义与国情相结合，探索出符合实际情况的方法，再不断地摸索与改进，每个团队有每个团队的基因，实践可以借鉴但不要照抄。同样开会等活动是解决问题作为始终目标，而不是因为它是例行活动就展开，也不要是谁提出了问题就安排谁解决问题。</p>
+<p>对软件开发经验与业务经验积累与沉淀也非常的重要。经验的传承需要开发人员之间产生共鸣，形成文化，才能自我意识的觉醒。团队成员若能自发地工作，发挥创造性，其积极作用远远大于被动接受工作。敏捷中提倡的结对编程，可以采用传帮带的方式，建立&quot;师徒&quot;情感，师傅的无我心态，言传身教，鼓励徒弟的独立思考，认可工作成果，帮助发现问题，并充分的沟通与交流，对事不对人的火花碰撞提升团队的活力。</p>
+<p>开发人员的内驱力才是最宝贵的财富。敏捷中提倡Backlog的认领，不是被动或强制分配。我们经常会遇到等待前置任务完成要加班，以及支撑后续活动要加班。事实上加班也没有做什么事，就是等待。但如果认领的任务完成了，则要求集体加班，这是所谓的无效奉献。我们提倡奉献精神，但不提倡无效奉献。应多鼓励对认领任务完成较快的人员，不需要陪着加班，因为只有有效的奉献才能给参与者带来自我的肯定与激励，有自己的时间空间，才能给自己设置挑战目标，下次认领更有难度的任务。</p>
+<p>敏捷提到&quot;最好的架构、需求和设计出自自组织团队&quot;，而自组织团队是建立在信任的基础上，只有团队成员彼此间相互信任，才能和谐地开展工作，观点与问题充分展露出来，才能更好理解需求，做好设计。从管理者角色来说，提供所需的环境和支援，在遇到问题时能及时协调给予帮助；对信息能够公开不遮掩，有团队标准与纪律，明确责任。从员工角色来说，员工的存在感是信任的前提，能够感受到工作中发挥自身的价值，才能激发出成员对工作更大的热情与创造力。</p>
+<p>上面所讲的都是围绕&quot;人&quot;来说，有些虚难以操作。就&quot;事&quot;来说，要敏捷起来，就要有好的生产工具，比如好的IDE，任务管理系统，文档管理系统等，这些工具应该是如何更好帮助团队协作开发，而不是更好的任务管控，工具是面向开发人员，而不是面向管理人员。另外一件&quot;事&quot;，是要管理好生产资料，对需求质量管控。正确满足需求是软件产品的价值所在，需求也是软件开发的源头，低质量的需求大多是造就了软件开发失败显著原因。</p>
+<h1 id="结语">结语</h1>
+<p>敏捷实施关键角色是敏捷教练，并且有相应的认证与实践经验。我也没有获得过认证，本文只是作为一名开发者对敏捷开发初浅的认知，是曾经参与敏捷开发的陈年总结，可能存在偏颇，如果你觉得我说得有点合理，那就点个赞。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/0904/" rel="prev" title="软件开发漫谈3：开发者测试">
+        软件开发漫谈3：开发者测试 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件开发漫谈4：敏捷开发
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">155</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#敏捷">敏捷</a></li>
+    <li><a href="#问题">问题</a></li>
+    <li><a href="#理解">理解</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2021</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一老产品源码(C语言)中：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID) {
     VOS_UINT32 count, sleepTimeLen;
     VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
     VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
@@ -254,7 +254,7 @@
     <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
 }
 </code></pre></div><p>上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_BOOL <span style="color:#008b45">CheckOneFileStatus</span>(FileInfo&amp; fileInfo, VOS_BOOL enIsHaveUpdateOk) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_BOOL <span style="color:#008b45">CheckOneFileStatus</span>(FileInfo&amp; fileInfo, VOS_BOOL enIsHaveUpdateOk) {
     VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
 
     <span style="color:#8b008b;font-weight:bold">if</span>(fileInfo.enLoadCheckResult == LS_SUCESS_UPDATE) {
@@ -511,7 +511,7 @@ VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID)  {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -594,7 +594,7 @@ VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID)  {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一平台产品源码(Java语言)中（<code>代码一</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceFactory</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceFactory</span> {
     <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory instance = <span style="color:#8b008b;font-weight:bold">new</span> ServiceFactory();
 
     <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory <span style="color:#008b45">getInstance</span>() {
@@ -169,7 +169,7 @@
     <span style="color:#228b22">// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
 </span><span style="color:#228b22"></span>}
 </code></pre></div><p>再来看另一平台服务的代码(Java语言)（<code>代码二</code>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> WebConfig <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> WebConfig <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
     <span style="color:#707a7c">@Autowired</span>  
     <span style="color:#8b008b;font-weight:bold">private</span> AucInterceptor aucInterceptor;
 
@@ -212,7 +212,7 @@
 </ul>
 <p>为什么上面集中且容易察觉到的重复（相似），我们不去消除它。因为写重复代码太容易了，传统消除重复的套路（提取函数）在上面的代码已不再能有效解决，更别说满足<code>开闭原则</code>。若消除这类重复，则需要我们对Spring的IoC运作机制较深入了解。</p>
 <p><code>代码一</code>的优化建议：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SpringContextUtil</span> <span style="color:#8b008b;font-weight:bold">implements</span> ApplicationContextAware {
 	<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ApplicationContext springContext;
  
@@ -237,7 +237,7 @@
 }
 </code></pre></div><p>拿到ApplicationContext之后，我们就可以获取任一Bean对象了，消除了相似代码，也解决了违背<code>开闭原则</code>的问题。</p>
 <p><code>代码二</code>的优化建议：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> ServiceConfigurer <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
     <span style="color:#707a7c">@Autowired</span>(required=<span style="color:#8b008b;font-weight:bold">false</span>)  
     <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Interceptor&gt; interceptors;
@@ -257,7 +257,7 @@
     }
 }
 </code></pre></div><p>通过采用List注入方式解决了扩展性问题，那又怎么解决不同Interceptor注册先后问题？Spring还提供一个@Order注解，只需要在各个类声明时，给它排个序，那List中注入的对象就具有先后顺序：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Order</span>(1)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Order</span>(1)
 <span style="color:#707a7c">@Component</span>
 <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AucInterceptor</span> ....
 </code></pre></div><h2 id="背后的知识">背后的知识</h2>
@@ -427,7 +427,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -511,7 +511,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

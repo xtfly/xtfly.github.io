@@ -21,7 +21,7 @@
 &lt;li&gt;问题是部分命令能正常执行，部分命令执行之后不退出卡住&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;那个wrapper脚本的关键逻辑如下:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; ssh_exec_wrapper() {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; ssh_exec_wrapper() {
     &lt;span style=&#34;color:#658b00&#34;&gt;local&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;cmd&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [1]取命令行所有参数&lt;/span&gt;
     check_cmd_in_white_list &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [2]检查命令行的是否在白名单中&lt;/span&gt;
     &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; |sh &lt;span style=&#34;color:#228b22&#34;&gt;# [3]执行命令&lt;/span&gt;

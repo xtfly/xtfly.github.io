@@ -155,18 +155,18 @@
 <p>delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。</p>
 <p>new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。</p>
 <p>下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">new</span>(std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">new</span>(std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
 <span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">new</span>[](std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
 <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">delete</span>(<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
 <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">delete</span>[](<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
 </code></pre></div><p>使用举例:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span>* p1 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>();
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span>* p1 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>();
 <span style="color:#8b008b;font-weight:bold">delete</span> p2;
 
 <span style="color:#00688b;font-weight:bold">int</span>* p2 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[<span style="color:#b452cd">5</span>];
 <span style="color:#8b008b;font-weight:bold">delete</span> [] p2;
 </code></pre></div><p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">/**
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">/**
 </span><span style="color:#228b22"> * A simulation of c++ new T() &amp; new T(param) operation
 </span><span style="color:#228b22"> */</span>  
 <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">NewObj</span> {
@@ -246,7 +246,7 @@
     }  
 };  
 </code></pre></div><p>测试代码:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TestClass</span> {  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TestClass</span> {  
     TestClass() : mem1(<span style="color:#b452cd">0</span>), mem2(<span style="color:#b452cd">0</span>)  {}  
 
     TestClass(<span style="color:#00688b;font-weight:bold">int</span> m) : mem1(m), mem2(<span style="color:#b452cd">0</span>) {}  
@@ -359,7 +359,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -426,7 +426,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

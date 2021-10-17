@@ -155,7 +155,7 @@
 <li>问题是部分命令能正常执行，部分命令执行之后不退出卡住</li>
 </ul>
 <p>那个wrapper脚本的关键逻辑如下:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> ssh_exec_wrapper() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> ssh_exec_wrapper() {
     <span style="color:#658b00">local</span> <span style="color:#00688b">cmd</span>=<span style="color:#00688b">$@</span> <span style="color:#228b22"># [1]取命令行所有参数</span>
     check_cmd_in_white_list <span style="color:#00688b">$cmd</span> <span style="color:#228b22"># [2]检查命令行的是否在白名单中</span>
     <span style="color:#658b00">echo</span> <span style="color:#00688b">$cmd</span> |sh <span style="color:#228b22"># [3]执行命令</span>
@@ -195,7 +195,7 @@
 <li><code>${#cmd[@]}</code></li>
 </ul>
 <p>发现上述两种写法输出的结果都 <strong>1</strong>，说明参数并非数组传入，而是整个字符串传入。居然带空格也是字符串，有点不相信自己的眼睛，再换种写法</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">for</span> it in <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$cmd</span><span style="color:#cd5555">&#34;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">for</span> it in <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$cmd</span><span style="color:#cd5555">&#34;</span>
 <span style="color:#8b008b;font-weight:bold">do</span>
   <span style="color:#658b00">echo</span> <span style="color:#00688b">$it</span>
 <span style="color:#8b008b;font-weight:bold">done</span>
@@ -215,14 +215,14 @@
 <p>也就是情况是这样：SSH远程执行中，直接<code>sh -c $cmd</code> 与 <code>exec $cmd</code>，其中的<code>$cmd</code>需完整的路径，并没有从<code>$PATH</code>所有路径中查找。遗憾的是我对这个问题目前还没有找到根因。</p>
 <h3 id="与反引号"><code>$()</code>与反引号</h3>
 <p>对于命令执行，我又想到下面的两种方式：执行反引号或括号里面的内容，将结果赋值给变量。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#00688b">date1</span>=<span style="color:#cd5555">`</span>date +%Y:%m:%d<span style="color:#cd5555">`</span>  <span style="color:#228b22"># 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#00688b">date1</span>=<span style="color:#cd5555">`</span>date +%Y:%m:%d<span style="color:#cd5555">`</span>  <span style="color:#228b22"># 备注，`是反引号，由于markdown中 `有其它含义，无法在本文的非代码块的地方直接输出</span>
 <span style="color:#00688b">date2</span>=<span style="color:#8b008b;font-weight:bold">$(</span>date +%Y:%m:%d<span style="color:#8b008b;font-weight:bold">)</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">`</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#cd5555">`</span>     <span style="color:#228b22"># 输出 /bin/bash </span>
 <span style="color:#658b00">echo</span> <span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">echo</span> <span style="color:#cd5555">\$</span>SHELL<span style="color:#8b008b;font-weight:bold">)</span>    <span style="color:#228b22"># 输出 $SHELL</span>
 </code></pre></div><p>他们的区别在于对于转义字符的处理有些不同，<code>$()</code>中的转义字符和我们平时使用的是一样的，反引号中保留了转义字符本身的意义，在使用时，推荐使用<code>$()</code></p>
 <h3 id="单引号与双引号">单引号与双引号</h3>
 <p>那问题到底出在什么地方，发现<code>echo $cmd |sh</code>中对变量没有加引号，于是把它修改为<code>echo &quot;$cmd&quot; | sh</code>，问题神奇地解决了，原因是什么？我来看一下单引号与双引号的区别</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$HOME</span><span style="color:#cd5555">&#34;</span>   <span style="color:#228b22"># 输出 /Users/xiao</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$HOME</span><span style="color:#cd5555">&#34;</span>   <span style="color:#228b22"># 输出 /Users/xiao</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#39;$HOME&#39;</span>   <span style="color:#228b22"># 输出 $HOME</span>
 </code></pre></div><p>显然</p>
 <ul>
@@ -231,14 +231,14 @@
 </ul>
 <h3 id="echo的坑">echo的坑</h3>
 <p>经过一些验证，发现问题是出在echo的使用上，我们先来看一下简单的：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> *.sh      <span style="color:#228b22"># 没有带引号，它会输出当前目录下所有sh结尾的文件</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">echo</span> *.sh      <span style="color:#228b22"># 没有带引号，它会输出当前目录下所有sh结尾的文件</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;*sh&#34;</span>     <span style="color:#228b22"># 带双引号，输出字符串 *.sh </span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#39;*.sh&#39;</span>    <span style="color:#228b22"># 带单引号，输出字符串 *.sh </span>
 <span style="color:#658b00">echo</span> aaa;bbb   <span style="color:#228b22"># 不带引号，只输出aaa</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;aaa;bbb&#34;</span> <span style="color:#228b22"># 带引号，输出aaa;bbb</span>
 <span style="color:#658b00">echo</span> aa bb     <span style="color:#228b22"># 不带引号，有空格，输出aa bb  </span>
 </code></pre></div><p>也这是本文开头所讲的脚本的问题根因，$cmd是一个字符串变量，其中含有空格，还有分号(;)，echo能正常处理空格，但遇到分号理解为另一个命令开始，orted没有完整输入而卡住不退出，我们再来看一下bash对一组命令list解释：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Lists
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">Lists
     A  list  is a sequence of one or more pipelines separated by one of the
     operators ;, &amp;, &amp;&amp;, or ||, and optionally terminated by one of ;, &amp;, or
     &lt;newline&gt;.
@@ -250,17 +250,17 @@
     semicolon to delimit commands.
 </code></pre></div><p>echo的用法<code>echo [-n] [string ...]</code>, 说明支持空格，空格分隔变成它的多个多个参数。</p>
 <p>其实不只是echo，对于程序的每个字符串参数，通常需要带双引号，避免空格等特殊字符导致信息不完整，如：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sh -c <span style="color:#658b00">echo</span> <span style="color:#b452cd">1234</span>   <span style="color:#228b22"># 会输出空行，即只执行了sh -c echo， 因为 sh -c 只接受一个字符串参数</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sh -c <span style="color:#658b00">echo</span> <span style="color:#b452cd">1234</span>   <span style="color:#228b22"># 会输出空行，即只执行了sh -c echo， 因为 sh -c 只接受一个字符串参数</span>
 sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:#228b22"># 会输出1234</span>
 </code></pre></div><p>再做个验证，有一脚本如下：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">local</span> <span style="color:#00688b">params</span>=<span style="color:#00688b">$@</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">local</span> <span style="color:#00688b">params</span>=<span style="color:#00688b">$@</span>
 <span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;</span><span style="color:#00688b">$@</span><span style="color:#cd5555">&#34;</span>
 </code></pre></div><p>当执行<code>./test.sh &quot;parm1&quot; &quot;parm2&quot; 1 2</code>时，输出内容：<code>parm1 parm2 1 2</code>，参数的双引号并不会带给执行的程序。</p>
 <h1 id="代码规范">代码规范</h1>
 <p>从上面的问题定位分析过程，我们看到了shell脚本有太多相似，抑或细微差别的写法。这些迷惑写法也是成了魔法，都会给程序员增加心智负担，一不小心就会留下一个bug，并且还在特定的场景下才会出现问题，这给我们验证测试也带来了难度。</p>
 <p>每种语言设计上不可能是完美的，都会存在这样或那样的坑。我们虽然不能像孔乙己那样熟练记住回字有几种写法，但面对问题时又不得不了解各种回字之间的区别。从语言简单层面来说，应该每个字只有一个写法，只有一种含义是最清晰。</p>
 <p>问题带给我们的启示是，代码应该是规范整洁的，不能人为地制造迷惑。例如c++中const，含义太多了，一行能写4个const，我想太多的程序员不喜欢还能这样玩，反正我不喜欢。</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {
 <span style="color:#8b008b;font-weight:bold">public</span>:
     <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> func(<span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span>* <span style="color:#8b008b;font-weight:bold">const</span> param) <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#b452cd">0</span>;} 
 };
@@ -361,7 +361,7 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -453,7 +453,7 @@ sh -c <span style="color:#cd5555">&#34;echo 1234&#34;</span> <span style="color:
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

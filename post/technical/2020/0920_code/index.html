@@ -150,7 +150,7 @@
     <h1 id="案例">案例</h1>
 <p>下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：</p>
 <p><strong>开始：</strong> 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
 DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
 DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
 
@@ -163,7 +163,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
 <li>[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。</li>
 <li>[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。</li>
 </ul>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">TrainingCfg</span>(<span style="color:#658b00">object</span>):
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">TrainingCfg</span>(<span style="color:#658b00">object</span>):
 
     <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
         self.cfgs = {}
@@ -174,12 +174,12 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
         self.add_cfg(<span style="color:#cd5555">&#39;dask&#39;</span>, <span style="color:#cd5555">&#39;application-dask.properties&#39;</span>)
         self.add_cfg(<span style="color:#cd5555">&#39;server&#39;</span>, <span style="color:#cd5555">&#39;application-server.properties&#39;</span>)
 
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">add_cfg</span>(self, name: <span style="color:#658b00">str</span>, <span style="color:#658b00">file</span>: <span style="color:#658b00">str</span>):
-        cfg_path = f<span style="color:#cd5555">&#39;{self.cls_path}/{file}&#39;</span>
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">add_cfg</span>(self, name: <span style="color:#658b00">str</span>, file: <span style="color:#658b00">str</span>):
+        cfg_path = <span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;</span><span style="color:#cd5555">{</span>self.cls_path<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">{</span>file<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>
         <span style="color:#8b008b;font-weight:bold">if</span> os.path.exists(cfg_path): <span style="color:#228b22"># 1</span>
             self.cfgs[name] = Properties(cfg_path)
         <span style="color:#8b008b;font-weight:bold">else</span>:
-            LOG.warning(f<span style="color:#cd5555">&#39;not found configuration file {cfg_path}&#39;</span>)
+            LOG.warning(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;not found configuration file </span><span style="color:#cd5555">{</span>cfg_path<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>)
 
     <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get</span>(self, name: <span style="color:#658b00">str</span>, key: <span style="color:#658b00">str</span>, default_value: <span style="color:#658b00">str</span> = <span style="color:#cd5555">&#39;&#39;</span>) -&gt; <span style="color:#658b00">str</span>:
         <span style="color:#8b008b;font-weight:bold">if</span> name <span style="color:#8b008b">in</span> self.cfgs:
@@ -302,7 +302,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -382,7 +382,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

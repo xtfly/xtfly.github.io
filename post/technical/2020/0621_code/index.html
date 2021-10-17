@@ -149,7 +149,7 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一平台产品前端源码(Java语言)中：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> Map&lt;String, Map&lt;String, String&gt;&gt; <span style="color:#008b45">constructConstrainMap</span>() {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> Map&lt;String, Map&lt;String, String&gt;&gt; <span style="color:#008b45">constructConstrainMap</span>() {
     Map&lt;String, Map&lt;String, String&gt;&gt; typeConstrainMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, Map&lt;String, String&gt;&gt;();
     Map&lt;String, String&gt; imageConstrainPatternMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, String&gt;();
     imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;allowdPatten&#34;</span>, <span style="color:#cd5555">&#34;^[a-zA-Z0-9_~.=@-]$&#34;</span>);
@@ -175,13 +175,13 @@
 </ul>
 <p>无论哪种配置文件格式，解释库几乎都提供配置内容直接到Java对象的映射。比如XML，JDK1.6起提供JAXB(Java Architecture for XML Binding)来序列化与反序列化XML文件。不过由于XML技术过于古老，JDK11把JAXB从标准模块移除了，需要额外引入依赖或使用Jackson的JAXB能力。倘若使用DOM或SAX来解释XML，要写的代码有些多，也容易出错，直观感觉还不如上面一行一行代码写死配置内容来得快。而采用JAXB，定义映射结构类加上解释代码，也就20行左右代码可以搞定。那我们来尝试优化一下此案例代码：</p>
 <p><strong>第一步</strong>，定义XML的格式：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;Constrains&gt;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;Constrains&gt;</span>
     <span style="color:#8b008b;font-weight:bold">&lt;Constrain</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;image&#34;</span> <span style="color:#658b00">allowdPatten=</span><span style="color:#cd5555">&#34;^[a-zA-Z0-9_~.=@-]$&#34;</span> <span style="color:#658b00">allowdMin=</span><span style="color:#cd5555">&#34;1&#34;</span> <span style="color:#658b00">allowdMax=</span><span style="color:#cd5555">&#34;256&#34;</span> <span style="color:#658b00">noEcho=</span><span style="color:#cd5555">&#34;false&#34;</span> <span style="color:#658b00">description=</span><span style="color:#cd5555">&#34;com...&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
     <span style="color:#8b008b;font-weight:bold">&lt;Constrain</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;network&#34;</span> <span style="color:#658b00">allowdPatten=</span><span style="color:#cd5555">&#34;^[a-zA-Z0-9_]$&#34;</span> <span style="color:#658b00">allowdMin=</span><span style="color:#cd5555">&#34;1&#34;</span> <span style="color:#658b00">allowdMax=</span><span style="color:#cd5555">&#34;256&#34;</span> <span style="color:#658b00">noEcho=</span><span style="color:#cd5555">&#34;false&#34;</span> <span style="color:#658b00">allowdValue=</span><span style="color:#cd5555">&#34;local/external&#34;</span> <span style="color:#658b00">description=</span><span style="color:#cd5555">&#34;com...&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
     <span style="color:#228b22">&lt;!--省略其它的--&gt;</span>
 <span style="color:#8b008b;font-weight:bold">&lt;/Constrains&gt;</span>
 </code></pre></div><p><strong>第二步</strong>，定义Java类结构：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@XmlAccessorType</span>(XmlAccessType.<span style="color:#658b00">FIELD</span>)
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#707a7c">@XmlAccessorType</span>(XmlAccessType.<span style="color:#658b00">FIELD</span>)
 <span style="color:#707a7c">@Getter</span>
 <span style="color:#707a7c">@Setter</span>
 <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Constrain</span> {
@@ -209,7 +209,7 @@
     <span style="color:#8b008b;font-weight:bold">protected</span> List&lt;Constrain&gt; items;
 }
 </code></pre></div><p><strong>第三步</strong>，解释配置文件</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">try</span> (InputStream is = <span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#cd5555">&#34;constrains.xml&#34;</span>)) {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">try</span> (InputStream is = <span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#cd5555">&#34;constrains.xml&#34;</span>)) {
     JAXBContext jc = JAXBContext.<span style="color:#658b00">newInstance</span>(Constrains.<span style="color:#658b00">class</span>);
     Unmarshaller unmarshaller = jc.<span style="color:#658b00">createUnmarshaller</span>();
     Constrains constrains = (Constrains)unmarshaller.<span style="color:#658b00">unmarshal</span>(is)
@@ -220,7 +220,7 @@
 <li>可能存在XML的外部实体注入攻击，虽然配置文件不直接暴露给外部，从公司可信代码要求来看，存在风险。</li>
 </ul>
 <p>再优化一下:</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#228b22">// JAXBContext jc = JAXBContext.newInstance(Constrains.class); 在初始化或静态区中确保jc只new一次
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#228b22">// JAXBContext jc = JAXBContext.newInstance(Constrains.class); 在初始化或静态区中确保jc只new一次
 </span><span style="color:#228b22"></span>XMLInputFactory xif = XMLInputFactory.<span style="color:#658b00">newFactory</span>();
 xif.<span style="color:#658b00">setProperty</span>(XMLInputFactory.<span style="color:#658b00">IS_SUPPORTING_EXTERNAL_ENTITIES</span>, <span style="color:#8b008b;font-weight:bold">false</span>); <span style="color:#228b22">// 关闭外部实体解释支持
 </span><span style="color:#228b22"></span>xif.<span style="color:#658b00">setProperty</span>(XMLInputFactory.<span style="color:#658b00">SUPPORT_DTD</span>, <span style="color:#8b008b;font-weight:bold">false</span>); <span style="color:#228b22">// 注：视情况true/false，当存在DTD，可以由DTD检查XML合法性，请参考要相关文档
@@ -361,7 +361,7 @@ xif.<span style="color:#658b00">setProperty</span>(XMLInputFactory.<span style="
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -444,7 +444,7 @@ xif.<span style="color:#658b00">setProperty</span>(XMLInputFactory.<span style="
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

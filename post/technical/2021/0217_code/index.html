@@ -173,7 +173,7 @@
 <li>条件变量（pthread_cond_t）： 用于等待阻塞与通知唤醒</li>
 </ul>
 <p>精减的代码如下，基本等同实现了一个简化版本的ACE_Message_Queue（它的实现也是基于pthread，为了跨平台还支持其它，不是本文重点）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;pthread.h&gt;</span><span style="color:#1e889b">
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;pthread.h&gt;</span><span style="color:#1e889b">
 </span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
 </span><span style="color:#1e889b"></span>
 <span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> ulong;
@@ -272,7 +272,7 @@
 </ul>
 <p>熟悉CAS的同学可能知道，CAS存在ABA的问题(参见Wikipedia<a href="https://en.wikipedia.org/wiki/ABA_problem">ABA_problem</a>)。Wikipedia上给了一个方法，使用double-CAS，借助另一个辅助计数器，当ABA发生时，虽然值一样，但是计数器不一样了。采用循环数组可以避免ABA问题。</p>
 <p>代码如下，各节点以及队列同时记录tail与head，代码改自<a href="https://github.com/craflin/LockFreeQueue/blob/master/LockFreeQueue.h">craflin/LockFreeQueue</a>：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;memory&gt;</span><span style="color:#1e889b">
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;memory&gt;</span><span style="color:#1e889b">
 </span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
 </span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;unistd.h&gt;</span><span style="color:#1e889b">
 </span><span style="color:#1e889b"></span>
@@ -395,13 +395,13 @@
 <li>[5] 通过CAS之后，可以真正插入值，则节点的head指向队列的tail，标识有值</li>
 </ul>
 <p>上面的注释还是难以理解，先忽略数组方式，假定有一个堆栈，节点如下定义（参见<a href="https://www.ibm.com/developerworks/cn/aix/library/au-multithreaded_structures2/index.html">设计不使用互斥锁的并发数据结构</a>）：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span> { 
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span> { 
     T data; 
     Node* next;
     Node(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; d) : data(d), next(<span style="color:#b452cd">0</span>) { } 
 } Node;
 </code></pre></div><p>插入操作：</p>
-<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">push(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) { 
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">push(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) { 
     Node *n = <span style="color:#8b008b;font-weight:bold">new</span> Node(data); 
     <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#b452cd">1</span>) { 
         n-&gt;next = top;
@@ -561,7 +561,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">154</span>
+        <span class="site-state-item-count">155</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -643,7 +643,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.81.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
