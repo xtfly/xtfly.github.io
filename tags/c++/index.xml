@@ -6,7 +6,35 @@
     <description>Recent content in c&#43;&#43; on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 15 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码28：C&#43;&#43;内存泄露</title>
+      <link>http://lanlingzi.cn/post/technical/2021/1106/</link>
+      <pubDate>Sat, 06 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2021/1106/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题1&lt;/strong&gt;，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;pBuf1 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请一块内存
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支1
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1);
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+}
+&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;pBuf2 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX2)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请另一块内存
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond2) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支2
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1); &lt;span style=&#34;color:#228b22&#34;&gt;// 每个分支，都要释放前面所有代码
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf2);
+    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+}
+&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf1 = pBuf1;  &lt;span style=&#34;color:#228b22&#34;&gt;// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf2 = pBuf2;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_SUCCESS
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码27：此圈复杂度，改还是不改，是个问题</title>
       <link>http://lanlingzi.cn/post/technical/2021/0815/</link>

