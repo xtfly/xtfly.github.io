@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4478 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4513 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -205,7 +205,7 @@
 <p>RAII可以说是C++的基础了，它有很多用法，有点像Java的面向切面编程：</p>
 <ul>
 <li>封装一个日志类打印其它函数进入与退出日志，在其构建方法中打印函数入口信息，在其析构时打印函数的退出行，返回码等</li>
-<li>封装一个作用域退出类，析构时调用其它函数或labmbda，做一些清理工作</li>
+<li>封装一个作用域退出类，析构时调用其它函数或lambda，做一些清理工作</li>
 <li>封装一个计时器类，在其构造方法中记录开始时间点，在其析构时统计花费的时长</li>
 </ul>
 <p>合理地使用智能指针，可以更加方便的管理内存，降低内存泄露的风险。但要注意如下使用约束：</p>
@@ -321,14 +321,18 @@ A <span style="color:#008b45">getAWhitName</span>() {
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">A <span style="color:#008b45">getAWithMove</span>() {
     A a;
-    <span style="color:#8b008b;font-weight:bold">return</span> std::move(a); <span style="color:#228b22">// 不必要
+    <span style="color:#8b008b;font-weight:bold">return</span> std::move(a); <span style="color:#228b22">// 非必要加move
+</span><span style="color:#228b22"></span>}
+
+std::unique_ptr&lt;A&gt; getAWhitUniquePtr() {
+    <span style="color:#8b008b;font-weight:bold">return</span> std::make_unique&lt;A&gt;(param1, param2); <span style="color:#228b22">// 大对象
 </span><span style="color:#228b22"></span>}
 </code></pre></div><h1 id="解题">解题</h1>
-<p>前面对RAII，所有权，智能指针，移动语义，以及RVO都没有展开来一一深入讲解，大家可以借助搜索来深入学习。这些知识点，只为了减少内存泄露作为铺垫。现在C++在语义已经可以实现半自动化的内存回收，unique_ptr+move：</p>
+<p>前面对RAII，所有权，智能指针，移动语义，以及RVO都没有展开来一一深入讲解，大家可以借助搜索来深入学习。这些知识点，只为了更好使用智能来减少内存泄露作为铺垫。现在C++在语义上已经可以实现半自动化的内存回收，unique_ptr+move：</p>
 <ul>
-<li>尽可能不要使用视祼指针，而是使用智能指针管理对象</li>
-<li>尽可能不要支持拷贝，尤其是浅拷贝祼指针</li>
-<li>unique_ptr&quot;独占&quot;所指向的对象，更符合所有权要求，能使用unique_ptr就不要使用shared_ptr</li>
+<li>内部实现尽可能不要使用祼指针，而是使用智能指针管理对象</li>
+<li>存在指针成员变量对象尽可能不要支持拷贝，尤其是浅拷贝祼指针</li>
+<li>unique_ptr是&quot;独占&quot;所指对象，更符合所有权要求，能使用unique_ptr就不要使用shared_ptr</li>
 <li>unique_ptr可以做为返回值，可以引用传递参数，可以是类的成员变量</li>
 <li>尽可能不要显示调用unique_ptr的release与get方法</li>
 <li>要使用move来移动unique_ptr所有权</li>

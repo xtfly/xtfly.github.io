@@ -21,7 +21,7 @@ RAII 回过头来看上面的案例代码的问题，虽是C&#43;&#43;程序，�
 RAII的应用如下：
 struct ScopeGuard { ScopeGuard() { data = new int[50]; } ~ScopeGuard{} { if (data != nullptr) { delete[] data;} } int *data; } 从C&#43;11开始，在标准库中已提供对RAII的应用：
  内存管理智能指针：unique_ptr, shared_ptr, weak_ptr 锁管理守卫类：lock_guard, unique_guard, shard_guard  RAII可以说是C&#43;&#43;的基础了，它有很多用法，有点像Java的面向切面编程：
- 封装一个日志类打印其它函数进入与退出日志，在其构建方法中打印函数入口信息，在其析构时打印函数的退出行，返回码等 封装一个作用域退出类，析构时调用其它函数或labmbda，做一些清理工作 封装一个计时器类，在其构造方法中记录开始时间点，在其析构时统计花费的时长  合理地使用智能指针，可以更加方便的管理内存，降低内存泄露的风险。但要注意如下使用约束：
+ 封装一个日志类打印其它函数进入与退出日志，在其构建方法中打印函数入口信息，在其析构时打印函数的退出行，返回码等 封装一个作用域退出类，析构时调用其它函数或lambda，做一些清理工作 封装一个计时器类，在其构造方法中记录开始时间点，在其析构时统计花费的时长  合理地使用智能指针，可以更加方便的管理内存，降低内存泄露的风险。但要注意如下使用约束：
  不要把一个裸指针给多个智能指针管理，会出现Double Free 智能指针get出来裸指针不能delete shared_ptr可能存在循环引用，导致内存泄露，需要结合weak_ptr使用 不是new出来内存（如内存池申请的内存），需要自定义删除器 不建议使用new对象再传给智能指针，而是直接使用make_unqiue与make_shared 不能shared_ptr(this)，它会Double Free，而是调用shared_from_this()返回shared_ptr  所有权 智能指针还有一个auto_ptr，auto_ptr是C&#43;&#43;98提供的解决方案，C&#43;&#43;11已摒弃、C&#43;&#43;17已删除。为什么会被摒弃。它没有彻底解决所有权的问题，缺点是在转移所有权后会使运行期不安全。
 什么是所有权？所有权(Ownership)：有一个决定其生命周期的唯一的所有者(owner)。对于一个特定的对象A，只有另一个对象B对它持有所有权，那在对象B释放时，则可以在它的生命周期结束时，也对它持有的所有对象进行释放，那么就不会出现内存泄露与Double Free。这个道理非常简单，映射到现实世界，一个物体，只有一个Owner才不会出现问题，比如你家的房产。
 C&#43;&#43;规范并没有像Rust语言定义所有权，借用Rust语言对所有权的规则，我们同样可以运用到C&#43;&#43;中:
@@ -37,8 +37,8 @@ std::unique_ptr&amp;lt;A&amp;gt; p = std::make_unique&amp;lt;A&amp;gt;(); std::v
 void func(std::unique_ptr&amp;lt;A&amp;gt; &amp;amp;ptr) { } RVO RVO是Return Value Optimization的缩写，即返回值优化，NRVO是Named Return Value Optimization的缩写，即具名返回值优化。NRVO是RVO一个变种，起初RVO技术仅支持匿名变量的优化，后期才支持NRVO。返回值优化此特征在C&#43;&#43;11写入标准，不过在一些编译器早就支持了。RVO是C&#43;&#43;在处理一个函数返回类对象并将返回值赋给另一个对象时，为了减少拷贝构造次数以及析构次数而采用的一种编译器优化技术。
 A getA() { return A(); // NVO } A getAWhitName() { A a; return a; // NRVO } 有了RVO与NRVO，则没有必要在函数中new出对象，通过指针返回，或者是通过指针引用出参来返回对象，减少祼指针的使用，可以降低内存泄露的机会。
 A *getA() { return new A; } int get(A *&amp;amp;out_ptr) { out_ptr = new A; return EXIT_SUCCESS; } C&#43;&#43;11引入移动语义之后，总结返回值编译器优化如下：
- 应该按照正常写法返回Local变量，通过RVO或NRVO优化 编译器会决定要么使用NRVO，要么使用移动语义来优化返回语句  如果使用条件语句返回，会抑制编译器使用NRVO 不要将返回的值包装在另一个函数中返回，而应该仅仅返回local变量 如果要返回一个local变量内的成员变量，需要显式的使用move   如果使用移动语义，需要返回的类型有move constructor，否则只会进行复制 RVO效率比使用转移构造要高, 转移构造也是一样需要对象创建  A getAWithMove() { A a; return std::move(a); // 不必要 } 解题 前面对RAII，所有权，智能指针，移动语义，以及RVO都没有展开来一一深入讲解，大家可以借助搜索来深入学习。这些知识点，只为了减少内存泄露作为铺垫。现在C&#43;&#43;在语义已经可以实现半自动化的内存回收，unique_ptr&#43;move：
- 尽可能不要使用视祼指针，而是使用智能指针管理对象 尽可能不要支持拷贝，尤其是浅拷贝祼指针 unique_ptr&amp;quot;独占&amp;quot;所指向的对象，更符合所有权要求，能使用unique_ptr就不要使用shared_ptr unique_ptr可以做为返回值，可以引用传递参数，可以是类的成员变量 尽可能不要显示调用unique_ptr的release与get方法 要使用move来移动unique_ptr所有权  好了，该是结束时候了，布置课后作业，如果要使用unique_ptr&#43;move，前面三个案例的代码你会怎么改呢？
+ 应该按照正常写法返回Local变量，通过RVO或NRVO优化 编译器会决定要么使用NRVO，要么使用移动语义来优化返回语句  如果使用条件语句返回，会抑制编译器使用NRVO 不要将返回的值包装在另一个函数中返回，而应该仅仅返回local变量 如果要返回一个local变量内的成员变量，需要显式的使用move   如果使用移动语义，需要返回的类型有move constructor，否则只会进行复制 RVO效率比使用转移构造要高, 转移构造也是一样需要对象创建  A getAWithMove() { A a; return std::move(a); // 非必要加move } std::unique_ptr&amp;lt;A&amp;gt; getAWhitUniquePtr() { return std::make_unique&amp;lt;A&amp;gt;(param1, param2); // 大对象 } 解题 前面对RAII，所有权，智能指针，移动语义，以及RVO都没有展开来一一深入讲解，大家可以借助搜索来深入学习。这些知识点，只为了更好使用智能来减少内存泄露作为铺垫。现在C&#43;&#43;在语义上已经可以实现半自动化的内存回收，unique_ptr&#43;move：
+ 内部实现尽可能不要使用祼指针，而是使用智能指针管理对象 存在指针成员变量对象尽可能不要支持拷贝，尤其是浅拷贝祼指针 unique_ptr是&amp;quot;独占&amp;quot;所指对象，更符合所有权要求，能使用unique_ptr就不要使用shared_ptr unique_ptr可以做为返回值，可以引用传递参数，可以是类的成员变量 尽可能不要显示调用unique_ptr的release与get方法 要使用move来移动unique_ptr所有权  好了，该是结束时候了，布置课后作业，如果要使用unique_ptr&#43;move，前面三个案例的代码你会怎么改呢？
 </content>
     </entry>
     
