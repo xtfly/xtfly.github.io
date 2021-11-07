@@ -2,6 +2,7 @@
 --------------
 
 # 2021
+  - [11-06][飞哥讲代码28：C++内存泄露](content/post/technical/2021/1106.md)
   - [10-16][软件开发漫谈4：敏捷开发](content/post/technical/2021/1016.md)
   - [09-04][软件开发漫谈3：开发者测试](content/post/technical/2021/0904.md)
   - [08-15][飞哥讲代码27：此圈复杂度，改还是不改，是个问题](content/post/technical/2021/0815.md)
