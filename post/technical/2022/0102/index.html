@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>软件开发漫谈5：软件传承 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="软件开发漫谈5：软件传承">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="软件开发漫谈5：软件传承 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0102/" itemprop="url">
+        软件开发漫谈5：软件传承
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-01-02">
+    2022-01-02
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3785 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="前言">前言</h1>
+<p>我司很多的软件产品生命周期非常长，甚至还有20年前开发的软件产品还在网上发挥重要价值。前一段时间参与某一开源软件的自维护，分析其软件发展历史，发现它第一个版本开发于1999年，2002年重构发布2.0版本，到现在已历经了20+年。它的版权与主要作者也几经变化，最后成为Apache的顶级项目。无论是商业软件还是开源软件，越是基础性的软件，其生命周期越长，需要长期维护，软件也不可能由一个人或者一个团队自始至终开发、维护，软件需要传承。</p>
+<p>软件产品生命周期的80%时间可能是维护阶段，在大规模开发阶段会留下很多&quot;资产&quot;。如开发过程文档，像我司基于DBOX的文档管理方式，侧重于权限控制，而未考虑使用体验。每个版本每个阶段的文档不同的目录管理，几年下来积累的各种文档散落在各个目录，文档间割裂缺少连续性，无法维护和使用。如几十上百篇的各个需求设计文档，在后期的维护阶段也没有人愿意去看，并且能看懂，原因是与现有代码实现严重脱钩了，文档起不到期望的软件传承。</p>
+<p>我们耳熟能详的2G，3G，4G等，通讯技术似乎每5到10年有代际，不断地演进发展。那纯软件技术是不是也有代际？有。软件有继承才有发展，如我们部门某一软件产品从部署形态来讲，从早期的单板嵌入式，到X86虚拟化，再到现在全容器CloudNative化。从支持协议来看从传统的7号信令接入，再到全网IP化。软件一直在随着技术的发展在演进，包括其技术架构，交付形态，功能构成等都在变化中。软件传承相比软件维护并是不要发展，而是顺势而为，持续可交付与迭代。</p>
+<p>今天趁着元旦有点时间，瞎聊糊侃一番软件传承，软件的传承有其特殊性。</p>
+<h1 id="何为传承">何为传承</h1>
+<p>搜索全网，并没有发现有对软件产品传承讲解。参见百度百科对传承人的释义：</p>
+<blockquote>
+<p>传承人是直接参与非物质文化遗产传承、使非物质文化遗产能够沿袭的个人或群体(团体)。</p>
+</blockquote>
+<p>传承人是非物质文化遗产最重要的活态载体，从上面可以得到两点：</p>
+<ul>
+<li>传承的内容是非物质文化遗产</li>
+<li>传承的意义是让文化沿袭下来</li>
+</ul>
+<p>正因为这两点，我把文章的标题从<code>软件产品传承</code>修改为<code>软件传承</code>：</p>
+<ul>
+<li>不仅要软件产品的生命周期得以持续演进</li>
+<li>还需要软件开发的工匠精神得以传递延续</li>
+</ul>
+<p>这两点是相辅相成的，尤其是软件产品生命周期进入了维护期，如果没有工匠精神，是无法让产品得以演进；同时当产品持续演进时，又会使维护者磨砺出工匠精神，在软件行业闪耀着光辉。</p>
+<p>传承首先是继承，从软件产品本身来说，一个软件产品能够继续客户提供所需要的功能，为客户创造价值，不断地为公司带来收益。这样软件才能有继续存在可能性，有了收益软件才能有更好发展与改进。继承是基础，破坏原有软件的功能特性，也要失去它应有的作用。我们开发的主要是行业软件，面向企业，而企业用户通常需要的不是灵活多变，而是能够提供持续的支持与稳定的迭代。</p>
+<p>传承再次是创新，从软件产品发展来说，从烟囱建设、信息时代进入云计算时代、数据时代。技术本身的发展会注定要淘汰掉一部分不符合时代要求的技术。因而软件产品危机伴随而生，可能并不是采用已有的技术能够移植、嫁接到新的时代。创新才能赋予产品鲜活的生命力，更有利于促进软件自身的发展与突破。而创新需要有一种精神，就像工匠一样对细节很高要求，追求完美和极致，对精品有着执着的坚持和追求，这样才有可能有所突破与革新。</p>
+<p>软件的传承内涵是继承+创新。</p>
+<h1 id="为何传承">为何传承</h1>
+<p>通常较大规模的软件开发开始采用大兵团投入，能在较短时间内开发出来满足上市时间要求。在软件已经交付使用之后，为了改正错误或满足新的诉求则需要持续的迭代演进。当大兵团攻下山头之后，留下一部分的小分队继续守护阵地，要用心地去维护软件生命周期，开启软件传承之路。</p>
+<p>非物质文化遗产的传承方式，通常是采用通过口传心授，依靠言传身教地自然传承，表现形式世代相传，不泯灭、不消亡。非物质文化是流动的，活态的，像水流一样滚滚向前，川流不息，不会永远停留在一个点上不变。软件产品的传承也是一样需要不断地变化，通过一些方式向继承者传承其架构与实现，让软件不断流、不消亡。</p>
+<p>软件架构设计上的不可预见性需要有传承人。软件是现代工业的产物，虽不会像非物质文化遗产采用口传心授的方式来传承设计。软件要适应业务的发展诉求，在技术实现上，我们通常会考虑可扩展性。诸如“通过配置和定义进行可扩展”，又或者是“业务流程”的可扩展，还有各类的“插件”以及“可扩展的点”等等。但大部分的软件系统的可扩展性并没有真的那么好。因为软件设计难以遇见未来，它可以满足于当前的需要，不适合未来的场景。系统可能比较容易实现了开发时的可扩展性，但是较容易忽视了维护期带来的问题。软件架构设计原则、演进则需要传承人来对架构持续洞察、分析、看护与改进。</p>
+<p>软件实现上抽象设计隐性知识需要有传承人。软件为了解决现实的问题，不是一步而就，需要建立抽象的中间层，现实问题到代码实现如何映射​是人脑的思维活动。代码实现中承载了作者的实现思路，思考问题角度，而这些隐性的知识难以代码上直接表现出来。甚至自己写完代码后来自己都看不懂是经常出现，代码经常是自己设计，怎么编写、设计意图只有自己最为清楚。虽然设计上可能通过一些诸如UML来描述结构，把隐性知识显性化，但这依赖于时间进度与个人能力，设计文档可以把关键的接口，实现原理描述清楚，而深藏在代码中思维活动、局部优化技巧、问题修改思路，性能调优改动等需要通过传承人来理解与维持。</p>
+<p>软件开发团队成员的流动性导致需要有传承人。大型软件软件已不是单打独斗的个人英雄能搞定的事，通常是集体智慧的结晶。但软件人员个性分明的特点，也导致了流动性大，甚至关键模块的实现者的离开会破坏开发的连续性。系统的相关知识会随着人员的流动，而被遗忘在某个角落里，新进来的团队成员不懂得系统原先的设计。团队的凝聚力和默契度需要长期的、大量的内部沟通与交流才能形成，久而久之形成一个看不见摸不着的软文化，它也是软件开发团队的无形资产。最为理想的是开发人员能够把工作当成自己的事业，在前辈们开发历程中看到自己的目标，做好接力棒传递，让软件产品开发后继有人，青出于蓝而胜于蓝，这也是软件能够得以继续的关键。</p>
+<h1 id="如何传承">如何传承</h1>
+<p>软件行业并不传统的手工艺行业，软件开发则重于工程的科学管理，统筹规划，分工协作。而通常的文档整理是工程活动输出，代码只是最终设计的承载，软件开发的技巧、方法与原则可以文字记录，以程序指引。如果把个人开发行为比作工艺制作并不矛盾，软件开发也是一项智力活动，也需要程序员以才智，灵性来对技术的领悟与理解。</p>
+<p>我比较提倡软件开发也能像工匠们一样，喜欢不断雕琢自己的产品，不断改善自己的工艺，享受着产品在双手中升华的过程。但软件开发毕竟有其特殊性，传统工艺往往不需要大规模的协作，而是靠着于个人技艺发挥、聪明智慧、心灵手巧、独特匠心等能力与个性，所以传承人能以超人的才智、灵性，贮存着、掌握着、承载着对精湛工艺的传承。软件开发还需要保护学习的心态，注意在相互协作中借鉴各种优秀实践，提升自己的设计、编程水平，让编程也成为艺术活。</p>
+<p>传统手艺非常强调拜师学艺，师傅传授手艺的同时，也传递了耐心、专注、坚持的精神，这是一切手工匠人所必须具备的特质。软件开发也可以推崇师徒结对，因为往往行走在日常开发活动中的开发习惯对后来者影响很大，明确建立了师徒关系，师父在日常开发中，通过言传身教，传递对代码的价值取向，精益品质追求。很多的架构原则、设计模式、编程技巧、Clean Code优化方法纸上得来终觉浅，需要要老司机带带路。软件开发中总有这样或那个坑，如何避免再次跳入坑中，也需要前辈们指明。</p>
+<p>有人说，一个公司要提倡&quot;工程师文化&quot;，就好像一个国家要讲究&quot;工匠精神&quot;。工程师文化不是简单地营造一个技术氛围。需要尊重技术、尊重工程规律，让技术发挥出真正的价值。庞大复杂的软件系统工程，开发完成只是开始，随着业务的发展需要持续的迭代，在不断升级优化的同时，要保证系统的整体兼容性，平稳的走向更高级的阶段。这个过程不简单，考验我们自身的工程素养，更要求我们理解并尊重工程规律。</p>
+<p>以前看过一本书《Rework》对我比较震撼。现实世界总是很残酷，看似只有人耳熟能详，习以为常的事情才会胜利。其实还是背后的文化是做成事的重要原因：在自由的环境下对提高效率的痴迷。自我驱动，软件开发人员自己管理自己是最好的管理，而失败的管理就是家长和保姆式的管理。所以软件主管要更多的相信技术而不是管理，管理只是用制度、流程来解决问题。制度、流程只是让软件工程有序进行，但无法让软件开发精神传承，传承需要给予自由，以及技术的发挥空间。</p>
+<p>会有越来越多的软件进入维护期并要求持续发展，若一个人能维护着上百万行代码则也是非常优秀，我们应该看到他们的付出与价值。手艺人怎么看是越来越没落了，被工业化的批量复制所取替，工业化带来是低成本，而“那点工资怎么够养活老婆孩子”也成了很多手艺人不得不离开原因。需要一行行编写代码的软件目前至少还不能批量组装复制，软件开发的经验也同样是非常重要。</p>
+<h1 id="结语">结语</h1>
+<p>废话了一大堆，其实想表达的观点也比较简单：软件的持续迭代发展需要有传承。传承的内涵是继承与创新，传承需要有工匠精神：耐心、专注、坚持与精益。软件传承的环境是文化而不是流程，需要尊重技术、尊重工程规律，让技术有空间发挥出真正的价值。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2021/1106/" rel="prev" title="飞哥讲代码28：C&#43;&#43;内存泄露">
+        飞哥讲代码28：C&#43;&#43;内存泄露 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：软件开发漫谈5：软件传承
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">157</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#何为传承">何为传承</a></li>
+    <li><a href="#为何传承">为何传承</a></li>
+    <li><a href="#如何传承">如何传承</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2022</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

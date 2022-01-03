@@ -106,6 +106,73 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0726_code/" itemprop="url">
+        飞哥讲代码10：提升性能，表设计很重要
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-26">
+    2020-07-26
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3080 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
+<p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
+...
+</code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0726_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0718_code/" itemprop="url">
         飞哥讲代码9：提升性能，线程数合适就行
         </a>
@@ -653,171 +720,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0523_code/" itemprop="url">
-        飞哥讲代码2：把大象装进冰箱要几步
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-05-23">
-    2020-05-23
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1806 字 ~4分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一老产品源码(C语言)中：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID) {
-    VOS_UINT32 count, sleepTimeLen;
-    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
-    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
-    VOS_INT siRet;
-
-    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;Checking and updating files...&#34;</span>);
-
-    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Init()==VOS_FALSE) {
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Init return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-        LOAD_End();
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">while</span>(VOS_TRUE) {
-        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
-                enIsHaveUpdateOk = VOS_TRUE;
-            }
-        }
-
-        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;update file %s error and result=%d&#34;</span>,
-                    g_pstFileListInfo[count].acFileName,
-                    g_pstFileListInfo[count].enLoadCheckResult);
-                <span style="color:#8b008b;font-weight:bold">break</span>;
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files are updated,download these file again&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files version are consistent with inschk,download these file again&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&#34;</span>, g_pstFileListInfo[count].acFileName);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;OMU fesuse to update and %s local check result=%d or some file updated&#34;</span>, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
-                siRet = snprintf_s(ascExcuteFile, <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile),  <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile)-<span style="color:#b452cd">1</span>,
-                         <span style="color:#cd5555">&#34;%s/%s&#34;</span>, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
-                <span style="color:#8b008b;font-weight:bold">if</span> (siRet &lt;= <span style="color:#b452cd">0</span> ) {
-                    BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;[%s:%d] snprintf_s failed,&#34;</span>, __FUNCTION__, __LINE__);
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-                }
-                (<span style="color:#00688b;font-weight:bold">void</span>)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
-            }
-        }
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (count == g_downloadFileCount) {
-            BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;All %d files checked or updated OK.&#34;</span>, g_downloadFileCount);
-            <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-                BOOTTRACE(TRACE_LOD, <span style="color:#cd5555">&#34;%d update result is %d and local check result is %d.&#34;</span>,
-                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
-                 g_pstFileListInfo[count].bLocalCheck);
-            }
-            <span style="color:#8b008b;font-weight:bold">break</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
-                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
-            } <span style="color:#8b008b;font-weight:bold">else</span> {
-                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
-            }
-
-            BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Update file error so sleep for %d second and try again&#34;</span>, sleepTimeLen);
-            SLEEP(sleepTimeLen);
-
-            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-            <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-                LOAD_End();
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-            }
-        }
-    }
-
-    BOOTTRACE(TRACE_DBG, <span style="color:#cd5555">&#34;Exit STARTER_Download&#34;</span>);
-    LOAD_End();
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
-}
-</code></pre></div><p>上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0523_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -940,7 +842,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">156</span>
+        <span class="site-state-item-count">157</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -1009,7 +911,7 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2021</span>
+  2009 - 2022</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>

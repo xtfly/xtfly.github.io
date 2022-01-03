@@ -106,6 +106,74 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0411_code/" itemprop="url">
+        飞哥讲代码25：突破内存限制
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-04-11">
+    2021-04-11
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3944 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>最近调研低成本的大数据量的数据分析框架，搜索发现有：</p>
+<ul>
+<li><a href="https://www.douban.com/note/752805208/">使用Python包Vaex读入并分析100G数据</a></li>
+<li><a href="https://my.oschina.net/u/4604431/blog/4561727">Vaex：突破pandas，快速分析100GB大数据集</a></li>
+<li><a href="https://baijiahao.baidu.com/s?id=1671080188522713952&amp;wfr=spider&amp;for=pc">这场Spark、Dask、Vaex、Pandas的正面交锋，谁赢了？</a></li>
+<li><a href="https://baijiahao.baidu.com/s?id=1631752978489322985&amp;wfr=spider&amp;for=pc">Vaex：一种具有超级字符串功能的DataFrame Python库</a></li>
+</ul>
+<p>这些文章都在介绍<a href="https://vaex.io/">Vaex</a>，第三篇文章中有多种分析框架不同场景应用的性能对比。Vaex由于它采取内存映射、惰性计算的设计，可以在百亿级数据集上进行秒级的统计分析和可视化展示，使得它能在数据分析领域有它一席位置。</p>
+<p>作为一名屌丝程度员，在性能倍增的背景下，极其想扒一扒它的代码，探索它是如何做到的。笔者也简单做了一些的验证(数据文件采用Parquet)，它的确是秒级完成千万级数据量基于列式存储的数值统计分析(求mean,std,var等)、多列之间的计算以及按列条件过滤。这些计算不需要使用大量的内存，但象join，groupby聚合这类复杂的计算，它还是把数据加载到内存中计算。它的API也没有Pandas灵活与丰富，所以并不能完全取代Pandas。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0411_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0313_code/" itemprop="url">
         飞哥讲代码24：从Python Pickle漏洞说起
         </a>
@@ -627,107 +695,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1129_code/" itemprop="url">
-        飞哥讲代码17：写好代码就要深入细节
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-29">
-    2020-11-29
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4058 字 ~9分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>案例代码来源我们某产品：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
-    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
-        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
-    }
-
-    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
-        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
-            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
-                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
-                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
-                <span style="color:#8b008b;font-weight:bold">try</span> {
-                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
-                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
-                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
-                        }
-                    }
-
-                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
-                        <span style="color:#8b008b;font-weight:bold">break</span>;
-                    }
-                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
-                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
-                    }
-                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
-                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
-                    }
-                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
-                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
-                }
-                <span style="color:#8b008b;font-weight:bold">break</span>;
-            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>        }
-    }
-}
-</code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1129_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -853,7 +820,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">156</span>
+        <span class="site-state-item-count">157</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -922,7 +889,7 @@
       <div class="footer-inner">
         <div class="copyright" >
   <span itemprop="copyrightYear">  &copy; 
-  2009 - 2021</span>
+  2009 - 2022</span>
   <span class="with-love"><i class="fa fa-heart"></i></span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>

@@ -6,7 +6,20 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 06 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 02 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>软件开发漫谈5：软件传承</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0102/</link>
+      <pubDate>Sun, 02 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0102/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;我司很多的软件产品生命周期非常长，甚至还有20年前开发的软件产品还在网上发挥重要价值。前一段时间参与某一开源软件的自维护，分析其软件发展历史，发现它第一个版本开发于1999年，2002年重构发布2.0版本，到现在已历经了20+年。它的版权与主要作者也几经变化，最后成为Apache的顶级项目。无论是商业软件还是开源软件，越是基础性的软件，其生命周期越长，需要长期维护，软件也不可能由一个人或者一个团队自始至终开发、维护，软件需要传承。&lt;/p&gt;
+&lt;p&gt;软件产品生命周期的80%时间可能是维护阶段，在大规模开发阶段会留下很多&amp;quot;资产&amp;quot;。如开发过程文档，像我司基于DBOX的文档管理方式，侧重于权限控制，而未考虑使用体验。每个版本每个阶段的文档不同的目录管理，几年下来积累的各种文档散落在各个目录，文档间割裂缺少连续性，无法维护和使用。如几十上百篇的各个需求设计文档，在后期的维护阶段也没有人愿意去看，并且能看懂，原因是与现有代码实现严重脱钩了，文档起不到期望的软件传承。&lt;/p&gt;
+&lt;p&gt;我们耳熟能详的2G，3G，4G等，通讯技术似乎每5到10年有代际，不断地演进发展。那纯软件技术是不是也有代际？有。软件有继承才有发展，如我们部门某一软件产品从部署形态来讲，从早期的单板嵌入式，到X86虚拟化，再到现在全容器CloudNative化。从支持协议来看从传统的7号信令接入，再到全网IP化。软件一直在随着技术的发展在演进，包括其技术架构，交付形态，功能构成等都在变化中。软件传承相比软件维护并是不要发展，而是顺势而为，持续可交付与迭代。&lt;/p&gt;
+&lt;p&gt;今天趁着元旦有点时间，瞎聊糊侃一番软件传承，软件的传承有其特殊性。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码28：C&#43;&#43;内存泄露</title>
       <link>http://lanlingzi.cn/post/technical/2021/1106/</link>
