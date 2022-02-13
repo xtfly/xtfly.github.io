@@ -106,6 +106,75 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0515_code/" itemprop="url">
+        飞哥讲代码26：Python函数式编程
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-05-15">
+    2021-05-15
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4021 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>最近笔者写Python代码比较多，同时又有多种编程语言的开发经验，现在的语言设计上大多趋同。当需要对数据集合操作时，非常喜欢java的stream声明式处理数据，萌生在Python中模仿Java的写法。虽然java的API易用性与Scala/Kotlin相比，还是有很大的差距，但与Python比起来，还是强不少。</p>
+<p>我们先来看一下Java的玩法：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
+</span><span style="color:#228b22"></span>List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
+        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
+        .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
+        .<span style="color:#658b00">map</span>(Transcation::getId)
+        .<span style="color:#658b00">collect</span>(Collectors::toList());
+</code></pre></div><p>函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 <a href="http://lanlingzi.cn/post/technical/2020/1108_code/">飞哥讲代码16：函数式让数据处理更简洁</a> 简单介绍了函数式在数据集合操作上的便利。</p>
+<p>在数据分析领域，Python生态中有Pandas这类非常优秀的库，它对DataFrame(可以理解一张数据库表存储的数据集合)提供非常简单的API，支持对数据集的过滤、聚合、归并、填充与计算等，很方便地对数据进行清洗和加工。但它也并不是像Java的Stream一样操作，示例如下：</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0515_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0411_code/" itemprop="url">
         飞哥讲代码25：突破内存限制
         </a>
@@ -619,82 +688,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1213_code/" itemprop="url">
-        飞哥讲代码18：记一次问题定位分析
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-12-13">
-    2020-12-13
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2696 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>上周一位同学找我看个问题，故事是这样的：</p>
-<ul>
-<li>安全设计要求，需要对SSH远程执行做命令白名单</li>
-<li>在authorized_keys中配置wrapper脚本对执行的命令进行检查</li>
-<li>问题是部分命令能正常执行，部分命令执行之后不退出卡住</li>
-</ul>
-<p>那个wrapper脚本的关键逻辑如下:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> ssh_exec_wrapper() {
-    <span style="color:#658b00">local</span> <span style="color:#00688b">cmd</span>=<span style="color:#00688b">$@</span> <span style="color:#228b22"># [1]取命令行所有参数</span>
-    check_cmd_in_white_list <span style="color:#00688b">$cmd</span> <span style="color:#228b22"># [2]检查命令行的是否在白名单中</span>
-    <span style="color:#658b00">echo</span> <span style="color:#00688b">$cmd</span> |sh <span style="color:#228b22"># [3]执行命令</span>
-}
-</code></pre></div><p>问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。</p>
-<p>会卡的命令大概如下：</p>
-<p><code>orted -mca ess &quot;env&quot; -mca ess_base_iobid &quot;833290240&quot; ...</code></p>
-<p>这个命令长度有215个字符，其中包括有空格，双引号(&quot;)，分号(;)，逗号（,）与脱字符(^)</p>
-<p>此问题最后还是得以解决，发现是一处不起眼的写法引发的，定位会却花了1小时。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1213_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -820,7 +813,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">157</span>
+        <span class="site-state-item-count">158</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
