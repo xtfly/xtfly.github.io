@@ -6,7 +6,16 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 13 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>软件开发漫谈7：开发协作</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0313/</link>
+      <pubDate>Sun, 13 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0313/</guid>
+      <description>前言 追求软件产品竞争力的企业，都会追求研发效能极致。对研发效能提升的投资是非常有价值的，因为如果一个开发者每天节可以节省一小时，即使一个50</description>
+    </item>
+    
     <item>
       <title>软件开发漫谈6：师徒结对</title>
       <link>http://lanlingzi.cn/post/technical/2022/0213/</link>
@@ -14,7 +23,7 @@
       
       <guid>http://lanlingzi.cn/post/technical/2022/0213/</guid>
       <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
-&lt;p&gt;在我的多篇博文中提到软件开发需要师傅带徒弟，如在谈到Commit活动中，师傅们应该积极利用Commit活动，通过对代码检视，发现问题，帮助软件能力提升，养成良好的工作习惯。再如在谈到软件传承时，提升明确建立了师徒关系，师父在日常开发中，通过言传身教，传递对代码的价值取向，精益品质追求。&lt;/p&gt;
+&lt;p&gt;在我的多篇博文中提到软件开发需要师傅带徒弟，如在谈到Commit活动中，师傅们应该积极利用Commit活动，通过对代码检视，发现问题，帮助软件能力提升，养成良好的工作习惯。再如在谈到软件传承时，提升明确建立了师徒关系，师傅在日常开发中，通过言传身教，传递对代码的价值取向，精益品质追求。&lt;/p&gt;
 &lt;p&gt;在敏捷软件开发方法中，也提到“&lt;a href=&#34;https://baike.baidu.com/item/%E7%BB%93%E5%AF%B9%E7%BC%96%E7%A8%8B/7526152?fr=aladdin&#34;&gt;结对编程&lt;/a&gt;”：两个程序员在一个计算机上共同工作。一个人输入代码，而另一个人审查他输入的每一行代码。输入代码的人称作驾驶员，审查代码的人称作观察员（或导航员）。两个程序员经常互换角色。&lt;/p&gt;
 &lt;p&gt;结对编程的目的一方面是对软件质量的看护手段，另一方面则是让参与的程序员能够提升自身能力。程序员结对工作的时候，水平较低的一方会潜移默化地受水平略高的程序员影响，学到新的东西。而水平高的一方同样因为不断地把自己的想法说出来，过程中会整理与完善自己的思路，是一个相互促进的过程。&lt;/p&gt;
 &lt;p&gt;师徒结对就是通过&lt;code&gt;传&lt;/code&gt;、&lt;code&gt;帮&lt;/code&gt;、&lt;code&gt;带&lt;/code&gt;，通过&lt;code&gt;互助&lt;/code&gt;、&lt;code&gt;互信&lt;/code&gt;、&lt;code&gt;合作&lt;/code&gt;来促进团队的软件开发专业能力的提升。&lt;/p&gt;</description>

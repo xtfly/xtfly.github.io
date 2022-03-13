@@ -106,6 +106,90 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" itemprop="url">
+        Scala中的符号
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-07-21">
+    2018-07-21
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
+        <span itemprop="name">笔记</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4979 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
+</code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
+<p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
+<h1 id="泛型">泛型</h1>
+<h2 id="heading"><code>:</code></h2>
+<p>scala中泛型使用<code>[]</code>指定泛型的类型参数，上下文界定是隐式参数的语法糖</p>
+<ul>
+<li><code>:</code> 表示上下文界定，如<code>A：B</code> 表示 B 可以进行隐式转化的A类型</li>
+</ul>
+<p>示例：</p>
+<ul>
+<li><code>T:A:B</code> 表示即同时满足AT这种隐式值和BT这种隐式值</li>
+</ul>
+<h2 id="-与-"><code>&lt;:</code> 与 <code>:&gt;</code></h2>
+<ul>
+<li><code>&lt;:</code> 表示只限定子类，如 <code>T &lt;: A</code> 表示T必须为A的子类</li>
+<li><code>&gt;:</code> 表示只限定子类，如 <code>T &gt;: A</code> 表示T必须为A的父类</li>
+</ul>
+<p><code>&lt;:</code> 与 <code>:&gt;</code> 相当于java范型编程中的extends，super对泛型变量的限定。</p>
+<p>示例：</p>
+<ul>
+<li><code>T &lt;: A with B</code> 表示A和B为T上界</li>
+<li><code>T &gt;: A with B</code> 表示A和B为T下界</li>
+<li><code>T &gt;: A &lt;: B</code> 表示同时拥有上界和下界，并且A为下界，B为上界，A为B的子类，顺序不能颠倒。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2018/0624_cache_design/" itemprop="url">
         Cache设计
         </a>
@@ -563,76 +647,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2017/0903_dns/" itemprop="url">
-        [转]DNS扫盲系列
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2017-09-03">
-    2017-09-03
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E7%AC%94%E8%AE%B0" itemprop="url" rel="index">
-        <span itemprop="name">笔记</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">8618 字 ~18分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>致谢：转自 <a href="http://bbs.chinaunix.net/thread-1573358-1-1.html">http://bbs.chinaunix.net/thread-1573358-1-1.html</a>  ，由 <a href="http://bbs.chinaunix.net/space-uid-71828.html">llzqq</a> 发表。</p>
-<h2 id="有关公网dns">有关公网DNS</h2>
-<p>公网DNS服务器是直接服务于广大上网用户的，负责域名（域名记录）到IP地址之间的翻译工作。公网DNS通常是各个网络运营商按照自己的网络分布规划DNS的分布，一般做法是按行政区域放置，如按省份放置。每个省份内也有细分在各地区放置的情况。</p>
-<p>近几年来细心的网友会发现上网时如果打错了URL地址（或干脆莫名其妙）会访问到114网站或百度等网站。今天我画了一个简单的图表简要说明一下原因。</p>
-<p><img src="http://lanlingzi.cn/images/y17/dns_1_arch.jpg" alt=""></p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2017/0903_dns/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -759,7 +773,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">158</span>
+        <span class="site-state-item-count">159</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
