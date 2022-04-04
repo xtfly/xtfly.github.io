@@ -1,6 +1,40 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用</title>
+        <url>http://lanlingzi.cn/post/technical/2022/0404/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
+        </tags>
+        <content type="html"> 案例 在我司新的C&#43;&#43;融合编程规范中，提到避免定义C风格的变参数函数：
+ 为了避免类型错误，应当使用可变参数模板等其它的方式来代替va_arg可变参数。
+ 规范中也给出了一个简单的示例，像我这种有使用过的经验感觉示例有点意犹未尽。去年年底我使用C&#43;&#43;写一个小工具，其中就使用可变参数模板封装了一个日志接口，同时参考了Java slf4j日志用法，支持占位符。正好借这个代码的来温习与讲解一下可变参数模板，感受一下C&#43;&#43;模板编程的魅力。
+使用示例：
+INFO(&amp;#34;Hell world&amp;#34;); INFO(&amp;#34;Hi {}&amp;#34;, &amp;#34;xiao ming&amp;#34;); INFO(&amp;#34;Welcome {} join {}&amp;#34;, &amp;#34;to&amp;#34;, &amp;#34;conference&amp;#34;); 核心函数如下所示：
+// 函数1：递归终止函数 void write_log(int log_level, const char *code_file, int code_line, string &amp;amp;msg) {} // 函数2：展开模板函数 template&amp;lt;typename First, typename ...Rest&amp;gt; void write_log(int log_level, const char *code_file, int code_line, string &amp;amp;fmt, const First &amp;amp;first, const Rest &amp;amp;...rest) { auto idx = fmt.find(&amp;#34;{}&amp;#34;); if (idx == string::npos) { // 如果没有占位符，则忽略可变参数  write_log(log_level, code_file, code_line, fmt); } else { ostringstream oss; oss &amp;lt;&amp;lt; first; fmt.replace(idx, PLACEHOLDER_SIZE, oss.str()); // constepxr int PLACEHOLDER_SIZE=2  write_log(log_level, code_file, code_line, fmt, rest...); } } // 函数3：可变参数模板函数 template&amp;lt;typename ...Args&amp;gt; void write_log(int log_level, const char *code_file, int code_line, const string &amp;amp;fmt, const Args &amp;amp;...args) { string tmp(fmt); write_log(log_level, code_file, code_line, tmp, args...); } #define INFO(fmt, ...) \ write_log(LogLevel::INFO, __FILE__, __LINE__, fmt, ##__VA_ARGS__)  代码讲解 可变参数模板是C&#43;&#43;11新增的特性，允许模板定义中包含0到任意个模板参数。声明可变参数模板时，需要在typename或class后面加上省略号&amp;quot;&amp;hellip;&amp;quot;。 省略号的作用有两个:
+ 声明一个参数包，这个参数包中可以包含0到任意个模板参数 在模板定义的右边，可以将参数包展开成一个一个独立的参数  结合上面的案例：
+ 函数3：是可变参数模板函数。参数包可以包含0个或者多个参数，如果需要用参数包中的参数，则一定要将参数包展开。 函数2：最展开模板函数，它是采用递归函数方式展开参数包。逐渐展开First参数，剩余的参数Rest参数再次传给展开函数，即逐渐吃掉展开的First参数。 函数1：是递归终止函数。递归终止函数的展开参数可以为0个或1个，当参数包中剩余的参数个数等于递归终止函数的参数个数时，就调用递归终止函数，则函数终止。案例代码中函数终止的展开可变参数是0（log_level, code_file, code_line, fmt并非可变参数）。  案例代码中的三个函数是采用同名函数(最后一个函数fmt参数多一个const)，排版上存在前后顺序，递归终止函数是放在最前面，再次是展开函数，最后是入口函数。
+C&#43;&#43;11也提供sizeof...来得到可变参数的个数，那我们是否可以通过判断个数来直接调用，省掉终止函数?
+template&amp;lt;typename First, typename ...Rest&amp;gt; void write_log(int log_level, const char *code_file, int code_line, string &amp;amp;fmt, const First &amp;amp;first, const Rest &amp;amp;...rest) { // ...  if (sizeof...(rest) &amp;gt; 0) { // 增加参数个数  write_log(log_level, code_file, code_line, fmt, rest...); } else { // 输出日志  } } 这个是编译通不过的，因为模板在编译阶段也会将if的所有代码都进行编译，而不会去根据if的条件去进行选择性的编译，选择运行if的哪个分支是在运行期间做的。C&#43;&#43;17引入了编译期的if（Compile-Time If），所以上面的代码可以这么写:
+template&amp;lt;typename First, typename ...Rest&amp;gt; void write_log(int log_level, const char *code_file, int code_line, string &amp;amp;fmt, const First &amp;amp;first, const Rest &amp;amp;...rest) { // ...  if constexpr (sizeof...(rest) &amp;gt; 0) { // 增加参数个数  write_log(log_level, code_file, code_line, fmt, rest...); } else { // 输出日志  } } if constexpr表示编译期if的语法，可以进行在编译期决定编译if条件的哪个分支。当然if中的求值要求在编译期可以计算，否则也会报错。侧面也说明sizeof...对可变参数求个数是编译期计算的。
+在c&#43;&#43;11还可以使用enable_if，它用于判断当某个条件成立时是否匹配哪个函数调用，简介可参见飞哥讲代码20：窥探C&#43;&#43;的模板
+扩展阅读 初始化列表 对于可变参数还可以使用初始化列表initializer_list变通方式来支持可变参数，如：
+const string join(const initializer_list&amp;lt;string&amp;gt; &amp;amp;list, const string &amp;amp;sep) {} join({&amp;#34;1&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;, &amp;#34;3&amp;#34;}); 但是initializer_list&amp;lt;T&amp;gt;需要指定固定类型，则不能像上述案例可变参数模板函数支持可变参数可以是不同的类型，如：
+INFO(&amp;#34;len of {} is {}&amp;#34;, &amp;#34;xiao ming&amp;#34;, 9); 初始化列表方式展开 前面对于可变参数模板函数展开参数包是采用递归的方式，也支持采用初始化列表initializer_list方式展开。
+template&amp;lt;typename T&amp;gt; void print(T a) { cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl; } template&amp;lt;typename ...Args&amp;gt; void expand(Args... args) { auto a = {(print(args), 0)...}; // 或者 std::initializer_list&amp;lt;int&amp;gt;{(print(args), 0)...}; } // {(print(args), 0)...}会被展开为{(print(arg1), 0), (print(arg2), 0), (print(arg3), 0)} expand(&amp;#34;hello&amp;#34;, &amp;#34;word&amp;#34;, 1, 2); 这里利用了逗号表达式技巧，由于initializer_list&amp;lt;T&amp;gt;必须固定类型，而(print(args), 0) 逗号表达式的结果是0，所以能赋值给initializer_list&amp;lt;int&amp;gt;，则Args可以是不同的类型不受initializer_list类型的影响。
+print(args)其中的args是取到第一个参数，...则是展开，initializer_list初始化支持这种方式。为了减少干扰，去掉函数调用如下所示，其中具名的args...，或者匿名的...代表所有的可变参数集合，可以将args和...分开，此时args表示...中每一个参数。
+template&amp;lt;typename... Args&amp;gt; void print(Args... args) { auto a = { (args, 0)... }; } 上面的示例可以进一步简化，采用lambda表达式替换print(T a)。
+template&amp;lt;typename... Args&amp;gt; void expand(Args... args) { std::initializer_list&amp;lt;int&amp;gt;{([&amp;amp;]{cout &amp;lt;&amp;lt; args &amp;lt;&amp;lt; endl;}(), 0)...}; } 折叠表达式 从C&#43;&#43;17开始，折叠表达式可以将二元运算符作用于所有参数展开上：
+   Fold Expression Evaluation     ( &amp;hellip; op pack ) ((( pack1 op pack2 ) op pack3 ) &amp;hellip; op packN )   ( pack op &amp;hellip; ) ( pack1 op ( &amp;hellip; ( packN-1 op packN )))   ( init op &amp;hellip; op pack ) ((( init op pack1 ) op pack2 ) &amp;hellip; op packN )   ( pack op &amp;hellip; op init ) ( pack1 op ( &amp;hellip; ( packN op init )))    template&amp;lt;typename... T&amp;gt; auto foldSum (T... s) { return (... &#43; s); // ((s1 &#43; s2) &#43; s3) ...， 注意有（） } foldSum(1, 2, 3, 4); 采用折叠表达式，对前面的expand改进：
+template&amp;lt;typename... T&amp;gt; void expand(T const&amp;amp;... args) { (std::cout &amp;lt;&amp;lt; ... &amp;lt;&amp;lt; args) &amp;lt;&amp;lt; &amp;#39;&amp;#39;; // 注意有（） } 如果想要在每个参数中间输出空格，可以配合lambda:
+template &amp;lt;typename First, typename... Args&amp;gt; void print(First first, Args... args) { std::cout &amp;lt;&amp;lt; first; auto printWhiteSpace = [](const auto &amp;amp;arg) { std::cout &amp;lt;&amp;lt; &amp;#34; &amp;#34; &amp;lt;&amp;lt; arg; }; (..., printWhiteSpace(args)); // op是, } 结语 现代C&#43;&#43;引入不少特征，可变参数模板与折叠表达式在模板编程上带来一些新的检验。我司新的编程规范也紧跟语言发展脚步，对新的特征也有不少的描述。作为一名写了近20年代码的老兵，唯有不断学习才能跟上编程语言的发展。在工作中用好这些特性，让代码更现代化，享受语言新特性带来红利。
+</content>
+    </entry>
+    
+     <entry>
         <title>软件开发漫谈7：开发协作</title>
         <url>http://lanlingzi.cn/post/technical/2022/0313/</url>
         <categories>

@@ -6,14 +6,31 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 13 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0404/</link>
+      <pubDate>Mon, 04 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0404/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;在我司新的C++融合编程规范中，提到避免定义C风格的变参数函数：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为了避免类型错误，应当使用可变参数模板等其它的方式来代替va_arg可变参数。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;规范中也给出了一个简单的示例，像我这种有使用过的经验感觉示例有点意犹未尽。去年年底我使用C++写一个小工具，其中就使用可变参数模板封装了一个日志接口，同时参考了Java slf4j日志用法，支持占位符。正好借这个代码的来温习与讲解一下可变参数模板，感受一下C++模板编程的魅力。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>软件开发漫谈7：开发协作</title>
       <link>http://lanlingzi.cn/post/technical/2022/0313/</link>
       <pubDate>Sun, 13 Mar 2022 00:00:00 +0000</pubDate>
       
       <guid>http://lanlingzi.cn/post/technical/2022/0313/</guid>
-      <description>前言 追求软件产品竞争力的企业，都会追求研发效能极致。对研发效能提升的投资是非常有价值的，因为如果一个开发者每天节可以节省一小时，即使一个50</description>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;追求软件产品竞争力的企业，都会追求研发效能极致。对研发效能提升的投资是非常有价值的，因为如果一个开发者每天节可以节省一小时，即使一个50人的开发团队，总体节省的数字是非常可观的。&lt;/p&gt;
+&lt;p&gt;研发效能提升不仅仅是要提供更好的编程规范，开发工具，快速获得的流水线等硬件，也要对开发者提供贴心的软服务。因为目前软件开发不再单体活动，是一群人协作完成。因而个体问题转变了成社会问题：大家如何高效地协同、沟通和互动，团队与环境如何对开发者的工作产生影响。&lt;/p&gt;
+&lt;p&gt;软件开发要以人为本，对软件开发者群体进行研究。比如开发者之间是如何建立关系，关系是如何的管理，如何让参与者都有意愿，聚集有价值的活动，产生更大的能量，最终开发出有竞争力的软件。&lt;/p&gt;</description>
     </item>
     
     <item>

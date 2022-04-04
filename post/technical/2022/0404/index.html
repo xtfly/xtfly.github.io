@@ -1,0 +1,558 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码29：C&#43;&#43;可变参数模板应用">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码29：C&#43;&#43;可变参数模板应用 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0404/" itemprop="url">
+        飞哥讲代码29：C&#43;&#43;可变参数模板应用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-04-04">
+    2022-04-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2333 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>在我司新的C++融合编程规范中，提到避免定义C风格的变参数函数：</p>
+<blockquote>
+<p>为了避免类型错误，应当使用可变参数模板等其它的方式来代替va_arg可变参数。</p>
+</blockquote>
+<p>规范中也给出了一个简单的示例，像我这种有使用过的经验感觉示例有点意犹未尽。去年年底我使用C++写一个小工具，其中就使用可变参数模板封装了一个日志接口，同时参考了Java slf4j日志用法，支持占位符。正好借这个代码的来温习与讲解一下可变参数模板，感受一下C++模板编程的魅力。</p>
+<p>使用示例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">INFO(<span style="color:#cd5555">&#34;Hell world&#34;</span>);
+INFO(<span style="color:#cd5555">&#34;Hi {}&#34;</span>, <span style="color:#cd5555">&#34;xiao ming&#34;</span>);
+INFO(<span style="color:#cd5555">&#34;Welcome {} join {}&#34;</span>, <span style="color:#cd5555">&#34;to&#34;</span>, <span style="color:#cd5555">&#34;conference&#34;</span>);
+</code></pre></div><p>核心函数如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// 函数1：递归终止函数
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">write_log</span>(<span style="color:#00688b;font-weight:bold">int</span> log_level, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *code_file, <span style="color:#00688b;font-weight:bold">int</span> code_line, string &amp;msg) 
+{}
+
+<span style="color:#228b22">// 函数2：展开模板函数
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> First, <span style="color:#8b008b;font-weight:bold">typename</span> ...Rest&gt;
+<span style="color:#00688b;font-weight:bold">void</span> write_log(<span style="color:#00688b;font-weight:bold">int</span> log_level, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *code_file, <span style="color:#00688b;font-weight:bold">int</span> code_line, string &amp;fmt,
+    <span style="color:#8b008b;font-weight:bold">const</span> First &amp;first, <span style="color:#8b008b;font-weight:bold">const</span> Rest &amp;...rest) 
+{
+        <span style="color:#8b008b;font-weight:bold">auto</span> idx = fmt.find(<span style="color:#cd5555">&#34;{}&#34;</span>);
+        <span style="color:#8b008b;font-weight:bold">if</span> (idx == string::npos) { <span style="color:#228b22">// 如果没有占位符，则忽略可变参数
+</span><span style="color:#228b22"></span>            write_log(log_level, code_file, code_line, fmt);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            ostringstream oss;
+            oss &lt;&lt; first;
+            fmt.replace(idx, PLACEHOLDER_SIZE, oss.str()); <span style="color:#228b22">// constepxr int PLACEHOLDER_SIZE=2
+</span><span style="color:#228b22"></span>            write_log(log_level, code_file, code_line, fmt, rest...);
+        }
+}
+
+<span style="color:#228b22">// 函数3：可变参数模板函数
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> ...Args&gt;
+<span style="color:#00688b;font-weight:bold">void</span> write_log(<span style="color:#00688b;font-weight:bold">int</span> log_level, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *code_file, <span style="color:#00688b;font-weight:bold">int</span> code_line, <span style="color:#8b008b;font-weight:bold">const</span> string &amp;fmt,
+    <span style="color:#8b008b;font-weight:bold">const</span> Args &amp;...args) 
+{
+    string <span style="color:#008b45">tmp</span>(fmt);
+    write_log(log_level, code_file, code_line, tmp, args...);
+}
+
+<span style="color:#1e889b">#define INFO(fmt, ...) \
+</span><span style="color:#1e889b">write_log(LogLevel::INFO, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+</span><span style="color:#1e889b"></span>
+</code></pre></div><h1 id="代码讲解">代码讲解</h1>
+<p>可变参数模板是C++11新增的特性，允许模板定义中包含0到任意个模板参数。声明可变参数模板时，需要在typename或class后面加上省略号&quot;&hellip;&quot;。 省略号的作用有两个:</p>
+<ul>
+<li>声明一个参数包，这个参数包中可以包含0到任意个模板参数</li>
+<li>在模板定义的右边，可以将参数包展开成一个一个独立的参数</li>
+</ul>
+<p>结合上面的案例：</p>
+<ul>
+<li>函数3：是可变参数模板函数。参数包可以包含0个或者多个参数，如果需要用参数包中的参数，则一定要将参数包展开。</li>
+<li>函数2：最展开模板函数，它是采用递归函数方式展开参数包。逐渐展开First参数，剩余的参数Rest参数再次传给展开函数，即逐渐吃掉展开的First参数。</li>
+<li>函数1：是递归终止函数。递归终止函数的展开参数可以为0个或1个，当参数包中剩余的参数个数等于递归终止函数的参数个数时，就调用递归终止函数，则函数终止。案例代码中函数终止的展开可变参数是0（log_level, code_file, code_line, fmt并非可变参数）。</li>
+</ul>
+<p>案例代码中的三个函数是采用同名函数(最后一个函数fmt参数多一个const)，排版上存在前后顺序，递归终止函数是放在最前面，再次是展开函数，最后是入口函数。</p>
+<p>C++11也提供<code>sizeof...</code>来得到可变参数的个数，那我们是否可以通过判断个数来直接调用，省掉终止函数?</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> First, <span style="color:#8b008b;font-weight:bold">typename</span> ...Rest&gt;
+<span style="color:#00688b;font-weight:bold">void</span> write_log(<span style="color:#00688b;font-weight:bold">int</span> log_level, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *code_file, <span style="color:#00688b;font-weight:bold">int</span> code_line, string &amp;fmt,
+    <span style="color:#8b008b;font-weight:bold">const</span> First &amp;first, <span style="color:#8b008b;font-weight:bold">const</span> Rest &amp;...rest) 
+{
+    <span style="color:#228b22">// ...
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">sizeof</span>...(rest) &gt; <span style="color:#b452cd">0</span>) { <span style="color:#228b22">// 增加参数个数
+</span><span style="color:#228b22"></span>        write_log(log_level, code_file, code_line, fmt, rest...);
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 输出日志
+</span><span style="color:#228b22"></span>    }   
+}
+</code></pre></div><p>这个是编译通不过的，因为模板在编译阶段也会将if的所有代码都进行编译，而不会去根据if的条件去进行选择性的编译，选择运行if的哪个分支是在运行期间做的。C++17引入了编译期的if（Compile-Time If），所以上面的代码可以这么写:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> First, <span style="color:#8b008b;font-weight:bold">typename</span> ...Rest&gt;
+<span style="color:#00688b;font-weight:bold">void</span> write_log(<span style="color:#00688b;font-weight:bold">int</span> log_level, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *code_file, <span style="color:#00688b;font-weight:bold">int</span> code_line, string &amp;fmt,
+    <span style="color:#8b008b;font-weight:bold">const</span> First &amp;first, <span style="color:#8b008b;font-weight:bold">const</span> Rest &amp;...rest) 
+{
+    <span style="color:#228b22">// ...
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#008b45">constexpr</span> (<span style="color:#8b008b;font-weight:bold">sizeof</span>...(rest) &gt; <span style="color:#b452cd">0</span>) { <span style="color:#228b22">// 增加参数个数
+</span><span style="color:#228b22"></span>        write_log(log_level, code_file, code_line, fmt, rest...);
+    } <span style="color:#8b008b;font-weight:bold">else</span> {
+        <span style="color:#228b22">// 输出日志
+</span><span style="color:#228b22"></span>    }   
+}
+</code></pre></div><p><code>if constexpr</code>表示编译期if的语法，可以进行在编译期决定编译if条件的哪个分支。当然if中的求值要求在编译期可以计算，否则也会报错。侧面也说明<code>sizeof...</code>对可变参数求个数是编译期计算的。</p>
+<p>在c++11还可以使用enable_if，它用于判断当某个条件成立时是否匹配哪个函数调用，简介可参见<a href="http://lanlingzi.cn/post/technical/2021/0108_code/#enable_if">飞哥讲代码20：窥探C++的模板</a></p>
+<h1 id="扩展阅读">扩展阅读</h1>
+<h2 id="初始化列表">初始化列表</h2>
+<p>对于可变参数还可以使用初始化列表initializer_list变通方式来支持可变参数，如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">const</span> string <span style="color:#008b45">join</span>(<span style="color:#8b008b;font-weight:bold">const</span> initializer_list&lt;string&gt; &amp;list, <span style="color:#8b008b;font-weight:bold">const</span> string &amp;sep) 
+{}
+
+join({<span style="color:#cd5555">&#34;1&#34;</span>});
+join({<span style="color:#cd5555">&#34;1&#34;</span>, <span style="color:#cd5555">&#34;2&#34;</span>});
+join({<span style="color:#cd5555">&#34;1&#34;</span>, <span style="color:#cd5555">&#34;2&#34;</span>, <span style="color:#cd5555">&#34;3&#34;</span>});
+</code></pre></div><p>但是<code>initializer_list&lt;T&gt;</code>需要指定固定类型，则不能像上述案例可变参数模板函数支持可变参数可以是不同的类型，如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">INFO(<span style="color:#cd5555">&#34;len of {} is {}&#34;</span>, <span style="color:#cd5555">&#34;xiao ming&#34;</span>, <span style="color:#b452cd">9</span>);
+</code></pre></div><h2 id="初始化列表方式展开">初始化列表方式展开</h2>
+<p>前面对于可变参数模板函数展开参数包是采用递归的方式，也支持采用初始化列表initializer_list方式展开。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+<span style="color:#00688b;font-weight:bold">void</span> print(T a)
+{
+    cout &lt;&lt; a &lt;&lt; endl;
+}
+ 
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> ...Args&gt;
+<span style="color:#00688b;font-weight:bold">void</span> expand(Args... args)
+{
+    <span style="color:#8b008b;font-weight:bold">auto</span> a = {(print(args), <span style="color:#b452cd">0</span>)...};
+    <span style="color:#228b22">// 或者 std::initializer_list&lt;int&gt;{(print(args), 0)...};
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#228b22">// {(print(args), 0)...}会被展开为{(print(arg1), 0), (print(arg2), 0), (print(arg3), 0)}
+</span><span style="color:#228b22"></span>expand(<span style="color:#cd5555">&#34;hello&#34;</span>, <span style="color:#cd5555">&#34;word&#34;</span>, <span style="color:#b452cd">1</span>, <span style="color:#b452cd">2</span>);
+</code></pre></div><p>这里利用了逗号表达式技巧，由于<code>initializer_list&lt;T&gt;</code>必须固定类型，而<code>(print(args), 0)</code> 逗号表达式的结果是0，所以能赋值给<code>initializer_list&lt;int&gt;</code>，则Args可以是不同的类型不受initializer_list类型的影响。</p>
+<p>print(args)其中的args是取到第一个参数，<code>...</code>则是展开，initializer_list初始化支持这种方式。为了减少干扰，去掉函数调用如下所示，其中具名的<code>args...</code>，或者匿名的<code>...</code>代表所有的可变参数集合，可以将<code>args</code>和<code>...</code>分开，此时args表示<code>...</code>中每一个参数。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span>... Args&gt;
+<span style="color:#00688b;font-weight:bold">void</span> print(Args... args)
+{
+    <span style="color:#8b008b;font-weight:bold">auto</span> a = { (args, <span style="color:#b452cd">0</span>)... }; 
+}
+</code></pre></div><p>上面的示例可以进一步简化，采用lambda表达式替换<code>print(T a)</code>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span>... Args&gt;
+<span style="color:#00688b;font-weight:bold">void</span> expand(Args... args)
+{
+    std::initializer_list&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;{([&amp;]{cout &lt;&lt; args &lt;&lt; endl;}(), <span style="color:#b452cd">0</span>)...};
+}
+</code></pre></div><h2 id="折叠表达式">折叠表达式</h2>
+<p>从C++17开始，折叠表达式可以将二元运算符作用于所有参数展开上：</p>
+<table>
+<thead>
+<tr>
+<th>Fold Expression</th>
+<th>Evaluation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>( &hellip; op pack )</td>
+<td>((( pack1 op pack2 ) op pack3 ) &hellip; op packN )</td>
+</tr>
+<tr>
+<td>( pack op &hellip; )</td>
+<td>( pack1 op ( &hellip; ( packN-1 op packN )))</td>
+</tr>
+<tr>
+<td>( init op &hellip; op pack )</td>
+<td>((( init op pack1 ) op pack2 ) &hellip; op packN )</td>
+</tr>
+<tr>
+<td>( pack op &hellip; op init )</td>
+<td>( pack1 op ( &hellip; ( packN op init )))</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span>... T&gt;
+<span style="color:#8b008b;font-weight:bold">auto</span> foldSum (T... s) 
+{
+  <span style="color:#8b008b;font-weight:bold">return</span> (... + s);           <span style="color:#228b22">// ((s1 + s2) + s3) ...， 注意有（）
+</span><span style="color:#228b22"></span>}
+
+foldSum(<span style="color:#b452cd">1</span>, <span style="color:#b452cd">2</span>, <span style="color:#b452cd">3</span>, <span style="color:#b452cd">4</span>);
+</code></pre></div><p>采用折叠表达式，对前面的expand改进：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span>... T&gt;
+<span style="color:#00688b;font-weight:bold">void</span> expand(T <span style="color:#8b008b;font-weight:bold">const</span>&amp;... args) 
+{
+  (std::cout &lt;&lt; ... &lt;&lt; args) &lt;&lt; <span style="color:#a61717;background-color:#e3d2d2">&#39;&#39;</span>;  <span style="color:#228b22">// 注意有（）
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>如果想要在每个参数中间输出空格，可以配合lambda:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> First, <span style="color:#8b008b;font-weight:bold">typename</span>... Args&gt;
+<span style="color:#00688b;font-weight:bold">void</span> print(First first, Args... args) 
+{
+  std::cout &lt;&lt; first;
+  <span style="color:#8b008b;font-weight:bold">auto</span> printWhiteSpace = [](<span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#8b008b;font-weight:bold">auto</span> &amp;arg) { std::cout &lt;&lt; <span style="color:#cd5555">&#34; &#34;</span> &lt;&lt; arg; };
+  (..., printWhiteSpace(args)); <span style="color:#228b22">// op是,
+</span><span style="color:#228b22"></span>}
+</code></pre></div><h1 id="结语">结语</h1>
+<p>现代C++引入不少特征，可变参数模板与折叠表达式在模板编程上带来一些新的检验。我司新的编程规范也紧跟语言发展脚步，对新的特征也有不少的描述。作为一名写了近20年代码的老兵，唯有不断学习才能跟上编程语言的发展。在工作中用好这些特性，让代码更现代化，享受语言新特性带来红利。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2022/0313/" rel="prev" title="软件开发漫谈7：开发协作">
+        软件开发漫谈7：开发协作 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码29：C&#43;&#43;可变参数模板应用
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">160</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#案例">案例</a></li>
+    <li><a href="#代码讲解">代码讲解</a></li>
+    <li><a href="#扩展阅读">扩展阅读</a>
+      <ul>
+        <li><a href="#初始化列表">初始化列表</a></li>
+        <li><a href="#初始化列表方式展开">初始化列表方式展开</a></li>
+        <li><a href="#折叠表达式">折叠表达式</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2022</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

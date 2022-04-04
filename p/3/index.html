@@ -106,6 +106,87 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0108_code/" itemprop="url">
+        飞哥讲代码20：窥探C&#43;&#43;的模板
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-01-08">
+    2021-01-08
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">5488 字 ~11分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。</p>
+<p>Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> : <span style="color:#8b008b;font-weight:bold">public</span> drogon::HttpController&lt;User&gt;
+{
+  <span style="color:#8b008b;font-weight:bold">public</span>:
+    METHOD_LIST_BEGIN
+    <span style="color:#228b22">//use METHOD_ADD to add your custom processing function here;
+</span><span style="color:#228b22"></span>    METHOD_ADD(User::getInfo, <span style="color:#cd5555">&#34;/{id}&#34;</span>, Get);                  <span style="color:#228b22">//path is /api/v1/User/{arg1}
+</span><span style="color:#228b22"></span>    METHOD_ADD(User::getDetailInfo, <span style="color:#cd5555">&#34;/{id}/detailinfo&#34;</span>, Get);  <span style="color:#228b22">//path is /api/v1/User/{arg1}/detailinfo
+</span><span style="color:#228b22"></span>    METHOD_ADD(User::newUser, <span style="color:#cd5555">&#34;/{name}&#34;</span>, Post);                 <span style="color:#228b22">//path is /api/v1/User/{arg1}
+</span><span style="color:#228b22"></span>    METHOD_LIST_END
+    <span style="color:#228b22">//your declaration of processing function maybe like this:
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> getInfo(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getDetailInfo</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">newUser</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, std::string &amp;&amp;userName);
+  <span style="color:#8b008b;font-weight:bold">public</span>:
+</code></pre></div><p>上述代码需要解决的问题：注册的<code>METHOD_ADD(User::getInfo, &quot;/{id}&quot;, Get);</code>，对应的请求消息怎么路由到<code>getInfo</code> 方法？</p>
+<ul>
+<li>无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式</li>
+<li>但URL Pattern中会存在多个<code>{}</code>替换参数，参数的类型可能是string, int, long等类型，是无固定参数</li>
+</ul>
+<p>像Java等语言由于有底层Runtime框架(JVM)，实现了运行期的反射机制。借助反射把请求动态路由到对应的处理函数，代码实现上不会太难。但C++是没有Runtime，只能是借助于模板在编译期做一些事情，来达到像Java一样的反射机制。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0108_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0103_code/" itemprop="url">
         飞哥讲代码19：C&#43;&#43;中的左右值引用
         </a>
@@ -692,89 +773,6 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0912_code/" itemprop="url">
-        飞哥讲代码13：好代码须匠心打磨
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-09-12">
-    2020-09-12
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2979 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：</p>
-<p>优化前的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
-        rule_type = rules[<span style="color:#cd5555">&#39;type&#39;</span>] <span style="color:#228b22"># 1</span>
-        rule_list = rules[<span style="color:#cd5555">&#39;rules&#39;</span>] <span style="color:#228b22"># 2</span>
-        res = <span style="color:#8b008b;font-weight:bold">None</span>
-
-        <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#658b00">str</span>(rule_type).lower() != RULES_MAPPING:
-            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#34;type of rule should be &#39;rules_mapping&#39;&#34;</span>)
-
-        <span style="color:#8b008b;font-weight:bold">for</span> rule <span style="color:#8b008b">in</span> rule_list:
-            col_name = rule[<span style="color:#cd5555">&#39;column&#39;</span>] <span style="color:#228b22"># 2</span>
-            <span style="color:#8b008b;font-weight:bold">if</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;cast&#39;</span>: <span style="color:#228b22"># 3</span>
-                mapping_dict, other = self.parse_cast(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
-                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
-            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;in&#39;</span>:
-                mapping_dict, other = self.parse_in(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
-                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
-            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;binning&#39;</span>:
-                res = data[col_name].apply(self.binning_func, args=(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>]))
-            <span style="color:#8b008b;font-weight:bold">else</span>:
-                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#39;not supported function&#39;</span>) <span style="color:#228b22"># 4 </span>
-        <span style="color:#8b008b;font-weight:bold">return</span> res
-</code></pre></div><p>代化之后的代码：</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0912_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -900,7 +898,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">159</span>
+        <span class="site-state-item-count">160</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

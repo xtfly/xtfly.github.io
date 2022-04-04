@@ -6,7 +6,21 @@
     <description>Recent content in c&#43;&#43; on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 06 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0404/</link>
+      <pubDate>Mon, 04 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0404/</guid>
+      <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
+&lt;p&gt;在我司新的C++融合编程规范中，提到避免定义C风格的变参数函数：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为了避免类型错误，应当使用可变参数模板等其它的方式来代替va_arg可变参数。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;规范中也给出了一个简单的示例，像我这种有使用过的经验感觉示例有点意犹未尽。去年年底我使用C++写一个小工具，其中就使用可变参数模板封装了一个日志接口，同时参考了Java slf4j日志用法，支持占位符。正好借这个代码的来温习与讲解一下可变参数模板，感受一下C++模板编程的魅力。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码28：C&#43;&#43;内存泄露</title>
       <link>http://lanlingzi.cn/post/technical/2021/1106/</link>
