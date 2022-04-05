@@ -6,7 +6,16 @@
     <description>Recent content on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 04 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 05 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码30：C&#43;&#43;简单依赖注入</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0405/</link>
+      <pubDate>Tue, 05 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0405/</guid>
+      <description>前言 前一段时间看某一老产品的代码，是C/C++混合编写的代码，代码中充满了全局变量，并采用extern引用外部全局变量。问题是由于类与类之间</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用</title>
       <link>http://lanlingzi.cn/post/technical/2022/0404/</link>

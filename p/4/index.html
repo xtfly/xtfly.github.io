@@ -106,6 +106,80 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0920_code/" itemprop="url">
+        飞哥讲代码14：好代码源自相互改进
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-09-20">
+    2020-09-20
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2207 字 ~5分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：</p>
+<p><strong>开始：</strong> 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
+DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
+DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+
+CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
+.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
+</code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
+<p><strong>问题：</strong> 经过一段时间，发现类似读取配置项的代码段 <em>散落</em> 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。</p>
+<p><strong>重构：</strong> 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 <em>封装</em> 对象。改进之后代码如下，并且做了一点小的容错性增强：</p>
+<ul>
+<li>[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。</li>
+<li>[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。</li>
+</ul>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0920_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0912_code/" itemprop="url">
         飞哥讲代码13：好代码须匠心打磨
         </a>
@@ -657,86 +731,6 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0621_code/" itemprop="url">
-        飞哥讲代码6：消除重复，需要配置代码分离
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-21">
-    2020-06-21
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2198 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一平台产品前端源码(Java语言)中：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> Map&lt;String, Map&lt;String, String&gt;&gt; <span style="color:#008b45">constructConstrainMap</span>() {
-    Map&lt;String, Map&lt;String, String&gt;&gt; typeConstrainMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, Map&lt;String, String&gt;&gt;();
-    Map&lt;String, String&gt; imageConstrainPatternMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, String&gt;();
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;allowdPatten&#34;</span>, <span style="color:#cd5555">&#34;^[a-zA-Z0-9_~.=@-]$&#34;</span>);
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;allowdMin&#34;</span>, <span style="color:#cd5555">&#34;1&#34;</span>);
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;allowdMax&#34;</span>, <span style="color:#cd5555">&#34;256&#34;</span>);
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;allowdValue&#34;</span>, <span style="color:#8b008b;font-weight:bold">null</span>);
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;noEcho&#34;</span>, <span style="color:#cd5555">&#34;false&#34;</span>);
-    imageConstrainPatternMap.<span style="color:#658b00">put</span>(<span style="color:#cd5555">&#34;description&#34;</span>, <span style="color:#cd5555">&#34;com.huawei.....&#34;</span>);
-    typeConstrainMap.<span style="color:#658b00">put</span>(TPropType.<span style="color:#658b00">IAA_S_IMAGE_ID</span>.<span style="color:#658b00">value</span>(), imageConstrainPatternMap)
-
-    Map&lt;String, String&gt; netWorkConstrainPatternMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, String&gt;();
-    <span style="color:#228b22">// 省略 put ...
-</span><span style="color:#228b22"></span>
-    Map&lt;String, String&gt; containerConstrainPatternMap = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;String, String&gt;();
-    <span style="color:#228b22">// 省略 put ...
-</span><span style="color:#228b22"></span>
-    <span style="color:#228b22">// 省略 其它的Constrain代码 ...
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0621_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -829,6 +823,8 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
     
         
     
+        
+    
     <a class="extend next" rel="next" href="http://lanlingzi.cn/p/5/"><i class="fa fa-angle-right"></i></a>
 </nav>
 
@@ -859,7 +855,7 @@ at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">dr
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">160</span>
+        <span class="site-state-item-count">161</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>

@@ -1,6 +1,43 @@
 <search>
     
      <entry>
+        <title>飞哥讲代码30：C&#43;&#43;简单依赖注入</title>
+        <url>http://lanlingzi.cn/post/technical/2022/0405/</url>
+        <categories>
+          <category>技术</category>
+        </categories>
+        <tags>
+          <tag>软件开发</tag><tag>c&#43;&#43;</tag>
+        </tags>
+        <content type="html"> 前言 前一段时间看某一老产品的代码，是C/C&#43;&#43;混合编写的代码，代码中充满了全局变量，并采用extern引用外部全局变量。问题是由于类与类之间存在依赖关系，如果都通过构造方法传入依赖，会导致整个对象依赖图构造复杂。对于上了年头的老代码，采用全局变量&#43;extern引用能够简单粗暴地插入要新增的调用关系，但也带来了代码上腐化。
+在我司新的C&#43;&#43;融合编程规范中提到：
+禁止通过声明的方式引用外部函数接口与变量。
+ 只能通过包含头文件方式使用其它模块或文件提供的接口。通过声明的方式使用外部函数接口变量，容易在外部接口改变时可能导致声明有定义不一致。同时这种隐式依赖，容易导致架构腐化。
+ 避免使用全局变量(节选)。
+ 使用全局变量会导致业务代码和全局变量之间产生数据耦合。在不同编译单元的全局变量以及全局常量的初始化顺序没有被严格定义，使用时需要注意他们的初始化是否有相互依赖。
+ 一个完整的应用是由一组相互协作的对象组成，开发人员要关注如何使这些对象协作来完成所需功能，并且要低耦合、高聚合。如果有个框架出来帮我们来创建对象及管理这些对象之间的依赖关系，那我们只需要聚集于业务逻辑。作为同时写过Java代码的老兵，了解管理依赖是Spring的设计初衷之一。Java天然具有动态反射能力，为IoC框架实现提供了基础。但C&#43;&#43;并没有反射能对类的自省，如何实现一个简单的IoC框架类？
+代码讲解 Spring有多种依赖注入的方式，我们先实现一个简单的属性依赖注入。在C&#43;&#43;中想达到如下效果：
+class A {}; class B { private: INJECT_PTR(A, m_pA); // INJECT_PTR是一个宏，为B自动注入A的指针。 }; 显然如果不借助一些其它辅助设施，要实现C&#43;&#43;对象的自动注入不现实。参考Spring的概念，能够注入的对象必须是Bean，在IoC框架中被管理，称为管理对象。所以要实现上述效果，要解决两个核心问题：
+ 对象如何被框架自动管理 对象间的依赖关系如何发现，并且自动注入所需对象  抽象出三个核心类：
+ IObject：是一个接口，抽象出对象的初始化(Init)与清理(Destroy)方法，相当于Spring的@PostConstruct与@PreDestroy的能力。 ManagedObject：是一个基类，所有能被框架管理的对象类型，都要继承它，它也实现了IObject接口。 Container：是一个对象容器，管理所有的ManagedObject对象实例，支持调用所有对象的Init与Destroy方法完成对象的初始化与清理。  约束：
+ 继承ManagedObject的子类必须存在默认无参数的构造方法，支持调用有带参数的构造方法来现在创建对象。 ManagedObject的对象之间可以存在依赖，但他们构造时不存在先后依赖关系。  class IObject { public: virtual void Init() = 0; virtual void Destroy() = 0; virtual ~IObject() = default; }; template&amp;lt;typename T&amp;gt; class ManagedObject : public IObject { protected: // 通过静态对象初始化来达到提供对象自动创建的目的  static struct AutoInit { inline void DoNothing() const {} // 这个后面再讲  explicit AutoInit(); } m_init; // 注入成员变量的回调函数类型，构造方法中向m_valInjectFuncs注册  struct InjectFunction { InjectFunction(ManagedObject *obj, const std::function&amp;lt;void()&amp;gt; &amp;amp;func) { obj-&amp;gt;m_valInjectFuncs.emplace_back(func); } }; public: void Init() final; // 先调用m_valInjectFuncs的回调函数，再调用OnInit  void Destroy() final; virtual void OnInit() {}; // 由子类覆写实现初始化  virtual void OnDestroy() {}; private: std::vector&amp;lt;std::function&amp;lt;void()&amp;gt;&amp;gt; m_valInjectFuncs; // 存储注入成员变量的回调函数 }; class Constainer { public: static Constainer &amp;amp;instance(); // 单例  void AddObject(const char *name, IObject *obj); // 注册管理对象  IObject *GetObject(const char *name) const; // 获取管理对象  void InitAllObjects(); // 初始化所有对象，调用所有对象的Init方法  void DestroyAllOjects(); // 清理所有对象，调用所有对象的Destroy方法，释放所有对象内存 private: std::unorder_map&amp;lt;std::string, IObject *&amp;gt; m_objs; }; 第一个问题如何解决？本方案采用C&#43;&#43;的静态成员变量初始化先于main方法的特征。则可在ManagedObject有一个静态成员对象，在静态成员对象构造方法中对继承它的类创建生成，再把对象指针加入到Container管理。若想知道子类的具体类型，则需要采用模板，把子类类型在编译期给静态成员对象构造方法。
+template&amp;lt;typename T&amp;gt; ManagedObject&amp;lt;T&amp;gt;::AutoInit::AutoInit() { T *p = new T(); // 拿到子类类型，并调用无参构造方法  const auto name = typeid(T).name(); Container::Instance().AddOject(name, p); // 向容器注册 } template&amp;lt;typename T&amp;gt; ManagedObject&amp;lt;T&amp;gt;::AutoInit ManagedObject&amp;lt;T&amp;gt;::m_init; // 静态对象实例化 再来解决第二问题，在宏INJECT_PTR中构造一个临时InjectFunction对象，在它的构造方法中，从容器中获取所需对象指针，再赋值给成员变量。
+#define STR_CONCAT_(a, b) a##b #define STR_CONCAT(a, b) STR_CONCAT_(a, b) #define INJECT_PTR(typeName, valName) typeName *valName;\ const InjectFunction STR_CONCAT(inject_, __LINE__) = {\ this, [this]() {\ this-&amp;gt;m_init.DoNothing();\ auto obj = Container::Instance().GetObject(typeid(typeName).name());\ this-&amp;gt;valName = dynamic_cast&amp;lt;typeName *&amp;gt;(obj);\ }\ }; \ 上面的宏逻辑：
+ 在类上增加了一个inject_{__LINE__}的成员变量，类型是InjectFunction，变量名带上所在行号，也不会存在冲突。 利用了C&#43;&#43;11的变量初始化方式，调用InjectFunction的构造方法，传入this，以及一个lambda表达式 在lambda表达式，先调用m_init.DoNothing()，解决模板成员变量必须调用才会生效的问题 再根据类型获取注册的对象指针，对需注入的变量valName赋值  完整的使用示列：
+class A : public ManagedObject&amp;lt;T&amp;gt; {}; class B : public ManagedObject&amp;lt;T&amp;gt; { private: INJECT_PTR(A, m_pA); public: void OnInit() overide { std::cout &amp;lt;&amp;lt; static_cast&amp;lt;void*&amp;gt;(m_pA) &amp;lt;&amp;lt; std::endl; } }; class C : public ManagedObject&amp;lt;C&amp;gt; { private: INJECT_PTR(A, m_pA); INJECT_PTR(B, m_pB); public: void OnInit() overide { std::cout &amp;lt;&amp;lt; static_cast&amp;lt;void*&amp;gt;(m_pA) &amp;lt;&amp;lt; std::endl; std::cout &amp;lt;&amp;lt; static_cast&amp;lt;void*&amp;gt;(m_pB) &amp;lt;&amp;lt; std::endl; } }; // static变量先于main方法 // [A, B, C]的static变量m_init实例化，完成A, B, C 对象的创建也向Container注册，A，B，C对象实际上单例  int main(int argc, const char **argv) { Container::Instance()::InitAllObjects(); // InitAllObjects() --&amp;gt; 调用[A, B, C]的Init --&amp;gt; 调用 [B, C]的m_valInjectFuncs回调方法 --&amp;gt; 依赖注入赋值  Container::Instance()::DestroyAllOjects(); } static变量生命周期 C&#43;&#43;的static成员变量和普通static变量一样，都在内存分区中的全局数据区分配内存，到程序结束时才释放。这就意味着，static成员变量不随对象的创建而分配内存，也不随对象的销毁而释放内存。而普通成员变量在对象创建时分配内存，在对象销毁时释放内存。
+C也有static变量，但与C&#43;&#43;的生命周期存在细微差别，初始化不同：
+    全局变量 文件域的静态变量 类的静态成员变量 静态局部变量     C 编译期初始化 编译期初始化 N/A 编译期初始化   C&#43;&#43; main执行前 main执行前 main执行前 首次执行相关代码时初始化    再回到代码讲解中方案，示例中的A，B，C类也可以放在不同的h/cpp文件，只要加入编译与链接单元，在main执行前就会自动构造，向容器注册。如果任何一个类的构造方法很耗时，会导致程度启动时间变长。
+一些注意项：
+ C&#43;&#43;静态成员属于类作用域，但不属于类对象，不能在类的构造函数中进行初始化 静态成员变量必须初始化，而且只能在类体外进行 类的成员函数中定义的静态局部变量，该类的所有对象在调用这个成员函数时将共享这个变量 静态变量的销毁是通过atexit()来管理的，在程序结束，按照构造顺序反方向进行逐个析构。对于同一个编译单元内的静态变量，构造顺序和声明顺序是一致的，不同编译单元的，构造顺序是不定的  main执行前到底是编译时还是运行时呢？引用C&#43;&#43;标准(C&#43;&#43;11 N3690 3.6.2)：
+ 全局变量、文件域的静态变量和类的静态成员变量在main执行之前的静态初始化过程中分配内存并初始化；静态局部变量（一般为函数内的静态变量）在第一次使用时分配内存并初始化。这里的变量包含内置数据类型和自定义类型的对象。
+ 什么是静态初始化呢？继续来看C&#43;&#43;标准：
+ 从语言的层面来说，全局变量的初始化可以划分为以下两个阶段：
+ static initialization: 静态初始化指的是用常量来对变量进行初始化,主要包括 zero initialization和const initialization，静态初始化在程序加载的过程中完成，对简单类型(内建类型，POD等)来说，从具体实现上看，zero initialization的变量会被保存在 bss 段，const initialization的变量则放在data段内，程序加载即可完成初始化，这和 C 语言里的全局变量初始化基本是一致的。 dynamic initialization：动态初始化主要是指需要经过函数调用才能完成的初始化，比如说：int a = foo()，或者是复杂类型（类）的初始化（需要调用构造函数）等。这些变量的初始化会在main 函数执行前由运行时调用相应的代码从而得以进行(静态局部变量除外)   总结如下：
+ 对于内建类型，且在代码中已经手动初始化的，则该变量及其初始化值会被保存在可执行程序的data段， 在运行时对其做const initialization 未手动初始化的，则该变量会被放在可执行程序的bss段，在运行时对其做zero initialization 对于自定义类型，则变量都是放在bss段，并且在运行时做动态初始化      手动初始化 未手动初始化     内建类型 data段，const initialization bss段，zero initialization   自定义类型 bss段，动态初始化 bss段，动态初始化    结语 本文利用C&#43;&#43;的静态成员变量初始化的机制，实现一个简单的对象自动注册与依赖注入管理框架。通过代码设计应用，再针对静态成员变量的机制进行了整理，加强了C&#43;&#43;的底层基础知识的掌握。只有在实际工作中，打开脑洞，深入底层细节，才会觉得C&#43;&#43;越来越有趣，而不是望而怯步。
+</content>
+    </entry>
+    
+     <entry>
         <title>飞哥讲代码29：C&#43;&#43;可变参数模板应用</title>
         <url>http://lanlingzi.cn/post/technical/2022/0404/</url>
         <categories>
@@ -22,8 +59,9 @@ template&amp;lt;typename First, typename ...Rest&amp;gt; void write_log(int log_
 template&amp;lt;typename First, typename ...Rest&amp;gt; void write_log(int log_level, const char *code_file, int code_line, string &amp;amp;fmt, const First &amp;amp;first, const Rest &amp;amp;...rest) { // ...  if constexpr (sizeof...(rest) &amp;gt; 0) { // 增加参数个数  write_log(log_level, code_file, code_line, fmt, rest...); } else { // 输出日志  } } if constexpr表示编译期if的语法，可以进行在编译期决定编译if条件的哪个分支。当然if中的求值要求在编译期可以计算，否则也会报错。侧面也说明sizeof...对可变参数求个数是编译期计算的。
 在c&#43;&#43;11还可以使用enable_if，它用于判断当某个条件成立时是否匹配哪个函数调用，简介可参见飞哥讲代码20：窥探C&#43;&#43;的模板
 扩展阅读 初始化列表 对于可变参数还可以使用初始化列表initializer_list变通方式来支持可变参数，如：
-const string join(const initializer_list&amp;lt;string&amp;gt; &amp;amp;list, const string &amp;amp;sep) {} join({&amp;#34;1&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;, &amp;#34;3&amp;#34;}); 但是initializer_list&amp;lt;T&amp;gt;需要指定固定类型，则不能像上述案例可变参数模板函数支持可变参数可以是不同的类型，如：
-INFO(&amp;#34;len of {} is {}&amp;#34;, &amp;#34;xiao ming&amp;#34;, 9); 初始化列表方式展开 前面对于可变参数模板函数展开参数包是采用递归的方式，也支持采用初始化列表initializer_list方式展开。
+const string join(const initializer_list&amp;lt;string&amp;gt; &amp;amp;list, const string_view &amp;amp;sep) {} join({&amp;#34;1&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;}); join({&amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;, &amp;#34;3&amp;#34;}); 但是initializer_list&amp;lt;T&amp;gt;需要指定固定类型，则不能像上述案例可变参数模板函数支持可变参数可以是不同的类型，如：
+INFO(&amp;#34;len of {} is {}&amp;#34;, &amp;#34;xiao ming&amp;#34;, 9); 另外，C&#43;&#43;11还提供tuple，是一个可变参数模板类，可以携带任意类型任意个数的模板参数。
+初始化列表方式展开 前面对于可变参数模板函数展开参数包是采用递归的方式，也支持采用初始化列表initializer_list方式展开。
 template&amp;lt;typename T&amp;gt; void print(T a) { cout &amp;lt;&amp;lt; a &amp;lt;&amp;lt; endl; } template&amp;lt;typename ...Args&amp;gt; void expand(Args... args) { auto a = {(print(args), 0)...}; // 或者 std::initializer_list&amp;lt;int&amp;gt;{(print(args), 0)...}; } // {(print(args), 0)...}会被展开为{(print(arg1), 0), (print(arg2), 0), (print(arg3), 0)} expand(&amp;#34;hello&amp;#34;, &amp;#34;word&amp;#34;, 1, 2); 这里利用了逗号表达式技巧，由于initializer_list&amp;lt;T&amp;gt;必须固定类型，而(print(args), 0) 逗号表达式的结果是0，所以能赋值给initializer_list&amp;lt;int&amp;gt;，则Args可以是不同的类型不受initializer_list类型的影响。
 print(args)其中的args是取到第一个参数，...则是展开，initializer_list初始化支持这种方式。为了减少干扰，去掉函数调用如下所示，其中具名的args...，或者匿名的...代表所有的可变参数集合，可以将args和...分开，此时args表示...中每一个参数。
 template&amp;lt;typename... Args&amp;gt; void print(Args... args) { auto a = { (args, 0)... }; } 上面的示例可以进一步简化，采用lambda表达式替换print(T a)。

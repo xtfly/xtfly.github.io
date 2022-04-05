@@ -1,0 +1,595 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码30：C&#43;&#43;简单依赖注入 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码30：C&#43;&#43;简单依赖注入">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码30：C&#43;&#43;简单依赖注入 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0405/" itemprop="url">
+        飞哥讲代码30：C&#43;&#43;简单依赖注入
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-04-05">
+    2022-04-05
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3560 字 ~8分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="前言">前言</h1>
+<p>前一段时间看某一老产品的代码，是C/C++混合编写的代码，代码中充满了全局变量，并采用extern引用外部全局变量。问题是由于类与类之间存在依赖关系，如果都通过构造方法传入依赖，会导致整个对象依赖图构造复杂。对于上了年头的老代码，采用全局变量+extern引用能够简单粗暴地插入要新增的调用关系，但也带来了代码上腐化。</p>
+<p>在我司新的C++融合编程规范中提到：</p>
+<p>禁止通过声明的方式引用外部函数接口与变量。</p>
+<blockquote>
+<p>只能通过包含头文件方式使用其它模块或文件提供的接口。通过声明的方式使用外部函数接口变量，容易在外部接口改变时可能导致声明有定义不一致。同时这种隐式依赖，容易导致架构腐化。</p>
+</blockquote>
+<p>避免使用全局变量(节选)。</p>
+<blockquote>
+<p>使用全局变量会导致业务代码和全局变量之间产生数据耦合。在不同编译单元的全局变量以及全局常量的初始化顺序没有被严格定义，使用时需要注意他们的初始化是否有相互依赖。</p>
+</blockquote>
+<p>一个完整的应用是由一组相互协作的对象组成，开发人员要关注如何使这些对象协作来完成所需功能，并且要低耦合、高聚合。如果有个框架出来帮我们来创建对象及管理这些对象之间的依赖关系，那我们只需要聚集于业务逻辑。作为同时写过Java代码的老兵，了解管理依赖是Spring的设计初衷之一。Java天然具有动态反射能力，为IoC框架实现提供了基础。但C++并没有反射能对类的自省，如何实现一个简单的IoC框架类？</p>
+<h1 id="代码讲解">代码讲解</h1>
+<p>Spring有多种依赖注入的方式，我们先实现一个简单的属性依赖注入。在C++中想达到如下效果：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {};
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">B</span> {
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    INJECT_PTR(A, m_pA); <span style="color:#228b22">// INJECT_PTR是一个宏，为B自动注入A的指针。
+</span><span style="color:#228b22"></span>};
+</code></pre></div><p>显然如果不借助一些其它辅助设施，要实现C++对象的自动注入不现实。参考Spring的概念，能够注入的对象必须是Bean，在IoC框架中被管理，称为管理对象。所以要实现上述效果，要解决两个核心问题：</p>
+<ul>
+<li>对象如何被框架自动管理</li>
+<li>对象间的依赖关系如何发现，并且自动注入所需对象</li>
+</ul>
+<p>抽象出三个核心类：</p>
+<ul>
+<li>IObject：是一个接口，抽象出对象的初始化(Init)与清理(Destroy)方法，相当于Spring的@PostConstruct与@PreDestroy的能力。</li>
+<li>ManagedObject：是一个基类，所有能被框架管理的对象类型，都要继承它，它也实现了IObject接口。</li>
+<li>Container：是一个对象容器，管理所有的ManagedObject对象实例，支持调用所有对象的Init与Destroy方法完成对象的初始化与清理。</li>
+</ul>
+<p>约束：</p>
+<ul>
+<li>继承ManagedObject的子类必须存在默认无参数的构造方法，支持调用有带参数的构造方法来现在创建对象。</li>
+<li>ManagedObject的对象之间可以存在依赖，但他们构造时不存在先后依赖关系。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">IObject</span> {
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> Init() = <span style="color:#b452cd">0</span>;
+    <span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">Destroy</span>() = <span style="color:#b452cd">0</span>;
+    <span style="color:#8b008b;font-weight:bold">virtual</span> ~IObject() = <span style="color:#8b008b;font-weight:bold">default</span>;
+};
+
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ManagedObject</span> : <span style="color:#8b008b;font-weight:bold">public</span> IObject {
+<span style="color:#8b008b;font-weight:bold">protected</span>:
+    <span style="color:#228b22">// 通过静态对象初始化来达到提供对象自动创建的目的
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">AutoInit</span> {
+        <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">DoNothing</span>() <span style="color:#8b008b;font-weight:bold">const</span> {} <span style="color:#228b22">// 这个后面再讲
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">explicit</span> <span style="color:#008b45">AutoInit</span>();
+    } m_init;
+
+    <span style="color:#228b22">// 注入成员变量的回调函数类型，构造方法中向m_valInjectFuncs注册
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">InjectFunction</span> {
+        InjectFunction(ManagedObject *obj, <span style="color:#8b008b;font-weight:bold">const</span> std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt; &amp;func)
+        { obj-&gt;m_valInjectFuncs.emplace_back(func); }
+    };
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#00688b;font-weight:bold">void</span> Init() <span style="color:#8b008b;font-weight:bold">final</span>; <span style="color:#228b22">// 先调用m_valInjectFuncs的回调函数，再调用OnInit
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">Destroy</span>() <span style="color:#8b008b;font-weight:bold">final</span>;
+    <span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">OnInit</span>() {}; <span style="color:#228b22">// 由子类覆写实现初始化
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">OnDestroy</span>() {};
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    std::vector&lt;std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt;&gt; m_valInjectFuncs; <span style="color:#228b22">// 存储注入成员变量的回调函数
+</span><span style="color:#228b22"></span>};
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Constainer</span> {
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#8b008b;font-weight:bold">static</span> Constainer &amp;instance(); <span style="color:#228b22">// 单例
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">AddObject</span>(<span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *name, IObject *obj); <span style="color:#228b22">// 注册管理对象
+</span><span style="color:#228b22"></span>    IObject *<span style="color:#008b45">GetObject</span>(<span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> *name) <span style="color:#8b008b;font-weight:bold">const</span>; <span style="color:#228b22">// 获取管理对象
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">InitAllObjects</span>(); <span style="color:#228b22">// 初始化所有对象，调用所有对象的Init方法
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">DestroyAllOjects</span>();  <span style="color:#228b22">// 清理所有对象，调用所有对象的Destroy方法，释放所有对象内存
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span>:
+    std::unorder_map&lt;std::string, IObject *&gt; m_objs;
+};
+</code></pre></div><p>第一个问题如何解决？本方案采用C++的静态成员变量初始化先于main方法的特征。则可在ManagedObject有一个静态成员对象，在静态成员对象构造方法中对继承它的类创建生成，再把对象指针加入到Container管理。若想知道子类的具体类型，则需要采用模板，把子类类型在编译期给静态成员对象构造方法。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+ManagedObject&lt;T&gt;::AutoInit::AutoInit()
+{
+    T *p = <span style="color:#8b008b;font-weight:bold">new</span> T(); <span style="color:#228b22">// 拿到子类类型，并调用无参构造方法
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#8b008b;font-weight:bold">auto</span> name = <span style="color:#8b008b;font-weight:bold">typeid</span>(T).name();
+    Container::Instance().AddOject(name, p); <span style="color:#228b22">// 向容器注册
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+ManagedObject&lt;T&gt;::AutoInit ManagedObject&lt;T&gt;::m_init; <span style="color:#228b22">// 静态对象实例化
+</span></code></pre></div><p>再来解决第二问题，在宏INJECT_PTR中构造一个临时InjectFunction对象，在它的构造方法中，从容器中获取所需对象指针，再赋值给成员变量。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define STR_CONCAT_(a, b) a##b
+</span><span style="color:#1e889b">#define STR_CONCAT(a, b) STR_CONCAT_(a, b)
+</span><span style="color:#1e889b">#define INJECT_PTR(typeName, valName) typeName *valName;\
+</span><span style="color:#1e889b">const InjectFunction STR_CONCAT(inject_, __LINE__) = {\
+</span><span style="color:#1e889b">    this, [this]() {\
+</span><span style="color:#1e889b">        this-&gt;m_init.DoNothing();\
+</span><span style="color:#1e889b">        auto obj = Container::Instance().GetObject(typeid(typeName).name());\
+</span><span style="color:#1e889b">        this-&gt;valName = dynamic_cast&lt;typeName *&gt;(obj);\
+</span><span style="color:#1e889b">    }\
+</span><span style="color:#1e889b">}; \
+</span><span style="color:#1e889b">
+</span></code></pre></div><p>上面的宏逻辑：</p>
+<ul>
+<li>在类上增加了一个<code>inject_{__LINE__}</code>的成员变量，类型是InjectFunction，变量名带上所在行号，也不会存在冲突。</li>
+<li>利用了C++11的变量初始化方式，调用InjectFunction的构造方法，传入this，以及一个lambda表达式</li>
+<li>在lambda表达式，先调用m_init.DoNothing()，解决模板成员变量必须调用才会生效的问题</li>
+<li>再根据类型获取注册的对象指针，对需注入的变量valName赋值</li>
+</ul>
+<p>完整的使用示列：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;T&gt; {};
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">B</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;T&gt; {
+<span style="color:#8b008b;font-weight:bold">private</span>: 
+    INJECT_PTR(A, m_pA);
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#00688b;font-weight:bold">void</span> OnInit() overide { std::cout &lt;&lt; <span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;<span style="color:#00688b;font-weight:bold">void</span>*&gt;(m_pA) &lt;&lt; std::endl; }
+};
+
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">C</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;C&gt; {
+<span style="color:#8b008b;font-weight:bold">private</span>: 
+    INJECT_PTR(A, m_pA);
+    INJECT_PTR(B, m_pB);
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#00688b;font-weight:bold">void</span> OnInit() overide
+    { 
+        std::cout &lt;&lt; <span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;<span style="color:#00688b;font-weight:bold">void</span>*&gt;(m_pA) &lt;&lt; std::endl; 
+        std::cout &lt;&lt; <span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;<span style="color:#00688b;font-weight:bold">void</span>*&gt;(m_pB) &lt;&lt; std::endl;
+    }
+};
+
+<span style="color:#228b22">// static变量先于main方法
+</span><span style="color:#228b22">// [A, B, C]的static变量m_init实例化，完成A, B, C 对象的创建也向Container注册，A，B，C对象实际上单例
+</span><span style="color:#228b22"></span>
+<span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">main</span>(<span style="color:#00688b;font-weight:bold">int</span> argc, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">char</span> **argv) 
+{
+    Container::Instance()::InitAllObjects();
+    <span style="color:#228b22">// InitAllObjects() --&gt; 调用[A, B, C]的Init --&gt; 调用 [B, C]的m_valInjectFuncs回调方法 --&gt; 依赖注入赋值
+</span><span style="color:#228b22"></span>    Container::Instance()::DestroyAllOjects();
+}
+</code></pre></div><h1 id="static变量生命周期">static变量生命周期</h1>
+<p>C++的static成员变量和普通static变量一样，都在内存分区中的全局数据区分配内存，到程序结束时才释放。这就意味着，static成员变量不随对象的创建而分配内存，也不随对象的销毁而释放内存。而普通成员变量在对象创建时分配内存，在对象销毁时释放内存。</p>
+<p>C也有static变量，但与C++的生命周期存在细微差别，初始化不同：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>全局变量</th>
+<th>文件域的静态变量</th>
+<th>类的静态成员变量</th>
+<th>静态局部变量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C</td>
+<td>编译期初始化</td>
+<td>编译期初始化</td>
+<td>N/A</td>
+<td>编译期初始化</td>
+</tr>
+<tr>
+<td>C++</td>
+<td>main执行前</td>
+<td>main执行前</td>
+<td>main执行前</td>
+<td>首次执行相关代码时初始化</td>
+</tr>
+</tbody>
+</table>
+<p>再回到代码讲解中方案，示例中的A，B，C类也可以放在不同的h/cpp文件，只要加入编译与链接单元，在main执行前就会自动构造，向容器注册。如果任何一个类的构造方法很耗时，会导致程度启动时间变长。</p>
+<p>一些注意项：</p>
+<ul>
+<li>C++静态成员属于类作用域，但不属于类对象，不能在类的构造函数中进行初始化</li>
+<li>静态成员变量必须初始化，而且只能在类体外进行</li>
+<li>类的成员函数中定义的静态局部变量，该类的所有对象在调用这个成员函数时将共享这个变量</li>
+<li>静态变量的销毁是通过atexit()来管理的，在程序结束，按照构造顺序反方向进行逐个析构。对于同一个编译单元内的静态变量，构造顺序和声明顺序是一致的，不同编译单元的，构造顺序是不定的</li>
+</ul>
+<p>main执行前到底是编译时还是运行时呢？引用C++标准(C++11 N3690 3.6.2)：</p>
+<blockquote>
+<p>全局变量、文件域的静态变量和类的静态成员变量在main执行之前的静态初始化过程中分配内存并初始化；静态局部变量（一般为函数内的静态变量）在第一次使用时分配内存并初始化。这里的变量包含内置数据类型和自定义类型的对象。</p>
+</blockquote>
+<p>什么是静态初始化呢？继续来看C++标准：</p>
+<blockquote>
+<p>从语言的层面来说，全局变量的初始化可以划分为以下两个阶段：</p>
+<ul>
+<li>static initialization: 静态初始化指的是用常量来对变量进行初始化,主要包括 zero initialization和const initialization，静态初始化在程序加载的过程中完成，对简单类型(内建类型，POD等)来说，从具体实现上看，zero initialization的变量会被保存在 bss 段，const initialization的变量则放在data段内，程序加载即可完成初始化，这和 C 语言里的全局变量初始化基本是一致的。</li>
+<li>dynamic initialization：动态初始化主要是指需要经过函数调用才能完成的初始化，比如说：int a = foo()，或者是复杂类型（类）的初始化（需要调用构造函数）等。这些变量的初始化会在main 函数执行前由运行时调用相应的代码从而得以进行(静态局部变量除外)</li>
+</ul>
+</blockquote>
+<p>总结如下：</p>
+<ul>
+<li>对于内建类型，且在代码中已经手动初始化的，则该变量及其初始化值会被保存在可执行程序的data段， 在运行时对其做const initialization</li>
+<li>未手动初始化的，则该变量会被放在可执行程序的bss段，在运行时对其做zero initialization</li>
+<li>对于自定义类型，则变量都是放在bss段，并且在运行时做动态初始化</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>手动初始化</th>
+<th>未手动初始化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内建类型</td>
+<td>data段，const initialization</td>
+<td>bss段，zero initialization</td>
+</tr>
+<tr>
+<td>自定义类型</td>
+<td>bss段，动态初始化</td>
+<td>bss段，动态初始化</td>
+</tr>
+</tbody>
+</table>
+<h1 id="结语">结语</h1>
+<p>本文利用C++的静态成员变量初始化的机制，实现一个简单的对象自动注册与依赖注入管理框架。通过代码设计应用，再针对静态成员变量的机制进行了整理，加强了C++的底层基础知识的掌握。只有在实际工作中，打开脑洞，深入底层细节，才会觉得C++越来越有趣，而不是望而怯步。</p>
+
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2022/0404/" rel="prev" title="飞哥讲代码29：C&#43;&#43;可变参数模板应用">
+        飞哥讲代码29：C&#43;&#43;可变参数模板应用 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码30：C&#43;&#43;简单依赖注入
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">161</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#代码讲解">代码讲解</a></li>
+    <li><a href="#static变量生命周期">static变量生命周期</a></li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2022</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>
