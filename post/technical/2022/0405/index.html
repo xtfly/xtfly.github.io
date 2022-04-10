@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3560 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3559 字 ~8分钟</span>
 </span>
       </div>
     </header>
@@ -158,7 +158,7 @@
 <blockquote>
 <p>使用全局变量会导致业务代码和全局变量之间产生数据耦合。在不同编译单元的全局变量以及全局常量的初始化顺序没有被严格定义，使用时需要注意他们的初始化是否有相互依赖。</p>
 </blockquote>
-<p>一个完整的应用是由一组相互协作的对象组成，开发人员要关注如何使这些对象协作来完成所需功能，并且要低耦合、高聚合。如果有个框架出来帮我们来创建对象及管理这些对象之间的依赖关系，那我们只需要聚集于业务逻辑。作为同时写过Java代码的老兵，了解管理依赖是Spring的设计初衷之一。Java天然具有动态反射能力，为IoC框架实现提供了基础。但C++并没有反射能对类的自省，如何实现一个简单的IoC框架类？</p>
+<p>一个完整的应用是由一组相互协作的对象组成，开发人员要关注如何使这些对象协作来完成所需功能，并且要低耦合、高聚合。如果有个框架出来帮我们来创建对象及管理这些对象之间的依赖关系，那我们只需要聚集于业务逻辑。作为同时写过Java代码的老兵，了解管理依赖是Spring的设计初衷之一。Java天然具有动态反射能力，为IoC框架实现提供了基础。但C++并没有反射能对类的自省，如何实现一个简单的IoC框架？</p>
 <h1 id="代码讲解">代码讲解</h1>
 <p>Spring有多种依赖注入的方式，我们先实现一个简单的属性依赖注入。在C++中想达到如下效果：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {};
@@ -254,9 +254,9 @@ ManagedObject&lt;T&gt;::AutoInit ManagedObject&lt;T&gt;::m_init; <span style="co
 <li>再根据类型获取注册的对象指针，对需注入的变量valName赋值</li>
 </ul>
 <p>完整的使用示列：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;T&gt; {};
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;A&gt; {};
 
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">B</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;T&gt; {
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">B</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;B&gt; {
 <span style="color:#8b008b;font-weight:bold">private</span>: 
     INJECT_PTR(A, m_pA);
 <span style="color:#8b008b;font-weight:bold">public</span>:

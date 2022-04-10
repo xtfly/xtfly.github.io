@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2379 字 ~5分钟</span>
+<span class="leancloud-visitors-count">2409 字 ~5分钟</span>
 </span>
       </div>
     </header>
@@ -153,7 +153,7 @@
 <p>为了避免类型错误，应当使用可变参数模板等其它的方式来代替va_arg可变参数。</p>
 </blockquote>
 <p>规范中也给出了一个简单的示例，像我这种有使用过的经验感觉示例有点意犹未尽。去年年底我使用C++写一个小工具，其中就使用可变参数模板封装了一个日志接口，同时参考了Java slf4j日志用法，支持占位符。正好借这个代码的来温习与讲解一下可变参数模板，感受一下C++模板编程的魅力。</p>
-<p>使用示例：</p>
+<p>使用示例(如果您可以使用C++20，建议参考std::format)：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">INFO(<span style="color:#cd5555">&#34;Hell world&#34;</span>);
 INFO(<span style="color:#cd5555">&#34;Hi {}&#34;</span>, <span style="color:#cd5555">&#34;xiao ming&#34;</span>);
 INFO(<span style="color:#cd5555">&#34;Welcome {} join {}&#34;</span>, <span style="color:#cd5555">&#34;to&#34;</span>, <span style="color:#cd5555">&#34;conference&#34;</span>);
