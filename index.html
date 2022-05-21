@@ -106,6 +106,72 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0521/" itemprop="url">
+        零拷贝技术及在Java中应用
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-05-21">
+    2022-05-21
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4885 字 ~10分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="前言">前言</h1>
+<p>前一段时间参与定位Tomcat某一问题，涉及到sendfile系统调用。忽然想到之前一些使用经验，知道Java领域中有不少开源软件，都使用零拷贝来提升期性能，于是有了本文。先看看我们这些耳熟能详的软件吧，你是否有了解过他们背后使用的技术点：</p>
+<ul>
+<li>Tomcat: 使用sendfile直接把大文件写入Socket，提升静态文件高效的数据传输</li>
+<li>Netty: 统一的ByteBuf机制，通过DirectBuffer封装，使用堆外内存进行Socket读写；也提供使用Sendfile来把文件缓冲区的数据发送到目标Channel</li>
+<li>RecketMQ：基于mmap内存映射文件方式对CommitLogy读写文件，当客户端消费消息时直接把内容写到目标Socket</li>
+</ul>
+<p>本文是对网上知识的收集与整理，以便分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2022/0521/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0405/" itemprop="url">
         飞哥讲代码30：C&#43;&#43;简单依赖注入
         </a>
@@ -145,12 +211,23 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3559 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3556 字 ~8分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    前言 前一段时间看某一老产品的代码，是C/C++混合编写的代码，代码中充满了全局变量，并采用extern引用外部全局变量。问题是由于类与类之间
+    <h1 id="前言">前言</h1>
+<p>前一段时间看某一老产品的代码，是C/C++混合编写的代码，代码中充满了全局变量，并采用extern引用外部全局变量。问题是由于类与类之间存在依赖关系，如果都通过构造方法传入依赖，会导致整个对象依赖图构造复杂。对于上了年头的老代码，采用全局变量+extern引用能够简单粗暴地插入要新增的调用关系，但也带来了代码上腐化。</p>
+<p>在我司新的C++融合编程规范中提到：</p>
+<p>禁止通过声明的方式引用外部函数接口与变量。</p>
+<blockquote>
+<p>只能通过包含头文件方式使用其它模块或文件提供的接口。通过声明的方式使用外部函数接口变量，容易在外部接口改变时可能导致声明有定义不一致。同时这种隐式依赖，容易导致架构腐化。</p>
+</blockquote>
+<p>避免使用全局变量(节选)。</p>
+<blockquote>
+<p>使用全局变量会导致业务代码和全局变量之间产生数据耦合。在不同编译单元的全局变量以及全局常量的初始化顺序没有被严格定义，使用时需要注意他们的初始化是否有相互依赖。</p>
+</blockquote>
+<p>一个完整的应用是由一组相互协作的对象组成，开发人员要关注如何使这些对象协作来完成所需功能，并且要低耦合、高聚合。如果有个框架出来帮我们来创建对象及管理这些对象之间的依赖关系，那我们只需要聚集于业务逻辑。作为同时写过Java代码的老兵，了解管理依赖是Spring的设计初衷之一。Java天然具有动态反射能力，为IoC框架实现提供了基础。但C++并没有反射能对类的自省，如何实现一个简单的IoC框架？</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -553,69 +630,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0904/" itemprop="url">
-        软件开发漫谈3：开发者测试
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-09-04">
-    2021-09-04
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">5560 字 ~12分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="背景">背景</h1>
-<p>目前各个团队在推行开发者测试，有些执行力与能力强的团队，逐渐开展起开发者测试。我们总是有各种各样的借口，没有管道时间，不具备本地测试条件，缺少测试技能等等。很多历史代码也不是我写的，缺少测试代码，再被动去补测试，看到明显的收益，抵触很自然。</p>
-<p>开发人员不做测试吗？其实也不是，至少我见到的团队，开发人员都会对自己新写和修改的代码做测试验证。只是这个测试过程是手工的，通过搭建环境，替换软件包，再手工给接口发送消息等一些无法自动可重入的测试手段，效率低下。</p>
-<p>曾经我们也推广过LLT测试，专职测试人员与开发人员饱和式投入之后，随着软件的演进，测试代码却没有随着持续维护与更新，久而久之变成比功能代码还腐烂，今天我们重新再提开发者测试，是否也难逃LLT一样的命运？</p>
-<p>笔者虽然一直从事开发，但在十多年前被主管安排过从事支撑系统测试的工作，写过验收测试用例，写过TTCN的测试脚本，也作为测试执行者用过测试专有工具。现在再来看开发者测试，它们在测试思路、理念、工具都是不相同的。如何更好地开展开发者测试我也是满脑的困惑，参考一些资料，趁着周末有点时间整理，观点也是房屋中大象，权当漫谈的谈资。</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0904/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -743,7 +757,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">161</span>
+        <span class="site-state-item-count">162</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
