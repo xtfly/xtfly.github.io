@@ -50,23 +50,23 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;问题1&lt;/strong&gt;，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;pBuf1 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请一块内存
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支1
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
-}
-&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;pBuf2 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX2)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请另一块内存
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond2) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支2
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1); &lt;span style=&#34;color:#228b22&#34;&gt;// 每个分支，都要释放前面所有代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf2);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
-}
-&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf1 = pBuf1;  &lt;span style=&#34;color:#228b22&#34;&gt;// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf2 = pBuf2;
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_SUCCESS
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pBuf1 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请一块内存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;pBuf2 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX2)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请另一块内存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond2) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1); &lt;span style=&#34;color:#228b22&#34;&gt;// 每个分支，都要释放前面所有代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf1 = pBuf1;  &lt;span style=&#34;color:#228b22&#34;&gt;// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf2 = pBuf2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_SUCCESS
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -156,21 +156,21 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。&lt;/p&gt;
 &lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
-{
-  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
-    METHOD_LIST_BEGIN
-    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
-    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
-    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
-    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
-  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    METHOD_LIST_BEGIN
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式&lt;/li&gt;
 &lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;替换参数，参数的类型可能是string, int, long等类型，是无固定参数&lt;/li&gt;
@@ -188,20 +188,20 @@
 &lt;p&gt;元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=composite&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
 &lt;p&gt;drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。&lt;/p&gt;
 &lt;p&gt;我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了&lt;code&gt;const T&amp;amp; &lt;/code&gt;与&lt;code&gt;T &amp;amp;&amp;amp;&lt;/code&gt;两种入参。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
-    {
-        recvMessageCallback_ = cb;
-    }
-    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
-    {
-        recvMessageCallback_ = std::move(cb);
-    }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
-  {
-        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
-  }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        recvMessageCallback_ = cb;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        recvMessageCallback_ = std::move(cb);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -212,15 +212,15 @@
       <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
-src_path, src_file = os.path.split(file_name)
-tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
-tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
-tmp_file.writeline(file_gz.realines())
-file_gz.close()
-tmp_file.close()
-os.remove(file_name)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz = gzip.GzipFile(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;src_path, src_file = os.path.split(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.writeline(file_gz.realines())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;os.remove(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
 &lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
@@ -235,17 +235,17 @@ os.remove(file_name)
       
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_namespace_usage/</guid>
       <description>&lt;p&gt;C开发人员会经常使用&lt;code&gt;#define&lt;/code&gt;即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了&lt;code&gt;namespace&lt;/code&gt;名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;namespace outspname {   
-   const int CVAR1 = 1;  
-   const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
-   void test();  
-
-   namespace inspname {  
-      enum { A, B, C};  
-      class Klass {};  
-   }  
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namespace outspname {   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   const int CVAR1 = 1;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   const char* const CVAR2 = &amp;#34;33333&amp;#34;;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   void test();  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   namespace inspname {  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      enum { A, B, C};  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      class Klass {};  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -256,13 +256,13 @@ os.remove(file_name)
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_erase_fault/</guid>
       <description>&lt;h2 id=&#34;陷阱&#34;&gt;陷阱&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;STL&lt;/code&gt;中的容器都有&lt;code&gt;erase&lt;/code&gt;方法，容器的存储分为顺序存储(如&lt;code&gt;vector&lt;/code&gt;)与链式存储(如&lt;code&gt;list,map&lt;/code&gt;)。先以&lt;code&gt;map&lt;/code&gt;为例:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; TStrMap::iterator TStrMapIter;  
-
-TStrMap strmap;  
-TStrMapIter iter = strmap.find(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;somekey&amp;#34;&lt;/span&gt;);  
-strmap.erase(iter);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; std::map&amp;lt;std::string, std::string&amp;gt; TStrMap;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typedef&lt;/span&gt; TStrMap::iterator TStrMapIter;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TStrMap strmap;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TStrMapIter iter = strmap.find(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;somekey&amp;#34;&lt;/span&gt;);  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;strmap.erase(iter);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样使用&lt;code&gt;erase&lt;/code&gt;方法没有任何问题，删除一个单结节之后，&lt;code&gt;stl&lt;/code&gt;中的&lt;code&gt;iterator&lt;/code&gt;都是与其中的数据元素关联的，关联的元素删除之后，&lt;code&gt;ite&lt;/code&gt;r已就失效，&lt;code&gt;iter&lt;/code&gt;理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -273,16 +273,16 @@ strmap.erase(iter);
       <guid>http://lanlingzi.cn/post/technical/csdn/cpp_closure_pkg/</guid>
       <description>&lt;h2 id=&#34;闭包&#34;&gt;闭包&lt;/h2&gt;
 &lt;p&gt;什么是闭包，我们先来用&lt;code&gt;ruby&lt;/code&gt;看个例子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;sum = 0  
-10.times{|n| sum += n}   
-print sum
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sum = 0  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;10.times{|n| sum += n}   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print sum
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;{}&lt;/code&gt;就是闭包的内容，代码看起来是不是很清爽与简单。&lt;/p&gt;
 &lt;p&gt;我们再来看看&lt;code&gt;Python&lt;/code&gt;写的闭包：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;def addx(x):      
-    return lambda y: x + y  
-add8 = addx(8)  
-print add8(100)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;def addx(x):      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    return lambda y: x + y  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;add8 = addx(8)  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print add8(100)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用Python写就没有那么好看。&lt;/p&gt;</description>
     </item>
     
     <item>

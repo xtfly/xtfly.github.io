@@ -169,24 +169,24 @@
 <li>抽象层次是循序渐进，逐步分层</li>
 </ul>
 <p>例如，对某一个数据集进行分析，第一层抽象：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func AnalysisData()  {
-    // 1. 读取数据
-    loadDataset() 
-    // 2. 处理数据
-    processDataset() 
-    // 3. 输出结果
-    outputResult()
-}
-</code></pre></div><p>对处理数据进行第二层抽象：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func processDataset() {
-    // 2.1 转换数据
-    transformData()
-    // 2.2 选择算法，建立模型
-    buildModel()
-    // 2.3 评估模型
-    evaluateModel()
-}
-</code></pre></div><p>如果在 <code>AnalysisData</code> 函数中 <code>loadDataset</code> 与 <code>processDataset</code> 间插入一行代码，或直接把 <code>processDataset</code> 所有实现都展示在此函数中，则这种实现破环了抽象层次。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func AnalysisData()  {
+</span></span><span style="display:flex;"><span>    // 1. 读取数据
+</span></span><span style="display:flex;"><span>    loadDataset() 
+</span></span><span style="display:flex;"><span>    // 2. 处理数据
+</span></span><span style="display:flex;"><span>    processDataset() 
+</span></span><span style="display:flex;"><span>    // 3. 输出结果
+</span></span><span style="display:flex;"><span>    outputResult()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>对处理数据进行第二层抽象：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func processDataset() {
+</span></span><span style="display:flex;"><span>    // 2.1 转换数据
+</span></span><span style="display:flex;"><span>    transformData()
+</span></span><span style="display:flex;"><span>    // 2.2 选择算法，建立模型
+</span></span><span style="display:flex;"><span>    buildModel()
+</span></span><span style="display:flex;"><span>    // 2.3 评估模型
+</span></span><span style="display:flex;"><span>    evaluateModel()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果在 <code>AnalysisData</code> 函数中 <code>loadDataset</code> 与 <code>processDataset</code> 间插入一行代码，或直接把 <code>processDataset</code> 所有实现都展示在此函数中，则这种实现破环了抽象层次。</p>
 <p>在抽象层次中存在一种规则：自顶向下。按业务的处理逻辑进行了一定粒度的拆分，把软件变成一个个不同层次的功能点。像UML时序图一样，我们按照先后顺序，从上往下一层层的组装。单一抽象层次原则使代码块在单一的抽象层，每个代码块也是就是函数的目录或章节，当我们去读这种代码时，就像阅读书本一样，层次清晰。</p>
 <h2 id="再说函数">再说函数</h2>
 <p>在上一篇 <a href="http://lanlingzi.cn/post/technical/2019/0529_function/">编写短小的函数/方法</a> 中，提到小函数的优点，以及通过度量指标来思考把函数如何变 ”小“。结合 单一职责原则（SRP） 与 单一抽象层次原则（SLAP），发现他们在编写函数时是相辅相成的。</p>
@@ -195,15 +195,15 @@
 <li>SLAP，说函数中的语句应该是一个抽象层上的步骤组合，也就是只做了一件事</li>
 </ul>
 <p>另外我们在写函数代码时，通常会通过空行或注释分割逻辑片段，就像文章的段落：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">//注释1
-代码片段1
-
-//注释2
-代码片段2
-
-//注释3
-代码片段3
-</code></pre></div><p>如果所有片段都是在同一个抽象层次上，只要方法不是过长（如有效性不超过25行），并不需要把每个片段抽取为函数。个人觉得这种做法不算违背SLAP，尽信书不如无书，我们需要有思考与权衡。当然若是一部分提取而一部分不提取那肯是不对的。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>//注释1
+</span></span><span style="display:flex;"><span>代码片段1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//注释2
+</span></span><span style="display:flex;"><span>代码片段2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//注释3
+</span></span><span style="display:flex;"><span>代码片段3
+</span></span></code></pre></div><p>如果所有片段都是在同一个抽象层次上，只要方法不是过长（如有效性不超过25行），并不需要把每个片段抽取为函数。个人觉得这种做法不算违背SLAP，尽信书不如无书，我们需要有思考与权衡。当然若是一部分提取而一部分不提取那肯是不对的。</p>
 <p>平铺的片段往往随着时间的推移，一是可能当增加需求会导致方法膨胀；二是新增的代码可能不在一个抽象层次上。个人建议对于新增小段代码时，优先考虑它是否可以独立为一个函数，而只在原有的代码地方去调用新增的函数。当新的内容打破了代码层次平衡，则需要及时地重构，原来的代码该提取函数就提取。</p>
 <h2 id="常见思路">常见思路</h2>
 <p>为达成SLAP，函数重构主要有两种方法：</p>
@@ -400,7 +400,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

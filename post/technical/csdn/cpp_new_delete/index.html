@@ -155,125 +155,125 @@
 <p>delete是new的逆过程，先调用类的析构方法来反初始化，再把刚申请的内存还给堆。</p>
 <p>new []与delete []是针对数组操作符，要注意是通过new []分配的对象，不能用delete来释放对象，否则会有内存泄漏。当然通过new分配的对象，不能用delete[]来释放对象。后面我会通过代码来说明为什么。</p>
 <p>下面是C++ 中的new与delete函数原型，申请内存失败会抛出异常bad_alloc</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">new</span>(std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
-<span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">new</span>[](std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">delete</span>(<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">delete</span>[](<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
-</code></pre></div><p>使用举例:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span>* p1 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>();
-<span style="color:#8b008b;font-weight:bold">delete</span> p2;
-
-<span style="color:#00688b;font-weight:bold">int</span>* p2 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[<span style="color:#b452cd">5</span>];
-<span style="color:#8b008b;font-weight:bold">delete</span> [] p2;
-</code></pre></div><p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">/**
-</span><span style="color:#228b22"> * A simulation of c++ new T() &amp; new T(param) operation
-</span><span style="color:#228b22"> */</span>  
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">NewObj</span> {
-    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
-    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {
-        <span style="color:#228b22">// allocate memory form heap
-</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">void</span> * pBuff = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(T));
-        <span style="color:#228b22">// call constructor
-</span><span style="color:#228b22"></span>        pObj = <span style="color:#8b008b;font-weight:bold">new</span> (pBuff) T();
-    }
-
-    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> P&gt;
-    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj, <span style="color:#8b008b;font-weight:bold">const</span> P&amp; param) {
-        <span style="color:#228b22">// allocate memory form heap
-</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">void</span> * pBuff = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(T));
-        <span style="color:#228b22">// call constructor, pass one param
-</span><span style="color:#228b22"></span>        pObj = <span style="color:#8b008b;font-weight:bold">new</span>(pBuff) T(param);
-    }
-};  
-
-<span style="color:#228b22">/**
-</span><span style="color:#228b22"> * A simulation of c++ delete T operation
-</span><span style="color:#228b22"> */</span>  
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">DeleteObj</span> {  
-    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
-    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {  
-        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#658b00">NULL</span> == pObj ) { <span style="color:#8b008b;font-weight:bold">return</span> ;}  
-        <span style="color:#228b22">// call destructor  
-</span><span style="color:#228b22"></span>        pObj-&gt;~T();  
-        <span style="color:#228b22">// free memory to heap  
-</span><span style="color:#228b22"></span>        free((<span style="color:#00688b;font-weight:bold">void</span>*)pObj);  
-        pObj = <span style="color:#658b00">NULL</span>;  
-    }  
-};  
-
-<span style="color:#228b22">/**
-</span><span style="color:#228b22"> * A simulation of c++ new T[N]() operation
-</span><span style="color:#228b22"> */</span>  
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">NewObjArray</span> {  
-    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
-    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj, <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> size) {  
-        <span style="color:#228b22">// save the number of array elements in the beginning of the space.  
-</span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> * pBuff = (<span style="color:#00688b;font-weight:bold">long</span> *) malloc (<span style="color:#8b008b;font-weight:bold">sizeof</span>(T) * size + <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>));  
-        *((<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> *) pBuff) = size;  
-        pBuff++;  
-
-        <span style="color:#228b22">// change pointer to T type, then can use pT++  
-</span><span style="color:#228b22"></span>        T * pT = (T *) pBuff;  
-        <span style="color:#228b22">// save the pointer to the start of the array.  
-</span><span style="color:#228b22"></span>        pObj = pT;  
-        <span style="color:#228b22">// now iterate and construct every object in place.  
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; size; i++) {  
-            <span style="color:#8b008b;font-weight:bold">new</span>((<span style="color:#00688b;font-weight:bold">void</span> *) pT) T();  
-            pT++;  
-        }  
-    }  
-};  
-
-
-<span style="color:#228b22">/**
-</span><span style="color:#228b22"> * A simulation of c++ delete [] T operation
-</span><span style="color:#228b22"> */</span>  
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">DeleteObjArray</span> {  
-    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
-    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {  
-        <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> size = *((<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> *) ((<span style="color:#00688b;font-weight:bold">long</span> *) pObj - <span style="color:#b452cd">1</span>));  
-
-        T * pT = pObj;  
-        <span style="color:#228b22">// call destructor on every element in the array.  
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; size; i++) {  
-            pT-&gt;~T();  
-            pT++;  
-        }  
-        <span style="color:#228b22">// free memory to heap.  
-</span><span style="color:#228b22"></span>        free ((<span style="color:#00688b;font-weight:bold">void</span> *) ((<span style="color:#00688b;font-weight:bold">long</span> *) pObj - <span style="color:#b452cd">1</span>));  
-        pObj = <span style="color:#658b00">NULL</span>;  
-    }  
-};  
-</code></pre></div><p>测试代码:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TestClass</span> {  
-    TestClass() : mem1(<span style="color:#b452cd">0</span>), mem2(<span style="color:#b452cd">0</span>)  {}  
-
-    TestClass(<span style="color:#00688b;font-weight:bold">int</span> m) : mem1(m), mem2(<span style="color:#b452cd">0</span>) {}  
-  
-    <span style="color:#00688b;font-weight:bold">int</span> mem1;  
-    <span style="color:#00688b;font-weight:bold">long</span> mem2;  
-};  
-
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_new_delete</span>()  {  
-    TestClass* p1 = <span style="color:#658b00">NULL</span>;  
-    NewObj()(p1);  
-    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p1);  
-    DeleteObj()(p1);  
-
-    <span style="color:#228b22">//  
-</span><span style="color:#228b22"></span>    TestClass* p2 = <span style="color:#658b00">NULL</span>;  
-    NewObj()(p2, <span style="color:#b452cd">0</span>);  
-    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p2);  
-    DeleteObj()(p2);  
-
-    <span style="color:#228b22">//  
-</span><span style="color:#228b22"></span>    TestClass* p3 = <span style="color:#658b00">NULL</span>;  
-    NewObjArray()(p3, <span style="color:#b452cd">5</span>);  
-    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p3);  
-    DeleteObjArray()(p3);  
-}  
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">new</span>(std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span>* <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">new</span>[](std::size_t) <span style="color:#8b008b;font-weight:bold">throw</span> (std::bad_alloc);
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#008b45">delete</span>(<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">delete</span>[](<span style="color:#00688b;font-weight:bold">void</span>*) <span style="color:#8b008b;font-weight:bold">throw</span>();
+</span></span></code></pre></div><p>使用举例:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span>* p1 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>();
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">delete</span> p2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span>* p2 = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[<span style="color:#b452cd">5</span>];
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">delete</span> [] p2;
+</span></span></code></pre></div><p>终于到了用模板来模拟new与delete操作符，代码中有注释说明，其中对于调用类的构造方法，采用一种C++标准中称作in-place construtor的方式。使用原型为T* = new(pbuff) T()，直译的话就是在pbuff这块内存构造T类，而不用再去堆上面申请内存。这种技巧大量应用在对象池的实现中，即pbuff这块内存可以挂在链表中反复地使用（这里先不展开说了）。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * A simulation of c++ new T() &amp; new T(param) operation
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">NewObj</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// allocate memory form heap
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">void</span> * pBuff = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(T));
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// call constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pObj = <span style="color:#8b008b;font-weight:bold">new</span> (pBuff) T();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> P&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj, <span style="color:#8b008b;font-weight:bold">const</span> P&amp; param) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// allocate memory form heap
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">void</span> * pBuff = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(T));
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// call constructor, pass one param
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pObj = <span style="color:#8b008b;font-weight:bold">new</span>(pBuff) T(param);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * A simulation of c++ delete T operation
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">DeleteObj</span> {  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#658b00">NULL</span> == pObj ) { <span style="color:#8b008b;font-weight:bold">return</span> ;}  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// call destructor  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pObj-&gt;~T();  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// free memory to heap  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        free((<span style="color:#00688b;font-weight:bold">void</span>*)pObj);  
+</span></span><span style="display:flex;"><span>        pObj = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * A simulation of c++ new T[N]() operation
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">NewObjArray</span> {  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj, <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> size) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// save the number of array elements in the beginning of the space.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#00688b;font-weight:bold">long</span> * pBuff = (<span style="color:#00688b;font-weight:bold">long</span> *) malloc (<span style="color:#8b008b;font-weight:bold">sizeof</span>(T) * size + <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>));  
+</span></span><span style="display:flex;"><span>        *((<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> *) pBuff) = size;  
+</span></span><span style="display:flex;"><span>        pBuff++;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// change pointer to T type, then can use pT++  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        T * pT = (T *) pBuff;  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// save the pointer to the start of the array.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pObj = pT;  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// now iterate and construct every object in place.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; size; i++) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">new</span>((<span style="color:#00688b;font-weight:bold">void</span> *) pT) T();  
+</span></span><span style="display:flex;"><span>            pT++;  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> * A simulation of c++ delete [] T operation
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"> */</span>  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">DeleteObjArray</span> {  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#8b008b;font-weight:bold">operator</span>()(T*&amp; pObj) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> size = *((<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> *) ((<span style="color:#00688b;font-weight:bold">long</span> *) pObj - <span style="color:#b452cd">1</span>));  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        T * pT = pObj;  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// call destructor on every element in the array.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; size; i++) {  
+</span></span><span style="display:flex;"><span>            pT-&gt;~T();  
+</span></span><span style="display:flex;"><span>            pT++;  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// free memory to heap.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        free ((<span style="color:#00688b;font-weight:bold">void</span> *) ((<span style="color:#00688b;font-weight:bold">long</span> *) pObj - <span style="color:#b452cd">1</span>));  
+</span></span><span style="display:flex;"><span>        pObj = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><p>测试代码:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TestClass</span> {  
+</span></span><span style="display:flex;"><span>    TestClass() : mem1(<span style="color:#b452cd">0</span>), mem2(<span style="color:#b452cd">0</span>)  {}  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    TestClass(<span style="color:#00688b;font-weight:bold">int</span> m) : mem1(m), mem2(<span style="color:#b452cd">0</span>) {}  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> mem1;  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">long</span> mem2;  
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_new_delete</span>()  {  
+</span></span><span style="display:flex;"><span>    TestClass* p1 = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>    NewObj()(p1);  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p1);  
+</span></span><span style="display:flex;"><span>    DeleteObj()(p1);  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TestClass* p2 = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>    NewObj()(p2, <span style="color:#b452cd">0</span>);  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p2);  
+</span></span><span style="display:flex;"><span>    DeleteObj()(p2);  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    TestClass* p3 = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>    NewObjArray()(p3, <span style="color:#b452cd">5</span>);  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;%p/n&#34;</span>, p3);  
+</span></span><span style="display:flex;"><span>    DeleteObjArray()(p3);  
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><hr>
 <blockquote>
 <p>测试环境为eclipse+cdt+ubuntu+gcc，注意头文件需要<code>#include&lt;new&gt;</code>，使用<code>#include&lt;stdlib.h&gt;</code>会导致编译不过，因为<code>in-place construtor</code>是C++中的新玩意。</p>
 </blockquote>
@@ -426,7 +426,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

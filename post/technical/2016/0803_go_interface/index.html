@@ -168,24 +168,24 @@
 <p>接口的特性是Go语言支持鸭子类型的基础，即“如果它走起来像鸭子，叫起来像鸭子（实现了接口要的方法），它就是一只鸭子（可以被赋值给接口的值）”。凭借接口机制和鸭子类型，Go语言提供了一种有利于类、继承、模板之外的更加灵活强大的选择。只要类型T的公开方法完全满足接口I的要求，就可以把类型T的对象用在需要接口I的地方。这种做法的学名叫做&quot;<a href="http://en.wikipedia.org/wiki/Structural_type_system">Structural Typing</a>&quot;。</p>
 <h2 id="方法">方法</h2>
 <p>Go语言中同时有函数和方法。一个方法就是一个包含了<a href="http://golang.org/ref/spec#Method_declarations">接受者</a>的函数，接受者可以是<a href="http://golang.org/ref/spec#Types">命名类型</a>或者<a href="http://golang.org/ref/spec#Struct_types">结构体类型</a>的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type User struct {
-  Name  string
-  Email string
-}
-
-func (u User) Notify() error
-
-// User 类型的值可以调用接受者是值的方法
-damon := User{&#34;AriesDevil&#34;, &#34;ariesdevil@xxoo.com&#34;}
-damon.Notify()
-
-// User 类型的指针同样可以调用接受者是值的方法
-alimon := &amp;User{&#34;A-limon&#34;, &#34;alimon@ooxx.com&#34;}
-alimon.Notify()
-</code></pre></div><p><code>User</code>的结构体类型，定义了一个该类型的方法叫做<code>Notify</code>，该方法的接受者是一个<code>User</code>类型的值。要调用<code>Notify</code>方法我们需要一个 <code>User</code>类型的值或者指针。Go<a href="http://golang.org/ref/spec#Calls">调用</a>和解引用指针使得调用可以被执行。<strong>注意</strong>，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type User struct {
+</span></span><span style="display:flex;"><span>  Name  string
+</span></span><span style="display:flex;"><span>  Email string
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func (u User) Notify() error
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// User 类型的值可以调用接受者是值的方法
+</span></span><span style="display:flex;"><span>damon := User{&#34;AriesDevil&#34;, &#34;ariesdevil@xxoo.com&#34;}
+</span></span><span style="display:flex;"><span>damon.Notify()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// User 类型的指针同样可以调用接受者是值的方法
+</span></span><span style="display:flex;"><span>alimon := &amp;User{&#34;A-limon&#34;, &#34;alimon@ooxx.com&#34;}
+</span></span><span style="display:flex;"><span>alimon.Notify()
+</span></span></code></pre></div><p><code>User</code>的结构体类型，定义了一个该类型的方法叫做<code>Notify</code>，该方法的接受者是一个<code>User</code>类型的值。要调用<code>Notify</code>方法我们需要一个 <code>User</code>类型的值或者指针。Go<a href="http://golang.org/ref/spec#Calls">调用</a>和解引用指针使得调用可以被执行。<strong>注意</strong>，当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。</p>
 <p>我们可以修改<code>Notify</code>方法，让它的接受者使用指针类型：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func (u *User) Notify() error
-</code></pre></div><p>再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func (u *User) Notify() error
+</span></span></code></pre></div><p>再来一次之前的调用(注意：当接受者是指针时，即使用值类型调用那么函数内部也是对指针的操作。</p>
 <p>总结：</p>
 <ul>
 <li>一个结构体的方法的接收者可能是类型值或指针</li>
@@ -193,34 +193,34 @@ alimon.Notify()
 <li>如果接收者是指针，则调用者修改的是指针指向的值本身。</li>
 </ul>
 <h2 id="接口实现">接口实现</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Notifier interface {
-  Notify() error
-}
-
-func SendNotification(notify Notifier) error {
-  return notify.Notify()
-}
-
-unc (u *User) Notify() error {
-  log.Printf(&#34;User: Sending User Email To %s&lt;%s&gt;\n&#34;,
-      u.Name,
-      u.Email)
-  return nil
-}
-
-func main() {
-  user := User{
-    Name:  &#34;AriesDevil&#34;,
-    Email: &#34;ariesdevil@xxoo.com&#34;,
-  }
-  
-  SendNotification(user)
-}
-
-// Output:
-cannot use user (type User) as type Notifier in function argument:
-User does not implement Notifier (Notify method has pointer receiver)
-</code></pre></div><p>上述代码是编译不过的，见Output，编译错误关键信息<code>Notify method has pointer receiver</code>。 编译器不考虑我们的<strong>值</strong>是实现该接口的类型，接口的调用规则是建立在这些方法的接受者和接口如何被调用的基础上。下面的是语言规范里定义的规则，这些规则用来说明是否我们一个类型的值或者指针<a href="http://golang.org/ref/spec#Method_sets">实现了</a>该接口：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type Notifier interface {
+</span></span><span style="display:flex;"><span>  Notify() error
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func SendNotification(notify Notifier) error {
+</span></span><span style="display:flex;"><span>  return notify.Notify()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>unc (u *User) Notify() error {
+</span></span><span style="display:flex;"><span>  log.Printf(&#34;User: Sending User Email To %s&lt;%s&gt;\n&#34;,
+</span></span><span style="display:flex;"><span>      u.Name,
+</span></span><span style="display:flex;"><span>      u.Email)
+</span></span><span style="display:flex;"><span>  return nil
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func main() {
+</span></span><span style="display:flex;"><span>  user := User{
+</span></span><span style="display:flex;"><span>    Name:  &#34;AriesDevil&#34;,
+</span></span><span style="display:flex;"><span>    Email: &#34;ariesdevil@xxoo.com&#34;,
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  SendNotification(user)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// Output:
+</span></span><span style="display:flex;"><span>cannot use user (type User) as type Notifier in function argument:
+</span></span><span style="display:flex;"><span>User does not implement Notifier (Notify method has pointer receiver)
+</span></span></code></pre></div><p>上述代码是编译不过的，见Output，编译错误关键信息<code>Notify method has pointer receiver</code>。 编译器不考虑我们的<strong>值</strong>是实现该接口的类型，接口的调用规则是建立在这些方法的接受者和接口如何被调用的基础上。下面的是语言规范里定义的规则，这些规则用来说明是否我们一个类型的值或者指针<a href="http://golang.org/ref/spec#Method_sets">实现了</a>该接口：</p>
 <ul>
 <li>类型 <code>*T</code> 的可调用方法集包含接受者为 <code>*T</code> 或 <code>T</code> 的所有方法集</li>
 <li>类型 <code>T</code> 的可调用方法集包含接受者为 <code>T</code> 的所有方法</li>
@@ -235,37 +235,37 @@ User does not implement Notifier (Notify method has pointer receiver)
 <p>空接口(<code>interface{}</code>)不包含任何的method，正因为如此，所有的类型都实现了<code>interface{}</code>。<code>interface{}</code>对于描述起不到任何的作用(因为它不包含任何的method），但是<code>interface{}</code>在我们需要存储任意类型的数值的时候相当有用，因为它可以存储任意类型的数值。它有点类似于C语言的<code>void*</code>类型。</p>
 <p>Go语言中的nil在概念上和其它语言的null、None、nil、NULL一样，都指代零值或空值。nil是预先说明的标识符，也即通常意义上的关键字。nil只能赋值给指针、channel、func、interface、map或slice类型的变量。如果未遵循这个<a href="http://pkg.golang.org/pkg/builtin/#Type">规则</a>，则会引发panic。</p>
 <p>在底层，interface作为两个成员来实现，一个类型(type)和一个值(data)。参考官方文档翻译<a href="http://my.oschina.net/chai2010/blog/117923">Go中error类型的nil值和nil</a>。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import (
-    &#34;fmt&#34;
-    &#34;reflect&#34;
-)
- 
-func main() {
-    var val interface{} = int64(58)
-    fmt.Println(reflect.TypeOf(val))
-    val = 50
-    fmt.Println(reflect.TypeOf(val))
-}
-</code></pre></div><p>type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
-    var val interface{} = nil
-    if val == nil {
-        fmt.Println(&#34;val is nil&#34;)
-    } else {
-        fmt.Println(&#34;val is not nil&#34;)
-    }
-}
-</code></pre></div><p>变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>import (
+</span></span><span style="display:flex;"><span>    &#34;fmt&#34;
+</span></span><span style="display:flex;"><span>    &#34;reflect&#34;
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>func main() {
+</span></span><span style="display:flex;"><span>    var val interface{} = int64(58)
+</span></span><span style="display:flex;"><span>    fmt.Println(reflect.TypeOf(val))
+</span></span><span style="display:flex;"><span>    val = 50
+</span></span><span style="display:flex;"><span>    fmt.Println(reflect.TypeOf(val))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func main() {
+</span></span><span style="display:flex;"><span>    var val interface{} = nil
+</span></span><span style="display:flex;"><span>    if val == nil {
+</span></span><span style="display:flex;"><span>        fmt.Println(&#34;val is nil&#34;)
+</span></span><span style="display:flex;"><span>    } else {
+</span></span><span style="display:flex;"><span>        fmt.Println(&#34;val is not nil&#34;)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。</p>
 <p>进一步验证：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func main() {
-    var val interface{} = (*interface{})(nil)
-    if val == nil {
-        fmt.Println(&#34;val is nil&#34;)
-    } else {
-        fmt.Println(&#34;val is not nil&#34;)
-    }
-}
-</code></pre></div><p><code>(*interface{})(nil)</code>是将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。也就是空接口类型指针而不是空指针，这两者的区别蛮大的。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func main() {
+</span></span><span style="display:flex;"><span>    var val interface{} = (*interface{})(nil)
+</span></span><span style="display:flex;"><span>    if val == nil {
+</span></span><span style="display:flex;"><span>        fmt.Println(&#34;val is nil&#34;)
+</span></span><span style="display:flex;"><span>    } else {
+</span></span><span style="display:flex;"><span>        fmt.Println(&#34;val is not nil&#34;)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>(*interface{})(nil)</code>是将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。也就是空接口类型指针而不是空指针，这两者的区别蛮大的。</p>
 <p>对于<code>(*int)(nil)</code>、<code>(*byte)(nil)</code>等等来说是一样的。上面的代码定义了接口指针类型变量val，它指向无效的地址(0x0)，因此val持有无效的数据。但它是有类型的<code>(*interface{})</code>。所以val的底层结构应该是：<code>(*interface{}, nil)</code>。</p>
 <p>有时候您会看到<code>(*interface{})(nil)</code>的应用，比如<code>var ptrIface = (*interface{})(nil)</code>，如果您接下来将ptrIface指向其它类型的指针，将通不过编译。或者您这样赋值：<code>*ptrIface = 123</code>，那样的话编译是通过了，但在运行时还是会panic的，这是因为ptrIface指向的是无效的内存地址。其实声明类似ptrIface这样的变量，是因为使用者只是关心指针的类型，而忽略它存储的值是什么。</p>
 <p>小结: 无论该指针的值是什么：<code>(*interface{}, nil)</code>，这样的接口值总是非nil的，即使在该指针的内部为nil。</p>
@@ -278,29 +278,29 @@ func main() {
 </li>
 <li>
 <p>switch测试</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">switch value := element.(type) {
-    case int:
-        fmt.Printf(&#34;list[%d] is an int and its value is %d\n&#34;, index, value)
-    case string:
-         fmt.Printf(&#34;list[%d] is a string and its value is %s\n&#34;, index, value)
-    ...
-</code></pre></div><p>element.(type)语法不能在switch外的任何逻辑里面使用，如果你要在switch外面判断一个类型就使用comma-ok。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>switch value := element.(type) {
+</span></span><span style="display:flex;"><span>    case int:
+</span></span><span style="display:flex;"><span>        fmt.Printf(&#34;list[%d] is an int and its value is %d\n&#34;, index, value)
+</span></span><span style="display:flex;"><span>    case string:
+</span></span><span style="display:flex;"><span>         fmt.Printf(&#34;list[%d] is a string and its value is %s\n&#34;, index, value)
+</span></span><span style="display:flex;"><span>    ...
+</span></span></code></pre></div><p>element.(type)语法不能在switch外的任何逻辑里面使用，如果你要在switch外面判断一个类型就使用comma-ok。</p>
 </li>
 </ul>
 <h2 id="接口与反射">接口与反射</h2>
 <p>反射是程序运行时检查其所拥有的结构，尤其是类型的一种能力。Go语言也提供对反射的支持。</p>
 <p>在前面的<code>interface{}与nil</code>的底层实现已提到，在<code>reflect</code>包中有两个类型需要了解：<code>Type</code>和<code>Value</code>。这两个类型使得可以访问接口变量的内容，还有两个简单的函数，<code>reflect.TypeOf</code>和<code>reflect.ValueOf</code>，从接口值中分别获取<code>reflect.Type</code> 和<code>reflect.Value</code>。</p>
 <p>如同物理中的反射，在Go语言中的反射也存在它自己的镜像。从<code>reflect.Value</code>可以使用<code>Interface</code>方法还原接口值:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var x float64 = 3.4
-v := reflect.ValueOf(x)
-
-// Interface 以 interface{} 返回 v 的值。
-// func (v Value) Interface() interface{}
-
-// y 将为类型 float64
-y := v.Interface().(float64) 
-fmt.Println(y)
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var x float64 = 3.4
+</span></span><span style="display:flex;"><span>v := reflect.ValueOf(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// Interface 以 interface{} 返回 v 的值。
+</span></span><span style="display:flex;"><span>// func (v Value) Interface() interface{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// y 将为类型 float64
+</span></span><span style="display:flex;"><span>y := v.Interface().(float64) 
+</span></span><span style="display:flex;"><span>fmt.Println(y)
+</span></span></code></pre></div><hr>
 <p>声明：本文是收集网上一些关于Go语言中接口(interface)的说明，是一篇学习笔记，文中多处引用，参考文章列表在最后，可直接访问了解详情。</p>
 <p>参考：<br>
 [1] <a href="https://se77en.cc/2014/05/05/methods-interfaces-and-embedded-types-in-golang/">Go 语言中的方法，接口和嵌入类型</a><br>
@@ -483,7 +483,7 @@ fmt.Println(y)
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

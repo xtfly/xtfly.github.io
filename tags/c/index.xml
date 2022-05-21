@@ -15,111 +15,111 @@
       <guid>http://lanlingzi.cn/post/technical/2020/0523_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一老产品源码(C语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;VOS_INT &lt;span style=&#34;color:#008b45&#34;&gt;STARTER_Download&lt;/span&gt;(VOD_VOID) {
-    VOS_UINT32 count, sleepTimeLen;
-    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; };
-    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
-    VOS_INT siRet;
-
-    BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Checking and updating files...&amp;#34;&lt;/span&gt;);
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(LOAD_Init()==VOS_FALSE) {
-        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Init return error&amp;#34;&lt;/span&gt;);
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-    }
-
-    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
-        LOAD_End();
-        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-    }
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(VOS_TRUE) {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
-                enIsHaveUpdateOk = VOS_TRUE;
-            }
-        }
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;update file %s error and result=%d&amp;#34;&lt;/span&gt;,
-                    g_pstFileListInfo[count].acFileName,
-                    g_pstFileListInfo[count].enLoadCheckResult);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files are updated,download these file again&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files version are consistent with inschk,download these file again&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;OMU fesuse to update and %s local check result=%d or some file updated&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
-                siRet = snprintf_s(ascExcuteFile, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile),  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile)-&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;,
-                         &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%s/%s&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (siRet &amp;lt;= &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ) {
-                    BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;[%s:%d] snprintf_s failed,&amp;#34;&lt;/span&gt;, __FUNCTION__, __LINE__);
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-                }
-                (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
-            }
-        }
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (count == g_downloadFileCount) {
-            BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;All %d files checked or updated OK.&amp;#34;&lt;/span&gt;, g_downloadFileCount);
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-                BOOTTRACE(TRACE_LOD, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%d update result is %d and local check result is %d.&amp;#34;&lt;/span&gt;,
-                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
-                 g_pstFileListInfo[count].bLocalCheck);
-            }
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
-                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
-            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
-            }
-
-            BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Update file error so sleep for %d second and try again&amp;#34;&lt;/span&gt;, sleepTimeLen);
-            SLEEP(sleepTimeLen);
-
-            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
-                LOAD_End();
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-            }
-        }
-    }
-
-    BOOTTRACE(TRACE_DBG, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Exit STARTER_Download&amp;#34;&lt;/span&gt;);
-    LOAD_End();
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_OK;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;VOS_INT &lt;span style=&#34;color:#008b45&#34;&gt;STARTER_Download&lt;/span&gt;(VOD_VOID) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_UINT32 count, sleepTimeLen;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_INT siRet;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Checking and updating files...&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(LOAD_Init()==VOS_FALSE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Init return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(VOS_TRUE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                enIsHaveUpdateOk = VOS_TRUE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;update file %s error and result=%d&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    g_pstFileListInfo[count].acFileName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    g_pstFileListInfo[count].enLoadCheckResult);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (enIsHaveUpdateOk == VOS_TRUE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files are updated,download these file again&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (enIsHaveUpdateOk == VOS_TRUE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files version are consistent with inschk,download these file again&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;OMU fesuse to update and %s local check result=%d or some file updated&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                siRet = snprintf_s(ascExcuteFile, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile),  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile)-&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                         &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%s/%s&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (siRet &amp;lt;= &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;[%s:%d] snprintf_s failed,&amp;#34;&lt;/span&gt;, __FUNCTION__, __LINE__);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (count == g_downloadFileCount) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;All %d files checked or updated OK.&amp;#34;&lt;/span&gt;, g_downloadFileCount);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_LOD, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%d update result is %d and local check result is %d.&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                 g_pstFileListInfo[count].bLocalCheck);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Update file error so sleep for %d second and try again&amp;#34;&lt;/span&gt;, sleepTimeLen);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            SLEEP(sleepTimeLen);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BOOTTRACE(TRACE_DBG, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Exit STARTER_Download&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_OK;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：&lt;/p&gt;</description>
     </item>
     
   </channel>

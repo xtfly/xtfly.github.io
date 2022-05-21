@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.88.1" />
+	<meta name="generator" content="Hugo 0.98.0" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -152,13 +152,13 @@
     <div class="post-body" itemprop="articleBody">
     <h2 id="陷阱">陷阱</h2>
 <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> std::map&lt;std::string, std::string&gt; TStrMap;  
-<span style="color:#8b008b;font-weight:bold">typedef</span> TStrMap::iterator TStrMapIter;  
-
-TStrMap strmap;  
-TStrMapIter iter = strmap.find(<span style="color:#cd5555">&#34;somekey&#34;</span>);  
-strmap.erase(iter);
-</code></pre></div><p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> std::map&lt;std::string, std::string&gt; TStrMap;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> TStrMap::iterator TStrMapIter;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>TStrMap strmap;  
+</span></span><span style="display:flex;"><span>TStrMapIter iter = strmap.find(<span style="color:#cd5555">&#34;somekey&#34;</span>);  
+</span></span><span style="display:flex;"><span>strmap.erase(iter);
+</span></span></code></pre></div><p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -219,16 +219,16 @@ strmap.erase(iter);
     <div class="post-body" itemprop="articleBody">
     <h2 id="闭包">闭包</h2>
 <p>什么是闭包，我们先来用<code>ruby</code>看个例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sum = 0  
-10.times{|n| sum += n}   
-print sum
-</code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>sum = 0  
+</span></span><span style="display:flex;"><span>10.times{|n| sum += n}   
+</span></span><span style="display:flex;"><span>print sum
+</span></span></code></pre></div><p>其中<code>{}</code>就是闭包的内容，代码看起来是不是很清爽与简单。</p>
 <p>我们再来看看<code>Python</code>写的闭包：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def addx(x):      
-    return lambda y: x + y  
-add8 = addx(8)  
-print add8(100)
-</code></pre></div><p>用Python写就没有那么好看。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def addx(x):      
+</span></span><span style="display:flex;"><span>    return lambda y: x + y  
+</span></span><span style="display:flex;"><span>add8 = addx(8)  
+</span></span><span style="display:flex;"><span>print add8(100)
+</span></span></code></pre></div><p>用Python写就没有那么好看。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -814,7 +814,7 @@ MAX(3,4)使用没有问题，但MAX(3+4, 4)却有问题，因为宏的参数仅�
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -151,25 +151,25 @@
 <p>元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=composite">Round19测试</a> 中，综合成绩排第一。</p>
 <p>drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。</p>
 <p>我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了<code>const T&amp; </code>与<code>T &amp;&amp;</code>两种入参。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
-    {
-        recvMessageCallback_ = cb;
-    }
-    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
-    {
-        recvMessageCallback_ = std::move(cb);
-    }
-</code></pre></div><p>还有这种用法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  for (auto &amp;backend : config[&#34;backends&#34;])
-  {
-        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
-  }
-</code></pre></div><h2 id="背后的知识点">背后的知识点</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        recvMessageCallback_ = cb;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        recvMessageCallback_ = std::move(cb);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>还有这种用法：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>  for (auto &amp;backend : config[&#34;backends&#34;])
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><h2 id="背后的知识点">背后的知识点</h2>
 <p>两个<code>&amp;&amp;</code>是C++11搞出来的新特性：右值引用 (Rvalue Referene) 。它是用来实现了转移语义 (Move Sementics) 和完美转发(Perfect Forwarding)。此特性都是为了极致的性能：消除两个对象交互时不必要的对象拷贝，节省运算存储资源，提高效率。</p>
 <p>什么是左值与右值？先看代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">int i = 0; // 其中i是左值，0是临时值，就是右值
-const int &amp;a = 1; // 在 C++11 之前，右值是不能被引用的，最大限度就是用常量引用绑定一个右值
-</code></pre></div><p><a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a> 把右值引用讲得非常透彻，以下内容摘抄原文。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>int i = 0; // 其中i是左值，0是临时值，就是右值
+</span></span><span style="display:flex;"><span>const int &amp;a = 1; // 在 C++11 之前，右值是不能被引用的，最大限度就是用常量引用绑定一个右值
+</span></span></code></pre></div><p><a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a> 把右值引用讲得非常透彻，以下内容摘抄原文。</p>
 <p><strong>变量</strong>(variable)与<strong>值</strong>(value) 是两个概念：</p>
 <ul>
 <li>值只有<strong>类别</strong>(category)的划分，变量只有<strong>类型</strong>(type)的划分</li>
@@ -191,41 +191,41 @@ const int &amp;a = 1; // 在 C++11 之前，右值是不能被引用的，最大
 <li><strong>左值引用</strong>(l-ref, lvalue reference) 用 <code>&amp;</code> 符号引用左值（但不能引用右值）</li>
 <li><strong>右值引用</strong>(r-ref, rvalue reference) 用 <code>&amp;&amp;</code> 符号引用右值（也可以移动左值）</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void f(Data&amp;  data);  // 1, 左值引用
-void f(Data&amp;&amp; data);  // 2, 右值引用
-
-Data   data;
-
-Data&amp;  data1 = data;     // OK
-Data&amp;  data1 = Data{};   // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{}
-Data&amp;&amp; data2 = Data{};   // OK
-Data&amp;&amp; data2 = data;     // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data
-Data&amp;&amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用
-
-f(data);   // 1, OK， 左值
-f(Data{}); // 2, OK ，右值
-f(data1);  // 1, OK, 左值引用
-f(data2);  // 1, OK, data2是右值引用，但是一个左值
-</code></pre></div><p>C++ 还支持了<strong>常引用</strong>(c-ref, const reference)，同时接受<strong>左值/右值</strong>进行初始化：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void g(const Data&amp; data); // 常引用
-g(data); // 接受左值
-g(Data{}); // 接受右值，Data{}这类也通常也叫纯右值
-</code></pre></div><p>常引用和右值引用都能接受右值的绑定，其区别:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>void f(Data&amp;  data);  // 1, 左值引用
+</span></span><span style="display:flex;"><span>void f(Data&amp;&amp; data);  // 2, 右值引用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Data   data;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Data&amp;  data1 = data;     // OK
+</span></span><span style="display:flex;"><span>Data&amp;  data1 = Data{};   // not compile: 左值引用变量 data1 在初始化时，不能绑定右值 Data{}
+</span></span><span style="display:flex;"><span>Data&amp;&amp; data2 = Data{};   // OK
+</span></span><span style="display:flex;"><span>Data&amp;&amp; data2 = data;     // not compile: 右值引用变量 data2 在初始化时，不能绑定左值 data
+</span></span><span style="display:flex;"><span>Data&amp;&amp; data2 = std::move(data); // OK, 通过 std::move() 将左值转为右值引用
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>f(data);   // 1, OK， 左值
+</span></span><span style="display:flex;"><span>f(Data{}); // 2, OK ，右值
+</span></span><span style="display:flex;"><span>f(data1);  // 1, OK, 左值引用
+</span></span><span style="display:flex;"><span>f(data2);  // 1, OK, data2是右值引用，但是一个左值
+</span></span></code></pre></div><p>C++ 还支持了<strong>常引用</strong>(c-ref, const reference)，同时接受<strong>左值/右值</strong>进行初始化：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>void g(const Data&amp; data); // 常引用
+</span></span><span style="display:flex;"><span>g(data); // 接受左值
+</span></span><span style="display:flex;"><span>g(Data{}); // 接受右值，Data{}这类也通常也叫纯右值
+</span></span></code></pre></div><p>常引用和右值引用都能接受右值的绑定，其区别:</p>
 <ul>
 <li>通过右值引用/常引用 初始化的右值，都可以将<a href="https://en.cppreference.com/w/cpp/language/reference_initialization#Lifetime_of_a_temporary">生命周期扩展 (lifetime extension)</a> 到绑定（扩展/延长到）该右值的引用的生命周期，</li>
 <li>初始化时 绑定了右值后，右值引用 可以修改 引用的右值，而 常引用 不能修改</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">const Data&amp; data1 = Data{};   // OK: extend lifetime
-data1.modify();               // not compile: const
-
-Data&amp;&amp; data2 = Data{};        // OK: extend lifetime
-data2.modify();               // OK: non-const
-</code></pre></div><p>如果函数重载同时接受 右值引用/常引用 参数，编译器 优先重载 右值引用参数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">void f(const Data&amp; data);  // 1, data is c-ref
-void f(Data&amp;&amp; data);       // 2, data is r-ref
-
-f(Data{});  // 2, prefer 2 over 1 for rvalue
-</code></pre></div><p>内容有些多，本文不再摘抄std:move与std:forword的说明，请继续参见<a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>const Data&amp; data1 = Data{};   // OK: extend lifetime
+</span></span><span style="display:flex;"><span>data1.modify();               // not compile: const
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Data&amp;&amp; data2 = Data{};        // OK: extend lifetime
+</span></span><span style="display:flex;"><span>data2.modify();               // OK: non-const
+</span></span></code></pre></div><p>如果函数重载同时接受 右值引用/常引用 参数，编译器 优先重载 右值引用参数：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>void f(const Data&amp; data);  // 1, data is c-ref
+</span></span><span style="display:flex;"><span>void f(Data&amp;&amp; data);       // 2, data is r-ref
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>f(Data{});  // 2, prefer 2 over 1 for rvalue
+</span></span></code></pre></div><p>内容有些多，本文不再摘抄std:move与std:forword的说明，请继续参见<a href="https://bot-man-jl.github.io/articles/?post=2018/Cpp-Rvalue-Reference">深入浅出 C++ 11 右值引用</a></p>
 <p>小结：引入右值引用的本质是，如果一个函数或表达式返回一个对象，那是一个纯右值，也被成为临时对象，对象会在当前语句执行完毕后即销毁。如果要使用这个临时对象里的内容，为了减少拷贝，可以把它里面的指针“拿”过来，把它的指针清空，让它能正常析构。这就是使用右值引用的中心思想。</p>
 <h1 id="引用的使用场景">引用的使用场景</h1>
 <p>问题来了，C++函数传参的时候，左值引用（<code>T&amp;</code>）、右值引用（<code>T&amp;&amp;</code>）和常引用（<code>const T&amp;</code>）分别在什么场景下使用。</p>
@@ -274,18 +274,18 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
 <li>若只有<code>T&amp;&amp;</code>函数，使用<code>std::move</code>，实现上述临时lambda对象移动转发（完美转发），不需要做一次拷贝，这样的效率更高了。但它不做了左值使用，所以还得需要<code>(const T&amp;)</code>函数</li>
 </ul>
 <p>对于stl中的容器，C++11也相应做了改进，基本上emplace_back()对应push_bakc(), emplce()对应insert()。打开源码发现emplace方法实现了完美转发(利用了c++ 11的新特性变长参数模板（variadic template），直接构造了一个新的对象，不需要拷贝或者移动内存)：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">vector&lt;_Tp, _Allocator&gt;::emplace_back(_Args&amp;&amp;... __args)
-{
-    if (this-&gt;__end_ &lt; this-&gt;__end_cap())
-    {
-        __construct_one_at_end(_VSTD::forward&lt;_Args&gt;(__args)...);
-    }
-    else
-        __emplace_back_slow_path(_VSTD::forward&lt;_Args&gt;(__args)...);
-#if _LIBCPP_STD_VER &gt; 14
-    return this-&gt;back();
-#endif
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>vector&lt;_Tp, _Allocator&gt;::emplace_back(_Args&amp;&amp;... __args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    if (this-&gt;__end_ &lt; this-&gt;__end_cap())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        __construct_one_at_end(_VSTD::forward&lt;_Args&gt;(__args)...);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    else
+</span></span><span style="display:flex;"><span>        __emplace_back_slow_path(_VSTD::forward&lt;_Args&gt;(__args)...);
+</span></span><span style="display:flex;"><span>#if _LIBCPP_STD_VER &gt; 14
+</span></span><span style="display:flex;"><span>    return this-&gt;back();
+</span></span><span style="display:flex;"><span>#endif
+</span></span></code></pre></div><ul>
 <li>push_back：会优先选择调用移动构造函数，如果没有才会调用拷贝构造函数</li>
 <li>emplace_back：可以减少一次拷贝或移动构造的过程，提升容器插入数据的效率</li>
 </ul>
@@ -481,7 +481,7 @@ f(Data{});  // 2, prefer 2 over 1 for rvalue
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

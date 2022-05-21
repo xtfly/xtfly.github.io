@@ -149,224 +149,224 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一老产品源码(C语言)中：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID) {
-    VOS_UINT32 count, sleepTimeLen;
-    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
-    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
-    VOS_INT siRet;
-
-    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;Checking and updating files...&#34;</span>);
-
-    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Init()==VOS_FALSE) {
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Init return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-        LOAD_End();
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">while</span>(VOS_TRUE) {
-        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
-                enIsHaveUpdateOk = VOS_TRUE;
-            }
-        }
-
-        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;update file %s error and result=%d&#34;</span>,
-                    g_pstFileListInfo[count].acFileName,
-                    g_pstFileListInfo[count].enLoadCheckResult);
-                <span style="color:#8b008b;font-weight:bold">break</span>;
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files are updated,download these file again&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files version are consistent with inschk,download these file again&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&#34;</span>, g_pstFileListInfo[count].acFileName);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;OMU fesuse to update and %s local check result=%d or some file updated&#34;</span>, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
-                <span style="color:#8b008b;font-weight:bold">break</span>;    
-            }
-
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
-                siRet = snprintf_s(ascExcuteFile, <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile),  <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile)-<span style="color:#b452cd">1</span>,
-                         <span style="color:#cd5555">&#34;%s/%s&#34;</span>, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
-                <span style="color:#8b008b;font-weight:bold">if</span> (siRet &lt;= <span style="color:#b452cd">0</span> ) {
-                    BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;[%s:%d] snprintf_s failed,&#34;</span>, __FUNCTION__, __LINE__);
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-                }
-                (<span style="color:#00688b;font-weight:bold">void</span>)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
-            }
-        }
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (count == g_downloadFileCount) {
-            BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;All %d files checked or updated OK.&#34;</span>, g_downloadFileCount);
-            <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-                BOOTTRACE(TRACE_LOD, <span style="color:#cd5555">&#34;%d update result is %d and local check result is %d.&#34;</span>,
-                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
-                 g_pstFileListInfo[count].bLocalCheck);
-            }
-            <span style="color:#8b008b;font-weight:bold">break</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
-                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
-            } <span style="color:#8b008b;font-weight:bold">else</span> {
-                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
-            }
-
-            BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Update file error so sleep for %d second and try again&#34;</span>, sleepTimeLen);
-            SLEEP(sleepTimeLen);
-
-            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-            <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-                LOAD_End();
-                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-                <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-            }
-        }
-    }
-
-    BOOTTRACE(TRACE_DBG, <span style="color:#cd5555">&#34;Exit STARTER_Download&#34;</span>);
-    LOAD_End();
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
-}
-</code></pre></div><p>上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">VOS_BOOL <span style="color:#008b45">CheckOneFileStatus</span>(FileInfo&amp; fileInfo, VOS_BOOL enIsHaveUpdateOk) {
-    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
-
-    <span style="color:#8b008b;font-weight:bold">if</span>(fileInfo.enLoadCheckResult == LS_SUCESS_UPDATE) {
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_TRUE;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.enLoadCheckResult != LS_SUCESS_UPDATE &amp;&amp;
-        (fileInfo.enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;&amp;
-        (fileInfo.enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
-        (fileInfo.enLoadCheckResult != LS_OMU_REFUSE)) {
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;update file %s error and result=%d&#34;</span>,
-            fileInfo.acFileName, fileInfo.enLoadCheckResult);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_FLASE;
-    }
-
-    ... <span style="color:#228b22">// 为了说明本文所要表达解决思路，不再呈现其它的if判断代码
-</span><span style="color:#228b22"></span>
-    <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.ucFileType == PROG_FILE_TYPE ) {
-        siRet = snprintf_s(ascExcuteFile, <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile), <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile)-<span style="color:#b452cd">1</span>,
-                            <span style="color:#cd5555">&#34;%s/%s&#34;</span>, fileInfo.acFileExecuteDir, fileInfo.acFileName);
-        <span style="color:#8b008b;font-weight:bold">if</span> (siRet &lt;= <span style="color:#b452cd">0</span> ) {
-            BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;[%s:%d] snprintf_s failed,&#34;</span>, __FUNCTION__, __LINE__);
-            <span style="color:#8b008b;font-weight:bold">return</span> VOS_FLASE;
-        }
-        (<span style="color:#00688b;font-weight:bold">void</span>)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
-    }
-
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_TRUE;
-}
-
-VOS_VOID <span style="color:#008b45">PrintAllFileStatus</span>(VOS_VOID) {
-    <span style="color:#8b008b;font-weight:bold">for</span>(VOS_INT count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-        BOOTTRACE(TRACE_LOD, <span style="color:#cd5555">&#34;%d update result is %d and local check result is %d.&#34;</span>,
-            g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
-            g_pstFileListInfo[count].bLocalCheck);
-    }
-}
-
-VOS_INT <span style="color:#008b45">SleepAndTryBeginAgain</span>(FileInfo&amp; fileInfo) {
-   VOS_UINT32 sleepTimeLen;
-   <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.enLoadCheckResult == LS_DISK_FULL){
-        sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
-    }
-
-    BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Update file error so sleep for %d second and try again&#34;</span>, sleepTimeLen);
-    SLEEP(sleepTimeLen);
-
-    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE) != VOS_OK) {
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
-}
-
-<span style="color:#228b22">// 注：此函数不应该操作g_pstFileListInfo，而是通过参数传入，本文仅仅想说明其中的一个问题，其它函数也是如此
-</span><span style="color:#228b22"></span>VOS_INT <span style="color:#008b45">LOAD_CheckeStatus</span>() { 
-    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
-    VOS_INT count = <span style="color:#b452cd">0</span>;
-
-    <span style="color:#8b008b;font-weight:bold">while</span>(VOS_TRUE) {
-        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (CheckOneFileStatus(g_pstFileListInfo[count], enIsHaveUpdateOk) == VOS_FALSE) {
-                <span style="color:#8b008b;font-weight:bold">break</span>;
-            } <span style="color:#8b008b;font-weight:bold">else</span> {
-                enIsHaveUpdateOk = VOS_TRUE;
-            }
-        }
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (count == g_downloadFileCount) {
-           <span style="color:#8b008b;font-weight:bold">break</span>;
-        } 
-
-        <span style="color:#8b008b;font-weight:bold">if</span> (SleepAndTryBeginAgain(g_pstFileListInfo[count]) == VOS_ERR ) {
-            <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-        }
-    }
-
-    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;All %d files checked or updated OK.&#34;</span>, g_downloadFileCount);
-    PrintAllFileStatus();
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
-}
-
-VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID)  {
-    VOS_INT siRet;
-
-    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;Checking and updating files...&#34;</span>);
-
-    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Init()==VOS_FALSE) {
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Init return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-        LOAD_End();
-        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    siRet=LOAD_CheckeStatus();
-    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
-        LOAD_End();
-        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
-    }
-
-    BOOTTRACE(TRACE_DBG, <span style="color:#cd5555">&#34;Exit STARTER_Download&#34;</span>);
-    LOAD_End();
-    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
-}
-</code></pre></div><p>上面把<code>STARTER_Download</code>一个方法由上百行拆成了五个不同层次的方法，<code>STARTER_Download</code> 则变得非常简洁，也就非常直白地说明它做了几件事：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID) {
+</span></span><span style="display:flex;"><span>    VOS_UINT32 count, sleepTimeLen;
+</span></span><span style="display:flex;"><span>    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
+</span></span><span style="display:flex;"><span>    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
+</span></span><span style="display:flex;"><span>    VOS_INT siRet;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;Checking and updating files...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Init()==VOS_FALSE) {
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Init return error&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
+</span></span><span style="display:flex;"><span>        LOAD_End();
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(VOS_TRUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
+</span></span><span style="display:flex;"><span>                enIsHaveUpdateOk = VOS_TRUE;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;&amp;
+</span></span><span style="display:flex;"><span>                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;update file %s error and result=%d&#34;</span>,
+</span></span><span style="display:flex;"><span>                    g_pstFileListInfo[count].acFileName,
+</span></span><span style="display:flex;"><span>                    g_pstFileListInfo[count].enLoadCheckResult);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (enIsHaveUpdateOk == VOS_TRUE) ) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files are updated,download these file again&#34;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;    
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (enIsHaveUpdateOk == VOS_TRUE) ) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Not all files version are consistent with inschk,download these file again&#34;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;    
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&#34;</span>, g_pstFileListInfo[count].acFileName);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;    
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;OMU fesuse to update and %s local check result=%d or some file updated&#34;</span>, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;    
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
+</span></span><span style="display:flex;"><span>                siRet = snprintf_s(ascExcuteFile, <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile),  <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile)-<span style="color:#b452cd">1</span>,
+</span></span><span style="display:flex;"><span>                         <span style="color:#cd5555">&#34;%s/%s&#34;</span>, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (siRet &lt;= <span style="color:#b452cd">0</span> ) {
+</span></span><span style="display:flex;"><span>                    BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;[%s:%d] snprintf_s failed,&#34;</span>, __FUNCTION__, __LINE__);
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                (<span style="color:#00688b;font-weight:bold">void</span>)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (count == g_downloadFileCount) {
+</span></span><span style="display:flex;"><span>            BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;All %d files checked or updated OK.&#34;</span>, g_downloadFileCount);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_LOD, <span style="color:#cd5555">&#34;%d update result is %d and local check result is %d.&#34;</span>,
+</span></span><span style="display:flex;"><span>                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
+</span></span><span style="display:flex;"><span>                 g_pstFileListInfo[count].bLocalCheck);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
+</span></span><span style="display:flex;"><span>                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Update file error so sleep for %d second and try again&#34;</span>, sleepTimeLen);
+</span></span><span style="display:flex;"><span>            SLEEP(sleepTimeLen);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
+</span></span><span style="display:flex;"><span>                LOAD_End();
+</span></span><span style="display:flex;"><span>                BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_DBG, <span style="color:#cd5555">&#34;Exit STARTER_Download&#34;</span>);
+</span></span><span style="display:flex;"><span>    LOAD_End();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>VOS_BOOL <span style="color:#008b45">CheckOneFileStatus</span>(FileInfo&amp; fileInfo, VOS_BOOL enIsHaveUpdateOk) {
+</span></span><span style="display:flex;"><span>    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ <span style="color:#b452cd">0</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(fileInfo.enLoadCheckResult == LS_SUCESS_UPDATE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_TRUE;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.enLoadCheckResult != LS_SUCESS_UPDATE &amp;&amp;
+</span></span><span style="display:flex;"><span>        (fileInfo.enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;&amp;
+</span></span><span style="display:flex;"><span>        (fileInfo.enLoadCheckResult != LS_OMU_NORESPONSE) &amp;&amp;
+</span></span><span style="display:flex;"><span>        (fileInfo.enLoadCheckResult != LS_OMU_REFUSE)) {
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;update file %s error and result=%d&#34;</span>,
+</span></span><span style="display:flex;"><span>            fileInfo.acFileName, fileInfo.enLoadCheckResult);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_FLASE;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ... <span style="color:#228b22">// 为了说明本文所要表达解决思路，不再呈现其它的if判断代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.ucFileType == PROG_FILE_TYPE ) {
+</span></span><span style="display:flex;"><span>        siRet = snprintf_s(ascExcuteFile, <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile), <span style="color:#8b008b;font-weight:bold">sizeof</span>(ascExcuteFile)-<span style="color:#b452cd">1</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#cd5555">&#34;%s/%s&#34;</span>, fileInfo.acFileExecuteDir, fileInfo.acFileName);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (siRet &lt;= <span style="color:#b452cd">0</span> ) {
+</span></span><span style="display:flex;"><span>            BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;[%s:%d] snprintf_s failed,&#34;</span>, __FUNCTION__, __LINE__);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> VOS_FLASE;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        (<span style="color:#00688b;font-weight:bold">void</span>)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> VOS_TRUE;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VOS_VOID <span style="color:#008b45">PrintAllFileStatus</span>(VOS_VOID) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(VOS_INT count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_LOD, <span style="color:#cd5555">&#34;%d update result is %d and local check result is %d.&#34;</span>,
+</span></span><span style="display:flex;"><span>            g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
+</span></span><span style="display:flex;"><span>            g_pstFileListInfo[count].bLocalCheck);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VOS_INT <span style="color:#008b45">SleepAndTryBeginAgain</span>(FileInfo&amp; fileInfo) {
+</span></span><span style="display:flex;"><span>   VOS_UINT32 sleepTimeLen;
+</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">if</span> (fileInfo.enLoadCheckResult == LS_DISK_FULL){
+</span></span><span style="display:flex;"><span>        sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;Update file error so sleep for %d second and try again&#34;</span>, sleepTimeLen);
+</span></span><span style="display:flex;"><span>    SLEEP(sleepTimeLen);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE) != VOS_OK) {
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 注：此函数不应该操作g_pstFileListInfo，而是通过参数传入，本文仅仅想说明其中的一个问题，其它函数也是如此
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>VOS_INT <span style="color:#008b45">LOAD_CheckeStatus</span>() { 
+</span></span><span style="display:flex;"><span>    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
+</span></span><span style="display:flex;"><span>    VOS_INT count = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(VOS_TRUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span>(count=<span style="color:#b452cd">0</span>;count&lt;g_downloadFileCount;count++) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (CheckOneFileStatus(g_pstFileListInfo[count], enIsHaveUpdateOk) == VOS_FALSE) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>                enIsHaveUpdateOk = VOS_TRUE;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (count == g_downloadFileCount) {
+</span></span><span style="display:flex;"><span>           <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>        } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (SleepAndTryBeginAgain(g_pstFileListInfo[count]) == VOS_ERR ) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;All %d files checked or updated OK.&#34;</span>, g_downloadFileCount);
+</span></span><span style="display:flex;"><span>    PrintAllFileStatus();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID)  {
+</span></span><span style="display:flex;"><span>    VOS_INT siRet;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_TIP, <span style="color:#cd5555">&#34;Checking and updating files...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(LOAD_Init()==VOS_FALSE) {
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Init return error&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
+</span></span><span style="display:flex;"><span>        LOAD_End();
+</span></span><span style="display:flex;"><span>        BOOTTRACE(TRACE_ERR, <span style="color:#cd5555">&#34;The LOAD Begin return error&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    siRet=LOAD_CheckeStatus();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(siRet != VOS_OK) {
+</span></span><span style="display:flex;"><span>        LOAD_End();
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> VOS_ERR;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOTTRACE(TRACE_DBG, <span style="color:#cd5555">&#34;Exit STARTER_Download&#34;</span>);
+</span></span><span style="display:flex;"><span>    LOAD_End();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> VOS_OK;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面把<code>STARTER_Download</code>一个方法由上百行拆成了五个不同层次的方法，<code>STARTER_Download</code> 则变得非常简洁，也就非常直白地说明它做了几件事：</p>
 <ul>
 <li>加载初始化：LOAD_Init</li>
 <li>加载开始： LOAD_Begin</li>
@@ -594,7 +594,7 @@ VOS_INT <span style="color:#008b45">STARTER_Download</span>(VOD_VOID)  {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

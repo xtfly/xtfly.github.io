@@ -154,22 +154,22 @@
 <p>Manjaro安装软件列表与配置已归档到GitHub: <a href="https://github.com/xtfly/mydots">xtfly/mydots</a> 。</p>
 <h2 id="安装manjaro">安装Manjaro</h2>
 <p>修改/etc/pacman.d/mirrorlist</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch
-</code></pre></div><p>修改/etc/pacman.conf，由于在Archlinux上安装Manjaro，签名key变化，先配置为对安装包不做签名检查，SigLevel配置为Optional TrustAll，等所有软件安装完成之后再恢复 。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch
+</span></span></code></pre></div><p>修改/etc/pacman.conf，由于在Archlinux上安装Manjaro，签名key变化，先配置为对安装包不做签名检查，SigLevel配置为Optional TrustAll，等所有软件安装完成之后再恢复 。</p>
 <p>并配置archlinuxcn，用于下载一些国人已打包的软件，如yaourt, vscode等。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">SigLevel    = Optional TrustAll  #Required DatabaseOptional
-LocalFileSigLevel = Optional TrustAll  #Optional
-
-......
-
-[archlinuxcn]  
-SigLevel = Optional TrustAll  
-Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  
-</code></pre></div><p>个人目前系统的安装包列表： <a href="https://github.com/xtfly/mydots/blob/master/manjaro_i3_packages.txt">mydots/files/manjaro_i3_packages.txt</a>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>SigLevel    = Optional TrustAll  #Required DatabaseOptional
+</span></span><span style="display:flex;"><span>LocalFileSigLevel = Optional TrustAll  #Optional
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>......
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[archlinuxcn]  
+</span></span><span style="display:flex;"><span>SigLevel = Optional TrustAll  
+</span></span><span style="display:flex;"><span>Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch  
+</span></span></code></pre></div><p>个人目前系统的安装包列表： <a href="https://github.com/xtfly/mydots/blob/master/manjaro_i3_packages.txt">mydots/files/manjaro_i3_packages.txt</a>。</p>
 <p>根据安装包列来安装所有包，大约有1000个包共1G的下载量，请耐心等待。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">pacman -Syu
-pacman -S `cat manjaro_i3_packages.txt` 
-</code></pre></div><h2 id="主要使用软件">主要使用软件</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>pacman -Syu
+</span></span><span style="display:flex;"><span>pacman -S `cat manjaro_i3_packages.txt` 
+</span></span></code></pre></div><h2 id="主要使用软件">主要使用软件</h2>
 <p>下面这些软件已包含在manjaro_i3_packages.txt，部分介绍：</p>
 <ul>
 <li>桌面窗口管理：i3-wm，一种平铺风格的窗口管理，简单高效，适合于键盘党</li>
@@ -190,12 +190,12 @@ pacman -S `cat manjaro_i3_packages.txt`
 <h2 id="i3pystatus">i3pystatus</h2>
 <p>i3pystatus是采用python写的i3stauts，它比原生的i3stauts有更多的插件，配置也更丰富</p>
 <p>配置python pip，在root目录下，打开<code>.pip/pip.conf</code>，修改为国内源</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ 
-</code></pre></div><p>执行安装，i3pystatus若显示网卡流量，需要安装netifaces等</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">sudo pip install git+https://github.com/enkore/i3pystatus.git
-sudo pip install netifaces colour pypi
-</code></pre></div><h2 id="配置">配置</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[global]
+</span></span><span style="display:flex;"><span>index-url = https://pypi.tuna.tsinghua.edu.cn/simple/ 
+</span></span></code></pre></div><p>执行安装，i3pystatus若显示网卡流量，需要安装netifaces等</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>sudo pip install git+https://github.com/enkore/i3pystatus.git
+</span></span><span style="display:flex;"><span>sudo pip install netifaces colour pypi
+</span></span></code></pre></div><h2 id="配置">配置</h2>
 <p>本人参考了网上多个配置，形成自己的配置，已经上传到个人GitHub: <a href="https://github.com/xtfly/mydots">xtfly/mydots</a> ，供大家参考：</p>
 <p>下载之后，在某个用户下，直接执行install.sh可快速安装配置文件，则此用户即采用i3来做窗口管理，主要配置文件</p>
 <ul>
@@ -352,7 +352,7 @@ sudo pip install netifaces colour pypi
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

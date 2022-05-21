@@ -15,15 +15,15 @@
       <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
-src_path, src_file = os.path.split(file_name)
-tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
-tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
-tmp_file.writeline(file_gz.realines())
-file_gz.close()
-tmp_file.close()
-os.remove(file_name)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz = gzip.GzipFile(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;src_path, src_file = os.path.split(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.writeline(file_gz.realines())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;os.remove(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
 &lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
@@ -41,20 +41,20 @@ os.remove(file_name)
 &lt;h3 id=&#34;小对象合并成结构体一次分配减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
 &lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
 &lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
-    k, v := k, v // copy for capturing by the goroutine
-    go func() {
-        // using k &amp;amp; v
-    }()
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;替换为：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
-    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
-    go func() {
-        // using x.k &amp;amp; x.v
-    }()
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;for k, v := range m {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    k, v := k, v // copy for capturing by the goroutine
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    go func() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // using k &amp;amp; v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;替换为：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;for k, v := range m {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    go func() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // using x.k &amp;amp; x.v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -133,14 +133,14 @@ os.remove(file_name)
 &lt;li&gt;
 &lt;p&gt;测试源码可以修改package名，带上&lt;code&gt;_test&lt;/code&gt;结尾&lt;/p&gt;
 &lt;p&gt;修改的package名称，不需要再单独新建立目录，也与源码在一个目录下。参考标准库的&lt;code&gt;bytes&lt;/code&gt;中的测试代码，方便使用被测试的元素，可以采用&lt;code&gt;.&lt;/code&gt;来import测试的package：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;package&lt;/span&gt; bytes_test
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; (
-    . &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;bytes&amp;#34;&lt;/span&gt;
-    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;io&amp;#34;&lt;/span&gt;
-    ...
-)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;package&lt;/span&gt; bytes_test
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    . &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;bytes&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;io&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ...
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

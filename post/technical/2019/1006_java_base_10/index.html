@@ -185,21 +185,20 @@
 <p>Attach Listener线程启动后，就会创建一个监听套接字，并创建了一个文件/tmp/.java_pid的IPC socketFile，之后客户端和目标JVM进程就通过这个socketFile进行通信。客户端可以通过这个socketFile发送相关命令。Attach Listener线程做的事情就是监听这个socketFile，发现有请求就解析，然后根据命令执行不同的方法，最后将结果返回。</p>
 <h1 id="jpda">JPDA</h1>
 <p>JPDA（Java Platform Debugger Architecture）是Java提供的一套用于开发Java调试工具的规范，任何的JDK实现都需要实现这个规范。JPDA是一个Architecture，它包括了三个不同层次的规范。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">                 /    |--------------|
-                /     |     VM       |
-    debuggee - (      |--------------|  &lt;------- JVMTI - Java VM Tool Interface
-                \     |   back-end   |
-                 \    |--------------|
-                 /           |
- comm channel - (            |  &lt;--------------- JDWP - Java Debug Wire Protocol
-                 \           |
-                 /    |--------------|
-                /     |  front-end   |
-    debugger - (      |--------------|  &lt;------- JDI - Java Debug Interface
-                \     |      UI      |
-                 \    |--------------|
-
-</code></pre></div><p>JDPA由3个模块组成：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>                 /    |--------------|
+</span></span><span style="display:flex;"><span>                /     |     VM       |
+</span></span><span style="display:flex;"><span>    debuggee - (      |--------------|  &lt;------- JVMTI - Java VM Tool Interface
+</span></span><span style="display:flex;"><span>                \     |   back-end   |
+</span></span><span style="display:flex;"><span>                 \    |--------------|
+</span></span><span style="display:flex;"><span>                 /           |
+</span></span><span style="display:flex;"><span> comm channel - (            |  &lt;--------------- JDWP - Java Debug Wire Protocol
+</span></span><span style="display:flex;"><span>                 \           |
+</span></span><span style="display:flex;"><span>                 /    |--------------|
+</span></span><span style="display:flex;"><span>                /     |  front-end   |
+</span></span><span style="display:flex;"><span>    debugger - (      |--------------|  &lt;------- JDI - Java Debug Interface
+</span></span><span style="display:flex;"><span>                \     |      UI      |
+</span></span><span style="display:flex;"><span>                 \    |--------------|
+</span></span></code></pre></div><p>JDPA由3个模块组成：</p>
 <ul>
 <li>JVMTI，即底层的相关调试接口调用。Oracle公司提供了一个jdwp.dll( jdwp.so)动态链接库，就是我们前面说的Agent实现。</li>
 <li>JDWP（Java Debug Wire Protocol）,定义了Agent和调试客户端之间的通讯交互协议。</li>
@@ -476,7 +475,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

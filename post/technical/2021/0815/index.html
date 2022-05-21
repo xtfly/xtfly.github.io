@@ -157,32 +157,32 @@
 <p>本文案例的代码并不复杂，修改圈复杂度也是老生常谈的问题。但在Clean Code的指标下，我们(包括我自己)似乎早已麻木地习惯小心谨慎，不少时间花在修改一些不太增值的代码上。虽说指标是死的，人不能死板，我们不能基于不信任的指标来管控开发可信的代码，具体问题具体分析嘛。</p>
 <h1 id="案例">案例</h1>
 <p>在我们内部一个群，讨论如下c++代码怎么修改：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TagLalelKey</span> {
-    <span style="color:#00688b;font-weight:bold">int</span> unit;
-    <span style="color:#00688b;font-weight:bold">int</span> entity;
-    <span style="color:#00688b;font-weight:bold">int</span> mid;
-    std::string dynLalelKey;
-    <span style="color:#00688b;font-weight:bold">int</span> keyValue;
-
-    <span style="color:#8b008b;font-weight:bold">friend</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#8b008b;font-weight:bold">operator</span> &lt; (<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
-        <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &lt; k2.unit) {
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#008b45">if</span> (k1.unit == k2.unit) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &lt; k2.entity) {
-                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-            } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity == k2.entity) {
-                <span style="color:#00688b;font-weight:bold">int</span> cmp = k1.dynLalelKey.compare(k2.dynLalelKey);
-                <span style="color:#8b008b;font-weight:bold">if</span> (cmp &lt; <span style="color:#b452cd">0</span>) {
-                    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (cmp == <span style="color:#b452cd">0</span>) {
-                    <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue &lt; k2.keyValue;
-                }
-            }
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-    }
-} TagLalelKey;
-</code></pre></div><p>直观上面的代码觉得不是好的代码，存在坏的味道：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">TagLalelKey</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> unit;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> entity;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> mid;
+</span></span><span style="display:flex;"><span>    std::string dynLalelKey;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> keyValue;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">friend</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#8b008b;font-weight:bold">operator</span> &lt; (<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &lt; k2.unit) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#008b45">if</span> (k1.unit == k2.unit) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &lt; k2.entity) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>            } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity == k2.entity) {
+</span></span><span style="display:flex;"><span>                <span style="color:#00688b;font-weight:bold">int</span> cmp = k1.dynLalelKey.compare(k2.dynLalelKey);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (cmp &lt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span> (cmp == <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue &lt; k2.keyValue;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>} TagLalelKey;
+</span></span></code></pre></div><p>直观上面的代码觉得不是好的代码，存在坏的味道：</p>
 <ul>
 <li>嵌套层次达到4层</li>
 <li>if/else太多，不易理解与修改。</li>
@@ -215,32 +215,32 @@
 <p>上面具体的应用代码示例，请参见<a href="https://www.jianshu.com/p/60d696f27f80">控制圈复杂度的9种重构技术</a>。</p>
 <h2 id="优化方法1">优化方法1</h2>
 <p>案例中的代码显然是条件分支嵌套多，优化思路是要简化条件表达式。但<code>分解</code>或<code>合并</code>条件式似乎不能解决问题，尝试先采用逆向表达式。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp1</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
-    <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &lt; k2.unit) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-    } 
-    <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &gt; k2.unit) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-    } 
-
-    <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &lt; k2.entity) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-    } 
-    <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &gt; k2.entity) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-    } 
-
-    <span style="color:#00688b;font-weight:bold">int</span> dynLableKeyCmp = k1.dynLalelKey.compare(k2.dynLalelKey);
-    <span style="color:#8b008b;font-weight:bold">if</span> (dynLableKeyCmp &lt; <span style="color:#b452cd">0</span>) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-    } 
-    <span style="color:#8b008b;font-weight:bold">if</span> (dynLableKeyCmp &gt; <span style="color:#b452cd">0</span>) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue &lt; k2.keyValue;
-}
-</code></pre></div><p>乍一看似乎解决了问题，事实上，条件分支个数并没有变化，因而圈复杂度也没有降低（CMetrics统计还是7），好处是减少了嵌套层次。这种代码是否具体更好的可读性，可维护性，大家可能见仁见智。我在平时Review代码发现，大家正向条件判断写法还是占多数，可能觉得逆向判断会打断顺序思维的流畅性。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp1</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &lt; k2.unit) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (k1.unit &gt; k2.unit) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &lt; k2.entity) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (k1.entity &gt; k2.entity) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> dynLableKeyCmp = k1.dynLalelKey.compare(k2.dynLalelKey);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (dynLableKeyCmp &lt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (dynLableKeyCmp &gt; <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue &lt; k2.keyValue;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>乍一看似乎解决了问题，事实上，条件分支个数并没有变化，因而圈复杂度也没有降低（CMetrics统计还是7），好处是减少了嵌套层次。这种代码是否具体更好的可读性，可维护性，大家可能见仁见智。我在平时Review代码发现，大家正向条件判断写法还是占多数，可能觉得逆向判断会打断顺序思维的流畅性。</p>
 <h2 id="优化方法2">优化方法2</h2>
 <p>按重构一书的套路，那再想到<code>重新组织函数</code>：</p>
 <ul>
@@ -248,38 +248,38 @@
 <li>替换算法，原方法逻辑上，是结构体的不同字段需要先后比较</li>
 </ul>
 <p>提到需要先后比较，可以采用队列，数组之类，再次修改代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp2</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
-    <span style="color:#00688b;font-weight:bold">int</span> cmpVals[<span style="color:#b452cd">4</span>] = {
-        k1.unit - k2.unit,
-        k1.entity - k2.entity,
-        k1.dynLalelKey.compare(k2.dynLalelKey),
-        k1.keyValue - k2.keyValue
-    };
-    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> value : cmpVals) {
-        <span style="color:#8b008b;font-weight:bold">if</span> (value &gt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>; }
-        <span style="color:#8b008b;font-weight:bold">if</span> (value &lt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>; }
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-}
-</code></pre></div><p>上述的代码引入了数组与循环，减少总的if/else分支，圈复杂度下降到4。优点是当后续增加其它字段需要比较时，它具有更好的扩展性，代码结构层次不会随之进一步恶化。但这样修改的代价也比较明显，所有的比较值都提前计算了，增加性能的损耗。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp2</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> cmpVals[<span style="color:#b452cd">4</span>] = {
+</span></span><span style="display:flex;"><span>        k1.unit - k2.unit,
+</span></span><span style="display:flex;"><span>        k1.entity - k2.entity,
+</span></span><span style="display:flex;"><span>        k1.dynLalelKey.compare(k2.dynLalelKey),
+</span></span><span style="display:flex;"><span>        k1.keyValue - k2.keyValue
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> value : cmpVals) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (value &gt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (value &lt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上述的代码引入了数组与循环，减少总的if/else分支，圈复杂度下降到4。优点是当后续增加其它字段需要比较时，它具有更好的扩展性，代码结构层次不会随之进一步恶化。但这样修改的代价也比较明显，所有的比较值都提前计算了，增加性能的损耗。</p>
 <h2 id="优化方法3">优化方法3</h2>
 <p>既然方法2的代价是比较值提前计算了，那能不能改成延迟计算，再次修改代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">using</span> cmp_func_t = std::function&lt;<span style="color:#00688b;font-weight:bold">int</span>()&gt;;
-<span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp3</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
-    <span style="color:#8b008b;font-weight:bold">auto</span> cmpFuncs =  {
-        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.unit - k2.unit; }),
-        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.entity - k2.entity; }),
-        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.dynLalelKey.compare(k2.dynLalelKey); }),
-        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue - k2.keyValue; }),
-    };
-    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">auto</span>&amp;&amp; func : cmpFuncs) {
-        <span style="color:#8b008b;font-weight:bold">auto</span> value = func();
-        <span style="color:#8b008b;font-weight:bold">if</span> (value &gt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>; }
-        <span style="color:#8b008b;font-weight:bold">if</span> (value &lt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>; }
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-}
-</code></pre></div><p>上述代码引入了c++11的新特性lambda与initialization list，利用lambda函数调用从而达到延迟计算。不过也随之c++的复杂带来了代码理解上复杂性：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">using</span> cmp_func_t = std::function&lt;<span style="color:#00688b;font-weight:bold">int</span>()&gt;;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">cmp3</span>(<span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k1, <span style="color:#8b008b;font-weight:bold">const</span> TagLalelKey&amp; k2) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">auto</span> cmpFuncs =  {
+</span></span><span style="display:flex;"><span>        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.unit - k2.unit; }),
+</span></span><span style="display:flex;"><span>        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.entity - k2.entity; }),
+</span></span><span style="display:flex;"><span>        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.dynLalelKey.compare(k2.dynLalelKey); }),
+</span></span><span style="display:flex;"><span>        cmp_func_t([&amp;]()-&gt; <span style="color:#00688b;font-weight:bold">int</span> { <span style="color:#8b008b;font-weight:bold">return</span> k1.keyValue - k2.keyValue; }),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#8b008b;font-weight:bold">auto</span>&amp;&amp; func : cmpFuncs) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">auto</span> value = func();
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (value &gt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (value &lt; <span style="color:#b452cd">0</span>) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上述代码引入了c++11的新特性lambda与initialization list，利用lambda函数调用从而达到延迟计算。不过也随之c++的复杂带来了代码理解上复杂性：</p>
 <ul>
 <li>lambda不能直接auto推导，需要转为std::function</li>
 <li>lambda数组循环，采用右值变量，减少std::function的copy</li>
@@ -290,47 +290,47 @@
 <h1 id="另一个案例">另一个案例</h1>
 <p>再来看一个案例，下面两段代码摘抄 <a href="http://kaelzhang81.github.io/2017/06/18/%E8%AF%A6%E8%A7%A3%E5%9C%88%E5%A4%8D%E6%9D%82%E5%BA%A6/">详解圈复杂度</a>。</p>
 <p>代码片段1：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">string <span style="color:#008b45">getWeight</span>(<span style="color:#00688b;font-weight:bold">int</span> i) {
-        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt;= <span style="color:#b452cd">0</span>)  {
-                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;no weight&#34;</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">10</span>)  {
-                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;light&#34;</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">20</span>)  {
-                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;medium&#34;</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">30</span>) {
-                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;heavy&#34;</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">40</span>)  {
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;very heavy&#34;</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;super heavy&#34;</span>
-}
-</code></pre></div><p>代码片段2：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">sumOfNonPrimes</span>(<span style="color:#00688b;font-weight:bold">int</span> limit) {
-    <span style="color:#00688b;font-weight:bold">bool</span> bAdd = <span style="color:#658b00">false</span>;
-    <span style="color:#00688b;font-weight:bold">int</span> sum = <span style="color:#b452cd">0</span>;
-    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; limit; ++i) {
-            <span style="color:#8b008b;font-weight:bold">if</span> (i &lt;= <span style="color:#b452cd">2</span>) {
-                <span style="color:#8b008b;font-weight:bold">continue</span>;
-            }
-        
-            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">2</span>; j &lt; i; ++j)  {
-                <span style="color:#8b008b;font-weight:bold">if</span> (i % j == <span style="color:#b452cd">0</span>)  {
-                    bAdd = <span style="color:#658b00">false</span>;
-                    <span style="color:#8b008b;font-weight:bold">break</span>;
-                }
-                bAdd = <span style="color:#658b00">true</span>;
-            }
-            <span style="color:#8b008b;font-weight:bold">if</span> (bAdd) {
-                sum += i;
-            }
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> sum;
-}
-</code></pre></div><p>代码1与代码2的圈复杂度都是6。显然我们觉得代码1从可读性、可维护性都优于代码2。所以不能只从圈复杂度指标来看，是否需要重构还得具体问题具体分析。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>string <span style="color:#008b45">getWeight</span>(<span style="color:#00688b;font-weight:bold">int</span> i) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt;= <span style="color:#b452cd">0</span>)  {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;no weight&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">10</span>)  {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;light&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">20</span>)  {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;medium&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">30</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;heavy&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (i &lt; <span style="color:#b452cd">40</span>)  {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;very heavy&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#cd5555">&#34;super heavy&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>代码片段2：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">sumOfNonPrimes</span>(<span style="color:#00688b;font-weight:bold">int</span> limit) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">bool</span> bAdd = <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> sum = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i = <span style="color:#b452cd">0</span>; i &lt; limit; ++i) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (i &lt;= <span style="color:#b452cd">2</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">continue</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">2</span>; j &lt; i; ++j)  {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (i % j == <span style="color:#b452cd">0</span>)  {
+</span></span><span style="display:flex;"><span>                    bAdd = <span style="color:#658b00">false</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                bAdd = <span style="color:#658b00">true</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (bAdd) {
+</span></span><span style="display:flex;"><span>                sum += i;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> sum;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>代码1与代码2的圈复杂度都是6。显然我们觉得代码1从可读性、可维护性都优于代码2。所以不能只从圈复杂度指标来看，是否需要重构还得具体问题具体分析。</p>
 <h1 id="结语">结语</h1>
 <p>结合两个案例来看，直观存在坏味道的代码，修改起来并不是那么轻松，尤其我们可能为了降低指标把代码修改得可读性更差。代码圈复杂度一样高，并不一定代表代码可读性差。我们不能机械地认指标、降指标，应该有自己的判断力，对于拿不准的代码，可拿出来探讨，真理需要show me the code。</p>
     </div>
@@ -513,7 +513,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

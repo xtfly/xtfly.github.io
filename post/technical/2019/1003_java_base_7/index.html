@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4348 字 ~9分钟</span>
+<span class="leancloud-visitors-count">4384 字 ~9分钟</span>
 </span>
       </div>
     </header>
@@ -166,34 +166,34 @@
 </ul>
 <h3 id="桥方法">桥方法</h3>
 <p>什么是桥方法(Bridge Method)，从实际代码入手：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 父类
-public interface Supper&lt;T&gt; {
-    void method(T t);
-}
-
-// 其中一个子类
-public class Sub implements Supper&lt;Integer&gt; {
-	@Override
-	public void method(Integer value) {
-		System.out.println(value);
-	}
-}
-</code></pre></div><p>父类Supper<!-- raw HTML omitted -->在泛型擦除后原始类型是：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface Supper{
-    void method(Object t);
-}
-</code></pre></div><p>子类Sub虽然实现了父类Supper，但是它只实现了void method(Integer value)而没有实现父类中的void method(Object t)，这个时候，编译期编译器会为子类Sub创建此方法，也就是子类Sub会变成这样：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public class Sub implements Supper&lt;Integer&gt; {
-	@Override
-	public void method(Integer value) {
-		System.out.println(value);
-	}
-		
-	public void method(Object value) {
-		this.method((Integer) value);
-	}
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>// 父类
+</span></span><span style="display:flex;"><span>public interface Supper&lt;T&gt; {
+</span></span><span style="display:flex;"><span>    void method(T t);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// 其中一个子类
+</span></span><span style="display:flex;"><span>public class Sub implements Supper&lt;Integer&gt; {
+</span></span><span style="display:flex;"><span>	@Override
+</span></span><span style="display:flex;"><span>	public void method(Integer value) {
+</span></span><span style="display:flex;"><span>		System.out.println(value);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>父类Supper<!-- raw HTML omitted -->在泛型擦除后原始类型是：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface Supper{
+</span></span><span style="display:flex;"><span>    void method(Object t);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>子类Sub虽然实现了父类Supper，但是它只实现了void method(Integer value)而没有实现父类中的void method(Object t)，这个时候，编译期编译器会为子类Sub创建此方法，也就是子类Sub会变成这样：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public class Sub implements Supper&lt;Integer&gt; {
+</span></span><span style="display:flex;"><span>	@Override
+</span></span><span style="display:flex;"><span>	public void method(Integer value) {
+</span></span><span style="display:flex;"><span>		System.out.println(value);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>	public void method(Object value) {
+</span></span><span style="display:flex;"><span>		this.method((Integer) value);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>编译的时候Java的方法签名是方法名称加上方法参数类型列表，也就是方法名和参数类型列表确定一个方法的签名(这样就可以很好理解方法重载，还有Java中的参数都是形参，所以参数名称没有实质意义，只有参数类型才是有意义的)。</li>
 <li>Java虚拟机定义一个方法的签名是由方法名称、方法返回值类型和方法参数类型列表组成，所以JVM认为返回值类型不同，而方法名称和参数类型列表一致的方法是不相同的方法。</li>
 </ul>
@@ -215,7 +215,7 @@ public class Sub implements Supper&lt;Integer&gt; {
 <li>逆变：父类能向子类转换</li>
 <li>不变：两者均不能转变</li>
 </ul>
-<p>无限定通配符使用&lt;?&gt;的格式，代表未知类型的泛型。 当可以使用Object类中提供的功能或当代码独立于类型参数来实现方法时，这样的参数可以使用任何对象。</p>
+<p>无限定通配符使用<!-- raw HTML omitted -->的格式，代表未知类型的泛型。 当可以使用Object类中提供的功能或当代码独立于类型参数来实现方法时，这样的参数可以使用任何对象。</p>
 <p>限定通配符对类型进行了限制:</p>
 <ul>
 <li>
@@ -233,18 +233,18 @@ public class Sub implements Supper&lt;Integer&gt; {
 <li>位于声明一侧的，源码里写了什么到运行时就能看到什么；</li>
 <li>位于使用一侧的，源码里写什么到运行时都没了。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">import java.util.List;  
-import java.util.Map;  
-  
-public class GenericClass&lt;T&gt; {                // 1  
-    private List&lt;T&gt; list;                     // 2  
-    private Map&lt;String, T&gt; map;               // 3  
-      
-    public &lt;U&gt; U genericMethod(Map&lt;T, U&gt; m) { // 4  
-        return null;  
-    }  
-}  
-</code></pre></div><p>上面的代码实际上：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>import java.util.List;  
+</span></span><span style="display:flex;"><span>import java.util.Map;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>public class GenericClass&lt;T&gt; {                // 1  
+</span></span><span style="display:flex;"><span>    private List&lt;T&gt; list;                     // 2  
+</span></span><span style="display:flex;"><span>    private Map&lt;String, T&gt; map;               // 3  
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    public &lt;U&gt; U genericMethod(Map&lt;T, U&gt; m) { // 4  
+</span></span><span style="display:flex;"><span>        return null;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>上面的代码实际上：</p>
 <ul>
 <li>1的GenericClass<!-- raw HTML omitted -->，运行时通过Class.getTypeParameters()方法得到的数组可以获取那个“T”；</li>
 <li>2的T、3的java.lang.String与T、4的T与U都可以获得。源码文本里写的是什么运行时就能得到什么；</li>
@@ -265,29 +265,29 @@ public class GenericClass&lt;T&gt; {                // 1
 <p>Java 5在java.lang.reflect中新引入四种泛型类型：ParameterizedType、TypeVariable、WildcardType、GenericArrayType都是接口。</p>
 <h4 id="parameterizedtype">ParameterizedType</h4>
 <p>也就是参数化类型，注释里面说到ParameterizedType表示一个参数化类型，例如<code>Collection&lt;String&gt;</code>，实际上只要带有参数化(泛型)标签<code>&lt;ClassName&gt;</code>的参数或者属性，都属于ParameterizedType。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface ParameterizedType extends Type {
-    Type[] getActualTypeArguments();
-    Type getRawType();
-    Type getOwnerType();
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface ParameterizedType extends Type {
+</span></span><span style="display:flex;"><span>    Type[] getActualTypeArguments();
+</span></span><span style="display:flex;"><span>    Type getRawType();
+</span></span><span style="display:flex;"><span>    Type getOwnerType();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Type[] getActualTypeArguments()：返回这个ParameterizedType类型的参数的实际类型Type数组，Type数组里面的元素有可能是Class、ParameterizedType、TypeVariable、GenericArrayType或者WildcardType之一。值得注意的是，无论泛型符号&lt;&gt;中有几层&lt;&gt;嵌套，这个方法仅仅脱去最外层的&lt;&gt;，之后剩下的内容就作为这个方法的返回值。</li>
-<li>Type getRawType()：返回的是当前这个ParameterizedType的原始类型，从ParameterizedTypeImpl的源码看来，原始类型rawType一定是一个Class<!-- raw HTML omitted -->实例，和List.class等价。</li>
+<li>Type getRawType()：返回的是当前这个ParameterizedType的原始类型，从ParameterizedTypeImpl的源码看来，原始类型rawType一定是一个Class<!-- raw HTML omitted -->实例。举个例子，List<!-- raw HTML omitted -->通过getRawType()获取到的Type实例实际上是Class<!-- raw HTML omitted -->实例，和List.class等价。</li>
 <li>Type getOwnerType()：获取原始类型所属的类型，从ParameterizedTypeImpl的源码看来，就是调用了原始类型rawType的getDeclaringClass()方法，而像rawType为List<!-- raw HTML omitted -->、Map<!-- raw HTML omitted -->这些类型的getOwnerType()实际上就是调用List.class.getDeclaringClass()，Map.class.getDeclaringClass()，返回值都是null。</li>
 </ul>
 <h4 id="typevariable">TypeVariable</h4>
 <p>也就是类型变量，它是各种类型变量的公共父接口，它主要用来表示带有上界的泛型参数的信息，它和ParameterizedType不同的地方是，ParameterizedType表示的参数的最外层一定是已知具体类型的(如<code>List&lt;String&gt;)</code>，而TypeVariable面向的是K、V、E等这些泛型参数字面量的表示。常见的TypeVariable的表示形式是<code>&lt;T extends KnownType-1 &amp; KnownType-2&gt;</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface TypeVariable&lt;D extends GenericDeclaration&gt; extends Type {
-   //获得泛型的上限，若未明确声明上边界则默认为Object
-    Type[] getBounds();
-    //获取声明该类型变量实体(即获得类、方法或构造器名)
-    D getGenericDeclaration();
-    //获得名称，即K、V、E之类名称
-    String getName();
-    //获得注解类型的上限，若未明确声明上边界则默认为长度为0的数组
-    AnnotatedType[] getAnnotatedBounds()
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface TypeVariable&lt;D extends GenericDeclaration&gt; extends Type {
+</span></span><span style="display:flex;"><span>   //获得泛型的上限，若未明确声明上边界则默认为Object
+</span></span><span style="display:flex;"><span>    Type[] getBounds();
+</span></span><span style="display:flex;"><span>    //获取声明该类型变量实体(即获得类、方法或构造器名)
+</span></span><span style="display:flex;"><span>    D getGenericDeclaration();
+</span></span><span style="display:flex;"><span>    //获得名称，即K、V、E之类名称
+</span></span><span style="display:flex;"><span>    String getName();
+</span></span><span style="display:flex;"><span>    //获得注解类型的上限，若未明确声明上边界则默认为长度为0的数组
+</span></span><span style="display:flex;"><span>    AnnotatedType[] getAnnotatedBounds()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Type[] getBounds()：获得该类型变量的上限(上边界)，若无显式定义(extends)，默认为Object，类型变量的上限可能不止一个，因为可以用&amp;符号限定多个（这其中有且只能有一个为类或抽象类，且必须放在extends后的第一个，即若有多个上边界，则第一个&amp;之后的必为接口）。</li>
 <li>D getGenericDeclaration：获得声明(定义)这个类型变量的类型及名称，会使用泛型的参数字面量表示，如<code>public void query(java.util.List&lt;Person&gt;)</code></li>
 <li>String getName()：获取泛型参数的字面量名称，即K、V、E之类名称。</li>
@@ -295,21 +295,21 @@ public class GenericClass&lt;T&gt; {                // 1
 </ul>
 <h4 id="wildcardtype">WildcardType</h4>
 <p>用于表示通配符(?)类型的表达式的泛型参数，例如&lt;? extends Number&gt;等。根据WildcardType注释提示：现阶段通配符表达式仅仅接受一个上边界或者下边界，这个和定义类型变量时候可以指定多个上边界是不一样。但是为了保持扩展性，这里返回值类型写成了数组形式。实际上现在返回的数组的大小就是1。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface WildcardType extends Type {
-    Type[] getUpperBounds();
-    Type[] getLowerBounds();
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface WildcardType extends Type {
+</span></span><span style="display:flex;"><span>    Type[] getUpperBounds();
+</span></span><span style="display:flex;"><span>    Type[] getLowerBounds();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Type[] getUpperBounds()：获取泛型通配符的上限类型Type数组，实际上目前该数组只有一个元素，也就是说只能有一个上限类型。</li>
 <li>Type[] getLowerBounds()：获取泛型通配符的下限类型Type数组，实际上目前该数组只有一个元素，也就是说只能有一个下限类型。</li>
 </ul>
 <h4 id="genericarraytype">GenericArrayType</h4>
 <p>也就是泛型数组，也就是元素类型为泛型类型的数组实现了该接口。它要求元素的类型是ParameterizedType或TypeVariable(实际中发现元素是GenericArrayType也是允许的)。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">public interface GenericArrayType extends Type {
-
-    Type getGenericComponentType();
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface GenericArrayType extends Type {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Type getGenericComponentType();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Type getGenericComponentType()：获取泛型数组中元素的类型。注意无论从左向右有几个[]并列，这个方法仅仅脱去最右边的[]之后剩下的内容就作为这个方法的返回值。</li>
 </ul>
 <h3 id="泛型api">泛型API</h3>
@@ -521,7 +521,7 @@ public class GenericClass&lt;T&gt; {                // 1
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

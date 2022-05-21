@@ -189,24 +189,24 @@
 <p>而面向对象语言中虽强调对象的封装性，但没有在语义上强制约束对象的不可变性。面向对象的编程通过<strong>封装可变</strong>的部分来构造能够让人读懂的代码，函数式编程则是通过最大程度地<strong>减少可变</strong>的部分来构造出可让人读懂的代码。</p>
 <h1 id="函数式风格">函数式风格</h1>
 <p>Scala与Kotlin鼓励使用val，变量只是只读，使代码像函数式风格。我们来一个简单的Scala例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
-    var i = 0 
-    while (i &lt; args.length) {  
-        println(args(i))  
-        i += 1  
-    }  
-}  
-</code></pre></div><p>可以通过去掉var的办法把这个代码变得偏函数式风格:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def printArgs(args: Array[String]): Unit = {  
-    args.foreach(println)  
-}  
-</code></pre></div><p>很显然，重构后的代码比原来的代码更简洁明了，也更少机会犯错。因为它消除了var变量，也消除了var变量上述可能导致的问题。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def printArgs(args: Array[String]): Unit = {  
+</span></span><span style="display:flex;"><span>    var i = 0 
+</span></span><span style="display:flex;"><span>    while (i &lt; args.length) {  
+</span></span><span style="display:flex;"><span>        println(args(i))  
+</span></span><span style="display:flex;"><span>        i += 1  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>可以通过去掉var的办法把这个代码变得偏函数式风格:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def printArgs(args: Array[String]): Unit = {  
+</span></span><span style="display:flex;"><span>    args.foreach(println)  
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>很显然，重构后的代码比原来的代码更简洁明了，也更少机会犯错。因为它消除了var变量，也消除了var变量上述可能导致的问题。</p>
 <p>当然它并不是纯函数式的，因为它有副作用，其副作用是打印到标准输出流。如果某个函数不返回任何值，就是说其结果类型为Unit，那么这个函数唯一能让其有点儿变化的办法就是通过某种副作用。而函数式的方式应该是定义对需打印的arg进行格式化的方法，但是仅返回格式化之后的字串。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def formatArgs(args: Array[String]) = args.mkString(&#34;\n&#34;)
-
-val res = formatArgs(Array(&#34;zero&#34;, &#34;one&#34;, &#34;two&#34;))
-println(res)
-</code></pre></div><h1 id="回到java">回到Java</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def formatArgs(args: Array[String]) = args.mkString(&#34;\n&#34;)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>val res = formatArgs(Array(&#34;zero&#34;, &#34;one&#34;, &#34;two&#34;))
+</span></span><span style="display:flex;"><span>println(res)
+</span></span></code></pre></div><h1 id="回到java">回到Java</h1>
 <p>Java中的String类的对象都是典型的immutable数据类型，一个String对象一旦被new出来，其代表的数据便不可被重新修改。</p>
 <p>对于变量是否可以重新赋值，Java采用final关键字，同时被final修饰的方法不能被重写，他们也都强制变量或方法不可变性。Java还有一种用法，匿名内部类用的变量必须final，为用什么要有这种约束？</p>
 <p>是为了保护数据安全和代码稳定，Java通过类的封装规范了类与类之间的访问权限，而内部类却打破了这种规范。它可以直接访问自身所在的外部类里私有成员，而且自身还可以创建相同的成员（另一个有意思的问题，变量遮蔽Shadow）。从作用域角度看，内部类的新成员修改了什么值，外部方法也是不知道，因为程序的运行由外而内的，所以外部根本无法确定内部这时到底有没有这个东西。综上所述，选择final来修饰外部方法的成员，让其引用地址保持不变、值也不能被改变保证了外部类的稳定性。</p>
@@ -223,12 +223,12 @@ println(res)
 <h2 id="函数式编程">函数式编程</h2>
 <p>函数式编程是java8的一大特色，说到函数式编程，就不得不提及流Stream。</p>
 <p>Stream其中有一个特点：它不会改变原集合，它是一堆元素顺序或者并行执行我们串起来的函数，函数并不会对集合中的元素造成影响。对Stream的使用就是实现一个filter-map-reduce过程，这个过程我也叫做聚合操作，产生一个最终结果。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">final List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4);
-final Integer sum = nums.stream()
-  .filter(n -&gt; n % 2 == 0)
-  .map(n -&gt; n * n)
-  .reduce(0, Integer::sum);
-</code></pre></div><p>正如上面的代码，我们对nums重新聚合，新的结果sum并没有对原有nums产生副作用。同时我们都可以把两个变量都声明为final，不需要对变量进行改变。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>final List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4);
+</span></span><span style="display:flex;"><span>final Integer sum = nums.stream()
+</span></span><span style="display:flex;"><span>  .filter(n -&gt; n % 2 == 0)
+</span></span><span style="display:flex;"><span>  .map(n -&gt; n * n)
+</span></span><span style="display:flex;"><span>  .reduce(0, Integer::sum);
+</span></span></code></pre></div><p>正如上面的代码，我们对nums重新聚合，新的结果sum并没有对原有nums产生副作用。同时我们都可以把两个变量都声明为final，不需要对变量进行改变。</p>
 <h1 id="结语">结语</h1>
 <p>不可变可以摈弃Java中许多一些典型烦心的缺陷。因为改变越多，就需要越多的测试来确保导致变化的做法是正确的。通过严格限制改变来隔离变化的发生，那么错误的发生在更小的空间，需要测试的地方也就更少。</p>
 <p>而函数式认为可变是万恶之源，不可变的好处是使得开发更加简单，测试友好，减少了任何可能的副作用。做一名传统的面向对象语言的开发人员，我们更要吸纳函数式语言的特点，在代码尽可能让变量不可变，对象不可变，来提升我们代码中的可读性与安全性。</p>
@@ -409,7 +409,7 @@ final Integer sum = nums.stream()
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

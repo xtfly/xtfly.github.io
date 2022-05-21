@@ -149,35 +149,35 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非<code>F</code>级别课程统计平均分数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CourseGrade</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> String title;
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">char</span> grade;
-}
-
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ReportCard</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> String studentName;
-    <span style="color:#8b008b;font-weight:bold">public</span> ArrayList&lt;CourseGrade&gt; cliens;
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport</span>() {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
-        Iterator&lt;CourseGrade&gt; grades = cliens.<span style="color:#658b00">iterator</span>();
-        CourseGrade grade;
-        <span style="color:#00688b;font-weight:bold">double</span> avg = 0.<span style="color:#658b00">0d</span>;
-        <span style="color:#8b008b;font-weight:bold">while</span> (grades.<span style="color:#658b00">hasNext</span>()) {
-            grade = grades.<span style="color:#658b00">next</span>();
-            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(grade.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + grade.<span style="color:#658b00">grade</span>);
-            <span style="color:#8b008b;font-weight:bold">if</span> (!(grade.<span style="color:#658b00">grade</span> == <span style="color:#cd5555">&#39;F&#39;</span>)) {
-                avg = avg + grade.<span style="color:#658b00">grade</span> - 64;
-            }
-        }
-        avg = avg / cliens.<span style="color:#658b00">size</span>();
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span> + avg);
-    }
-}
-</code></pre></div><p>上面的代码有哪些问题呢:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CourseGrade</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String title;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">char</span> grade;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ReportCard</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> String studentName;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> ArrayList&lt;CourseGrade&gt; cliens;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport</span>() {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
+</span></span><span style="display:flex;"><span>        Iterator&lt;CourseGrade&gt; grades = cliens.<span style="color:#658b00">iterator</span>();
+</span></span><span style="display:flex;"><span>        CourseGrade grade;
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">double</span> avg = 0.<span style="color:#658b00">0d</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">while</span> (grades.<span style="color:#658b00">hasNext</span>()) {
+</span></span><span style="display:flex;"><span>            grade = grades.<span style="color:#658b00">next</span>();
+</span></span><span style="display:flex;"><span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(grade.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + grade.<span style="color:#658b00">grade</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> (!(grade.<span style="color:#658b00">grade</span> == <span style="color:#cd5555">&#39;F&#39;</span>)) {
+</span></span><span style="display:flex;"><span>                avg = avg + grade.<span style="color:#658b00">grade</span> - 64;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        avg = avg / cliens.<span style="color:#658b00">size</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span> + avg);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码有哪些问题呢:</p>
 <ul>
 <li>成员变量采用public，缺少数据封装性</li>
 <li>没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题</li>
@@ -187,54 +187,54 @@
 <li>while循环干了两件事，打印每课的成绩，也统计了分数</li>
 </ul>
 <p>培训材料并未给标准解题。我来尝试优化一下代码，采用Java8的Stream来简化计算过程，并对代码进行了分段：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport2</span>() {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
-        cliens.<span style="color:#658b00">forEach</span>(it -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(it.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + it.<span style="color:#658b00">grade</span>));
-
-        <span style="color:#00688b;font-weight:bold">double</span> total = cliens.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
-                .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64).<span style="color:#658b00">sum</span>();
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span>  + total / cliens.<span style="color:#658b00">size</span>());
-    }
-</code></pre></div><p>进一步优化，把各类打印抽取各自函数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printHeader</span>() {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);   
-    }
-
-    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printGrade</span>() {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
-        cliens.<span style="color:#658b00">forEach</span>(it -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(it.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + it.<span style="color:#658b00">grade</span>));
-    }
-
-    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printAverage</span>() {
-        <span style="color:#00688b;font-weight:bold">double</span> total = cliens.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
-                .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64).<span style="color:#658b00">sum</span>();
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span>  + total / cliens.<span style="color:#658b00">size</span>());
-    }
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport3</span>() {
-        printHeader();
-        printGrade();
-        printAverage();
-    }   
-</code></pre></div><p>注：如果只算非F的平均分，而可以一行搞定：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#00688b;font-weight:bold">double</span> avg = cliens.<span style="color:#658b00">stream</span>()
-        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
-        .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64)
-        .<span style="color:#658b00">average</span>()
-        .<span style="color:#658b00">orElse</span>(0.<span style="color:#658b00">0d</span>);
-</code></pre></div><p>案例二，再看一段代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
-        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
-        .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
-        .<span style="color:#658b00">map</span>(Transcation::getId)
-        .<span style="color:#658b00">collect</span>(Collectors::toList());
-</code></pre></div><p>代码非常清晰：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport2</span>() {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
+</span></span><span style="display:flex;"><span>        cliens.<span style="color:#658b00">forEach</span>(it -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(it.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + it.<span style="color:#658b00">grade</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">double</span> total = cliens.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64).<span style="color:#658b00">sum</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span>  + total / cliens.<span style="color:#658b00">size</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>进一步优化，把各类打印抽取各自函数：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printHeader</span>() {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);   
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printGrade</span>() {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
+</span></span><span style="display:flex;"><span>        cliens.<span style="color:#658b00">forEach</span>(it -&gt; System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(it.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + it.<span style="color:#658b00">grade</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printAverage</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">double</span> total = cliens.<span style="color:#658b00">stream</span>().<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64).<span style="color:#658b00">sum</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span>  + total / cliens.<span style="color:#658b00">size</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport3</span>() {
+</span></span><span style="display:flex;"><span>        printHeader();
+</span></span><span style="display:flex;"><span>        printGrade();
+</span></span><span style="display:flex;"><span>        printAverage();
+</span></span><span style="display:flex;"><span>    }   
+</span></span></code></pre></div><p>注：如果只算非F的平均分，而可以一行搞定：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">double</span> avg = cliens.<span style="color:#658b00">stream</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">grade</span> != <span style="color:#cd5555">&#39;F&#39;</span>)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">mapToDouble</span>(it -&gt; it.<span style="color:#658b00">grade</span> - 64)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">average</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">orElse</span>(0.<span style="color:#658b00">0d</span>);
+</span></span></code></pre></div><p>案例二，再看一段代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">map</span>(Transcation::getId)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">collect</span>(Collectors::toList());
+</span></span></code></pre></div><p>代码非常清晰：</p>
 <ul>
 <li>过滤出类型为GROCERY的交易记录</li>
 <li>按其value值进行倒排序</li>
@@ -246,8 +246,8 @@
 <p>目前Java8应该在公司已广泛使用，对于Stream与Lambda应习以为常了，而不再是一种炫技。我在 <a href="http://lanlingzi.cn/post/technical/2019/0922_java_base_2/">跟我一起复习Java-2：集合与Stream</a> 一文稍总结一下Stream的知识点，网上也有非常多的教程。若有同学还不熟悉他们的用法，可以多找找材料熟悉一下。</p>
 <p>Stream正如其名，像一条数据生产流水线，逐步叠加中间操作（算法和计算），把数据源转换为另一个数据集。</p>
 <p>笔者很早以前学过C#，接触过LINQ(Language Integrated Query)，它比Java的Stream和Lambda用法更为清晰简洁，先给个简单示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var result = db.ProScheme.OrderByDescending(p =&gt; p.rpId).Where(p =&gt; p.rpId &gt; 10).ToList();
-</code></pre></div><p>LINQ为数据查询而生，可以算是DSL(Domain Specific Language)了，背后也是函数式编程(FP)一套理念，先记住其中两点：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var result = db.ProScheme.OrderByDescending(p =&gt; p.rpId).Where(p =&gt; p.rpId &gt; 10).ToList();
+</span></span></code></pre></div><p>LINQ为数据查询而生，可以算是DSL(Domain Specific Language)了，背后也是函数式编程(FP)一套理念，先记住其中两点：</p>
 <ul>
 <li><a href="http://www.ruanyifeng.com/blog/2015/07/monad.html">Monad</a> 是一种设计模式，表示将一个运算过程，通过函数拆解成互相连接的多个步骤</li>
 <li><a href="https://baike.baidu.com/item/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/4585794?fr=aladdin">Lambda表达式</a> 是一个匿名函数，Lambda表达式基于数学中的λ演算得名</li>
@@ -255,12 +255,12 @@
 <p>FP还有其它的特性：模式匹配，柯里化，偏函数，闭包，尾递归等。对FP感觉兴趣的同学不妨找找材料学习一下。</p>
 <p>现在的主流语言，都引入一些FP特性来提升语言在数据上的表达能力。</p>
 <p>C++11引入Lambda表达式，并提供<code>&lt;algorithm&gt;</code>，<code>&lt;functional&gt;</code>两个基础库，一个简单示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">int</span> foo[] = { <span style="color:#b452cd">10</span>, <span style="color:#b452cd">20</span>, <span style="color:#b452cd">5</span>, <span style="color:#b452cd">15</span>, <span style="color:#b452cd">25</span> };
-std::sort(foo, foo+<span style="color:#b452cd">5</span>, [](<span style="color:#00688b;font-weight:bold">int</span> a,<span style="color:#00688b;font-weight:bold">int</span> b){<span style="color:#8b008b;font-weight:bold">return</span> a &gt; b;});
-</code></pre></div><p>Python提供functools库来简化一些函数式编程（还是相当的弱），一个简单示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">foo = [&#34;A&#34;, &#34;a&#34;, &#34;b&#34;, &#34;B&#34;]
-sorted(foo, key=functools.cmp_to_key(locale.strcoll))
-</code></pre></div><h1 id="函数式编程">函数式编程</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> foo[] = { <span style="color:#b452cd">10</span>, <span style="color:#b452cd">20</span>, <span style="color:#b452cd">5</span>, <span style="color:#b452cd">15</span>, <span style="color:#b452cd">25</span> };
+</span></span><span style="display:flex;"><span>std::sort(foo, foo+<span style="color:#b452cd">5</span>, [](<span style="color:#00688b;font-weight:bold">int</span> a,<span style="color:#00688b;font-weight:bold">int</span> b){<span style="color:#8b008b;font-weight:bold">return</span> a &gt; b;});
+</span></span></code></pre></div><p>Python提供functools库来简化一些函数式编程（还是相当的弱），一个简单示例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>foo = [&#34;A&#34;, &#34;a&#34;, &#34;b&#34;, &#34;B&#34;]
+</span></span><span style="display:flex;"><span>sorted(foo, key=functools.cmp_to_key(locale.strcoll))
+</span></span></code></pre></div><h1 id="函数式编程">函数式编程</h1>
 <p>当然，面向对象语言中增加lambda这类特征不能就称为函数式编程了，大部分只不过是语法糖。是采用什么编程范式不在于语言的语法，而是在于思维方式。</p>
 <p>在上一篇 <a href="http://lanlingzi.cn/post/technical/2020/1101_code/">飞哥讲代码15：写代码从事物认识开始</a> 要使用面向对象的思维对现实世界来建模。面向对象编程(OOP)在过去20多年非常成功，而函数式编程(FP)也不断地发展，他们相生相息，各自解决不同的场景问题：</p>
 <ul>
@@ -465,7 +465,7 @@ sorted(foo, key=functools.cmp_to_key(locale.strcoll))
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

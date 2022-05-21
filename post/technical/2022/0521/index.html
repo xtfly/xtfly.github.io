@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4885 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4886 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -152,7 +152,7 @@
 <ul>
 <li>Tomcat: 使用sendfile直接把大文件写入Socket，提升静态文件高效的数据传输</li>
 <li>Netty: 统一的ByteBuf机制，通过DirectBuffer封装，使用堆外内存进行Socket读写；也提供使用Sendfile来把文件缓冲区的数据发送到目标Channel</li>
-<li>RecketMQ：基于mmap内存映射文件方式对CommitLogy读写文件，当客户端消费消息时直接把内容写到目标Socket</li>
+<li>RecketMQ：基于mmap内存映射文件方式对CommitLog文件读写文件，当客户端消费消息时直接把内容写到目标Socket</li>
 </ul>
 <p>本文是对网上知识的收集与整理，以便分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
 <h1 id="什么是零拷贝">什么是零拷贝</h1>
@@ -194,14 +194,14 @@
 <h3 id="mmap">mmap</h3>
 <p>Linux采用虚拟内存，多个虚拟内存可以指向同一个物理地址。利用这个特性，可以把内核空间和用户空间的虚拟地址映射到同一个物理地址，这样在 I/O操作时就不需要来回复制。将内核中的读缓冲区与用户空间的缓冲区进行映射，所有的IO都在内核中完成。</p>
 <p>mmap是内核提供一个系统调用，其函数原型如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#00688b;font-weight:bold">void</span> *<span style="color:#008b45">mmap</span>(<span style="color:#00688b;font-weight:bold">void</span> *addr, size_t length, <span style="color:#00688b;font-weight:bold">int</span> prot, <span style="color:#00688b;font-weight:bold">int</span> flags, <span style="color:#00688b;font-weight:bold">int</span> fd, off_t offset);
-</code></pre></div><p>mmap+write利用了虚拟内存的特性来实现的零拷贝，其流程如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> *<span style="color:#008b45">mmap</span>(<span style="color:#00688b;font-weight:bold">void</span> *addr, size_t length, <span style="color:#00688b;font-weight:bold">int</span> prot, <span style="color:#00688b;font-weight:bold">int</span> flags, <span style="color:#00688b;font-weight:bold">int</span> fd, off_t offset);
+</span></span></code></pre></div><p>mmap+write利用了虚拟内存的特性来实现的零拷贝，其流程如下：</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_mmap.png" alt="linux_io_mmap"></p>
 <p>上述流程就是少了1次CPU拷贝，提升了I/O的速度。不过上下文的切换还是4次并没有减少，这是因为还是要应用程序发起write操作。mmap是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，所以节省了1次CPU拷贝并且用户进程内存是虚拟的，只是映射到内核的读缓冲区，应用层内存也会减少一半。</p>
 <h3 id="sendfile">sendfile</h3>
 <p>sendfile是内核提供另一个系统调用，其函数原型如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">ssize_t <span style="color:#008b45">sendfile</span>(<span style="color:#00688b;font-weight:bold">int</span> out_fd, <span style="color:#00688b;font-weight:bold">int</span> in_fd, off_t *offset, size_t count);
-</code></pre></div><p>sendfile表示在两个文件描述符之间传输数据，它是在操作系统内核中操作的，避免了数据从内核缓冲区和用户缓冲区之间的拷贝操作，因此可以使用它来实现零拷贝。其流程如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>ssize_t <span style="color:#008b45">sendfile</span>(<span style="color:#00688b;font-weight:bold">int</span> out_fd, <span style="color:#00688b;font-weight:bold">int</span> in_fd, off_t *offset, size_t count);
+</span></span></code></pre></div><p>sendfile表示在两个文件描述符之间传输数据，它是在操作系统内核中操作的，避免了数据从内核缓冲区和用户缓冲区之间的拷贝操作，因此可以使用它来实现零拷贝。其流程如下：</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_sendfile.png" alt="linux_io_sendfile"></p>
 <p>sendfile方式有3次数据拷贝，包括了2次DMA拷贝和1次CPU拷贝，以及2次上下文切换。</p>
 <h3 id="sendfiledma-scattergather">sendfile+DMA scatter/gather</h3>
@@ -306,68 +306,68 @@
 <li><strong>APR</strong>：基于JNI调用操作系统相关API，性能相对NIO有提升，但需要下载APR需要的库</li>
 </ul>
 <p>Tomcat定义了三种类型的Endpoint，分别对应上面三种IO模式，其中<a href="https://github.com/apache/tomcat/blob/10.0.21/java/org/apache/tomcat/util/net/NioEndpoint.java#L913">NioEndpoint.java</a>中可以找到如下代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">if</span> (sd.<span style="color:#658b00">fchannel</span> == <span style="color:#8b008b;font-weight:bold">null</span>) {
-        <span style="color:#228b22">// Setup the file channel
-</span><span style="color:#228b22"></span>        File f = <span style="color:#8b008b;font-weight:bold">new</span> File(sd.<span style="color:#658b00">fileName</span>);
-        <span style="color:#707a7c">@SuppressWarnings</span>(<span style="color:#cd5555">&#34;resource&#34;</span>) <span style="color:#228b22">// Closed when channel is closed
-</span><span style="color:#228b22"></span>        FileInputStream fis = <span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(f);
-        sd.<span style="color:#658b00">fchannel</span> = fis.<span style="color:#658b00">getChannel</span>(); <span style="color:#228b22">// 生成静态文件的FileChannel
-</span><span style="color:#228b22"></span>    }
-
-    <span style="color:#228b22">// Configure output channel
-</span><span style="color:#228b22"></span>    sc = socketWrapper.<span style="color:#658b00">getSocket</span>();
-    <span style="color:#228b22">// TLS/SSL channel is slightly different
-</span><span style="color:#228b22"></span>    WritableByteChannel wc = ((sc <span style="color:#8b008b;font-weight:bold">instanceof</span> SecureNioChannel) ? sc : sc.<span style="color:#658b00">getIOChannel</span>());
-
-    <span style="color:#228b22">// We still have data in the buffer
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (sc.<span style="color:#658b00">getOutboundRemaining</span>() &gt; 0) {
-        ...
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#00688b;font-weight:bold">long</span> written = sd.<span style="color:#658b00">fchannel</span>.<span style="color:#658b00">transferTo</span>(sd.<span style="color:#658b00">pos</span>, sd.<span style="color:#658b00">length</span>, wc); <span style="color:#228b22">// 底层sendfile系统调用
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (written &gt; 0) {
-</code></pre></div><h3 id="rocketmq">RocketMQ</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (sd.<span style="color:#658b00">fchannel</span> == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// Setup the file channel
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        File f = <span style="color:#8b008b;font-weight:bold">new</span> File(sd.<span style="color:#658b00">fileName</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#707a7c">@SuppressWarnings</span>(<span style="color:#cd5555">&#34;resource&#34;</span>) <span style="color:#228b22">// Closed when channel is closed
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        FileInputStream fis = <span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(f);
+</span></span><span style="display:flex;"><span>        sd.<span style="color:#658b00">fchannel</span> = fis.<span style="color:#658b00">getChannel</span>(); <span style="color:#228b22">// 生成静态文件的FileChannel
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// Configure output channel
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    sc = socketWrapper.<span style="color:#658b00">getSocket</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// TLS/SSL channel is slightly different
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    WritableByteChannel wc = ((sc <span style="color:#8b008b;font-weight:bold">instanceof</span> SecureNioChannel) ? sc : sc.<span style="color:#658b00">getIOChannel</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// We still have data in the buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (sc.<span style="color:#658b00">getOutboundRemaining</span>() &gt; 0) {
+</span></span><span style="display:flex;"><span>        ...
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> written = sd.<span style="color:#658b00">fchannel</span>.<span style="color:#658b00">transferTo</span>(sd.<span style="color:#658b00">pos</span>, sd.<span style="color:#658b00">length</span>, wc); <span style="color:#228b22">// 底层sendfile系统调用
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (written &gt; 0) {
+</span></span></code></pre></div><h3 id="rocketmq">RocketMQ</h3>
 <p>RocketMQ支持消息持久化，所有的消息接收之后都是顺序追加写入到CommitLog中，CommitLog是磁盘上的文件。消费者连接服务端会创建 CosumerQueue，CommitLog文件中的消息与CosumerQueue建立索引关系。当消费者是通过CosumerQueue得到消息的真实物理地址再去 CommitLog上获取到对应的消息。</p>
 <p>RocketMQ是采用mmap+write来实现CommitLog文件的内容发送，它避免了JVM的堆内存的拷贝，也减少一次CPU拷贝。但没有没有采用sendfile。</p>
 <p>我们可以在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/store/src/main/java/org/apache/rocketmq/store/MappedFile.java#L163">MappedFile.java</a>中找到文件初始化，好理解消息消费和删除需要支持随机读写：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> {
-    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span> = <span style="color:#8b008b;font-weight:bold">new</span> RandomAccessFile(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">file</span>, <span style="color:#cd5555">&#34;rw&#34;</span>).<span style="color:#658b00">getChannel</span>();
-    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">mappedByteBuffer</span> = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span>.<span style="color:#658b00">map</span>(MapMode.<span style="color:#658b00">READ_WRITE</span>, 0, fileSize);
-    TOTAL_MAPPED_VIRTUAL_MEMORY.<span style="color:#658b00">addAndGet</span>(fileSize);
-    TOTAL_MAPPED_FILES.<span style="color:#658b00">incrementAndGet</span>();
-    ok = <span style="color:#8b008b;font-weight:bold">true</span>;
-} <span style="color:#8b008b;font-weight:bold">catch</span> (FileNotFoundException e) {
-    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Failed to create file &#34;</span> + <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileName</span>, e);
-    <span style="color:#8b008b;font-weight:bold">throw</span> e;
-} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</code></pre></div><p>当客户端来拉取消息时，我们可以在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/processor/PullMessageProcessor.java#L390">PullMessageProcessor.java</a>中找到如下代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span> = <span style="color:#8b008b;font-weight:bold">new</span> RandomAccessFile(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">file</span>, <span style="color:#cd5555">&#34;rw&#34;</span>).<span style="color:#658b00">getChannel</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">mappedByteBuffer</span> = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span>.<span style="color:#658b00">map</span>(MapMode.<span style="color:#658b00">READ_WRITE</span>, 0, fileSize);
+</span></span><span style="display:flex;"><span>    TOTAL_MAPPED_VIRTUAL_MEMORY.<span style="color:#658b00">addAndGet</span>(fileSize);
+</span></span><span style="display:flex;"><span>    TOTAL_MAPPED_FILES.<span style="color:#658b00">incrementAndGet</span>();
+</span></span><span style="display:flex;"><span>    ok = <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">catch</span> (FileNotFoundException e) {
+</span></span><span style="display:flex;"><span>    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Failed to create file &#34;</span> + <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileName</span>, e);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">throw</span> e;
+</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+</span></span></code></pre></div><p>当客户端来拉取消息时，我们可以在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/processor/PullMessageProcessor.java#L390">PullMessageProcessor.java</a>中找到如下代码：</p>
 <ul>
 <li>如果是transferMsgByHeap，而会把消息读到堆中，再写到Body中</li>
 <li>如果不是transferMsgByHeap，则会创建MessageTransfer，而它实现了Netty的FileRegion接口，在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/pagecache/ManyMessageTransfer.java#L69">tranferTo</a>方法把内容写到目标channel中。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerConfig</span>().<span style="color:#658b00">isTransferMsgByHeap</span>()) {
-    <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">byte</span>[] r = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">readGetMessageResult</span>(getMessageResult, requestHeader.<span style="color:#658b00">getConsumerGroup</span>(), requestHeader.<span style="color:#658b00">getTopic</span>(), requestHeader.<span style="color:#658b00">getQueueId</span>());
-    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerStatsManager</span>().<span style="color:#658b00">incGroupGetLatency</span>(requestHeader.<span style="color:#658b00">getConsumerGroup</span>(),
-        requestHeader.<span style="color:#658b00">getTopic</span>(), requestHeader.<span style="color:#658b00">getQueueId</span>(),
-        (<span style="color:#00688b;font-weight:bold">int</span>) (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getMessageStore</span>().<span style="color:#658b00">now</span>() - beginTimeMills));
-    response.<span style="color:#658b00">setBody</span>(r);
-} <span style="color:#8b008b;font-weight:bold">else</span> {
-    <span style="color:#8b008b;font-weight:bold">try</span> {
-        FileRegion fileRegion =
-            <span style="color:#8b008b;font-weight:bold">new</span> ManyMessageTransfer(response.<span style="color:#658b00">encodeHeader</span>(getMessageResult.<span style="color:#658b00">getBufferTotalSize</span>()), getMessageResult);
-        channel.<span style="color:#658b00">writeAndFlush</span>(fileRegion).<span style="color:#658b00">addListener</span>(<span style="color:#8b008b;font-weight:bold">new</span> ChannelFutureListener() {
-            <span style="color:#707a7c">@Override</span>
-            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">operationComplete</span>(ChannelFuture future) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
-                getMessageResult.<span style="color:#658b00">release</span>();
-                <span style="color:#8b008b;font-weight:bold">if</span> (!future.<span style="color:#658b00">isSuccess</span>()) {
-                    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;transfer many message by pagecache failed, {}&#34;</span>, channel.<span style="color:#658b00">remoteAddress</span>(), future.<span style="color:#658b00">cause</span>());
-                }
-            }
-        });
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (Throwable e) {
-        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;transfer many message by pagecache exception&#34;</span>, e);
-        getMessageResult.<span style="color:#658b00">release</span>();
-    }
-</code></pre></div><h1 id="结语">结语</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerConfig</span>().<span style="color:#658b00">isTransferMsgByHeap</span>()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">byte</span>[] r = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">readGetMessageResult</span>(getMessageResult, requestHeader.<span style="color:#658b00">getConsumerGroup</span>(), requestHeader.<span style="color:#658b00">getTopic</span>(), requestHeader.<span style="color:#658b00">getQueueId</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerStatsManager</span>().<span style="color:#658b00">incGroupGetLatency</span>(requestHeader.<span style="color:#658b00">getConsumerGroup</span>(),
+</span></span><span style="display:flex;"><span>        requestHeader.<span style="color:#658b00">getTopic</span>(), requestHeader.<span style="color:#658b00">getQueueId</span>(),
+</span></span><span style="display:flex;"><span>        (<span style="color:#00688b;font-weight:bold">int</span>) (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getMessageStore</span>().<span style="color:#658b00">now</span>() - beginTimeMills));
+</span></span><span style="display:flex;"><span>    response.<span style="color:#658b00">setBody</span>(r);
+</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        FileRegion fileRegion =
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">new</span> ManyMessageTransfer(response.<span style="color:#658b00">encodeHeader</span>(getMessageResult.<span style="color:#658b00">getBufferTotalSize</span>()), getMessageResult);
+</span></span><span style="display:flex;"><span>        channel.<span style="color:#658b00">writeAndFlush</span>(fileRegion).<span style="color:#658b00">addListener</span>(<span style="color:#8b008b;font-weight:bold">new</span> ChannelFutureListener() {
+</span></span><span style="display:flex;"><span>            <span style="color:#707a7c">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">operationComplete</span>(ChannelFuture future) <span style="color:#8b008b;font-weight:bold">throws</span> Exception {
+</span></span><span style="display:flex;"><span>                getMessageResult.<span style="color:#658b00">release</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">if</span> (!future.<span style="color:#658b00">isSuccess</span>()) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;transfer many message by pagecache failed, {}&#34;</span>, channel.<span style="color:#658b00">remoteAddress</span>(), future.<span style="color:#658b00">cause</span>());
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (Throwable e) {
+</span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;transfer many message by pagecache exception&#34;</span>, e);
+</span></span><span style="display:flex;"><span>        getMessageResult.<span style="color:#658b00">release</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h1 id="结语">结语</h1>
 <p>本文搜集整理了零拷贝的知识点，并简单打开两个开源软件的源码来看看，可以看到零拷贝技术并不是什么复杂高深的技术，在Java层使用也非常简单。希望本文能给大家带来一些启发，在后续的网络编程中对有零拷贝技术所应用。</p>
 <hr>
     </div>
@@ -570,7 +570,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

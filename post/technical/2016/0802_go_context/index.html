@@ -156,13 +156,13 @@
 <p><code>context</code>包不仅实现了在程序单元之间共享状态变量的方法，同时能通过简单的方法，使我们在被调用程序单元的外部，通过设置ctx变量值，将过期或撤销这些信号传递给被调用的程序单元。在网络编程中，若存在A调用B的API, B再调用C的API，若A调用B取消，那也要取消B调用C，通过在A,B,C的API调用之间传递<code>Context</code>，以及判断其状态，就能解决此问题，这是为什么gRPC的接口中带上<code>ctx context.Context</code>参数的原因之一。</p>
 <p>Go1.7(当前是RC2版本)已将原来的<code>golang.org/x/net/context</code>包挪入了标准库中，放在$GOROOT/src/context下面。标准库中<code>net</code>、<code>net/http</code>、<code>os/exec</code>都用到了<code>context</code>。同时为了考虑兼容，在原<code>golang.org/x/net/context</code>包下存在两个文件，<code>go17.go</code>是调用标准库的<code>context</code>包，而<code>pre_go17.go</code>则是之前的默认实现，其介绍请参考<a href="http://studygolang.com/articles/5131">go程序包源码解读</a>。</p>
 <p><code>context</code>包的核心就是<code>Context</code>接口，其定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type Context interface {
-    Deadline() (deadline time.Time, ok bool)
-    Done() &lt;-chan struct{}
-    Err() error
-    Value(key interface{}) interface{}
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type Context interface {
+</span></span><span style="display:flex;"><span>    Deadline() (deadline time.Time, ok bool)
+</span></span><span style="display:flex;"><span>    Done() &lt;-chan struct{}
+</span></span><span style="display:flex;"><span>    Err() error
+</span></span><span style="display:flex;"><span>    Value(key interface{}) interface{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>
 <p><code>Deadline</code>会返回一个超时时间，Goroutine获得了超时时间后，例如可以对某些io操作设定超时时间。</p>
 </li>
@@ -180,23 +180,23 @@
 <h2 id="context使用">context使用</h2>
 <p>无论是Goroutine，他们的创建和调用关系总是像层层调用进行的，就像人的辈分一样，而更靠顶部的Goroutine应有办法主动关闭其下属的Goroutine的执行（不然程序可能就失控了）。为了实现这种关系，Context结构也应该像一棵树，叶子节点须总是由根节点衍生出来的。</p>
 <p>要创建Context树，第一步就是要得到根节点，<code>context.Background</code>函数的返回值就是根节点：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func Background() Context
-</code></pre></div><p>该函数返回空的Context，该Context一般由接收请求的第一个Goroutine创建，是与进入请求对应的Context根节点，它不能被取消、没有值、也没有过期时间。它常常作为处理Request的顶层context存在。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func Background() Context
+</span></span></code></pre></div><p>该函数返回空的Context，该Context一般由接收请求的第一个Goroutine创建，是与进入请求对应的Context根节点，它不能被取消、没有值、也没有过期时间。它常常作为处理Request的顶层context存在。</p>
 <p>有了根节点，又该怎么创建其它的子节点，孙节点呢？context包为我们提供了多个函数来创建他们：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
-func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
-func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
-func WithValue(parent Context, key interface{}, val interface{}) Context
-</code></pre></div><p>函数都接收一个<code>Context</code>类型的参数<code>parent</code>，并返回一个<code>Context</code>类型的值，这样就层层创建出不同的节点。子节点是从复制父节点得到的，并且根据接收参数设定子节点的一些状态值，接着就可以将子节点传递给下层的Goroutine了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+</span></span><span style="display:flex;"><span>func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
+</span></span><span style="display:flex;"><span>func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+</span></span><span style="display:flex;"><span>func WithValue(parent Context, key interface{}, val interface{}) Context
+</span></span></code></pre></div><p>函数都接收一个<code>Context</code>类型的参数<code>parent</code>，并返回一个<code>Context</code>类型的值，这样就层层创建出不同的节点。子节点是从复制父节点得到的，并且根据接收参数设定子节点的一些状态值，接着就可以将子节点传递给下层的Goroutine了。</p>
 <p>再回到之前的问题：该怎么通过<code>Context</code>传递改变后的状态呢？使用<code>Context</code>的Goroutine无法取消某个操作，其实这也是符合常理的，因为这些Goroutine是被某个父Goroutine创建的，而理应只有父Goroutine可以取消操作。在父Goroutine中可以通过WithCancel方法获得一个cancel方法，从而获得cancel的权利。</p>
 <p>第一个<code>WithCancel</code>函数，它是将父节点复制到子节点，并且还返回一个额外的<code>CancelFunc</code>函数类型变量，该函数类型的定义为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type CancelFunc func()
-</code></pre></div><p>调用<code>CancelFunc</code>对象将撤销对应的<code>Context</code>对象，这就是主动撤销<code>Context</code>的方法。在父节点的<code>Context</code>所对应的环境中，通过<code>WithCancel</code>函数不仅可创建子节点的<code>Context</code>，同时也获得了该节点<code>Context</code>的控制权，一旦执行该函数，则该节点<code>Context</code>就结束了，则子节点需要类似如下代码来判断是否已结束，并退出该Goroutine：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">select {
-    case &lt;-cxt.Done():
-        // do some clean...
-}
-</code></pre></div><p><code>WithDeadline</code>函数的作用也差不多，它返回的Context类型值同样是<code>parent</code>的副本，但其过期时间由<code>deadline</code>和<code>parent</code>的过期时间共同决定。当<code>parent</code>的过期时间早于传入的<code>deadline</code>时间时，返回的过期时间应与<code>parent</code>相同。父节点过期时，其所有的子孙节点必须同时关闭；反之，返回的父节点的过期时间则为<code>deadline</code>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type CancelFunc func()
+</span></span></code></pre></div><p>调用<code>CancelFunc</code>对象将撤销对应的<code>Context</code>对象，这就是主动撤销<code>Context</code>的方法。在父节点的<code>Context</code>所对应的环境中，通过<code>WithCancel</code>函数不仅可创建子节点的<code>Context</code>，同时也获得了该节点<code>Context</code>的控制权，一旦执行该函数，则该节点<code>Context</code>就结束了，则子节点需要类似如下代码来判断是否已结束，并退出该Goroutine：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>select {
+</span></span><span style="display:flex;"><span>    case &lt;-cxt.Done():
+</span></span><span style="display:flex;"><span>        // do some clean...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>WithDeadline</code>函数的作用也差不多，它返回的Context类型值同样是<code>parent</code>的副本，但其过期时间由<code>deadline</code>和<code>parent</code>的过期时间共同决定。当<code>parent</code>的过期时间早于传入的<code>deadline</code>时间时，返回的过期时间应与<code>parent</code>相同。父节点过期时，其所有的子孙节点必须同时关闭；反之，返回的父节点的过期时间则为<code>deadline</code>。</p>
 <p><code>WithTimeout</code>函数与<code>WithDeadline</code>类似，只不过它传入的是从现在开始Context剩余的生命时长。他们都同样也都返回了所创建的子Context的控制权，一个<code>CancelFunc</code>类型的函数变量。</p>
 <p>当顶层的Request请求函数结束后，我们就可以cancel掉某个context，从而层层Goroutine根据判断<code>cxt.Done()</code>来结束。</p>
 <p><code>WithValue</code>函数，它返回<code>parent</code>的一个副本，调用该副本的Value(key)方法将得到val。这样我们不光将根节点原有的值保留了，还在子孙节点中加入了新的值，注意若存在Key相同，则会被覆盖。</p>
@@ -423,7 +423,7 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
