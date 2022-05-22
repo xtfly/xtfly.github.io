@@ -145,19 +145,19 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4886 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4989 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="前言">前言</h1>
-<p>前一段时间参与定位Tomcat某一问题，涉及到sendfile系统调用。忽然想到之前一些使用经验，知道Java领域中有不少开源软件，都使用零拷贝来提升期性能，于是有了本文。先看看我们这些耳熟能详的软件吧，你是否有了解过他们背后使用的技术点：</p>
+<p>前一段时间参与定位Tomcat某一问题，涉及到sendfile系统调用。忽然想到之前一些使用经验，知道Java领域中有不少开源软件，都应用了零拷贝来提升其性能，于是有了本文。看看我们这些耳熟能详的软件吧，你是否曾了解过他们背后应用的技术点：</p>
 <ul>
-<li>Tomcat: 使用sendfile直接把大文件写入Socket，提升静态文件高效的数据传输</li>
-<li>Netty: 统一的ByteBuf机制，通过DirectBuffer封装，使用堆外内存进行Socket读写；也提供使用Sendfile来把文件缓冲区的数据发送到目标Channel</li>
-<li>RecketMQ：基于mmap内存映射文件方式对CommitLog文件读写文件，当客户端消费消息时直接把内容写到目标Socket</li>
+<li>Tomcat: 使用sendfile把大文件写入Socket，提升静态文件数据传输性能</li>
+<li>Netty: 统一的ByteBuf机制，对DirectBuffer封装采用堆外内存进行Socket读写；也支持使用sendfile把文件缓冲区的数据发送到目标Channel</li>
+<li>RecketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket</li>
 </ul>
-<p>本文是对网上知识的收集与整理，以便分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
+<p>本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
     </div>
     
     <div class="post-more-link text-center">

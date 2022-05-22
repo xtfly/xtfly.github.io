@@ -142,46 +142,46 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4886 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4989 字 ~10分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="前言">前言</h1>
-<p>前一段时间参与定位Tomcat某一问题，涉及到sendfile系统调用。忽然想到之前一些使用经验，知道Java领域中有不少开源软件，都使用零拷贝来提升期性能，于是有了本文。先看看我们这些耳熟能详的软件吧，你是否有了解过他们背后使用的技术点：</p>
+<p>前一段时间参与定位Tomcat某一问题，涉及到sendfile系统调用。忽然想到之前一些使用经验，知道Java领域中有不少开源软件，都应用了零拷贝来提升其性能，于是有了本文。看看我们这些耳熟能详的软件吧，你是否曾了解过他们背后应用的技术点：</p>
 <ul>
-<li>Tomcat: 使用sendfile直接把大文件写入Socket，提升静态文件高效的数据传输</li>
-<li>Netty: 统一的ByteBuf机制，通过DirectBuffer封装，使用堆外内存进行Socket读写；也提供使用Sendfile来把文件缓冲区的数据发送到目标Channel</li>
-<li>RecketMQ：基于mmap内存映射文件方式对CommitLog文件读写文件，当客户端消费消息时直接把内容写到目标Socket</li>
+<li>Tomcat: 使用sendfile把大文件写入Socket，提升静态文件数据传输性能</li>
+<li>Netty: 统一的ByteBuf机制，对DirectBuffer封装采用堆外内存进行Socket读写；也支持使用sendfile把文件缓冲区的数据发送到目标Channel</li>
+<li>RecketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket</li>
 </ul>
-<p>本文是对网上知识的收集与整理，以便分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
+<p>本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
 <h1 id="什么是零拷贝">什么是零拷贝</h1>
-<p>零拷贝（Zero Copy）是指计算机执行操作时，CPU不需要先将数据从某处内存复制到另外一个特定区域。这种技术通常通过网络传输文件时节省CPU周期和带宽。</p>
+<p>零拷贝（Zero Copy）是指计算机执行操作时，CPU不需要先将数据从某处内存复制到另外一个特定区域。这种技术通常应用在通过网络传输文件时，节省CPU周期和带宽。避免让CPU做大量的数据拷贝任务，让CPU解脱出来专注于别的任务，这样就可以让系统资源的利用更加有效。</p>
 <h1 id="os层">OS层</h1>
 <h2 id="传统io">传统I/O</h2>
-<p>搞清楚零拷贝之前，先抛开Java语境，要了解在Linux下的I/O体系中几个核心知识点：</p>
+<p>搞清楚零拷贝之前，先抛开Java，了解Linux中I/O体系中几个核心知识点：</p>
 <ul>
 <li><strong>内核空间</strong>：Linux内核运行的空间</li>
-<li><strong>用户空间</strong>：用户程序运行的空间，为了安全，内核空间与用户空间是隔离的，即使用户程序崩溃了，不会导致内核受到影响。所有在内存管理，操作权限等都隔离。在内核空间内可以调用系统的一切资源，向用户空间的程序提供系统接口。而用户空间的程序不能直接调用资源系统，只能通过系统接口来间接向内核发起请求，这又称系统调用。</li>
-<li><strong>磁盘/网卡</strong>：磁盘/网卡相对于内存来说，是慢速I/O，他们之间数据传输主要有两种方式：
+<li><strong>用户空间</strong>：用户程序运行的空间。Linux为了系统安全，内核空间与用户空间是隔离的，即使用户程序崩溃了，不会导致内核受到影响。内存管理，操作权限等都划分两个空间隔离。在内核空间内可以调用系统的一切资源，并向用户空间的程序提供系统接口。而用户空间的程序不能直接调用资源系统，只能通过系统接口来间接向内核发起请求，这又称系统调用。</li>
+<li><strong>磁盘/网卡</strong>：磁盘/网卡相对于内存来说是慢速I/O，他们之间数据传输主要有两种方式：
 <ul>
 <li><strong>PIO，经过CPU</strong>：磁盘/网卡与内存的数据交换，数据要经过CPU存储转发</li>
-<li><strong>DMA，不经过CPU</strong>：而是直接进行磁盘/网卡和内存的数据交换，CPU只需要向DMA控制器下达指令，由DMA控制器通过系统总线来传输数据，传送完毕再通知CPU</li>
+<li><strong>DMA，不经过CPU</strong>：直接进行磁盘/网卡和内存的数据交换，CPU只需要向DMA控制器下达指令，由DMA控制器通过系统总线来传输数据，传送完毕再通知CPU</li>
 </ul>
 </li>
 <li><strong>CPU上下文切换</strong>：先把前一个任务的CPU上下文（也就是CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。</li>
 </ul>
-<p>传统I/O的工作方式是：数据读取和写入是从用户空间到内核空间来回复制，而内核空间的数据是通过操作系统层面的I/O接口从磁盘读取或写入。</p>
+<p>传统I/O的工作方式下，存在数据读取和写入是从用户空间到内核空间来回复制，而内核空间的数据是通过操作系统层面的硬件I/O接口从磁盘/网卡等硬件读取或写入。</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_1.png" alt="linux_io"></p>
-<p>代码会涉及两个系统调用，在Linux下，file与socket都抽象为文件，下面的函数第一参数其实都是文件描述符：</p>
+<p>代码会涉及2次系统调用，Linux中file与socket都抽象为文件，下面函数的第一个参数其实都是文件描述符：</p>
 <ul>
 <li>read(file, tmp_buf, len);</li>
 <li>write(socket, tmp_buf, len);</li>
 </ul>
-<p>整个过程发生了2次系统调用，4次用户态与内核态的上下文切换，而上下文切换问题：</p>
+<p>整个过程发生了2次系统调用，4次用户态与内核态的上下文切换。上下文切换存在如下问题：</p>
 <ul>
 <li><strong>调度</strong>：每次系统调用都得先从用户态切换到内核态，等内核完成任务后，再从内核态切换回用户态</li>
-<li><strong>时延</strong>：需要耗时几十纳秒到几微秒，CPU调度也会有时延，在高并发的场景下，这类时间容易被累积和放大，从而影响系统的性能</li>
+<li><strong>时延</strong>：需要耗时几十纳秒到几微秒，CPU调度也会有时延，在高并发的场景下，这类时间容易被累积和放大，从而影响整体系统的性能表现</li>
 </ul>
 <p>存在用户空间&lt;-&gt;内核空间&lt;-&gt;磁盘/网卡之间的数据交换，发生了4次数据拷贝，其中2次是DMA拷贝，另外2次则是通过CPU拷贝：</p>
 <ul>
@@ -192,31 +192,33 @@
 </ul>
 <h2 id="零拷贝技术">零拷贝技术</h2>
 <h3 id="mmap">mmap</h3>
-<p>Linux采用虚拟内存，多个虚拟内存可以指向同一个物理地址。利用这个特性，可以把内核空间和用户空间的虚拟地址映射到同一个物理地址，这样在 I/O操作时就不需要来回复制。将内核中的读缓冲区与用户空间的缓冲区进行映射，所有的IO都在内核中完成。</p>
-<p>mmap是内核提供一个系统调用，其函数原型如下：</p>
+<p>Linux采用虚拟内存管理方式，多个虚拟内存可以指向同一个物理地址。利用这个特性，可以把内核空间和用户空间的虚拟地址映射到同一个物理地址，这样在I/O操作时数据就不需要来回复制。将内核中的读缓冲区与用户空间的缓冲区进行映射，所有的IO操作都在内核中完成。</p>
+<p>mmap是内核提供的一个系统调用，其函数原型如下：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> *<span style="color:#008b45">mmap</span>(<span style="color:#00688b;font-weight:bold">void</span> *addr, size_t length, <span style="color:#00688b;font-weight:bold">int</span> prot, <span style="color:#00688b;font-weight:bold">int</span> flags, <span style="color:#00688b;font-weight:bold">int</span> fd, off_t offset);
 </span></span></code></pre></div><p>mmap+write利用了虚拟内存的特性来实现的零拷贝，其流程如下：</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_mmap.png" alt="linux_io_mmap"></p>
-<p>上述流程就是少了1次CPU拷贝，提升了I/O的速度。不过上下文的切换还是4次并没有减少，这是因为还是要应用程序发起write操作。mmap是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，所以节省了1次CPU拷贝并且用户进程内存是虚拟的，只是映射到内核的读缓冲区，应用层内存也会减少一半。</p>
+<p>上述流程就是少了1次CPU拷贝，提升了I/O的速度。不过上下文的切换还是4次并没有减少，这是因为还是要应用程序发起write操作。mmap是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，所以节省了1次CPU拷贝。并且用户进程内存是虚拟的，只是映射到内核的读缓冲区，应用层内存也会减少一半。</p>
 <h3 id="sendfile">sendfile</h3>
-<p>sendfile是内核提供另一个系统调用，其函数原型如下：</p>
+<p>sendfile是内核提供的另一个系统调用，其函数原型如下：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>ssize_t <span style="color:#008b45">sendfile</span>(<span style="color:#00688b;font-weight:bold">int</span> out_fd, <span style="color:#00688b;font-weight:bold">int</span> in_fd, off_t *offset, size_t count);
-</span></span></code></pre></div><p>sendfile表示在两个文件描述符之间传输数据，它是在操作系统内核中操作的，避免了数据从内核缓冲区和用户缓冲区之间的拷贝操作，因此可以使用它来实现零拷贝。其流程如下：</p>
+</span></span></code></pre></div><p>sendfile可以在两个文件描述符之间传输数据，它是在操作系统内核中操作的，避免了数据从内核缓冲区和用户缓冲区之间的拷贝操作，因此可以使用它来实现零拷贝。其流程如下：</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_sendfile.png" alt="linux_io_sendfile"></p>
 <p>sendfile方式有3次数据拷贝，包括了2次DMA拷贝和1次CPU拷贝，以及2次上下文切换。</p>
 <h3 id="sendfiledma-scattergather">sendfile+DMA scatter/gather</h3>
-<p>那能不能把CPU拷贝减少到0？Linux 2.4内核进行了优化，提供了带有scatter/gather的sendfile操作，这个操作可以把最后一次CPU拷贝去除。其原理就是在内核空间Read BUffer和Socket Buffer不做数据复制，而是将Read Buffer的内存地址、偏移量记录到相应的Socket Buffer中，这样就不需要复制。其本质和虚拟内存的解决方法思路一致，就是内存地址的记录。其流程如下：</p>
+<p>那能不能把CPU拷贝减少到0？Linux 2.4内核对sendfile进行了优化，提供了带有scatter/gather的sendfile操作，这个操作可以把最后一次CPU拷贝去除。其原理就是在内核空间Read BUffer和Socket Buffer不做数据复制，而是将Read Buffer的内存地址、偏移量记录到相应的Socket Buffer中，这样就不需要复制。其本质和虚拟内存的解决方法思路一致，就是内存地址的记录。其流程如下：</p>
 <p><img src="http://lanlingzi.cn/images/2022/linux_io_sendfile_sg.png" alt="linux_io_sendfile"></p>
 <p>scatter/gather的sendfile只有2次DMA拷贝，以及2次上下文切换，CUP拷贝已经完全没有。不过这种复制功能是<strong>需要硬件及驱动程序支持</strong>。</p>
 <h3 id="splice">splice</h3>
-<p>在Linux 2.6.17版本引入了splice，splice调用和sendfile非常相似，它并不仅限于sendfile的功能。也就是说splice是sendfile的一个超集。</p>
+<p>在Linux 2.6.17版本引入了splice，函数原型如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>ssize_t <span style="color:#008b45">splice</span>(<span style="color:#00688b;font-weight:bold">int</span> fdin, loff_t *offin, <span style="color:#00688b;font-weight:bold">int</span> fdout, loff_t *offout, size_t len, <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">int</span> flags);
+</span></span></code></pre></div><p>splice调用和sendfile非常相似，它并不仅限于sendfile的功能。也就是说splice是sendfile的一个超集。另外内核还一个tee函数，是专门应用在两个管道间的数据移动，同样是零拷贝。</p>
 <ul>
 <li><strong>相同点</strong>：splice与sendfile都需要两个已经打开的文件描述符，一个表示输入，一个表示输出</li>
 <li><strong>不同点</strong>：splice允许任意两个文件互相连接，而并不只是文件与socket进行数据传输，splice不需要硬件支持</li>
 </ul>
 <p>在Linux 2.6.23版本中，sendfile机制的实现已经没有了，但是其API及相应的功能还在，相应的功能是利用了splice机制来实现。</p>
 <h2 id="小结">小结</h2>
-<p>所谓的零拷贝，都是为了减少CPU拷贝及减少了上下文的切换，汇总如下：</p>
+<p>所谓的零拷贝，都是为了减少CPU拷贝及减少上下文的切换，汇总如下：</p>
 <table>
 <thead>
 <tr>
@@ -268,27 +270,27 @@
 <p>引入了零拷贝之后，2次DMA拷贝是都少不了，因为两次DMA都是依赖硬件完成。</p>
 <h1 id="java层">Java层</h1>
 <h2 id="零拷贝技术-1">零拷贝技术</h2>
-<p>相比于OS层，由于JVM引入GC，有自己的堆内存管理。零拷贝需要考虑两个问题：</p>
+<p>相比OS层，Java由于JVM引入GC，有自己的堆内存管理。零拷贝需要考虑两个问题：</p>
 <ul>
-<li><strong>从哪拷贝到哪</strong>：用户进程需要像磁盘写数据时，需要将用户缓冲区（堆内内存）中的内容拷贝到内核缓冲区（堆外内存）中，操作系统再将内核缓冲区中的内容写进磁盘中</li>
-<li><strong>零拷贝如何优化</strong>：过在用户进程中，直接申请堆外内存，存储其需要写进磁盘的数据</li>
+<li><strong>从哪拷贝到哪</strong>：用户空间当如磁盘写数据时，需要将用户缓冲区（堆内内存）中的内容拷贝到内核缓冲区（堆外内存）中，OS再将内核缓冲区中的内容写进磁盘中</li>
+<li><strong>零拷贝如何优化</strong>：在用户空间中，直接申请堆外内存，写入其需要写进磁盘的数据，去掉对堆内内存使用</li>
 </ul>
 <p>因此，Java的零拷贝技术核心先要能使用堆外内存。</p>
 <h3 id="java-nio">Java NIO</h3>
-<p>JVM的GC机制则会存在对内存的拷贝移动，会影响效率。当有一些高性能要求场景，需要直接使用OS原生的堆内存，DirectByteBuffer则是可出直接申请与释放JVM堆外内存。此内存不由JVM管理，不受GC影响。直接使用堆外内存从而避免了数据在JVM堆与OS用户堆的拷贝。</p>
-<p>Java NIO API提供了OS层零拷贝的API封装，上层也非常方便的使用。</p>
+<p>JVM的GC机制则会存在对其所管理的内存的拷贝移动，会影响效率。当有一些高性能要求场景，需要直接使用OS原生的堆内存，DirectByteBuffer则是可出直接申请与释放JVM堆外内存。此内存不由JVM管理，不受GC影响。直接使用堆外内存从而避免JVM GC带来的拷贝。</p>
+<p>Java NIO API提供了OS层零拷贝的API封装，上层应用使用也非常方便：</p>
 <ul>
-<li><strong>mmap</strong>：NIO中提供一个MappedByteBuffer类，其底层是mmap系统调用</li>
-<li><strong>sendfile</strong>: NIO中提供的FileChannel提供两个方法（transferTo/transferFrom），其底层是sendfile系统调用</li>
+<li><strong>mmap</strong>：MappedByteBuffer类，其底层是mmap系统调用</li>
+<li><strong>sendfile</strong>: FileChannel提供两个方法（transferTo/transferFrom），其底层是sendfile系统调用</li>
 </ul>
 <h3 id="netty">Netty</h3>
-<p>Netty相比与Java内置的NIO，它从三个层次来减少数据的拷贝：</p>
+<p>Netty相比Java内置的NIO，它从三个层次来减少数据的拷贝：</p>
 <ul>
-<li><strong>避免数据流经用户空间</strong>：Netty的FileRegion中FileChannel.tranferTo，可以实现数据如何写到目标中，可以使用mmap+write</li>
-<li><strong>避免数据在JVM堆与OS用户堆的拷贝</strong>：Java提供DirectByteBuffer，Netty提供对DirectByteBuffer与JVM的堆内存的统一ByteBuf接口封装</li>
-<li><strong>避免数据在用户空间多次多次拷贝</strong>：Netty提供ByteBuf抽象，支持引用计数与池化。并提供CompositeByteBuf组合视图来减少拷贝
+<li><strong>避免数据流经用户空间</strong>：Netty的FileRegion中FileChannel.tranferTo，实现数据如何写到目标Channel，可以使用mmap+write</li>
+<li><strong>避免数据在JVM堆与OS用户堆的拷贝</strong>：Java提供DirectByteBuffer，Netty提供对DirectByteBuffer堆外内存的统一接口封装ByteBuf</li>
+<li><strong>避免数据在用户空间多次多次拷贝</strong>：Netty提供ByteBuf抽象，支持引用计数与池化，并提供CompositeByteBuf组合视图来减少拷贝
 <ul>
-<li>ByteBuf：retain/release引用计数</li>
+<li>ByteBuf：数据可共享，retain/release管理引用计数</li>
 <li>ByteBufHolder：duplicate对于ByteBuf进行一个浅拷贝，共享同一个数据区域，但不共享read和write索引</li>
 <li>CompositeByteBuf：组合数个缓冲区为一体，并对外展现为一个缓冲区，可以将它们逻辑上当成一个完整的ByteBuf来操作，这样就免去了重新分配空间再复制数据的开销</li>
 </ul>
@@ -296,16 +298,16 @@
 </ul>
 <h2 id="开源分析">开源分析</h2>
 <h3 id="tomcat">Tomcat</h3>
-<p>Tomcat是一个Web服务端软件，其中Web应用存在一些静态资源文件，而这些静态文件不是需要经过应用来处理，可以地接由Tomcat直接发给客户端，因而不需要经过用户空间，则可能利用前面的提到零拷贝技术。</p>
-<p>为了提高性能，节省带宽，Tomcat提供一种内建机制来对静态资源文件压缩，但压缩节省带宽了却提高了CPU。Tomcat又提供sendfile的功能。当默认大于48Kb的静态文件，会直接使用sendfile功能进行传送，而不再启用压缩。</p>
-<p>相关的配置可以参见：<a href="https://tomcat.apache.org/tomcat-9.0-doc/default-servlet.html">Default Servlet Reference</a>与<a href="https://tomcat.apache.org/tomcat-9.0-doc/aio.html">Advanced IO and Tomcat</a></p>
+<p>Tomcat是一个Web服务端软件，Web应用通常存在一些静态资源文件，而这些静态文件不是需要经过应用来额外处理，可以直接由Tomcat直接发给客户端，因而不需要经过用户空间，则可能利用前面的提到零拷贝技术。</p>
+<p>为了提高性能，节省带宽，Tomcat提供一种内建机制来对静态资源文件压缩，但压缩节省带宽了却提高了CPU。Tomcat又提供sendfile的功能，当默认大于48Kb的静态文件，会直接使用sendfile功能进行传送，而不再启用压缩。</p>
+<p>相关的配置可以参见：<a href="https://tomcat.apache.org/tomcat-9.0-doc/aio.html">Advanced IO and Tomcat</a> 和 <a href="https://tomcat.apache.org/tomcat-9.0-doc/default-servlet.html">Default Servlet Reference</a> 。</p>
 <p>Tomcat提供三种IO：</p>
 <ul>
 <li><strong>BIO</strong>：阻塞IO，现在应该很少使用</li>
 <li><strong>NIO</strong>：非阻塞IO技术，使用Java提供NIO API，Tomcat提供了NIO与NIO2两种实现</li>
 <li><strong>APR</strong>：基于JNI调用操作系统相关API，性能相对NIO有提升，但需要下载APR需要的库</li>
 </ul>
-<p>Tomcat定义了三种类型的Endpoint，分别对应上面三种IO模式，其中<a href="https://github.com/apache/tomcat/blob/10.0.21/java/org/apache/tomcat/util/net/NioEndpoint.java#L913">NioEndpoint.java</a>中可以找到如下代码：</p>
+<p>Tomcat定义了三种类型的Endpoint，分别对应上面三种IO模式，在NIO模式实现的 <a href="https://github.com/apache/tomcat/blob/10.0.21/java/org/apache/tomcat/util/net/NioEndpoint.java#L913">NioEndpoint.java</a>中 可以找到如下代码：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (sd.<span style="color:#658b00">fchannel</span> == <span style="color:#8b008b;font-weight:bold">null</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#228b22">// Setup the file channel
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        File f = <span style="color:#8b008b;font-weight:bold">new</span> File(sd.<span style="color:#658b00">fileName</span>);
@@ -326,9 +328,9 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">long</span> written = sd.<span style="color:#658b00">fchannel</span>.<span style="color:#658b00">transferTo</span>(sd.<span style="color:#658b00">pos</span>, sd.<span style="color:#658b00">length</span>, wc); <span style="color:#228b22">// 底层sendfile系统调用
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (written &gt; 0) {
 </span></span></code></pre></div><h3 id="rocketmq">RocketMQ</h3>
-<p>RocketMQ支持消息持久化，所有的消息接收之后都是顺序追加写入到CommitLog中，CommitLog是磁盘上的文件。消费者连接服务端会创建 CosumerQueue，CommitLog文件中的消息与CosumerQueue建立索引关系。当消费者是通过CosumerQueue得到消息的真实物理地址再去 CommitLog上获取到对应的消息。</p>
-<p>RocketMQ是采用mmap+write来实现CommitLog文件的内容发送，它避免了JVM的堆内存的拷贝，也减少一次CPU拷贝。但没有没有采用sendfile。</p>
-<p>我们可以在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/store/src/main/java/org/apache/rocketmq/store/MappedFile.java#L163">MappedFile.java</a>中找到文件初始化，好理解消息消费和删除需要支持随机读写：</p>
+<p>RocketMQ支持消息持久化，所有消息接收之后都是顺序追加写入到CommitLog中，CommitLog是存储在磁盘上的文件。消费者连接服务端会创建CosumerQueue，CommitLog文件中的消息与CosumerQueue建立索引关系，当消费者通过CosumerQueue得到消息的真实物理地址，再去CommitLog上获取到对应的消息。</p>
+<p>RocketMQ是采用mmap+write来实现CommitLog文件的内容发送，它避免了JVM的堆内存的拷贝，也减少一次CPU拷贝，但没有没有采用sendfile。</p>
+<p>我们可以在 <a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/store/src/main/java/org/apache/rocketmq/store/MappedFile.java#L163">MappedFile.java</a> 中找到文件映射初始化，消息消费和删除需要支持随机读写也很好理解：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span> = <span style="color:#8b008b;font-weight:bold">new</span> RandomAccessFile(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">file</span>, <span style="color:#cd5555">&#34;rw&#34;</span>).<span style="color:#658b00">getChannel</span>();
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">mappedByteBuffer</span> = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileChannel</span>.<span style="color:#658b00">map</span>(MapMode.<span style="color:#658b00">READ_WRITE</span>, 0, fileSize);
@@ -339,11 +341,7 @@
 </span></span><span style="display:flex;"><span>    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;Failed to create file &#34;</span> + <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">fileName</span>, e);
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">throw</span> e;
 </span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</span></span></code></pre></div><p>当客户端来拉取消息时，我们可以在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/processor/PullMessageProcessor.java#L390">PullMessageProcessor.java</a>中找到如下代码：</p>
-<ul>
-<li>如果是transferMsgByHeap，而会把消息读到堆中，再写到Body中</li>
-<li>如果不是transferMsgByHeap，则会创建MessageTransfer，而它实现了Netty的FileRegion接口，在<a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/pagecache/ManyMessageTransfer.java#L69">tranferTo</a>方法把内容写到目标channel中。</li>
-</ul>
+</span></span></code></pre></div><p>当客户端来拉取消息时，我们可以在 <a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/processor/PullMessageProcessor.java#L390">PullMessageProcessor.java</a> 中找到如下代码：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerConfig</span>().<span style="color:#658b00">isTransferMsgByHeap</span>()) {
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">final</span> <span style="color:#00688b;font-weight:bold">byte</span>[] r = <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">readGetMessageResult</span>(getMessageResult, requestHeader.<span style="color:#658b00">getConsumerGroup</span>(), requestHeader.<span style="color:#658b00">getTopic</span>(), requestHeader.<span style="color:#658b00">getQueueId</span>());
 </span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">brokerController</span>.<span style="color:#658b00">getBrokerStatsManager</span>().<span style="color:#658b00">incGroupGetLatency</span>(requestHeader.<span style="color:#658b00">getConsumerGroup</span>(),
@@ -367,8 +365,12 @@
 </span></span><span style="display:flex;"><span>        log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;transfer many message by pagecache exception&#34;</span>, e);
 </span></span><span style="display:flex;"><span>        getMessageResult.<span style="color:#658b00">release</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><h1 id="结语">结语</h1>
-<p>本文搜集整理了零拷贝的知识点，并简单打开两个开源软件的源码来看看，可以看到零拷贝技术并不是什么复杂高深的技术，在Java层使用也非常简单。希望本文能给大家带来一些启发，在后续的网络编程中对有零拷贝技术所应用。</p>
+</span></span></code></pre></div><ul>
+<li>如果是transferMsgByHeap，而会把消息读到堆中，再写到响应Body</li>
+<li>如果不是transferMsgByHeap，则会创建MessageTransfer对象，而它实现了Netty的FileRegion接口，在 <a href="https://github.com/apache/rocketmq/blob/rocketmq-all-4.9.3/broker/src/main/java/org/apache/rocketmq/broker/pagecache/ManyMessageTransfer.java#L69">tranferTo</a> 方法把内容写到目标channel</li>
+</ul>
+<h1 id="结语">结语</h1>
+<p>本文搜集整理了零拷贝的一些知识点，并简单打开两个开源软件的源码来看看，可以看到零拷贝技术并不是什么复杂高深的技术，在Java层使用也非常简单。希望本文能给大家带来一些启发，在后续的网络编程中对零拷贝技术有所应用。</p>
 <hr>
     </div>
     <footer class="post-footer">
