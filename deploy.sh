@@ -23,7 +23,12 @@ mkdir -p ../public
 # Build the project.
 hugo -d ../public/
 
+rm -rf .hugo_build.lock
 git checkout master
+if [[ $? -ne 0 ]];then
+  echo "checkout master failed"
+  exit 1
+fi
 
 rm -rf ./*
 echo "lanlingzi.cn" > CNAME
@@ -32,4 +37,5 @@ cp -R ../public/* ./
 git add -A
 git commit -m "$msg"
 git push origin master
+
 git checkout hugo
