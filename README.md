@@ -1,6 +1,14 @@
 一指流沙，程序年华
 --------------
 
+# 2022
+  - [05-21][零拷贝技术及在Java中应用](content/post/technical/2022/0521.md)
+  - [04-05][飞哥讲代码30：C++简单依赖注入](content/post/technical/2022/0405.md)
+  - [04-04][飞哥讲代码29：C++可变参数模板应用](content/post/technical/2022/0404.md)
+  - [03-13][软件开发漫谈7：开发协作](content/post/technical/2022/0313.md)
+  - [02-13][软件开发漫谈6：师徒结对](content/post/technical/2022/0213.md)
+  - [01-02][软件开发漫谈5：软件传承](content/post/technical/2022/0102.md)
+
 # 2021
   - [11-06][飞哥讲代码28：C++内存泄露](content/post/technical/2021/1106.md)
   - [10-16][软件开发漫谈4：敏捷开发](content/post/technical/2021/1016.md)
