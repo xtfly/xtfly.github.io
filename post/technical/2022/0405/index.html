@@ -223,7 +223,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span>:
 </span></span><span style="display:flex;"><span>    std::unorder_map&lt;std::string, IObject *&gt; m_objs;
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>第一个问题如何解决？本方案采用C++的静态成员变量初始化先于main方法的特征。则可在ManagedObject有一个静态成员对象，在静态成员对象构造方法中对继承它的类创建生成，再把对象指针加入到Container管理。若想知道子类的具体类型，则需要采用模板，把子类类型在编译期给静态成员对象构造方法。</p>
+</span></span></code></pre></div><p>第一个问题如何解决？本方案采用C++的静态成员变量初始化先于main方法的特性。则可在ManagedObject有一个静态成员对象，在静态成员对象构造方法中对继承它的类创建生成，再把对象指针加入到Container管理。若想知道子类的具体类型，则需要采用模板，把子类类型在编译期给静态成员对象构造方法。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
 </span></span><span style="display:flex;"><span>ManagedObject&lt;T&gt;::AutoInit::AutoInit()
 </span></span><span style="display:flex;"><span>{
