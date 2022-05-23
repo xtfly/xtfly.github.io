@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3909 字 ~8分钟</span>
+<span class="leancloud-visitors-count">3911 字 ~8分钟</span>
 </span>
       </div>
     </header>
@@ -379,15 +379,15 @@
 <li>统一资源的多种权限可用逗号分割。</li>
 </ul>
 <p>样例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zed" data-lang="zed"><span style="display:flex;"><span>grant<span style="color:#bbb"> </span>codeBase<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">&#34;</span>file:<span style="color:#a61717;background-color:#e3d2d2">$</span>{{java.ext.dirs}}<span style="color:#228b22">/*&#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    permission java.security.AllPermission;
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">};
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">grant { 
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    permission java.lang.RuntimePermission &#34;stopThread&#34;;
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">    ……   
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22">}
-</span></span></span></code></pre></div><p>Java本身包括了一些 Permission类，如下:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">grant codeBase &#34;file:${{java.ext.dirs}}/*&#34; {
+    permission java.security.AllPermission;
+};
+
+grant { 
+    permission java.lang.RuntimePermission &#34;stopThread&#34;;
+    ……   
+}
+</code></pre></div><p>Java本身包括了一些 Permission类，如下:</p>
 <ul>
 <li>java.security.AllPermission：所有权限的集合</li>
 <li>java.util.PropertyPermission：系统/环境属性权限</li>
@@ -599,7 +599,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

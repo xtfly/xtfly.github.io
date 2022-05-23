@@ -149,61 +149,61 @@
     <div class="post-body" itemprop="articleBody">
     <h2 id="陷阱">陷阱</h2>
 <p><code>STL</code>中的容器都有<code>erase</code>方法，容器的存储分为顺序存储(如<code>vector</code>)与链式存储(如<code>list,map</code>)。先以<code>map</code>为例:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> std::map&lt;std::string, std::string&gt; TStrMap;  
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> TStrMap::iterator TStrMapIter;  
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>TStrMap strmap;  
-</span></span><span style="display:flex;"><span>TStrMapIter iter = strmap.find(<span style="color:#cd5555">&#34;somekey&#34;</span>);  
-</span></span><span style="display:flex;"><span>strmap.erase(iter);
-</span></span></code></pre></div><p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">typedef</span> std::map&lt;std::string, std::string&gt; TStrMap;  
+<span style="color:#8b008b;font-weight:bold">typedef</span> TStrMap::iterator TStrMapIter;  
+
+TStrMap strmap;  
+TStrMapIter iter = strmap.find(<span style="color:#cd5555">&#34;somekey&#34;</span>);  
+strmap.erase(iter);
+</code></pre></div><p>这样使用<code>erase</code>方法没有任何问题，删除一个单结节之后，<code>stl</code>中的<code>iterator</code>都是与其中的数据元素关联的，关联的元素删除之后，<code>ite</code>r已就失效，<code>iter</code>理解为指向元素的指针，那删除之后可以简单理解为已是一个野指针。</p>
 <p>但有时我们一不注意，却会这样使用，这是错误的:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();++iter) {  
-</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
-</span></span><span style="display:flex;"><span>     strmap.erase(iter);  
-</span></span><span style="display:flex;"><span>   }  
-</span></span><span style="display:flex;"><span>}  
-</span></span></code></pre></div><p><code>iter</code>所指的元素删除之后，<code>++iter</code>是错误的，会导致程序的未知结果，<code>iter</code>一般是不会移到指向下一个元素。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();++iter) {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
+     strmap.erase(iter);  
+   }  
+}  
+</code></pre></div><p><code>iter</code>所指的元素删除之后，<code>++iter</code>是错误的，会导致程序的未知结果，<code>iter</code>一般是不会移到指向下一个元素。</p>
 <h2 id="解决办法">解决办法</h2>
 <p>对于<code>map</code>与<code>list</code>这样的链式存储结构。我们一般可以有两种解决办法:</p>
 <h3 id="方法一">方法一</h3>
 <p>使用<code>erase(iter++)</code>，因为<code>iter2 = iter++</code>是<code>iter</code>先移到指向下一个节点，而<code>iter2</code>还是指向当前的节点。注意理解<code>iter++</code>与<code>++iter</code>的区别。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();)  {  
-</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
-</span></span><span style="display:flex;"><span>     strmap.erase(iter++);  
-</span></span><span style="display:flex;"><span>   } <span style="color:#8b008b;font-weight:bold">else</span> {  
-</span></span><span style="display:flex;"><span>     ++iter;   
-</span></span><span style="display:flex;"><span>   }  
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="方法二">方法二</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();)  {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
+     strmap.erase(iter++);  
+   } <span style="color:#8b008b;font-weight:bold">else</span> {  
+     ++iter;   
+   }  
+}
+</code></pre></div><h3 id="方法二">方法二</h3>
 <p><code>erase</code>的返回值会指向下一个节点，记把下一节点赋给一个变量。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();) {  
-</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
-</span></span><span style="display:flex;"><span>     iter = strmap.erase(iter);  
-</span></span><span style="display:flex;"><span>   } <span style="color:#8b008b;font-weight:bold">else</span> {  
-</span></span><span style="display:flex;"><span>     ++iter;  
-</span></span><span style="display:flex;"><span>   }  
-</span></span><span style="display:flex;"><span>}  
-</span></span></code></pre></div><p>但对于顺序存储的vector也可以使用上述两种方法吗？很遗憾，第一种用法却是错误的，但第二种用法是正确的。因为顺序存储的容器一旦erase时，会涉及到数据移动，iterator所指的位置还是那个位置，但元素却移动了，iter++之后已不再你想要的元素位置了。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_vector_erase</span>() {  
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">typedef</span> std::vector&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; TIntVec;  
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">typedef</span> TIntVec::iterator TIntVecIter;  
-</span></span><span style="display:flex;"><span>    TIntVec vec;  
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    vec.push_back(<span style="color:#b452cd">1</span>);  
-</span></span><span style="display:flex;"><span>    vec.push_back(<span style="color:#b452cd">2</span>);  
-</span></span><span style="display:flex;"><span>    vec.push_back(<span style="color:#b452cd">3</span>);  
-</span></span><span style="display:flex;"><span>    vec.push_back(<span style="color:#b452cd">4</span>);  
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (TIntVecIter iter = vec.begin(); iter != vec.end();) {  
-</span></span><span style="display:flex;"><span>        std::cout &lt;&lt; *iter &lt;&lt; std::endl;  
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#b452cd">0</span> == *iter % <span style="color:#b452cd">2</span>) {  
-</span></span><span style="display:flex;"><span>            vec.erase(iter++);  
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {  
-</span></span><span style="display:flex;"><span>            ++iter;  
-</span></span><span style="display:flex;"><span>        }  
-</span></span><span style="display:flex;"><span>    }  
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>它输出的结果却是未知的，我的测试环境为<code>&quot;1，2，4，4&quot;</code>。你可能发现原因，当删除<code>2</code>元素时，<code>3</code>往前移了，而<code>iter++</code>不是指到<code>3</code>，还是指到<code>4</code>了。当你使用<code>STL</code>容器中<code>erase</code>方法，那是一定要小心再小心，我也是被它戏弄了一下之后，才明白其中容易被忽视的这些细节。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">for</span>(TStrMapIter iter= strmap.begin(); iter!= strmap.end();) {  
+   <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#cd5555">&#34;somevalue&#34;</span> == iter-&gt;second ) {  
+     iter = strmap.erase(iter);  
+   } <span style="color:#8b008b;font-weight:bold">else</span> {  
+     ++iter;  
+   }  
+}  
+</code></pre></div><p>但对于顺序存储的vector也可以使用上述两种方法吗？很遗憾，第一种用法却是错误的，但第二种用法是正确的。因为顺序存储的容器一旦erase时，会涉及到数据移动，iterator所指的位置还是那个位置，但元素却移动了，iter++之后已不再你想要的元素位置了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_vector_erase</span>() {  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> std::vector&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; TIntVec;  
+    <span style="color:#8b008b;font-weight:bold">typedef</span> TIntVec::iterator TIntVecIter;  
+    TIntVec vec;  
+
+    vec.push_back(<span style="color:#b452cd">1</span>);  
+    vec.push_back(<span style="color:#b452cd">2</span>);  
+    vec.push_back(<span style="color:#b452cd">3</span>);  
+    vec.push_back(<span style="color:#b452cd">4</span>);  
+
+    <span style="color:#8b008b;font-weight:bold">for</span> (TIntVecIter iter = vec.begin(); iter != vec.end();) {  
+        std::cout &lt;&lt; *iter &lt;&lt; std::endl;  
+        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#b452cd">0</span> == *iter % <span style="color:#b452cd">2</span>) {  
+            vec.erase(iter++);  
+        } <span style="color:#8b008b;font-weight:bold">else</span> {  
+            ++iter;  
+        }  
+    }  
+}
+</code></pre></div><p>它输出的结果却是未知的，我的测试环境为<code>&quot;1，2，4，4&quot;</code>。你可能发现原因，当删除<code>2</code>元素时，<code>3</code>往前移了，而<code>iter++</code>不是指到<code>3</code>，还是指到<code>4</code>了。当你使用<code>STL</code>容器中<code>erase</code>方法，那是一定要小心再小心，我也是被它戏弄了一下之后，才明白其中容易被忽视的这些细节。</p>
     </div>
     <footer class="post-footer">
      
@@ -382,7 +382,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

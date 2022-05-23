@@ -188,21 +188,21 @@
 <p>Dispatcher是一个典型生产-消费设计模式。</p>
 <h1 id="slot">Slot</h1>
 <p>SlotImpl实现了Slot接口，是InstanceImpl的内部类。它负责维护数据，我们先来看一下其set函数实现:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::SlotImpl::set(InitializeCb cb) { <span style="color:#228b22">// [4] 参数InitializeCb
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 是否主线程调用
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  ASSERT(!parent_.shutdown_);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// [2] dispatcher.post推送事件
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">for</span> (Event::Dispatcher&amp; dispatcher : parent_.registered_threads_) {
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// See the header file comments for still_alive_guard_ for why we capture index_.
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    dispatcher.post(wrapCallback(
-</span></span><span style="display:flex;"><span>        [index = index_, cb, &amp;dispatcher]() -&gt; <span style="color:#00688b;font-weight:bold">void</span> { setThreadLocal(index, cb(dispatcher)); }));
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// [3] Handle main thread.
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  setThreadLocal(index_, cb(*parent_.main_thread_dispatcher_));
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>从上述代码中可以看出：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::SlotImpl::set(InitializeCb cb) { <span style="color:#228b22">// [4] 参数InitializeCb
+</span><span style="color:#228b22"></span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!parent_.shutdown_);
+
+  <span style="color:#228b22">// [2] dispatcher.post推送事件
+</span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">for</span> (Event::Dispatcher&amp; dispatcher : parent_.registered_threads_) {
+    <span style="color:#228b22">// See the header file comments for still_alive_guard_ for why we capture index_.
+</span><span style="color:#228b22"></span>    dispatcher.post(wrapCallback(
+        [index = index_, cb, &amp;dispatcher]() -&gt; <span style="color:#00688b;font-weight:bold">void</span> { setThreadLocal(index, cb(dispatcher)); }));
+  }
+
+  <span style="color:#228b22">// [3] Handle main thread.
+</span><span style="color:#228b22"></span>  setThreadLocal(index_, cb(*parent_.main_thread_dispatcher_));
+}
+</code></pre></div><p>从上述代码中可以看出：</p>
 <ul>
 <li>[1] Slot对象<strong>存放数据只能是主线程</strong>调用</li>
 <li>[2] 给每个注册的工作线程推送数据，调用dispatcher.post压入一个lambda的回调函数，在此回调函数会调用setThreadLocal函数来把数据放在Worker线程的TLS中，其中index_是Slot对象槽位号</li>
@@ -211,41 +211,41 @@
 </ul>
 <p>InitializeCb参见：<code>using InitializeCb = std::function&lt;ThreadLocalObjectSharedPtr(Event::Dispatcher&amp; dispatcher)&gt;</code></p>
 <p>再来看一下setThreadLocal函数的实现:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">// [1] 把对象加入到TLS对象data_列表中
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::setThreadLocal(<span style="color:#00688b;font-weight:bold">uint32_t</span> index, ThreadLocalObjectSharedPtr object) {
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">if</span> (thread_local_data_.data_.size() &lt;= index) {
-</span></span><span style="display:flex;"><span>    thread_local_data_.data_.resize(index + <span style="color:#b452cd">1</span>);
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  thread_local_data_.data_[index] = object;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// [2]前面的thread_local_data_类型如下
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">ThreadLocalData</span> {
-</span></span><span style="display:flex;"><span>    Event::Dispatcher* dispatcher_{};
-</span></span><span style="display:flex;"><span>    std::vector&lt;ThreadLocalObjectSharedPtr&gt; data_;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// [3]thread_local_data_
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">thread_local</span> InstanceImpl::ThreadLocalData InstanceImpl::thread_local_data_;
-</span></span></code></pre></div><p>从上述代码中可以看出：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// [1] 把对象加入到TLS对象data_列表中
+</span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::setThreadLocal(<span style="color:#00688b;font-weight:bold">uint32_t</span> index, ThreadLocalObjectSharedPtr object) {
+  <span style="color:#8b008b;font-weight:bold">if</span> (thread_local_data_.data_.size() &lt;= index) {
+    thread_local_data_.data_.resize(index + <span style="color:#b452cd">1</span>);
+  }
+
+  thread_local_data_.data_[index] = object;
+}
+
+<span style="color:#228b22">// [2]前面的thread_local_data_类型如下
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">ThreadLocalData</span> {
+    Event::Dispatcher* dispatcher_{};
+    std::vector&lt;ThreadLocalObjectSharedPtr&gt; data_;
+};
+
+<span style="color:#228b22">// [3]thread_local_data_
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">thread_local</span> InstanceImpl::ThreadLocalData InstanceImpl::thread_local_data_;
+</code></pre></div><p>从上述代码中可以看出：</p>
 <ul>
 <li>[1] <code>thread_local_data_.data_</code> 支持存储多个对象，数组大小不够，则扩充，每个index对应Slot的槽位号</li>
 <li>[2] <code>thread_local_data_.data_</code> 的类型是一个struct，包括dispatcher指针(每个注册的线程)，以及存储的对象列表（不同的Slot存储不同的数据）</li>
 <li>[3] <code>thread_local_data_</code> 是InstanceImpl的静态成员，它是一个TLS对象。thread_local是C++11新引入，thread_local关键字修饰的变量具有线程周期(thread duration)，这些变量(或者说对象）在线程开始的时候被生成(allocated)，在线程结束的时候被销毁(deallocated)，thread_local的变量绑定的对象即TLS对象</li>
 </ul>
 <p>再来看一下get函数实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">bool</span> InstanceImpl::SlotImpl::currentThreadRegisteredWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_.size() &gt; index;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::getWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
-</span></span><span style="display:flex;"><span>  ASSERT(currentThreadRegisteredWorker(index)); <span style="color:#228b22">// [1] 判断是否当前工作线程的Slot是否存在
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_[index]; <span style="color:#228b22">// [2] 根据槽位号取对应的数据
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#008b45">getWorker</span>(index_); }
-</span></span></code></pre></div><p>从上述代码中可以看出：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">bool</span> InstanceImpl::SlotImpl::currentThreadRegisteredWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
+  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_.size() &gt; index;
+}
+
+ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::getWorker(<span style="color:#00688b;font-weight:bold">uint32_t</span> index) {
+  ASSERT(currentThreadRegisteredWorker(index)); <span style="color:#228b22">// [1] 判断是否当前工作线程的Slot是否存在
+</span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">return</span> thread_local_data_.data_[index]; <span style="color:#228b22">// [2] 根据槽位号取对应的数据
+</span><span style="color:#228b22"></span>}
+
+ThreadLocalObjectSharedPtr InstanceImpl::SlotImpl::get() { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#008b45">getWorker</span>(index_); }
+</code></pre></div><p>从上述代码中可以看出：</p>
 <ul>
 <li>get函数直接调用getWorker函数</li>
 <li>[1] 判断Slot的槽位在当前线程的TLS是否存在</li>
@@ -256,52 +256,52 @@
 <li>相同点：机制与set函数实现类似，采用<code>dispatcher.post</code>把数据分发给各注册线程处理，通过回调<code>UpdateCb</code>函数指针来产生数据</li>
 <li>不同点：不会把<code>UpdateCb</code>函数指针产生数据更新到TLS；TLS中存储的数据适合于多次需要读取的场景，<code>runOnAllThreads</code>函数适合一次数据传递，不需要长期存储</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 更新，UpdateCb产生数据
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb, <span style="color:#8b008b;font-weight:bold">const</span> Event::PostCb&amp; complete_cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 所有线程完成回调complete_cb
-</span></span></span></code></pre></div><p>小结：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 更新，UpdateCb产生数据
+</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">runOnAllThreads</span>(<span style="color:#8b008b;font-weight:bold">const</span> UpdateCb&amp; cb, <span style="color:#8b008b;font-weight:bold">const</span> Event::PostCb&amp; complete_cb) <span style="color:#8b008b;font-weight:bold">override</span>; <span style="color:#228b22">// 所有线程完成回调complete_cb
+</span></code></pre></div><p>小结：</p>
 <ul>
 <li>Slot.set函数是根据slot的槽位号index_设置数据到TLS上，通过dispatcher.post让各自的注册的dispatcher调用InitializeCb来产生数据，并设置到各自的线程TLS上，即把数据同步到各自线程的TLS中存储</li>
 <li>Slot.get函数是根据slot的槽位号index_从TLS上获取数据，而不是从一个共享的地方获取数据，实现了无锁读取数据</li>
 </ul>
 <h1 id="slotallocator">SlotAllocator</h1>
 <p>InstanceImpl实现SlotAllocator接口，先来看一下allocateSlot函数实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>SlotPtr InstanceImpl::allocateSlot() {
-</span></span><span style="display:flex;"><span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">if</span> (free_slot_indexes_.empty()) { <span style="color:#228b22">// [2] 空闲的Slot槽位号不够
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, slots_.size());
-</span></span><span style="display:flex;"><span>    slots_.push_back(slot.get());
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> slot;
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">uint32_t</span> idx = free_slot_indexes_.front(); <span style="color:#228b22">// [3] 从空闲队首取一个
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  free_slot_indexes_.pop_front();
-</span></span><span style="display:flex;"><span>  ASSERT(idx &lt; slots_.size());
-</span></span><span style="display:flex;"><span>  SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, idx);
-</span></span><span style="display:flex;"><span>  slots_[idx] = slot.get();
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">return</span> slot;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>主要代码逻辑：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">SlotPtr InstanceImpl::allocateSlot() {
+  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
+
+  <span style="color:#8b008b;font-weight:bold">if</span> (free_slot_indexes_.empty()) { <span style="color:#228b22">// [2] 空闲的Slot槽位号不够
+</span><span style="color:#228b22"></span>    SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, slots_.size());
+    slots_.push_back(slot.get());
+    <span style="color:#8b008b;font-weight:bold">return</span> slot;
+  }
+  <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">uint32_t</span> idx = free_slot_indexes_.front(); <span style="color:#228b22">// [3] 从空闲队首取一个
+</span><span style="color:#228b22"></span>  free_slot_indexes_.pop_front();
+  ASSERT(idx &lt; slots_.size());
+  SlotPtr slot = std::make_unique&lt;SlotImpl&gt;(*<span style="color:#8b008b;font-weight:bold">this</span>, idx);
+  slots_[idx] = slot.get();
+  <span style="color:#8b008b;font-weight:bold">return</span> slot;
+}
+</code></pre></div><p>主要代码逻辑：</p>
 <ul>
 <li>[1] 分配Slot槽位，只能是主线程，分配Slot与给Slot设置数据都在主线程上，所以不需要加锁</li>
 <li>[2] InstanceImpl维护一个空闲槽位号列表，当空闲不够，则分配一个新的</li>
 <li>[3] 有空闲槽位，则创建Slot对象，并获取Slot在主线程TLS上存储的对象</li>
 </ul>
 <p>再来看一下registerThread函数实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::registerThread(Event::Dispatcher&amp; dispatcher, <span style="color:#00688b;font-weight:bold">bool</span> main_thread) {
-</span></span><span style="display:flex;"><span>  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">if</span> (main_thread) {  <span style="color:#228b22">// [2] 当是注册主线程时
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    main_thread_dispatcher_ = &amp;dispatcher;
-</span></span><span style="display:flex;"><span>    thread_local_data_.dispatcher_ = &amp;dispatcher;
-</span></span><span style="display:flex;"><span>  } <span style="color:#8b008b;font-weight:bold">else</span> {  <span style="color:#228b22">// [3] 当是注册工作线程时
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ASSERT(!containsReference(registered_threads_, dispatcher));
-</span></span><span style="display:flex;"><span>    registered_threads_.push_back(dispatcher);
-</span></span><span style="display:flex;"><span>    dispatcher.post([&amp;dispatcher] { thread_local_data_.dispatcher_ = &amp;dispatcher; });
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>主要代码逻辑：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> InstanceImpl::registerThread(Event::Dispatcher&amp; dispatcher, <span style="color:#00688b;font-weight:bold">bool</span> main_thread) {
+  ASSERT(Thread::MainThread::isMainThread()); <span style="color:#228b22">// [1] 判断是否主线程调用
+</span><span style="color:#228b22"></span>  ASSERT(!shutdown_);
+
+  <span style="color:#8b008b;font-weight:bold">if</span> (main_thread) {  <span style="color:#228b22">// [2] 当是注册主线程时
+</span><span style="color:#228b22"></span>    main_thread_dispatcher_ = &amp;dispatcher;
+    thread_local_data_.dispatcher_ = &amp;dispatcher;
+  } <span style="color:#8b008b;font-weight:bold">else</span> {  <span style="color:#228b22">// [3] 当是注册工作线程时
+</span><span style="color:#228b22"></span>    ASSERT(!containsReference(registered_threads_, dispatcher));
+    registered_threads_.push_back(dispatcher);
+    dispatcher.post([&amp;dispatcher] { thread_local_data_.dispatcher_ = &amp;dispatcher; });
+  }
+}
+</code></pre></div><p>主要代码逻辑：</p>
 <ul>
 <li>[1] 注册工作线程只能在主线程中完成，即主线程创建工作线程时，由工作线程的WorkerImpl实现者在其构造函数中调用registerThread</li>
 <li>[2] 主线程也需要注册，因为allocateSlot函数也会调用slot.get()，用于获取主线程产生的数据</li>
@@ -490,7 +490,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

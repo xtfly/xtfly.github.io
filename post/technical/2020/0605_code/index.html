@@ -149,51 +149,51 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一平台产品源码(Java语言)中（<code>代码一</code>）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceFactory</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory instance = <span style="color:#8b008b;font-weight:bold">new</span> ServiceFactory();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory <span style="color:#008b45">getInstance</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> instance;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span> 
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span> 
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateDesignServie appTemplateDesignServie;
-</span></span><span style="display:flex;"><span>   
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Getter</span> 
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Setter</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span> 
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateExportServie appTemplateExportServie;
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div><p>再来看另一平台服务的代码(Java语言)（<code>代码二</code>）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> WebConfig <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>  
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> AucInterceptor aucInterceptor;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> AuthInterceptor authInterceptor;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptor</span>(InterceptorRegistry registry) {
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> order = 1;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        InterceptorRegistration metricInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(<span style="color:#8b008b;font-weight:bold">new</span> MetricInterceptor());
-</span></span><span style="display:flex;"><span>        metricInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
-</span></span><span style="display:flex;"><span>        metricInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        InterceptorRegistration aucInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(aucInterceptor);
-</span></span><span style="display:flex;"><span>        aucInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
-</span></span><span style="display:flex;"><span>        aucInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        InterceptorRegistration authInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(authInterceptor);
-</span></span><span style="display:flex;"><span>        authInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
-</span></span><span style="display:flex;"><span>        authInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><code>代码一</code>的问题：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ServiceFactory</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory instance = <span style="color:#8b008b;font-weight:bold">new</span> ServiceFactory();
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> ServiceFactory <span style="color:#008b45">getInstance</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> instance;
+    }
+
+    <span style="color:#707a7c">@Getter</span> 
+    <span style="color:#707a7c">@Setter</span>
+    <span style="color:#707a7c">@Autowired</span> 
+    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateDesignServie appTemplateDesignServie;
+   
+    <span style="color:#707a7c">@Getter</span> 
+    <span style="color:#707a7c">@Setter</span>
+    <span style="color:#707a7c">@Autowired</span> 
+    <span style="color:#8b008b;font-weight:bold">private</span> AppTemplateExportServie appTemplateExportServie;
+    
+    <span style="color:#228b22">// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>再来看另一平台服务的代码(Java语言)（<code>代码二</code>）：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> WebConfig <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
+    <span style="color:#707a7c">@Autowired</span>  
+    <span style="color:#8b008b;font-weight:bold">private</span> AucInterceptor aucInterceptor;
+
+    <span style="color:#707a7c">@Autowired</span>
+    <span style="color:#8b008b;font-weight:bold">private</span> AuthInterceptor authInterceptor;
+
+    <span style="color:#707a7c">@override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptor</span>(InterceptorRegistry registry) {
+        <span style="color:#00688b;font-weight:bold">int</span> order = 1;
+
+        InterceptorRegistration metricInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(<span style="color:#8b008b;font-weight:bold">new</span> MetricInterceptor());
+        metricInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
+        metricInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
+
+        InterceptorRegistration aucInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(aucInterceptor);
+        aucInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
+        aucInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
+
+        InterceptorRegistration authInterceptorRegistration = registry.<span style="color:#658b00">addInterceptor</span>(authInterceptor);
+        authInterceptorRegistration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
+        authInterceptorRegistration.<span style="color:#658b00">order</span>(order++);
+    }
+}
+</code></pre></div><p><code>代码一</code>的问题：</p>
 <ul>
 <li>ServiceFactory并不一个Factory，Factory的设计应该只生产对象，实际上它不产生对象，对象是注入的。</li>
 <li>ServiceFactory也不是一个合格的单例，缺少private构造方法, instance未声明为final。</li>
@@ -212,55 +212,55 @@
 </ul>
 <p>为什么上面集中且容易察觉到的重复（相似），我们不去消除它。因为写重复代码太容易了，传统消除重复的套路（提取函数）在上面的代码已不再能有效解决，更别说满足<code>开闭原则</code>。若消除这类重复，则需要我们对Spring的IoC运作机制较深入了解。</p>
 <p><code>代码一</code>的优化建议：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SpringContextUtil</span> <span style="color:#8b008b;font-weight:bold">implements</span> ApplicationContextAware {
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ApplicationContext springContext;
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span>	<span style="color:#707a7c">@Override</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setApplicationContext</span>(ApplicationContext applicationContext) <span style="color:#8b008b;font-weight:bold">throws</span> BeansException {
-</span></span><span style="display:flex;"><span>		SpringContextUtil.<span style="color:#658b00">springContext</span> = applicationContext;
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">checkContextNotNull</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// ...
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;T&gt; T <span style="color:#008b45">getBean</span>(Class&lt;T&gt; interClazz) {
-</span></span><span style="display:flex;"><span>        checkContextNotNull();
-</span></span><span style="display:flex;"><span>		<span style="color:#8b008b;font-weight:bold">return</span> springContext.<span style="color:#658b00">getBean</span>(interClazz);
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;T&gt; T <span style="color:#008b45">getBean</span>(Class&lt;T&gt; clazz, String name) {
-</span></span><span style="display:flex;"><span>        checkContextNotNull();
-</span></span><span style="display:flex;"><span>		<span style="color:#8b008b;font-weight:bold">return</span> clazz.<span style="color:#658b00">cast</span>(springContext.<span style="color:#658b00">getBean</span>(name));
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>拿到ApplicationContext之后，我们就可以获取任一Bean对象了，消除了相似代码，也解决了违背<code>开闭原则</code>的问题。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">SpringContextUtil</span> <span style="color:#8b008b;font-weight:bold">implements</span> ApplicationContextAware {
+	<span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> ApplicationContext springContext;
+ 
+	<span style="color:#707a7c">@Override</span>
+	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">setApplicationContext</span>(ApplicationContext applicationContext) <span style="color:#8b008b;font-weight:bold">throws</span> BeansException {
+		SpringContextUtil.<span style="color:#658b00">springContext</span> = applicationContext;
+	}
+
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">checkContextNotNull</span>() {
+        <span style="color:#228b22">// ...
+</span><span style="color:#228b22"></span>    }
+	
+	<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;T&gt; T <span style="color:#008b45">getBean</span>(Class&lt;T&gt; interClazz) {
+        checkContextNotNull();
+		<span style="color:#8b008b;font-weight:bold">return</span> springContext.<span style="color:#658b00">getBean</span>(interClazz);
+	}
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> &lt;T&gt; T <span style="color:#008b45">getBean</span>(Class&lt;T&gt; clazz, String name) {
+        checkContextNotNull();
+		<span style="color:#8b008b;font-weight:bold">return</span> clazz.<span style="color:#658b00">cast</span>(springContext.<span style="color:#658b00">getBean</span>(name));
+	}
+}
+</code></pre></div><p>拿到ApplicationContext之后，我们就可以获取任一Bean对象了，消除了相似代码，也解决了违背<code>开闭原则</code>的问题。</p>
 <p><code>代码二</code>的优化建议：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> ServiceConfigurer <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@Autowired</span>(required=<span style="color:#8b008b;font-weight:bold">false</span>)  
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Interceptor&gt; interceptors;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptor</span>(InterceptorRegistry registry) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (CollectionUtils.<span style="color:#658b00">isEmpty</span>(interceptors)){
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> order = 1;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span>(Interceptor interceptor: interceptors) {
-</span></span><span style="display:flex;"><span>            InterceptorRegistration registration = registry.<span style="color:#658b00">addInterceptor</span>(interceptor);
-</span></span><span style="display:flex;"><span>            registration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
-</span></span><span style="display:flex;"><span>            registration.<span style="color:#658b00">order</span>(order++);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>通过采用List注入方式解决了扩展性问题，那又怎么解决不同Interceptor注册先后问题？Spring还提供一个@Order注解，只需要在各个类声明时，给它排个序，那List中注入的对象就具有先后顺序：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#707a7c">@Order</span>(1)
-</span></span><span style="display:flex;"><span><span style="color:#707a7c">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AucInterceptor</span> ....
-</span></span></code></pre></div><h2 id="背后的知识">背后的知识</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> ServiceConfigurer <span style="color:#8b008b;font-weight:bold">implements</span> WebMvcConfigurer {
+    <span style="color:#707a7c">@Autowired</span>(required=<span style="color:#8b008b;font-weight:bold">false</span>)  
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Interceptor&gt; interceptors;
+
+    <span style="color:#707a7c">@override</span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addInterceptor</span>(InterceptorRegistry registry) {
+        <span style="color:#8b008b;font-weight:bold">if</span> (CollectionUtils.<span style="color:#658b00">isEmpty</span>(interceptors)){
+            <span style="color:#8b008b;font-weight:bold">return</span>;
+        }
+
+        <span style="color:#00688b;font-weight:bold">int</span> order = 1;
+        <span style="color:#8b008b;font-weight:bold">for</span>(Interceptor interceptor: interceptors) {
+            InterceptorRegistration registration = registry.<span style="color:#658b00">addInterceptor</span>(interceptor);
+            registration.<span style="color:#658b00">addPathPatterns</span>(<span style="color:#cd5555">&#34;/**&#34;</span>);
+            registration.<span style="color:#658b00">order</span>(order++);
+        }
+    }
+}
+</code></pre></div><p>通过采用List注入方式解决了扩展性问题，那又怎么解决不同Interceptor注册先后问题？Spring还提供一个@Order注解，只需要在各个类声明时，给它排个序，那List中注入的对象就具有先后顺序：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#707a7c">@Order</span>(1)
+<span style="color:#707a7c">@Component</span>
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">AucInterceptor</span> ....
+</code></pre></div><h2 id="背后的知识">背后的知识</h2>
 <p>Spring提供的IoC容器负责管理Bean对象的生命周期，其底层核心对象：</p>
 <ul>
 <li>BeanDefinition：每个bean对应一个BeanDefinition实例。BeanDefinition负责保存bean对象的所有必要信息，包括bean对象的class类型、构造方法和参数、属性等等。</li>
@@ -511,7 +511,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -18,9 +18,9 @@
 &lt;ul&gt;
 &lt;li&gt;Tomcat: 使用sendfile把大文件写入Socket，提升静态文件数据传输性能&lt;/li&gt;
 &lt;li&gt;Netty: 统一的ByteBuf机制，对DirectBuffer封装采用堆外内存进行Socket读写；也支持使用sendfile把文件缓冲区的数据发送到目标Channel&lt;/li&gt;
-&lt;li&gt;RecketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket&lt;/li&gt;
+&lt;li&gt;RocketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于&lt;a href=&#34;https://www.zhangshengrong.com/p/ArXGbVABNj/&#34;&gt;看过就懂的java零拷贝及实现方式详解&lt;/a&gt;，在此先致谢。&lt;/p&gt;</description>
+&lt;p&gt;本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层】章节中介绍零拷贝技术的部分内容与图片来源于&lt;a href=&#34;https://www.zhangshengrong.com/p/ArXGbVABNj/&#34;&gt;看过就懂的java零拷贝及实现方式详解&lt;/a&gt;，在此先致谢。&lt;/p&gt;</description>
     </item>
     
     <item>

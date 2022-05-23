@@ -186,15 +186,15 @@ $ sudo apt-get install squashfs-tools
 <ul>
 <li>Archlinux无法更新或安装新的软件，由于keyringVerifying失败，解决办法:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span># pacman-key --init
-</span></span><span style="display:flex;"><span># pacman-key --populate
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># pacman-key --init
+# pacman-key --populate
+</code></pre></div><ul>
 <li>locale-gen失败(找不到UTF-8的charmaps文件)，解决办法：</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span># cd /usr/share/i18n/charmaps
-</span></span><span style="display:flex;"><span># tar zxvf UTF-8.gz
-</span></span><span style="display:flex;"><span># locale-gen
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># cd /usr/share/i18n/charmaps
+# tar zxvf UTF-8.gz
+# locale-gen
+</code></pre></div><ul>
 <li>编译Go语言程序失败（估计是系统调用没有实现，没有proc），解决办法：</li>
 </ul>
 <p>升级到14959或以后的Insider Preview版本。</p>
@@ -387,7 +387,7 @@ $ sudo apt-get install squashfs-tools
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

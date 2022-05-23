@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.98.0" />
+	<meta name="generator" content="Hugo 0.88.1" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -159,41 +159,41 @@
 </ul>
 <p>实现的主体逻辑是，收银员向顾客收钱。</p>
 <p>代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">float</span> value;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 省略构造方法
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">float</span> <span style="color:#008b45">getTotalMoney</span>() { <span style="color:#8b008b;font-weight:bold">return</span> value; }
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> deposit) {
-</span></span><span style="display:flex;"><span>        value += deposit;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">subtractMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> debit) {
-</span></span><span style="display:flex;"><span>        value -= debit;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String firstName;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> String lastName;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Wallet myWallet;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 省略构造方法，与Getter
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
-</span></span><span style="display:flex;"><span>        Wallet theWallet = myCustomer.<span style="color:#658b00">getWallet</span>();
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (theWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
-</span></span><span style="display:flex;"><span>            theWallet.<span style="color:#658b00">subtractMoney</span>(payment);
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Wallet</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">float</span> value;
+
+    <span style="color:#228b22">// 省略构造方法
+</span><span style="color:#228b22"></span>
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">float</span> <span style="color:#008b45">getTotalMoney</span>() { <span style="color:#8b008b;font-weight:bold">return</span> value; }
+    
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">addMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> deposit) {
+        value += deposit;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">subtractMoney</span>(<span style="color:#00688b;font-weight:bold">float</span> debit) {
+        value -= debit;
+    }
+}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Customer</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> String firstName;
+    <span style="color:#8b008b;font-weight:bold">private</span> String lastName;
+    <span style="color:#8b008b;font-weight:bold">private</span> Wallet myWallet;
+
+    <span style="color:#228b22">// 省略构造方法，与Getter
+</span><span style="color:#228b22"></span>}
+
+<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Paperboy</span> {
+    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">charge</span>(Customer myCustomer, <span style="color:#00688b;font-weight:bold">float</span> payment) {
+        Wallet theWallet = myCustomer.<span style="color:#658b00">getWallet</span>();
+        <span style="color:#8b008b;font-weight:bold">if</span> (theWallet.<span style="color:#658b00">getTotalMoney</span>() &gt; payment) {
+            theWallet.<span style="color:#658b00">subtractMoney</span>(payment);
+        } <span style="color:#8b008b;font-weight:bold">else</span> {
+            <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> NotEnoughMoneyException();
+        }
+    }
+}
+</code></pre></div>
     </div>
     
     <div class="post-more-link text-center">
@@ -255,13 +255,13 @@
     <h1 id="案例">案例</h1>
 <p>下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：</p>
 <p><strong>开始：</strong> 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
-</span></span><span style="display:flex;"><span>DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
-</span></span><span style="display:flex;"><span>DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
-</span></span><span style="display:flex;"><span>.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
-</span></span></code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
+DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
+DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+
+CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
+.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
+</code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
 <p><strong>问题：</strong> 经过一段时间，发现类似读取配置项的代码段 <em>散落</em> 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。</p>
 <p><strong>重构：</strong> 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 <em>封装</em> 对象。改进之后代码如下，并且做了一点小的容错性增强：</p>
 <ul>
@@ -321,7 +321,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2985 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2979 字 ~6分钟</span>
 </span>
       </div>
     </header>
@@ -329,28 +329,28 @@
     <h1 id="案例">案例</h1>
 <p>目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：</p>
 <p>优化前的代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
-</span></span><span style="display:flex;"><span>        rule_type = rules[<span style="color:#cd5555">&#39;type&#39;</span>] <span style="color:#228b22"># 1</span>
-</span></span><span style="display:flex;"><span>        rule_list = rules[<span style="color:#cd5555">&#39;rules&#39;</span>] <span style="color:#228b22"># 2</span>
-</span></span><span style="display:flex;"><span>        res = <span style="color:#8b008b;font-weight:bold">None</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#658b00">str</span>(rule_type).lower() != RULES_MAPPING:
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#34;type of rule should be &#39;rules_mapping&#39;&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> rule <span style="color:#8b008b">in</span> rule_list:
-</span></span><span style="display:flex;"><span>            col_name = rule[<span style="color:#cd5555">&#39;column&#39;</span>] <span style="color:#228b22"># 2</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;cast&#39;</span>: <span style="color:#228b22"># 3</span>
-</span></span><span style="display:flex;"><span>                mapping_dict, other = self.parse_cast(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
-</span></span><span style="display:flex;"><span>                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;in&#39;</span>:
-</span></span><span style="display:flex;"><span>                mapping_dict, other = self.parse_in(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
-</span></span><span style="display:flex;"><span>                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;binning&#39;</span>:
-</span></span><span style="display:flex;"><span>                res = data[col_name].apply(self.binning_func, args=(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>]))
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">else</span>:
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#39;not supported function&#39;</span>) <span style="color:#228b22"># 4 </span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> res
-</span></span></code></pre></div><p>代化之后的代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">handle</span>(self, data, rules):
+        rule_type = rules[<span style="color:#cd5555">&#39;type&#39;</span>] <span style="color:#228b22"># 1</span>
+        rule_list = rules[<span style="color:#cd5555">&#39;rules&#39;</span>] <span style="color:#228b22"># 2</span>
+        res = <span style="color:#8b008b;font-weight:bold">None</span>
+
+        <span style="color:#8b008b;font-weight:bold">if</span> <span style="color:#658b00">str</span>(rule_type).lower() != RULES_MAPPING:
+            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#34;type of rule should be &#39;rules_mapping&#39;&#34;</span>)
+
+        <span style="color:#8b008b;font-weight:bold">for</span> rule <span style="color:#8b008b">in</span> rule_list:
+            col_name = rule[<span style="color:#cd5555">&#39;column&#39;</span>] <span style="color:#228b22"># 2</span>
+            <span style="color:#8b008b;font-weight:bold">if</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;cast&#39;</span>: <span style="color:#228b22"># 3</span>
+                mapping_dict, other = self.parse_cast(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
+                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
+            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;in&#39;</span>:
+                mapping_dict, other = self.parse_in(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>])
+                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
+            <span style="color:#8b008b;font-weight:bold">elif</span> rule[<span style="color:#cd5555">&#39;function&#39;</span>].lower() == <span style="color:#cd5555">&#39;binning&#39;</span>:
+                res = data[col_name].apply(self.binning_func, args=(rule[<span style="color:#cd5555">&#39;mapping&#39;</span>]))
+            <span style="color:#8b008b;font-weight:bold">else</span>:
+                <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">ValueError</span>(<span style="color:#cd5555">&#39;not supported function&#39;</span>) <span style="color:#228b22"># 4 </span>
+        <span style="color:#8b008b;font-weight:bold">return</span> res
+</code></pre></div><p>代化之后的代码：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -412,28 +412,28 @@
     <h1 id="案例">案例</h1>
 <p>下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。</p>
 <p>代码一：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
-</span></span><span style="display:flex;"><span>                            <span style="color:#8b008b;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>                        }
-</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
-</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 省略主要业务逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
-</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 省略日志打印
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    }
-</span></span><span style="display:flex;"><span>                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
-</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 省略日志打印
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
+                    <span style="color:#8b008b;font-weight:bold">try</span> {
+                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
+                            <span style="color:#8b008b;font-weight:bold">return</span>;
+                        }
+                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+                        <span style="color:#228b22">// 省略主要业务逻辑
+</span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+                        <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>                    }
+                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
+</span><span style="color:#228b22"></span>            }
+        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+            <span style="color:#228b22">// 省略日志打印
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
 <ul>
 <li>双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。</li>
 <li>第一个while判断是 <code>否定之否定</code> 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。</li>
@@ -504,28 +504,28 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
-</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// ... 省略其它逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
-</span></span><span style="display:flex;"><span>   <span style="color:#228b22">// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>   <span style="color:#8b008b;font-weight:bold">synchronized</span>(class1.<span style="color:#658b00">getStore</span>()) {
-</span></span><span style="display:flex;"><span>     String value = class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">get</span>(key);
-</span></span><span style="display:flex;"><span>     <span style="color:#8b008b;font-weight:bold">if</span> (value == <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// ... 省略其它逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        value = createValue();
-</span></span><span style="display:flex;"><span>        class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">put</span>(key, value);
-</span></span><span style="display:flex;"><span>     }
-</span></span><span style="display:flex;"><span>   }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>   <span style="color:#228b22">// ... 省略其它逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div><p>代码的问题是很明显：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Class1</span> {
+    <span style="color:#8b008b;font-weight:bold">private</span> Map&lt;String, String&gt; store = <span style="color:#8b008b;font-weight:bold">new</span> HashMap&lt;&gt;();
+    <span style="color:#8b008b;font-weight:bold">private</span> List&lt;Class2&gt; queue = <span style="color:#8b008b;font-weight:bold">new</span> ArrayList&lt;&gt;();
+    <span style="color:#228b22">//... 省略其它的字段与其Getter/Setter方法
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">method1</span>() {
+  <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>
+   <span style="color:#228b22">// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+</span><span style="color:#228b22"></span>   <span style="color:#8b008b;font-weight:bold">synchronized</span>(class1.<span style="color:#658b00">getStore</span>()) {
+     String value = class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">get</span>(key);
+     <span style="color:#8b008b;font-weight:bold">if</span> (value == <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>        value = createValue();
+        class1.<span style="color:#658b00">getStore</span>().<span style="color:#658b00">put</span>(key, value);
+     }
+   }
+
+   <span style="color:#228b22">// ... 省略其它逻辑
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>代码的问题是很明显：</p>
 <ul>
 <li>Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。</li>
 <li>同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。</li>
@@ -591,12 +591,12 @@
     <h1 id="案例">案例</h1>
 <p>在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。</p>
 <p><strong>案例一</strong>：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
-</span></span><span style="display:flex;"><span>at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
-</span></span><span style="display:flex;"><span>at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
-</span></span><span style="display:flex;"><span>at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
-</span></span><span style="display:flex;"><span>...
-</span></span></code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Caused by java.<span style="color:#658b00">sql</span>.<span style="color:#658b00">SQLException</span>: Stream has already bean closed
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getBytesInternel</span>(LongAccessor.<span style="color:#658b00">java</span>:127)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">Accessor</span>.<span style="color:#658b00">getBytes</span>(Accessor.<span style="color:#658b00">java</span>:897)
+at oracle.<span style="color:#658b00">jdbc</span>.<span style="color:#658b00">driver</span>.<span style="color:#658b00">LongAccessor</span>.<span style="color:#658b00">getString</span>(LongAccessor.<span style="color:#658b00">java</span>:154)
+...
+</code></pre></div><p>从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -662,18 +662,18 @@
 <li>经过分析代码，狂改一通代码，结果是：只配置了 <strong>32个线程</strong> ，总消耗时间下降至 <strong>44秒</strong> 。</li>
 </ul>
 <p>这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Description desc = cache.<span style="color:#658b00">get</span>(key);
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">synchronized</span>(cache) {  <span style="color:#228b22">// 这个是全局锁，极大影响并发
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {  
-</span></span><span style="display:flex;"><span>            desc = getDescription(....);  <span style="color:#228b22">// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            cache = <span style="color:#8b008b;font-weight:bold">new</span> CopyOnWriteMap(cache) <span style="color:#228b22">// 对象Copy
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            cache.<span style="color:#658b00">add</span>(key, desc);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> desc;
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Description desc = cache.<span style="color:#658b00">get</span>(key);
+<span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {
+    <span style="color:#8b008b;font-weight:bold">synchronized</span>(cache) {  <span style="color:#228b22">// 这个是全局锁，极大影响并发
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {  
+            desc = getDescription(....);  <span style="color:#228b22">// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
+</span><span style="color:#228b22"></span>            cache = <span style="color:#8b008b;font-weight:bold">new</span> CopyOnWriteMap(cache) <span style="color:#228b22">// 对象Copy
+</span><span style="color:#228b22"></span>            cache.<span style="color:#658b00">add</span>(key, desc);
+        }
+    }
+}
+<span style="color:#8b008b;font-weight:bold">return</span> desc;
+</code></pre></div>
     </div>
     
     <div class="post-more-link text-center">
@@ -959,7 +959,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

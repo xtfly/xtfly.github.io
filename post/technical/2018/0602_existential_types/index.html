@@ -163,105 +163,107 @@ floatT = { a: float; f: (float → int); }</p>
 </blockquote>
 <p>从上面wiki的介绍，既存类型相对还是比较容易理解，既存类型早已发明，有着距今约30年的历史。既存类型是用来表达一种抽象类型，它连接record types（如rust中的struct），其实现与接口分离。说白一点，有点像Java中interface或GO的Interface。</p>
 <p>在Rust中，我们可以采用<code>impl Trait</code>指定函数的返回类型，而不必指出具体是哪一种类型。例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>fn foo() -&gt; impl Trait {
-</span></span><span style="display:flex;"><span>    // ...
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>如果是这样，为什么Rust不直接设计为如下，Trait像Java8中interface或GO的Interface，函数返回interface：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>fn foo() -&gt; Trait {
-</span></span><span style="display:flex;"><span>    // ...
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>遗憾地是，上面的写法在Rust都不可能编译通过，因为在Rust变量lifetime之说，返回值的lifetime不能悬空，那只能变成这种写法</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>fn foo3() -&gt; Box&lt;Trait&gt; {
-</span></span><span style="display:flex;"><span>    Box::new(5) as Box&lt;Trait&gt;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>这样写是不是很繁琐，不过，使用Box<!-- raw HTML omitted -->意味着动态分配，我们并非总是希望或需要这样，而<code>impl Trait</code>确保了静态分配。这种方法使foo仅能返回同样的类型。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>trait Trait {
-</span></span><span style="display:flex;"><span>    fn method(&amp;self);
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>// 表示类型T实现了Trait
-</span></span><span style="display:flex;"><span>impl&lt;T: Sized&gt; Trait for T {
-</span></span><span style="display:flex;"><span>    fn method(&amp;self) {    
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>fn new_foo1() -&gt; impl Trait {
-</span></span><span style="display:flex;"><span>    5  // 返回一个i32类型的值
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>fn new_foo2() -&gt; impl Trait {
-</span></span><span style="display:flex;"><span>    5.0f32  // 返回一个f32类型的值
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>在定义返回闭包的函数时，新的<code>impl Trait</code>语法也可以如下使用，闭包函数实现了特性Fn：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>fn foo() -&gt; impl Fn(i32) -&gt; i32 {
-</span></span><span style="display:flex;"><span>    |x| x + 1
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>另外，<code>impl Trait</code>语法还可以用于替代泛型类型的声明，如下例所示，虽然在这种情况下，它定义了一个通用类型，而不是存在类型：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>// 之前
-</span></span><span style="display:flex;"><span>fn foo&lt;T: Trait&gt;(x: T) {
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>// 之后
-</span></span><span style="display:flex;"><span>fn foo(x: impl Trait) {
-</span></span></code></pre></div><p>从上面来看，<code>impl Trait</code>其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，函数不支持返回抽象类型，简单问题复杂化了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Trait {
+    // ...
+}
+</code></pre></div><p>如果是这样，为什么Rust不直接设计为如下，Trait像Java8中interface或GO的Interface，函数返回interface：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; Trait {
+    // ...
+}
+</code></pre></div><p>遗憾地是，上面的写法在Rust都不可能编译通过，因为在Rust变量lifetime之说，返回值的lifetime不能悬空，那只能变成这种写法</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo3() -&gt; Box&lt;Trait&gt; {
+    Box::new(5) as Box&lt;Trait&gt;
+}
+</code></pre></div><p>这样写是不是很繁琐，不过，使用Box<!-- raw HTML omitted -->意味着动态分配，我们并非总是希望或需要这样，而<code>impl Trait</code>确保了静态分配。这种方法使foo仅能返回同样的类型。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">trait Trait {
+    fn method(&amp;self);
+}
+
+// 表示类型T实现了Trait
+impl&lt;T: Sized&gt; Trait for T {
+    fn method(&amp;self) {    
+    }
+}
+
+fn new_foo1() -&gt; impl Trait {
+    5  // 返回一个i32类型的值
+}
+
+fn new_foo2() -&gt; impl Trait {
+    5.0f32  // 返回一个f32类型的值
+}
+</code></pre></div><p>在定义返回闭包的函数时，新的<code>impl Trait</code>语法也可以如下使用，闭包函数实现了特性Fn：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">fn foo() -&gt; impl Fn(i32) -&gt; i32 {
+    |x| x + 1
+}
+</code></pre></div><p>另外，<code>impl Trait</code>语法还可以用于替代泛型类型的声明，如下例所示，虽然在这种情况下，它定义了一个通用类型，而不是存在类型：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// 之前
+fn foo&lt;T: Trait&gt;(x: T) {
+
+// 之后
+fn foo(x: impl Trait) {
+</code></pre></div><p>从上面来看，<code>impl Trait</code>其实就是一种语法糖而已，在其中语言中司空见惯的用法，由于在Rust的lifetime管理，函数不支持返回抽象类型，简单问题复杂化了。</p>
 <h2 id="具体应用">具体应用</h2>
 <p>actix是rust实现的一个web框架，它很快就使用到<code>impl Trait</code>，如下所示：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[derive(Serialize)]
-</span></span><span style="display:flex;"><span>struct Measurement {
-</span></span><span style="display:flex;"><span>    temperature: f32,
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>fn hello_world() -&gt; impl Responder {
-</span></span><span style="display:flex;"><span>    &#34;Hello World!&#34;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>fn greet(req: HttpRequest) -&gt; impl Responder {
-</span></span><span style="display:flex;"><span>    let to = req.match_info().get(&#34;name&#34;).unwrap_or(&#34;World&#34;);
-</span></span><span style="display:flex;"><span>    format!(&#34;Hello {}!&#34;, to)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>fn current_temperature(_req: HttpRequest) -&gt; impl Responder {
-</span></span><span style="display:flex;"><span>    Json(Measurement { temperature: 42.3 })
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>其中Responder是一个Trait，它定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span>//<span style="color:#bbb"> </span>https://github.com/actix/actix-web/<span style="color:#00688b;font-weight:bold">blob</span>/master/src/handler.rs<span style="color:#228b22">#L24
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span>pub<span style="color:#bbb"> </span>trait<span style="color:#bbb"> </span>Responder<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span>The<span style="color:#bbb"> </span>associated<span style="color:#bbb"> </span>item<span style="color:#bbb"> </span>which<span style="color:#bbb"> </span>can<span style="color:#bbb"> </span>be<span style="color:#bbb"> </span>returned.<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>type<span style="color:#bbb"> </span>Item:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Into</span>&lt;AsyncResult&lt;HttpResponse&gt;&gt;;<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span>The<span style="color:#bbb"> </span>associated<span style="color:#bbb"> </span>error<span style="color:#bbb"> </span>which<span style="color:#bbb"> </span>can<span style="color:#bbb"> </span>be<span style="color:#bbb"> </span>returned.<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>type<span style="color:#bbb"> </span>Error:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Into</span>&lt;Error&gt;;<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Convert</span><span style="color:#bbb"> </span>itself<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>`AsyncResult`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">or</span><span style="color:#bbb"> </span>`Error`.<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>fn<span style="color:#bbb"> </span>respond_to&lt;S:<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;static&gt;(
-</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">        self, req: &amp;HttpRequest&lt;S&gt;,
-</span></span></span><span style="display:flex;"><span><span style="color:#cd5555">    ) -&gt; Result&lt;Self::Item, Self::Error&gt;;
-</span></span></span></code></pre></div><p>Json是一个struct，它的实现在json.rs文件，也是实现了Responder Trait，在respond_to方法中对T进行了序列化，并生成Result对象</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>// https://github.com/actix/actix-web/blob/master/src/json.rs#L119
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>impl&lt;T: Serialize&gt; Responder for Json&lt;T&gt; {
-</span></span><span style="display:flex;"><span>    type Item = HttpResponse;
-</span></span><span style="display:flex;"><span>    type Error = Error;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    fn respond_to&lt;S&gt;(self, req: &amp;HttpRequest&lt;S&gt;) -&gt; Result&lt;HttpResponse, Error&gt; {
-</span></span><span style="display:flex;"><span>        let body = serde_json::to_string(&amp;self.0)?;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Ok(req
-</span></span><span style="display:flex;"><span>            .build_response(StatusCode::OK)
-</span></span><span style="display:flex;"><span>            .content_type(&#34;application/json&#34;)
-</span></span><span style="display:flex;"><span>            .body(body))
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>为什么直接返回&quot;Hello World!&ldquo;与format!(&ldquo;Hello {}!&rdquo;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>https://github.com/actix/actix-web/blob/master/src/handler.rs#L292
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
-</span></span><span style="display:flex;"><span>    #[inline]
-</span></span><span style="display:flex;"><span>    fn from(resp: T) -&gt; AsyncResult&lt;T&gt; {
-</span></span><span style="display:flex;"><span>        AsyncResult(Some(AsyncResultItem::Ok(resp)))
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>参考： <br>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[derive(Serialize)]
+struct Measurement {
+    temperature: f32,
+}
+
+fn hello_world() -&gt; impl Responder {
+    &#34;Hello World!&#34;
+}
+
+fn greet(req: HttpRequest) -&gt; impl Responder {
+    let to = req.match_info().get(&#34;name&#34;).unwrap_or(&#34;World&#34;);
+    format!(&#34;Hello {}!&#34;, to)
+}
+
+fn current_temperature(_req: HttpRequest) -&gt; impl Responder {
+    Json(Measurement { temperature: 42.3 })
+}
+</code></pre></div><p>其中Responder是一个Trait，它定义如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">//<span style="color:#bbb"> </span>https://github.com/actix/actix-web/<span style="color:#00688b;font-weight:bold">blob</span>/master/src/handler.rs<span style="color:#228b22">#L24
+</span><span style="color:#228b22"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>pub<span style="color:#bbb"> </span>trait<span style="color:#bbb"> </span>Responder<span style="color:#bbb"> </span><span style="color:#a61717;background-color:#e3d2d2">{</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span>The<span style="color:#bbb"> </span>associated<span style="color:#bbb"> </span>item<span style="color:#bbb"> </span>which<span style="color:#bbb"> </span>can<span style="color:#bbb"> </span>be<span style="color:#bbb"> </span>returned.<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>type<span style="color:#bbb"> </span>Item:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Into</span>&lt;AsyncResult&lt;HttpResponse&gt;&gt;;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span>The<span style="color:#bbb"> </span>associated<span style="color:#bbb"> </span>error<span style="color:#bbb"> </span>which<span style="color:#bbb"> </span>can<span style="color:#bbb"> </span>be<span style="color:#bbb"> </span>returned.<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>type<span style="color:#bbb"> </span>Error:<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Into</span>&lt;Error&gt;;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>///<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">Convert</span><span style="color:#bbb"> </span>itself<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">to</span><span style="color:#bbb"> </span>`AsyncResult`<span style="color:#bbb"> </span><span style="color:#8b008b;font-weight:bold">or</span><span style="color:#bbb"> </span>`Error`.<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>fn<span style="color:#bbb"> </span>respond_to&lt;S:<span style="color:#bbb"> </span><span style="color:#cd5555">&#39;static&gt;(
+</span><span style="color:#cd5555">        self, req: &amp;HttpRequest&lt;S&gt;,
+</span><span style="color:#cd5555">    ) -&gt; Result&lt;Self::Item, Self::Error&gt;;
+</span><span style="color:#cd5555">
+</span></code></pre></div><p>Json是一个struct，它的实现在json.rs文件，也是实现了Responder Trait，在respond_to方法中对T进行了序列化，并生成Result对象</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">// https://github.com/actix/actix-web/blob/master/src/json.rs#L119
+
+impl&lt;T: Serialize&gt; Responder for Json&lt;T&gt; {
+    type Item = HttpResponse;
+    type Error = Error;
+
+    fn respond_to&lt;S&gt;(self, req: &amp;HttpRequest&lt;S&gt;) -&gt; Result&lt;HttpResponse, Error&gt; {
+        let body = serde_json::to_string(&amp;self.0)?;
+
+        Ok(req
+            .build_response(StatusCode::OK)
+            .content_type(&#34;application/json&#34;)
+            .body(body))
+    }
+}
+</code></pre></div><p>为什么直接返回&quot;Hello World!&ldquo;与format!(&ldquo;Hello {}!&rdquo;, to)也行，它是怎么做到，原因在于在handler.rs中AsyncResult实现From Trait，支持把任一类型转成AsyncResult。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">https://github.com/actix/actix-web/blob/master/src/handler.rs#L292
+
+impl&lt;T&gt; From&lt;T&gt; for AsyncResult&lt;T&gt; {
+    #[inline]
+    fn from(resp: T) -&gt; AsyncResult&lt;T&gt; {
+        AsyncResult(Some(AsyncResultItem::Ok(resp)))
+    }
+}
+
+</code></pre></div><p>参考： <br>
 [1] <a href="https://www.infoq.com/news/2018/05/rust-1.26-existential-types">https://www.infoq.com/news/2018/05/rust-1.26-existential-types</a></p>
     </div>
     <footer class="post-footer">
@@ -436,7 +438,7 @@ floatT = { a: float; f: (float → int); }</p>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

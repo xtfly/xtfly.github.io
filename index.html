@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.98.0" />
+	<meta name="generator" content="Hugo 0.88.1" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -145,7 +145,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">4989 字 ~10分钟</span>
+<span class="leancloud-visitors-count">4987 字 ~10分钟</span>
 </span>
       </div>
     </header>
@@ -155,9 +155,9 @@
 <ul>
 <li>Tomcat: 使用sendfile把大文件写入Socket，提升静态文件数据传输性能</li>
 <li>Netty: 统一的ByteBuf机制，对DirectBuffer封装采用堆外内存进行Socket读写；也支持使用sendfile把文件缓冲区的数据发送到目标Channel</li>
-<li>RecketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket</li>
+<li>RocketMQ：使用mmap内存映射文件方式对CommitLog文件读写，当客户端消费消息时把内容写到目标Socket</li>
 </ul>
-<p>本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层章节】中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
+<p>本文是对网上知识点的收集与整理而成，在此分享给大家。本文中【OS层】章节中介绍零拷贝技术的部分内容与图片来源于<a href="https://www.zhangshengrong.com/p/ArXGbVABNj/">看过就懂的java零拷贝及实现方式详解</a>，在此先致谢。</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -541,23 +541,23 @@
     <h1 id="案例">案例</h1>
 <p>C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。</p>
 <p><strong>问题1</strong>，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>pBuf1 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX1)); <span style="color:#228b22">// 申请一块内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond1) { <span style="color:#228b22">// 异常分支1
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf1);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// 省略其它代码
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请另一块内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond2) { <span style="color:#228b22">// 异常分支2
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf1); <span style="color:#228b22">// 每个分支，都要释放前面所有代码
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf2);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// 省略其它代码
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ptr-&gt;buf1 = pBuf1;  <span style="color:#228b22">// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ptr-&gt;buf2 = pBuf2;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> RET_SUCCESS
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">pBuf1 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX1)); <span style="color:#228b22">// 申请一块内存
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond1) { <span style="color:#228b22">// 异常分支1
+</span><span style="color:#228b22"></span>    free(pBuf1);
+    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+}
+<span style="color:#228b22">// 省略其它代码
+</span><span style="color:#228b22"></span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请另一块内存
+</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond2) { <span style="color:#228b22">// 异常分支2
+</span><span style="color:#228b22"></span>    free(pBuf1); <span style="color:#228b22">// 每个分支，都要释放前面所有代码
+</span><span style="color:#228b22"></span>    free(pBuf2);
+    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+}
+<span style="color:#228b22">// 省略其它代码
+</span><span style="color:#228b22"></span>ptr-&gt;buf1 = pBuf1;  <span style="color:#228b22">// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+</span><span style="color:#228b22"></span>ptr-&gt;buf2 = pBuf2;
+<span style="color:#8b008b;font-weight:bold">return</span> RET_SUCCESS
+</code></pre></div>
     </div>
     
     <div class="post-more-link text-center">
@@ -831,7 +831,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -171,14 +171,14 @@
 <p>像高级语言Java，Python等都支持模块化，shell本质上并不支持模块化，但通过抽取函数，分类规划好脚本文件来达到模块化的效果。</p>
 <h2 id="提取函数">提取函数</h2>
 <p>同其它语言一样，函数具有封装性，是搭起大系统的积木。Shell的函数定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> func_name() {
-</span></span><span style="display:flex;"><span>    statements
-</span></span><span style="display:flex;"><span>    [<span style="color:#8b008b;font-weight:bold">return</span> value]
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>函数的调用方式</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>func_name <span style="color:#228b22"># 不带参数</span>
-</span></span><span style="display:flex;"><span>func_name param1 param2  <span style="color:#228b22"># 带参数</span>
-</span></span></code></pre></div><p>函数一些最佳实践：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> func_name() {
+    statements
+    [<span style="color:#8b008b;font-weight:bold">return</span> value]
+}
+</code></pre></div><p>函数的调用方式</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">func_name <span style="color:#228b22"># 不带参数</span>
+func_name param1 param2  <span style="color:#228b22"># 带参数</span>
+</code></pre></div><p>函数一些最佳实践：</p>
 <ul>
 <li>函数返回值虽是可选的，默认是最后一条命令的退出码，但还是建议显示指定返回值，通常是用 <code>0</code> 表示成功， 非 <code>0</code> 表示失败。</li>
 <li>函数内不建议调用 <code>exit</code> 退出执行，而是由上层调用者通过 返回值 决定是否 退出。</li>
@@ -208,12 +208,12 @@
 </ul>
 <p>当模块化Shell之后，不同功能的Shell往往不在一个目录下，Shell之间还会相互导入。但引用Shell脚本存在有一个较大的坑。</p>
 <p>从我们实际代码来看，通用采用如下方式来获取脚本所在路径，拿到此路径再根据相对路径引用其它的Shell脚本。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span>dirname <span style="color:#00688b">$0</span><span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span>;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">declare</span> -R <span style="color:#00688b">LIB_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#00688b">$CUR_PATH</span>/../lib;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#658b00">source</span> <span style="color:#00688b">$LIB_PATH</span>/lib_a.sh
-</span></span></code></pre></div><p>上面的写法是有问题的，比如脚本A source了另一个目录下的脚本B、然后脚本B尝试使用此法获取路径时得到的是A的路径。获取当前执行的shell脚本路径的正确姿势应该是：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span> <span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span> dirname <span style="color:#cd5555">&#34;</span><span style="color:#cd5555">${</span><span style="color:#00688b">BASH_SOURCE</span>[0]<span style="color:#cd5555">}</span><span style="color:#cd5555">&#34;</span> <span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span> &amp;&amp; <span style="color:#658b00">pwd</span> <span style="color:#8b008b;font-weight:bold">)</span>
-</span></span></code></pre></div><p>原因是<code>$0</code>是入口主脚本路径，并非被引用Shell的路径。对于source Shell一定要记住：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span>dirname <span style="color:#00688b">$0</span><span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span>;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
+<span style="color:#658b00">declare</span> -R <span style="color:#00688b">LIB_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#658b00">cd</span> <span style="color:#00688b">$CUR_PATH</span>/../lib;<span style="color:#658b00">pwd</span><span style="color:#8b008b;font-weight:bold">)</span>
+<span style="color:#658b00">source</span> <span style="color:#00688b">$LIB_PATH</span>/lib_a.sh
+</code></pre></div><p>上面的写法是有问题的，比如脚本A source了另一个目录下的脚本B、然后脚本B尝试使用此法获取路径时得到的是A的路径。获取当前执行的shell脚本路径的正确姿势应该是：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#658b00">declare</span> -r <span style="color:#00688b">CUR_PATH</span>=<span style="color:#8b008b;font-weight:bold">$(</span> <span style="color:#658b00">cd</span> <span style="color:#cd5555">&#34;</span><span style="color:#8b008b;font-weight:bold">$(</span> dirname <span style="color:#cd5555">&#34;</span><span style="color:#cd5555">${</span><span style="color:#00688b">BASH_SOURCE</span>[0]<span style="color:#cd5555">}</span><span style="color:#cd5555">&#34;</span> <span style="color:#8b008b;font-weight:bold">)</span><span style="color:#cd5555">&#34;</span> &amp;&amp; <span style="color:#658b00">pwd</span> <span style="color:#8b008b;font-weight:bold">)</span>
+</code></pre></div><p>原因是<code>$0</code>是入口主脚本路径，并非被引用Shell的路径。对于source Shell一定要记住：</p>
 <ul>
 <li>source命令，不再产生新的shell，而是在当前Shell下执行一切命令。</li>
 <li>source FileName，作用是在当前Shell环境下读取并执行FileName中的命令。</li>
@@ -247,25 +247,25 @@
 <p>第一步，把脚本放在一个独立的Maven module工程中，此工程只包含公共脚本，放在src/main/resources下，子目录参考前面的目录规划建议。</p>
 <p>第二步，把此module工程发布到Maven仓库中，以便其它的服务能通过Maven的GAV坐标下载它。</p>
 <p>第三步，通过Maven Assambly插件打包，把依赖的脚本解压到目标包文件中，可以采用如下</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span> <span style="color:#8b008b;font-weight:bold">&lt;dependencySets&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;dependencySet&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;outputDirectory&gt;</span>/shell_lib<span style="color:#8b008b;font-weight:bold">&lt;/outputDirectory&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;useProjectArtifact&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/useProjectArtifact&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;unpack&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/unpack&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;unpackOptions&gt;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#228b22">&lt;!--也可能只解压部分需要的shell文件--&gt;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>*.sh<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;lineEnding&gt;</span>unix<span style="color:#8b008b;font-weight:bold">&lt;/lineEnding&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;/unpackOptions&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#228b22">&lt;!--指定公共Shell的GAV信息--&gt;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>com.huawei.aa:bb-common-shell<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;/dependencySet&gt;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">&lt;/dependencySets&gt;</span>
-</span></span></code></pre></div><h1 id="结语">结语</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"> <span style="color:#8b008b;font-weight:bold">&lt;dependencySets&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;dependencySet&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;outputDirectory&gt;</span>/shell_lib<span style="color:#8b008b;font-weight:bold">&lt;/outputDirectory&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;useProjectArtifact&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/useProjectArtifact&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;unpack&gt;</span>true<span style="color:#8b008b;font-weight:bold">&lt;/unpack&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;unpackOptions&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
+                    <span style="color:#228b22">&lt;!--也可能只解压部分需要的shell文件--&gt;</span>
+                    <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>*.sh<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;lineEnding&gt;</span>unix<span style="color:#8b008b;font-weight:bold">&lt;/lineEnding&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/unpackOptions&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;includes&gt;</span>
+                <span style="color:#228b22">&lt;!--指定公共Shell的GAV信息--&gt;</span>
+                <span style="color:#8b008b;font-weight:bold">&lt;include&gt;</span>com.huawei.aa:bb-common-shell<span style="color:#8b008b;font-weight:bold">&lt;/include&gt;</span>
+            <span style="color:#8b008b;font-weight:bold">&lt;/includes&gt;</span>
+        <span style="color:#8b008b;font-weight:bold">&lt;/dependencySet&gt;</span>
+    <span style="color:#8b008b;font-weight:bold">&lt;/dependencySets&gt;</span>
+</code></pre></div><h1 id="结语">结语</h1>
 <p>各个服务的Shell脚本质量也像Java/C++语言同等重要，但脚本的模块化通常被人遗忘。大量相似与重复的脚本充斥在我们服务的代码仓中，也带来了大量重复机械的开发与测试工作量，对后面的维护也带来困难。消除脚本的重复，需要在设计与开发脚本时，采用模块化思维提升他们的复用，提升我们的开发效率。</p>
     </div>
     <footer class="post-footer">
@@ -447,7 +447,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

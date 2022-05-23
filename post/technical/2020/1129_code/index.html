@@ -149,47 +149,47 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>案例代码来源我们某产品：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
-</span></span><span style="display:flex;"><span>                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
-</span></span><span style="display:flex;"><span>                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
-</span></span><span style="display:flex;"><span>                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
-</span></span><span style="display:flex;"><span>                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
-</span></span><span style="display:flex;"><span>                        }
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">break</span>;
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
-</span></span><span style="display:flex;"><span>                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
-</span></span><span style="display:flex;"><span>                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
-</span></span><span style="display:flex;"><span>                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;
-</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
-</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
-</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
-</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
+    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
+        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
+    }
+
+    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
+        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
+            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
+                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
+                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
+                <span style="color:#8b008b;font-weight:bold">try</span> {
+                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
+                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
+                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
+                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
+                        }
+                    }
+
+                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
+                        <span style="color:#8b008b;font-weight:bold">break</span>;
+                    }
+                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
+                    }
+                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
+                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
+                    }
+                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
+                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
+                }
+                <span style="color:#8b008b;font-weight:bold">break</span>;
+            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
+                ... <span style="color:#228b22">// 省略
+</span><span style="color:#228b22"></span>        }
+    }
+}
+</code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
 <ul>
 <li>重复轮子：StringUtil是自己写的，并没有采用apache common包的StringUtils</li>
 <li>命名问题：oldOrgPackage存储多个对象建议采用复数oldOrgPackages，aTApigwAssetContentMapper建议是ApigwAssetContentMapper，因为a, T(ype)没有太多意义，对于类型接口，在Java，不建议加T，I前辍</li>
@@ -211,28 +211,28 @@
 <h1 id="批量插入">批量插入</h1>
 <p>前面提到采用for循环来insert，未采用批量插入，存在多条sql操作，这种操作是低效，那有没有办法解决？</p>
 <p>案例代码是采用MyBatis框架，那在对应的Mapper定义中增加saveAll方法来支持批量插入。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>pubic <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ApigwOrgAssetMapper</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">insert</span>(ApigwOrgAsset apigwOrgAsset);
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveAll</span>(List&lt;ApigwOrgAsset&gt;) assets);
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>saveAll对应的SQL如下。为了呈现SQL，还是以xml的方式配置来讲解，建议新项目采用注解或Provider动态SQL的方式。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#8b008b;font-weight:bold">&gt;</span>
-</span></span><span style="display:flex;"><span>      INSERT INTO ORG_ASSET (field1, field2) 
-</span></span><span style="display:flex;"><span>      VALUES
-</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">separator=</span><span style="color:#cd5555">&#34;,&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-</span></span><span style="display:flex;"><span>          (#{it.field1},#{it.field2}）
-</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">&lt;/foreach&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/insert&gt;</span>
-</span></span></code></pre></div><p>VALUES后面可以跟多个（a_field1, a_field2), （b_field1, b_field2)是MySQL的私有写法，并不是SQL标准，并且有一次批量插入个数上限：语句的长度默认是不能超过4M。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">pubic <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ApigwOrgAssetMapper</span> {
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">insert</span>(ApigwOrgAsset apigwOrgAsset);
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">saveAll</span>(List&lt;ApigwOrgAsset&gt;) assets);
+}
+</code></pre></div><p>saveAll对应的SQL如下。为了呈现SQL，还是以xml的方式配置来讲解，建议新项目采用注解或Provider动态SQL的方式。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#8b008b;font-weight:bold">&gt;</span>
+      INSERT INTO ORG_ASSET (field1, field2) 
+      VALUES
+      <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">separator=</span><span style="color:#cd5555">&#34;,&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+          (#{it.field1},#{it.field2}）
+      <span style="color:#8b008b;font-weight:bold">&lt;/foreach&gt;</span>
+<span style="color:#8b008b;font-weight:bold">&lt;/insert&gt;</span>
+</code></pre></div><p>VALUES后面可以跟多个（a_field1, a_field2), （b_field1, b_field2)是MySQL的私有写法，并不是SQL标准，并且有一次批量插入个数上限：语句的长度默认是不能超过4M。</p>
 <p>Oracle有两种写法，也是非SQL标准：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;java.util.List&#34;</span> <span style="color:#658b00">useGeneratedKeys=</span><span style="color:#cd5555">&#34;false&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-</span></span><span style="display:flex;"><span>        INSERT ALL
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">index=</span><span style="color:#cd5555">&#34;index&#34;</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
-</span></span><span style="display:flex;"><span>        INTO ORG_ASSET (field1, field2) VALUES (#{it.field1},#{it.field2}）
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">&lt;/foreach&gt;</span>
-</span></span><span style="display:flex;"><span>        SELECT 1 FROM DUAL
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">&lt;/insert&gt;</span>
-</span></span></code></pre></div><p>另一种写法SQL是：<code>insert into table(...) (select ... from dual) union all (select ... from dual)</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#8b008b;font-weight:bold">&lt;insert</span> <span style="color:#658b00">id=</span><span style="color:#cd5555">&#34;saveAll&#34;</span> <span style="color:#658b00">parameterType=</span><span style="color:#cd5555">&#34;java.util.List&#34;</span> <span style="color:#658b00">useGeneratedKeys=</span><span style="color:#cd5555">&#34;false&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        INSERT ALL
+        <span style="color:#8b008b;font-weight:bold">&lt;foreach</span> <span style="color:#658b00">item=</span><span style="color:#cd5555">&#34;it&#34;</span> <span style="color:#658b00">index=</span><span style="color:#cd5555">&#34;index&#34;</span> <span style="color:#658b00">collection=</span><span style="color:#cd5555">&#34;list&#34;</span><span style="color:#8b008b;font-weight:bold">&gt;</span>
+        INTO ORG_ASSET (field1, field2) VALUES (#{it.field1},#{it.field2}）
+        <span style="color:#8b008b;font-weight:bold">&lt;/foreach&gt;</span>
+        SELECT 1 FROM DUAL
+<span style="color:#8b008b;font-weight:bold">&lt;/insert&gt;</span>
+</code></pre></div><p>另一种写法SQL是：<code>insert into table(...) (select ... from dual) union all (select ... from dual)</code></p>
 <p>缺点：采用MyBatis就会面临不同数据库之间需要采用不同的xml。</p>
 <p>我们再来看一下JDBC的Statement接口是怎么支持批量操作：</p>
 <ul>
@@ -241,20 +241,20 @@
 <li>Statement.clearBatch()：清除批处理命令</li>
 </ul>
 <p>PreparedStatement也支持批量操作，示例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>conn = JdbcUtils.<span style="color:#658b00">getConnection</span>();
-</span></span><span style="display:flex;"><span>String sql = <span style="color:#cd5555">&#34;INSERT INTO ORG_ASSET(field1, field2) values(?,?)&#34;</span>;
-</span></span><span style="display:flex;"><span>st = conn.<span style="color:#658b00">prepareStatement</span>(sql);
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i=1;i&lt; 2000;i++){  
-</span></span><span style="display:flex;"><span>    st.<span style="color:#658b00">setInt</span>(1, i);
-</span></span><span style="display:flex;"><span>    st.<span style="color:#658b00">setString</span>(2, <span style="color:#cd5555">&#34;field2_&#34;</span> + i);
-</span></span><span style="display:flex;"><span>    st.<span style="color:#658b00">addBatch</span>();
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (i%1000==0) {
-</span></span><span style="display:flex;"><span>        st.<span style="color:#658b00">executeBatch</span>();
-</span></span><span style="display:flex;"><span>        st.<span style="color:#658b00">clearBatch</span>();
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>st.<span style="color:#658b00">executeBatch</span>();
-</span></span></code></pre></div><p>Mybatis执行SQL底层接口是Executor，两个实现类：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">conn = JdbcUtils.<span style="color:#658b00">getConnection</span>();
+String sql = <span style="color:#cd5555">&#34;INSERT INTO ORG_ASSET(field1, field2) values(?,?)&#34;</span>;
+st = conn.<span style="color:#658b00">prepareStatement</span>(sql);
+<span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> i=1;i&lt; 2000;i++){  
+    st.<span style="color:#658b00">setInt</span>(1, i);
+    st.<span style="color:#658b00">setString</span>(2, <span style="color:#cd5555">&#34;field2_&#34;</span> + i);
+    st.<span style="color:#658b00">addBatch</span>();
+    <span style="color:#8b008b;font-weight:bold">if</span> (i%1000==0) {
+        st.<span style="color:#658b00">executeBatch</span>();
+        st.<span style="color:#658b00">clearBatch</span>();
+    }
+}
+st.<span style="color:#658b00">executeBatch</span>();
+</code></pre></div><p>Mybatis执行SQL底层接口是Executor，两个实现类：</p>
 <ul>
 <li>BaseExecutor：用于一级缓存及基础的操作，又分为三个子类
 <ul>
@@ -266,44 +266,44 @@
 <li>CachingExecutor：用于二级缓存</li>
 </ul>
 <p>若在Mybatis中采用Batch方式，则采用如下方式：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
-</span></span><span style="display:flex;"><span>    ApigwOrgAssetMapper mapper = session.<span style="color:#658b00">getMapper</span>(ApigwOrgAssetMapper.<span style="color:#658b00">class</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (ApigwOrgAsset apigwOrgAsset: orgAssets) {
-</span></span><span style="display:flex;"><span>        mapper.<span style="color:#658b00">insert</span>(apigwOrgAsset);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    session.<span style="color:#658b00">flushStatements</span>();
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>若在Mybatis采用动态Provider方式，可参见：<a href="https://mybatis.org/mybatis-dynamic-sql/docs/insert.html">Batch Insert Support</a>中的样例</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
-</span></span><span style="display:flex;"><span>    SimpleTableMapper mapper = session.<span style="color:#658b00">getMapper</span>(SimpleTableMapper.<span style="color:#658b00">class</span>);
-</span></span><span style="display:flex;"><span>    List&lt;SimpleTableRecord&gt; records = getRecordsToInsert(); <span style="color:#228b22">// not shown
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
-</span></span><span style="display:flex;"><span>    BatchInsert&lt;SimpleTableRecord&gt; batchInsert = insert(records)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">into</span>(simpleTable)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(id).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;id&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(firstName).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;firstName&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(lastName).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;lastName&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(birthDate).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;birthDate&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(employed).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;employed&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">map</span>(occupation).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;occupation&#34;</span>)
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">build</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#658b00">render</span>(RenderingStrategies.<span style="color:#658b00">MYBATIS3</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    batchInsert.<span style="color:#658b00">insertStatements</span>().<span style="color:#658b00">forEach</span>(mapper::insert);
-</span></span><span style="display:flex;"><span>    session.<span style="color:#658b00">commit</span>();
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>现有我们也有不少项目采用JPA来做ORM，JPA由于底层默认采用Hibernate，而Hibernate相比MyBatis封装对数据库更解耦，对于批量操作来得更简单：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">XXEntityRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;XXEntity, String&gt; {
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#228b22">// 拿到Repository之后，则可以批量插入，更新
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>repository.<span style="color:#658b00">saveAll</span>(list);
-</span></span></code></pre></div><p>默认情况下，它并不会采用JDBC的executeBatch执行，还需要配置：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>spring.jpa.properties.hibernate.jdbc.batch_size=500
-</span></span><span style="display:flex;"><span>spring.jpa.properties.hibernate.jdbc.batch_versioned_data=true
-</span></span><span style="display:flex;"><span>spring.jpa.properties.hibernate.order_inserts=true
-</span></span><span style="display:flex;"><span>spring.jpa.properties.hibernate.order_updates=true
-</span></span></code></pre></div><p>另对于MySQL，还可以配置rewriteBatchedStatements=true，实现高性能的批量插入。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
+    ApigwOrgAssetMapper mapper = session.<span style="color:#658b00">getMapper</span>(ApigwOrgAssetMapper.<span style="color:#658b00">class</span>);
+    <span style="color:#8b008b;font-weight:bold">for</span> (ApigwOrgAsset apigwOrgAsset: orgAssets) {
+        mapper.<span style="color:#658b00">insert</span>(apigwOrgAsset);
+    }
+    session.<span style="color:#658b00">flushStatements</span>();
+}
+</code></pre></div><p>若在Mybatis采用动态Provider方式，可参见：<a href="https://mybatis.org/mybatis-dynamic-sql/docs/insert.html">Batch Insert Support</a>中的样例</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span>(SqlSession session = sqlSessionFactory.<span style="color:#658b00">openSession</span>(ExecutorType.<span style="color:#658b00">BATCH</span>)) {
+    SimpleTableMapper mapper = session.<span style="color:#658b00">getMapper</span>(SimpleTableMapper.<span style="color:#658b00">class</span>);
+    List&lt;SimpleTableRecord&gt; records = getRecordsToInsert(); <span style="color:#228b22">// not shown
+</span><span style="color:#228b22"></span>
+    BatchInsert&lt;SimpleTableRecord&gt; batchInsert = insert(records)
+            .<span style="color:#658b00">into</span>(simpleTable)
+            .<span style="color:#658b00">map</span>(id).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;id&#34;</span>)
+            .<span style="color:#658b00">map</span>(firstName).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;firstName&#34;</span>)
+            .<span style="color:#658b00">map</span>(lastName).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;lastName&#34;</span>)
+            .<span style="color:#658b00">map</span>(birthDate).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;birthDate&#34;</span>)
+            .<span style="color:#658b00">map</span>(employed).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;employed&#34;</span>)
+            .<span style="color:#658b00">map</span>(occupation).<span style="color:#658b00">toProperty</span>(<span style="color:#cd5555">&#34;occupation&#34;</span>)
+            .<span style="color:#658b00">build</span>()
+            .<span style="color:#658b00">render</span>(RenderingStrategies.<span style="color:#658b00">MYBATIS3</span>);
+
+    batchInsert.<span style="color:#658b00">insertStatements</span>().<span style="color:#658b00">forEach</span>(mapper::insert);
+    session.<span style="color:#658b00">commit</span>();
+}
+</code></pre></div><p>现有我们也有不少项目采用JPA来做ORM，JPA由于底层默认采用Hibernate，而Hibernate相比MyBatis封装对数据库更解耦，对于批量操作来得更简单：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">XXEntityRepository</span> <span style="color:#8b008b;font-weight:bold">extends</span> JpaRepository&lt;XXEntity, String&gt; {
+}
+
+<span style="color:#228b22">// 拿到Repository之后，则可以批量插入，更新
+</span><span style="color:#228b22"></span>repository.<span style="color:#658b00">saveAll</span>(list);
+</code></pre></div><p>默认情况下，它并不会采用JDBC的executeBatch执行，还需要配置：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">spring.jpa.properties.hibernate.jdbc.batch_size=500
+spring.jpa.properties.hibernate.jdbc.batch_versioned_data=true
+spring.jpa.properties.hibernate.order_inserts=true
+spring.jpa.properties.hibernate.order_updates=true
+</code></pre></div><p>另对于MySQL，还可以配置rewriteBatchedStatements=true，实现高性能的批量插入。</p>
 <ul>
 <li>MySQL JDBC连接URL字符串中需要新增一个参数rewriteBatchedStatements=true ，5.1.13以上版本才支持</li>
 <li>MySQL JDBC驱动在默认情况下会无视executeBatch()语句，只有把rewriteBatchedStatements参数置为true, 驱动才会帮你批量执行SQL</li>
@@ -526,7 +526,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

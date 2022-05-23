@@ -149,27 +149,27 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一工具源码(Python语言)中：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>file_gz = gzip.GzipFile(file_name)
-</span></span><span style="display:flex;"><span>src_path, src_file = os.path.split(file_name)
-</span></span><span style="display:flex;"><span>tmp_file_name = os.path.join(path_name, src_file).strip(<span style="color:#cd5555">&#39;gz&#39;</span>).strip(<span style="color:#cd5555">&#39;.&#39;</span>)
-</span></span><span style="display:flex;"><span>tmp_file = <span style="color:#658b00">open</span>(tmp_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>)
-</span></span><span style="display:flex;"><span>tmp_file.writeline(file_gz.realines())
-</span></span><span style="display:flex;"><span>file_gz.close()
-</span></span><span style="display:flex;"><span>tmp_file.close()
-</span></span><span style="display:flex;"><span>os.remove(file_name)
-</span></span></code></pre></div><p>从代码健壮角度来看，存在如下两个问题：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">file_gz = gzip.GzipFile(file_name)
+src_path, src_file = os.path.split(file_name)
+tmp_file_name = os.path.join(path_name, src_file).strip(<span style="color:#cd5555">&#39;gz&#39;</span>).strip(<span style="color:#cd5555">&#39;.&#39;</span>)
+tmp_file = <span style="color:#658b00">open</span>(tmp_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>)
+tmp_file.writeline(file_gz.realines())
+file_gz.close()
+tmp_file.close()
+os.remove(file_name)
+</code></pre></div><p>从代码健壮角度来看，存在如下两个问题：</p>
 <ul>
 <li>缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常</li>
 <li>当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题</li>
 </ul>
 <p>能正确释放资源的建议写法是:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>src_path, src_file = os.path.split(file_name)
-</span></span><span style="display:flex;"><span>dst_file_name = os.path.join(path_name, src_file).rstrip(<span style="color:#cd5555">&#39;.gz&#39;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">with</span> gzip.GzipFile(file_name) <span style="color:#8b008b;font-weight:bold">as</span> src_gz_file, <span style="color:#658b00">open</span>(dst_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>) <span style="color:#8b008b;font-weight:bold">as</span> out_file:
-</span></span><span style="display:flex;"><span>    out_file.writeline(src_gz_file.realines())
-</span></span><span style="display:flex;"><span>os.remove(file_name)
-</span></span></code></pre></div><p>还有一种写法，采用<code>try-except-finally</code>，在<code>finally</code>中对打开的文件关闭，但这种写法的代码显得臃肿。所以Python又提供上述示例中<code>with</code>语句写法。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">src_path, src_file = os.path.split(file_name)
+dst_file_name = os.path.join(path_name, src_file).rstrip(<span style="color:#cd5555">&#39;.gz&#39;</span>)
+
+<span style="color:#8b008b;font-weight:bold">with</span> gzip.GzipFile(file_name) <span style="color:#8b008b;font-weight:bold">as</span> src_gz_file, <span style="color:#658b00">open</span>(dst_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>) <span style="color:#8b008b;font-weight:bold">as</span> out_file:
+    out_file.writeline(src_gz_file.realines())
+os.remove(file_name)
+</code></pre></div><p>还有一种写法，采用<code>try-except-finally</code>，在<code>finally</code>中对打开的文件关闭，但这种写法的代码显得臃肿。所以Python又提供上述示例中<code>with</code>语句写法。</p>
 <h2 id="背后的知识">背后的知识</h2>
 <p><code>with</code>语句启用了上下文管理器，标准库中<code>contextlib</code>模块包含用于处理上下文管理器一些工具。</p>
 <p>上下文管理器涉及两个方法:</p>
@@ -178,134 +178,136 @@
 <li>当离开 <code>with</code> 块时，执行 <code>__exit__()</code> 方法，清理正在使用的任何资源</li>
 </ul>
 <p>对于任何一个对象能够使用 <code>with</code> 语句来清理资源，只要像下面来提供 <code>__enter__()</code> 方法与 <code>__exit__()</code> 方法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Context</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> __enter__(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__enter__()&#39;</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> self
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> __exit__(self, exc_type, exc_val, exc_tb):
-</span></span><span style="display:flex;"><span>        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__exit__()&#39;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">with</span> Context():
-</span></span><span style="display:flex;"><span>    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;do somethon in the context&#39;</span>)
-</span></span></code></pre></div><p><code>file</code> 类内嵌支持上下文管理器API，但有些历史遗留下的其他对象并不支持，标准库文档中给出的 <code>contextlib</code> 示例是 <code>urllib.urlopen()</code> 返回的对象。还有其他遗留类使用 <code>close()</code> 方法，但不支持上下文管理器API。要确保资源已关闭，要使用 <code>closing()</code> 为其创建上下文管理器。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Resource</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__init__()&#39;</span>)
-</span></span><span style="display:flex;"><span>        self.status = <span style="color:#cd5555">&#39;open&#39;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">close</span>(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;close()&#39;</span>)
-</span></span><span style="display:flex;"><span>        self.status = <span style="color:#cd5555">&#39;closed&#39;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">with</span> contextlib.closing(Resource()) <span style="color:#8b008b;font-weight:bold">as</span> r:
-</span></span><span style="display:flex;"><span>    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;inside with statement: </span><span style="color:#cd5555">{}</span><span style="color:#cd5555">&#39;</span>.format(r.status))
-</span></span></code></pre></div><p>另外 <code>contextlib</code> 模块还提供了装饰器来简化上下文管理器相关场景的代码开发，这里不展开讲了，有兴趣的同学找资料研究吧。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Context</span>:
+    <span style="color:#8b008b;font-weight:bold">def</span> __enter__(self):
+        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__enter__()&#39;</span>)
+        <span style="color:#8b008b;font-weight:bold">return</span> self
+
+    <span style="color:#8b008b;font-weight:bold">def</span> __exit__(self, exc_type, exc_val, exc_tb):
+        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__exit__()&#39;</span>)
+
+<span style="color:#8b008b;font-weight:bold">with</span> Context():
+    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;do somethon in the context&#39;</span>)
+</code></pre></div><p><code>file</code> 类内嵌支持上下文管理器API，但有些历史遗留下的其他对象并不支持，标准库文档中给出的 <code>contextlib</code> 示例是 <code>urllib.urlopen()</code> 返回的对象。还有其他遗留类使用 <code>close()</code> 方法，但不支持上下文管理器API。要确保资源已关闭，要使用 <code>closing()</code> 为其创建上下文管理器。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Resource</span>:
+    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
+        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;__init__()&#39;</span>)
+        self.status = <span style="color:#cd5555">&#39;open&#39;</span>
+
+    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">close</span>(self):
+        <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;close()&#39;</span>)
+        self.status = <span style="color:#cd5555">&#39;closed&#39;</span>
+
+<span style="color:#8b008b;font-weight:bold">with</span> contextlib.closing(Resource()) <span style="color:#8b008b;font-weight:bold">as</span> r:
+    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;inside with statement: </span><span style="color:#cd5555">{}</span><span style="color:#cd5555">&#39;</span>.format(r.status))
+
+</code></pre></div><p>另外 <code>contextlib</code> 模块还提供了装饰器来简化上下文管理器相关场景的代码开发，这里不展开讲了，有兴趣的同学找资料研究吧。</p>
 <h1 id="其它语言玩法">其它语言玩法</h1>
 <p>对于资源的简洁释放是所有编程语言都要解决的问题，举一反三，我们再来看看其它语言的一些玩法。</p>
 <h2 id="java">Java</h2>
 <p>在Java1.7之前，是采用<code>try-catch-finally</code>的方式解决:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>BufferedInputStream bin = <span style="color:#8b008b;font-weight:bold">null</span>;
-</span></span><span style="display:flex;"><span>BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">null</span>;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>    bin = <span style="color:#8b008b;font-weight:bold">new</span> BufferedInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;input.txt&#34;</span>)));
-</span></span><span style="display:flex;"><span>    bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)));
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> br = -1;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((br = bin.<span style="color:#658b00">read</span>()) != -1) {
-</span></span><span style="display:flex;"><span>        bout.<span style="color:#658b00">write</span>(br);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</span></span><span style="display:flex;"><span>   log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
-</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">finally</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (bin != <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>            bin.<span style="color:#658b00">close</span>();
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</span></span><span style="display:flex;"><span>            log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>)
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (bout != <span style="color:#8b008b;font-weight:bold">null</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>            bout.<span style="color:#658b00">close</span>();
-</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</span></span><span style="display:flex;"><span>            log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>上面的代码是不是不够简洁？关闭资源也要 <code>try-catch</code> ，否则会导致后续的close未被执行。Java 1.7中新增的<code>try-with-resource</code>语法糖，简化的代码就成了如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">try</span> (BufferedInputStream bin = <span style="color:#8b008b;font-weight:bold">new</span> BufferedInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;input.txt&#34;</span>)));
-</span></span><span style="display:flex;"><span>    BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)))
-</span></span><span style="display:flex;"><span>) {
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> br = -1;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> ((br = bin.<span style="color:#658b00">read</span>()) != -1) {
-</span></span><span style="display:flex;"><span>        bout.<span style="color:#658b00">write</span>(br);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
-</span></span><span style="display:flex;"><span>    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>与Python的<code>with</code>语句用法与效果真是异曲同工。为了能够配合<code>try-with-resource</code>，资源必须实现AutoClosable接口。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">BufferedInputStream bin = <span style="color:#8b008b;font-weight:bold">null</span>;
+BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">null</span>;
+<span style="color:#8b008b;font-weight:bold">try</span> {
+    bin = <span style="color:#8b008b;font-weight:bold">new</span> BufferedInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;input.txt&#34;</span>)));
+    bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)));
+    <span style="color:#00688b;font-weight:bold">int</span> br = -1;
+    <span style="color:#8b008b;font-weight:bold">while</span> ((br = bin.<span style="color:#658b00">read</span>()) != -1) {
+        bout.<span style="color:#658b00">write</span>(br);
+    }
+} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+   log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
+} <span style="color:#8b008b;font-weight:bold">finally</span> {
+    <span style="color:#8b008b;font-weight:bold">if</span> (bin != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            bin.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+            log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>)
+        }
+    }
+    <span style="color:#8b008b;font-weight:bold">if</span> (bout != <span style="color:#8b008b;font-weight:bold">null</span>) {
+        <span style="color:#8b008b;font-weight:bold">try</span> {
+            bout.<span style="color:#658b00">close</span>();
+        } <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+            log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
+        }
+    }
+}
+</code></pre></div><p>上面的代码是不是不够简洁？关闭资源也要 <code>try-catch</code> ，否则会导致后续的close未被执行。Java 1.7中新增的<code>try-with-resource</code>语法糖，简化的代码就成了如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">try</span> (BufferedInputStream bin = <span style="color:#8b008b;font-weight:bold">new</span> BufferedInputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileInputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;input.txt&#34;</span>)));
+    BufferedOutputStream bout = <span style="color:#8b008b;font-weight:bold">new</span> BufferedOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> FileOutputStream(<span style="color:#8b008b;font-weight:bold">new</span> File(<span style="color:#cd5555">&#34;out.txt&#34;</span>)))
+) {
+    <span style="color:#00688b;font-weight:bold">int</span> br = -1;
+    <span style="color:#8b008b;font-weight:bold">while</span> ((br = bin.<span style="color:#658b00">read</span>()) != -1) {
+        bout.<span style="color:#658b00">write</span>(br);
+    }
+} <span style="color:#8b008b;font-weight:bold">catch</span> (IOException e) {
+    log.<span style="color:#658b00">error</span>(<span style="color:#cd5555">&#34;....&#34;</span>);
+}
+
+</code></pre></div><p>与Python的<code>with</code>语句用法与效果真是异曲同工。为了能够配合<code>try-with-resource</code>，资源必须实现AutoClosable接口。</p>
 <p>如果熟悉lombok库的同学，也会知道有个 <code>@Cleanup</code> 注解，它会帮助你安全的调用<code>close</code>方法来释放资源，相比Java内建的<code>try-with-resource</code>语法糖，它还可以调用非<code>close</code>方法。<code>@Cleanup（“dispose”）</code>，通过指定方法名来调用相应的方法来清理资源。不过约束是被调用的方法要求是无参数方法。</p>
 <p>无论是<code>try-with-resource</code>，还是lombok的<code>@Cleanup</code>注解，他们都是语法糖，通过编译帮你生成的字节码在finally中调用<code>close</code>方法来释放资源。</p>
 <h2 id="go">Go</h2>
 <p>作为后起之秀的Go，对于资源释放的解决方法，相比Python与Java来得更灵活些。它提供了<code>defer</code>关键字:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>src, err := os.<span style="color:#008b45">Open</span>(srcFile)
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> err != <span style="color:#8b008b;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span>
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">defer</span> src.<span style="color:#008b45">Close</span>()
-</span></span></code></pre></div><p><code>defer</code>的底层实现是：<code>defer</code>后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。采用栈数据结构，一个方法中，当存在多个<code>defer</code>语句时，先加入列表则后执行。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">src, err := os.<span style="color:#008b45">Open</span>(srcFile)
+<span style="color:#8b008b;font-weight:bold">if</span> err != <span style="color:#8b008b;font-weight:bold">nil</span> {
+    <span style="color:#8b008b;font-weight:bold">return</span>
+}
+<span style="color:#8b008b;font-weight:bold">defer</span> src.<span style="color:#008b45">Close</span>()
+</code></pre></div><p><code>defer</code>的底层实现是：<code>defer</code>后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。采用栈数据结构，一个方法中，当存在多个<code>defer</code>语句时，先加入列表则后执行。</p>
 <p>当然，由于defer后面可以跟匿名函数块，如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">test</span>() <span style="color:#00688b;font-weight:bold">int</span> {
-</span></span><span style="display:flex;"><span>    i := <span style="color:#b452cd">0</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
-</span></span><span style="display:flex;"><span>        i++
-</span></span><span style="display:flex;"><span>        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer2:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer2: 2
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }()
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
-</span></span><span style="display:flex;"><span>        i++
-</span></span><span style="display:flex;"><span>        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer1:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer1: 1
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }()
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> i <span style="color:#228b22">// 假如返回值是a，此时a=i，defer中修改i的值不会影响返回值a，defer也根本访问不到a
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div><p>若是像上面代码在<code>defer</code>的函数中有使用前面的变量并对它进行修改，则引入了复杂性。有兴趣的同学的不烦再对<code>defer</code>深挖一下。是不是像Java一样要求，不要在finally中修改基本类型或对象中的值的既视感？</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">test</span>() <span style="color:#00688b;font-weight:bold">int</span> {
+    i := <span style="color:#b452cd">0</span>
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
+        i++
+        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer2:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer2: 2
+</span><span style="color:#228b22"></span>    }()
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span> () {
+        i++
+        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer1:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer1: 1
+</span><span style="color:#228b22"></span>    }()
+    <span style="color:#8b008b;font-weight:bold">return</span> i <span style="color:#228b22">// 假如返回值是a，此时a=i，defer中修改i的值不会影响返回值a，defer也根本访问不到a
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>若是像上面代码在<code>defer</code>的函数中有使用前面的变量并对它进行修改，则引入了复杂性。有兴趣的同学的不烦再对<code>defer</code>深挖一下。是不是像Java一样要求，不要在finally中修改基本类型或对象中的值的既视感？</p>
 <p>再来一个例子，对命名返回值修改：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">test</span>() (i <span style="color:#00688b;font-weight:bold">int</span>) {
-</span></span><span style="display:flex;"><span>    i = <span style="color:#b452cd">1</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span>() {
-</span></span><span style="display:flex;"><span>        i++
-</span></span><span style="display:flex;"><span>        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer2:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer2: 3
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }()
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span>() {
-</span></span><span style="display:flex;"><span>        i++
-</span></span><span style="display:flex;"><span>        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer1:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer1: 2
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }()
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> i  <span style="color:#228b22">// 返回的结果是几？
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
-</span></span></code></pre></div><p>它的返回值又是什么，还有更多的defer坑等你去发现哦。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">test</span>() (i <span style="color:#00688b;font-weight:bold">int</span>) {
+    i = <span style="color:#b452cd">1</span>
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span>() {
+        i++
+        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer2:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer2: 3
+</span><span style="color:#228b22"></span>    }()
+    <span style="color:#8b008b;font-weight:bold">defer</span> <span style="color:#8b008b;font-weight:bold">func</span>() {
+        i++
+        fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;defer1:&#34;</span>, i) <span style="color:#228b22">// 打印结果为 defer1: 2
+</span><span style="color:#228b22"></span>    }()
+    <span style="color:#8b008b;font-weight:bold">return</span> i  <span style="color:#228b22">// 返回的结果是几？
+</span><span style="color:#228b22"></span>}
+</code></pre></div><p>它的返回值又是什么，还有更多的defer坑等你去发现哦。</p>
 <h2 id="c">C++</h2>
 <p>C++其实在资源管理上是最为成熟，RAII技术被认为是C++中管理资源的最佳方法。 RAII是C++的发明者Bjarne Stroustrup老爷子提出的概念，RAII全称是<code>Resource Acquisition is Initialization</code>，直译过来是<code>资源获取即初始化</code>，也就是说在构造函数中申请分配资源，在析构函数中释放资源。</p>
 <p>智能指针（std::unique_ptr）即RAII最具代表的实现，使用智能指针，可以实现自动的内存管理，再也不需要担心忘记delete造成的内存泄漏。内存只是资源的一种，如对于文件的打开与关闭，也可以使用RAII来解决，不过有点麻烦，按照常规的RAII技术需要写一堆管理它们的类。</p>
 <p>不过C++11有lambda表达式，结合std::function，我们可以利用RAII机制完美地模拟Go的<code>defer</code>（效果与Go还是有些区别的，Go
 是函数级，它是代码块级）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#1e889b">#define SCOPEGUARD_LINENAME_CAT(name, line) name##line
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b">#define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line)
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b">#define DEFER(callback) ScopeGuard SCOPEGUARD_LINENAME(EXIT, __LINE__)(callback)
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b"></span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ScopeGuard</span> {
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">explicit</span> ScopeGuard(std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt; f) : 
-</span></span><span style="display:flex;"><span>        handleExitScope(f){};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ~ScopeGuard() { handleExitScope(); }
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:
-</span></span><span style="display:flex;"><span>    std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt; handleExitScope;
-</span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    std::ofstream file(<span style="color:#cd5555">&#34;test.txt&#34;</span>);
-</span></span><span style="display:flex;"><span>    DEFER([&amp;] { file.close(); });
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>上面的代码看起来是不是很Clean，妈妈再不用担心我的代码出现资源泄露了^_^。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#define SCOPEGUARD_LINENAME_CAT(name, line) name##line
+</span><span style="color:#1e889b">#define SCOPEGUARD_LINENAME(name, line) SCOPEGUARD_LINENAME_CAT(name, line)
+</span><span style="color:#1e889b">#define DEFER(callback) ScopeGuard SCOPEGUARD_LINENAME(EXIT, __LINE__)(callback)
+</span><span style="color:#1e889b"></span>
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ScopeGuard</span> {
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#8b008b;font-weight:bold">explicit</span> ScopeGuard(std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt; f) : 
+        handleExitScope(f){};
+
+    ~ScopeGuard() { handleExitScope(); }
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>()&gt; handleExitScope;
+};
+
+{
+    std::ofstream file(<span style="color:#cd5555">&#34;test.txt&#34;</span>);
+    DEFER([&amp;] { file.close(); });
+}
+</code></pre></div><p>上面的代码看起来是不是很Clean，妈妈再不用担心我的代码出现资源泄露了^_^。</p>
 <h1 id="结语">结语</h1>
 <p>程序使用的资源，不仅仅是CPU与内存。在内存管理方面，有垃圾回归器的语言帮程序员省了很多事。但广义上资源还有文件、流、管道、连接与锁等等，这些都需要开发者手动关闭他们，否则随着程序的不断运行，资源泄露将会累积成重大的生产事故。我们也许会记得在正常流程中关闭这些资源，却可能经常忽视了异常分支场景，我们应该利用语言中最新的特性，既使代码Clean，能又能确保资源被正常释放。</p>
     </div>
@@ -496,7 +498,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

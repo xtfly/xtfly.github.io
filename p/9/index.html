@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.98.0" />
+	<meta name="generator" content="Hugo 0.88.1" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -334,8 +334,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
-</span></span></code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
+</code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
 <h1 id="泛型">泛型</h1>
 <h2 id="heading"><code>:</code></h2>
@@ -826,7 +826,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

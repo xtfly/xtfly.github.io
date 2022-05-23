@@ -268,17 +268,17 @@
 </ul>
 <p>top描述进程内存使用的数据是来源于<code>/proc/$pid/statm</code>文件。通常我们观察内存的占用是看RES的值，它不含有交换出去的空间，但基本可以说RES是进程当前使用的内存量。</p>
 <p>对应的task_statm函数来获取进程的内存使用状况:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">task_statm</span>(<span style="color:#8b008b;font-weight:bold">struct</span> mm_struct *mm, <span style="color:#00688b;font-weight:bold">int</span> *shared, <span style="color:#00688b;font-weight:bold">int</span> *text,
-</span></span><span style="display:flex;"><span>               <span style="color:#00688b;font-weight:bold">int</span> *data, <span style="color:#00688b;font-weight:bold">int</span> *resident)
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>        *shared = get_mm_counter(mm, file_rss);
-</span></span><span style="display:flex;"><span>        *text = (PAGE_ALIGN(mm-&gt;end_code) - (mm-&gt;start_code &amp; PAGE_MASK))
-</span></span><span style="display:flex;"><span>                                                           &gt;&gt; PAGE_SHIFT;
-</span></span><span style="display:flex;"><span>        *data = mm-&gt;total_vm - mm-&gt;shared_vm;
-</span></span><span style="display:flex;"><span>        *resident = *shared + get_mm_counter(mm, anon_rss);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> mm-&gt;total_vm;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">task_statm</span>(<span style="color:#8b008b;font-weight:bold">struct</span> mm_struct *mm, <span style="color:#00688b;font-weight:bold">int</span> *shared, <span style="color:#00688b;font-weight:bold">int</span> *text,
+               <span style="color:#00688b;font-weight:bold">int</span> *data, <span style="color:#00688b;font-weight:bold">int</span> *resident)
+{
+        *shared = get_mm_counter(mm, file_rss);
+        *text = (PAGE_ALIGN(mm-&gt;end_code) - (mm-&gt;start_code &amp; PAGE_MASK))
+                                                           &gt;&gt; PAGE_SHIFT;
+        *data = mm-&gt;total_vm - mm-&gt;shared_vm;
+        *resident = *shared + get_mm_counter(mm, anon_rss);
+        <span style="color:#8b008b;font-weight:bold">return</span> mm-&gt;total_vm;
+}
+</code></pre></div><ul>
 <li>shared：PageCache中实际使用的物理内存的页数，对应top中SHR</li>
 <li>text：代码所占用的页数，对应top中CODE</li>
 <li>data：总虚拟内存页数减去共享的虚拟内存页数，对应top中DATA</li>
@@ -296,16 +296,16 @@
 <li>申请的内存若没有使用（只malloc或new，没有操作内存地址），或者只使用其中一小部分，如申请1G，但实现只使用了100M，则RES只会上涨100M，而不是1G</li>
 </ul>
 <p>top/atop命令并不能观察是否存在内存空洞。glibc提供malloc与free用于申请与释放内存，封装向系统调用。我们可以采用设置LD_PRELOAD来对malloc与free进行拦截，从而对内存使用观察。常见的Valgrind内存检测工具即是采用此方式。glibc还提供了malloc_stats函数，用于统计本进程具体的内存使用情况。我们可以通过gdb attach进程，调用此函数来观察内存占用：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>(gdb) call malloc_stats()
-</span></span><span style="display:flex;"><span>Arena <span style="color:#b452cd">0</span>:                      <span style="color:#228b22">// 第一个arena，这里只有一个线程
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本线程从操作系统获得的动态内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本线程在使用的动态内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>Total (incl. mmap):           <span style="color:#228b22">// 总的使用情况，各个线程使用动态内存的累加值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本进程从操作系统获得的动态内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本进程在使用的动态内存
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>max mmap regions =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// 统计使用mmap区域的个数，当一次申请内存超过128KB，会增加mmap区域
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>max mmap bytes   =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// mmap区域对应内存大小
-</span></span></span></code></pre></div><p>malloc_stats函数能够打印出glibc内存分配统计信息，包括brk和mmap内存分配情况。从上面显示信息再结合前面介绍的知识点，可能包括了多个arena分配区域总共分配的空间和正在使用的空间，较长时间运行之后，其差值（system bytes-in use bytes）基本就是出现的空洞内存。glibc还提供malloc_info函数，可以输出XML格式记录更为详细的内存使用情况。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">(gdb) call malloc_stats()
+Arena <span style="color:#b452cd">0</span>:                      <span style="color:#228b22">// 第一个arena，这里只有一个线程
+</span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本线程从操作系统获得的动态内存
+</span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本线程在使用的动态内存
+</span><span style="color:#228b22"></span>Total (incl. mmap):           <span style="color:#228b22">// 总的使用情况，各个线程使用动态内存的累加值
+</span><span style="color:#228b22"></span>system bytes     =     <span style="color:#b452cd">135168</span> <span style="color:#228b22">// 本进程从操作系统获得的动态内存
+</span><span style="color:#228b22"></span>in use bytes     =         <span style="color:#b452cd">96</span> <span style="color:#228b22">// 本进程在使用的动态内存
+</span><span style="color:#228b22"></span>max mmap regions =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// 统计使用mmap区域的个数，当一次申请内存超过128KB，会增加mmap区域
+</span><span style="color:#228b22"></span>max mmap bytes   =          <span style="color:#b452cd">0</span> <span style="color:#228b22">// mmap区域对应内存大小
+</span></code></pre></div><p>malloc_stats函数能够打印出glibc内存分配统计信息，包括brk和mmap内存分配情况。从上面显示信息再结合前面介绍的知识点，可能包括了多个arena分配区域总共分配的空间和正在使用的空间，较长时间运行之后，其差值（system bytes-in use bytes）基本就是出现的空洞内存。glibc还提供malloc_info函数，可以输出XML格式记录更为详细的内存使用情况。</p>
 <p>我们还可以进一步观察/proc/buddyinfo中的信息，buddy算法会把所有的空闲页放到11个链表中，每个链表管理大小为（1, 2, 4&hellip;1024）个连续空闲页的内存块。当系统需要分配内存时，就可以从buddy系统中获取。如果在buddyinfo出现内存碎片，会降低系统性能，并有可能影响整个系统的正常运行。</p>
 <h1 id="解决方案">解决方案</h1>
 <p>减少内存碎片，整体的原则还是有一些的：</p>
@@ -540,7 +540,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

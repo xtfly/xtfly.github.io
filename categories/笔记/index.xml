@@ -25,8 +25,8 @@
       
       <guid>http://lanlingzi.cn/post/notes/2018/0721_scala_symbol/</guid>
       <description>&lt;p&gt;Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;(map1 /: map2 ) { case (map, (k,v)) =&amp;gt; map + ( k -&amp;gt; (v + map.getOrElse(k, 0)) ) }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。&lt;/em&gt;&lt;/p&gt;
 &lt;h1 id=&#34;泛型&#34;&gt;泛型&lt;/h1&gt;
 &lt;h2 id=&#34;heading&#34;&gt;&lt;code&gt;:&lt;/code&gt;&lt;/h2&gt;

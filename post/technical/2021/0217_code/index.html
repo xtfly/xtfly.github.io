@@ -173,78 +173,78 @@
 <li>条件变量（pthread_cond_t）： 用于等待阻塞与通知唤醒</li>
 </ul>
 <p>精减的代码如下，基本等同实现了一个简化版本的ACE_Message_Queue（它的实现也是基于pthread，为了跨平台还支持其它，不是本文重点）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;pthread.h&gt;</span><span style="color:#1e889b">
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b"></span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> ulong;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">BlockingQueue</span> {
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:
-</span></span><span style="display:flex;"><span>    pthread_mutex_t mutex_;
-</span></span><span style="display:flex;"><span>    pthread_cond_t not_full_;
-</span></span><span style="display:flex;"><span>    pthread_cond_t not_empty_;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">volatile</span> ulong   head_;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">volatile</span> ulong   tail_;
-</span></span><span style="display:flex;"><span>    ulong capacity_;
-</span></span><span style="display:flex;"><span>    std::vector&lt;T&gt; queue_;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">explicit</span> BlockingQueue(ulong capacity): 
-</span></span><span style="display:flex;"><span>        capacity_(capacity), 
-</span></span><span style="display:flex;"><span>        queue_(capacity + <span style="color:#b452cd">1</span>), 
-</span></span><span style="display:flex;"><span>        head_(<span style="color:#b452cd">0</span>), 
-</span></span><span style="display:flex;"><span>        tail_(<span style="color:#b452cd">0</span>) {
-</span></span><span style="display:flex;"><span>        pthread_mutex_init(&amp;mutex_, <span style="color:#658b00">NULL</span>) ;
-</span></span><span style="display:flex;"><span>        pthread_cond_init(&amp;not_full_, <span style="color:#658b00">NULL</span>) ;
-</span></span><span style="display:flex;"><span>        pthread_cond_init(&amp;not_empty_, <span style="color:#658b00">NULL</span>) ;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ~BlockingQueue() {
-</span></span><span style="display:flex;"><span>        queue_.clear();
-</span></span><span style="display:flex;"><span>        pthread_mutex_destroy(&amp;mutex_);
-</span></span><span style="display:flex;"><span>        pthread_cond_destroy(&amp;not_full_);
-</span></span><span style="display:flex;"><span>        pthread_cond_destroy(&amp;not_empty_);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ulong <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 注tail_/head_采用volatile修饰，此方法并没有加锁保护
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> (tail_ - head_ + capacity_) % capacity_;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; e) {
-</span></span><span style="display:flex;"><span>        pthread_mutex_lock(&amp;mutex_);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">while</span> (is_full()) { <span style="color:#228b22">// [1] 为什么要使用while
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            pthread_cond_wait(&amp;not_full_, &amp;mutex_); <span style="color:#228b22">// [2]为什么要传入互斥锁
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        queue_[tail++] = e;
-</span></span><span style="display:flex;"><span>        tail_ %= (capacity_ + <span style="color:#b452cd">1</span>);
-</span></span><span style="display:flex;"><span>        pthread_cond_signal(&amp;not_empty_); <span style="color:#228b22">// [3] 采用signal还是broadcast
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        pthread_mutex_unlock(&amp;mutex_);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pop</span>(T&amp; t) {
-</span></span><span style="display:flex;"><span>        pthread_mutex_lock(&amp;mutex_);
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">while</span> (is_empty()) { 
-</span></span><span style="display:flex;"><span>            pthread_cond_wait(&amp;not_empty_, &amp;mutex_); 
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        T res = queue_[head_++];
-</span></span><span style="display:flex;"><span>        head_ %= (capacity_ + <span style="color:#b452cd">1</span>);
-</span></span><span style="display:flex;"><span>        pthread_cond_signal(&amp;not_full_);
-</span></span><span style="display:flex;"><span>        pthread_mutex_unlock(&amp;mutex_);
-</span></span><span style="display:flex;"><span>        t = res;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">bool</span> is_empty() {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> tail_ == head_;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">is_full</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> (head_ + capacity_ - tail_) % (capacity_ + <span style="color:#b452cd">1</span>) == <span style="color:#b452cd">0</span>;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>代码只实现最基本的能力：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;pthread.h&gt;</span><span style="color:#1e889b">
+</span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
+</span><span style="color:#1e889b"></span>
+<span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> ulong;
+<span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">BlockingQueue</span> {
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    pthread_mutex_t mutex_;
+    pthread_cond_t not_full_;
+    pthread_cond_t not_empty_;
+    <span style="color:#8b008b;font-weight:bold">volatile</span> ulong   head_;
+    <span style="color:#8b008b;font-weight:bold">volatile</span> ulong   tail_;
+    ulong capacity_;
+    std::vector&lt;T&gt; queue_;
+<span style="color:#8b008b;font-weight:bold">public</span>:
+    <span style="color:#8b008b;font-weight:bold">explicit</span> BlockingQueue(ulong capacity): 
+        capacity_(capacity), 
+        queue_(capacity + <span style="color:#b452cd">1</span>), 
+        head_(<span style="color:#b452cd">0</span>), 
+        tail_(<span style="color:#b452cd">0</span>) {
+        pthread_mutex_init(&amp;mutex_, <span style="color:#658b00">NULL</span>) ;
+        pthread_cond_init(&amp;not_full_, <span style="color:#658b00">NULL</span>) ;
+        pthread_cond_init(&amp;not_empty_, <span style="color:#658b00">NULL</span>) ;
+    }
+
+    ~BlockingQueue() {
+        queue_.clear();
+        pthread_mutex_destroy(&amp;mutex_);
+        pthread_cond_destroy(&amp;not_full_);
+        pthread_cond_destroy(&amp;not_empty_);
+    }
+
+    ulong <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {
+        <span style="color:#228b22">// 注tail_/head_采用volatile修饰，此方法并没有加锁保护
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> (tail_ - head_ + capacity_) % capacity_;
+    }
+
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; e) {
+        pthread_mutex_lock(&amp;mutex_);
+        <span style="color:#8b008b;font-weight:bold">while</span> (is_full()) { <span style="color:#228b22">// [1] 为什么要使用while
+</span><span style="color:#228b22"></span>            pthread_cond_wait(&amp;not_full_, &amp;mutex_); <span style="color:#228b22">// [2]为什么要传入互斥锁
+</span><span style="color:#228b22"></span>        }
+
+        queue_[tail++] = e;
+        tail_ %= (capacity_ + <span style="color:#b452cd">1</span>);
+        pthread_cond_signal(&amp;not_empty_); <span style="color:#228b22">// [3] 采用signal还是broadcast
+</span><span style="color:#228b22"></span>        pthread_mutex_unlock(&amp;mutex_);
+    }
+
+    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pop</span>(T&amp; t) {
+        pthread_mutex_lock(&amp;mutex_);
+        <span style="color:#8b008b;font-weight:bold">while</span> (is_empty()) { 
+            pthread_cond_wait(&amp;not_empty_, &amp;mutex_); 
+        }
+
+        T res = queue_[head_++];
+        head_ %= (capacity_ + <span style="color:#b452cd">1</span>);
+        pthread_cond_signal(&amp;not_full_);
+        pthread_mutex_unlock(&amp;mutex_);
+        t = res;
+    }
+
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">bool</span> is_empty() {
+        <span style="color:#8b008b;font-weight:bold">return</span> tail_ == head_;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">is_full</span>() {
+        <span style="color:#8b008b;font-weight:bold">return</span> (head_ + capacity_ - tail_) % (capacity_ + <span style="color:#b452cd">1</span>) == <span style="color:#b452cd">0</span>;
+    }
+};
+</code></pre></div><p>代码只实现最基本的能力：</p>
 <ul>
 <li>采用模板，参数T可参实例化为<code>ACE_Message_Block*</code></li>
 <li>capacity_： 指定队列的容量，即上限</li>
@@ -272,121 +272,121 @@
 </ul>
 <p>熟悉CAS的同学可能知道，CAS存在ABA的问题(参见Wikipedia<a href="https://en.wikipedia.org/wiki/ABA_problem">ABA_problem</a>)。Wikipedia上给了一个方法，使用double-CAS，借助另一个辅助计数器，当ABA发生时，虽然值一样，但是计数器不一样了。采用循环数组可以避免ABA问题。</p>
 <p>代码如下，各节点以及队列同时记录tail与head，代码改自<a href="https://github.com/craflin/LockFreeQueue/blob/master/LockFreeQueue.h">craflin/LockFreeQueue</a>：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;memory&gt;</span><span style="color:#1e889b">
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;unistd.h&gt;</span><span style="color:#1e889b">
-</span></span></span><span style="display:flex;"><span><span style="color:#1e889b"></span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> ulong;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; 
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LockFreeQueue</span> {
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span>
-</span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>    T data;
-</span></span><span style="display:flex;"><span>    ulong tail; <span style="color:#228b22">// [1] 用于判断是否队列是否空，或满
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ulong head;
-</span></span><span style="display:flex;"><span>  };
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  std::vector&lt;Node&gt; queue_;
-</span></span><span style="display:flex;"><span>  ulong capacity_;
-</span></span><span style="display:flex;"><span>  ulong capacity_mask_;
-</span></span><span style="display:flex;"><span>  ulong tail_;
-</span></span><span style="display:flex;"><span>  ulong head_;
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">explicit</span> LockFreeQueue(ulong capacity): queue_ (capacity) {
-</span></span><span style="display:flex;"><span>    capacity_mask_ = capacity - <span style="color:#b452cd">1</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// capacity是2^N，方便 idx &amp; capacity_mask_
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> i = <span style="color:#b452cd">1</span>; i &lt;= <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">void</span>*) * <span style="color:#b452cd">4</span>; i &lt;&lt;= <span style="color:#b452cd">1</span>) {
-</span></span><span style="display:flex;"><span>      capacity_mask_ |= capacity_mask_ &gt;&gt; i; 
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    capacity_ = capacity_mask_ + <span style="color:#b452cd">1</span>;  
-</span></span><span style="display:flex;"><span>    queue_.resize(capacity_);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> i = <span style="color:#b452cd">0</span>; i &lt; capacity_; ++i) {
-</span></span><span style="display:flex;"><span>      queue_[i].tail = i; <span style="color:#228b22">// [2] 用于标识是否此下标被占用
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      queue_[i].head = -<span style="color:#b452cd">1</span>;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    tail_ = <span style="color:#b452cd">0</span>;
-</span></span><span style="display:flex;"><span>    head_ = <span style="color:#b452cd">0</span>;
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  ~LockFreeQueue() {
-</span></span><span style="display:flex;"><span>    queue_.clear();
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>  ulong <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {
-</span></span><span style="display:flex;"><span>    ulong head = load(head_);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> tail_ - head;
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push_without_wait</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) {
-</span></span><span style="display:flex;"><span>    Node* node;
-</span></span><span style="display:flex;"><span>    ulong next, tail = tail_;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(tail != next) { 
-</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// [3] 定位尾节点，并判断队列是否已满
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      node = &amp;queue_[tail &amp; capacity_mask_];
-</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span>(load(node-&gt;tail) != tail) { <span style="color:#228b22">// 双指针，一个是入队时tail_+ 1, 一个是出队时node-&gt;tail = head + capacity_
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// [4] 更新tail_ +=1，操作之前的值next与tail相同，可以插入，否则说明多线程修改了，需要循环再次判断
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span>((next = compare_and_swap(tail_, tail, tail + <span style="color:#b452cd">1</span>)) == tail) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">break</span>;
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// [5] 插入，节点的head指向原tail，即数组的下标，标识有值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    node-&gt;data = data;
-</span></span><span style="display:flex;"><span>    store(node-&gt;head, tail); 
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">pop_without_wait</span>(T&amp; result) {
-</span></span><span style="display:flex;"><span>    Node* node;
-</span></span><span style="display:flex;"><span>    ulong next, head = head_;
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(head != next) {
-</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// [6] 定位首节点，并判断是否为空
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      node = &amp;queue_[head &amp; capacity_mask_];
-</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span>(load(node-&gt;head) != head) {
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// [7] head_ += 1
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span>((next = compare_and_swap(head_, head, head + <span style="color:#b452cd">1</span>)) == head) {
-</span></span><span style="display:flex;"><span>          <span style="color:#8b008b;font-weight:bold">break</span>;
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    result = node-&gt;data;
-</span></span><span style="display:flex;"><span>    store(node-&gt;tail, (head + capacity_);
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pop</span>(T&amp; t) {
-</span></span><span style="display:flex;"><span>      <span style="color:#228b22">// 队列空则休眠
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">while</span>(!pop_without_wait(t)) {
-</span></span><span style="display:flex;"><span>          usleep(<span style="color:#b452cd">5</span>);
-</span></span><span style="display:flex;"><span>      }
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> ulong load(<span style="color:#8b008b;font-weight:bold">const</span> ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var) {
-</span></span><span style="display:flex;"><span>        __sync_synchronize(); 
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> var;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">store</span>(ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var, ulong value) {
-</span></span><span style="display:flex;"><span>        __sync_synchronize(); 
-</span></span><span style="display:flex;"><span>        var = value;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">inline</span> ulong <span style="color:#008b45">compare_and_swap</span>(ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var, ulong oldVal, ulong newVal) {
-</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 返回值是操作之前的值
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> __sync_val_compare_and_swap(&amp;var, oldVal, newVal);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>代码逻辑结合了数组与链表两种实现思想方式：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;memory&gt;</span><span style="color:#1e889b">
+</span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;vector&gt;</span><span style="color:#1e889b">
+</span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;unistd.h&gt;</span><span style="color:#1e889b">
+</span><span style="color:#1e889b"></span>
+<span style="color:#8b008b;font-weight:bold">typedef</span> <span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> ulong;
+<span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; 
+<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LockFreeQueue</span> {
+<span style="color:#8b008b;font-weight:bold">private</span>:
+  <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span>
+  {
+    T data;
+    ulong tail; <span style="color:#228b22">// [1] 用于判断是否队列是否空，或满
+</span><span style="color:#228b22"></span>    ulong head;
+  };
+
+  std::vector&lt;Node&gt; queue_;
+  ulong capacity_;
+  ulong capacity_mask_;
+  ulong tail_;
+  ulong head_;
+<span style="color:#8b008b;font-weight:bold">public</span>:
+  <span style="color:#8b008b;font-weight:bold">explicit</span> LockFreeQueue(ulong capacity): queue_ (capacity) {
+    capacity_mask_ = capacity - <span style="color:#b452cd">1</span>;
+    <span style="color:#228b22">// capacity是2^N，方便 idx &amp; capacity_mask_
+</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> i = <span style="color:#b452cd">1</span>; i &lt;= <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">void</span>*) * <span style="color:#b452cd">4</span>; i &lt;&lt;= <span style="color:#b452cd">1</span>) {
+      capacity_mask_ |= capacity_mask_ &gt;&gt; i; 
+    }
+
+    capacity_ = capacity_mask_ + <span style="color:#b452cd">1</span>;  
+    queue_.resize(capacity_);
+    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">unsigned</span> <span style="color:#00688b;font-weight:bold">long</span> i = <span style="color:#b452cd">0</span>; i &lt; capacity_; ++i) {
+      queue_[i].tail = i; <span style="color:#228b22">// [2] 用于标识是否此下标被占用
+</span><span style="color:#228b22"></span>      queue_[i].head = -<span style="color:#b452cd">1</span>;
+    }
+
+    tail_ = <span style="color:#b452cd">0</span>;
+    head_ = <span style="color:#b452cd">0</span>;
+  }
+
+  ~LockFreeQueue() {
+    queue_.clear();
+  }
+  
+  ulong <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {
+    ulong head = load(head_);
+    <span style="color:#8b008b;font-weight:bold">return</span> tail_ - head;
+  }
+  
+  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push_without_wait</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) {
+    Node* node;
+    ulong next, tail = tail_;
+    <span style="color:#8b008b;font-weight:bold">while</span>(tail != next) { 
+      <span style="color:#228b22">// [3] 定位尾节点，并判断队列是否已满
+</span><span style="color:#228b22"></span>      node = &amp;queue_[tail &amp; capacity_mask_];
+      <span style="color:#8b008b;font-weight:bold">if</span>(load(node-&gt;tail) != tail) { <span style="color:#228b22">// 双指针，一个是入队时tail_+ 1, 一个是出队时node-&gt;tail = head + capacity_
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+      }
+
+      <span style="color:#228b22">// [4] 更新tail_ +=1，操作之前的值next与tail相同，可以插入，否则说明多线程修改了，需要循环再次判断
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span>((next = compare_and_swap(tail_, tail, tail + <span style="color:#b452cd">1</span>)) == tail) {
+        <span style="color:#8b008b;font-weight:bold">break</span>;
+      }
+    }
+
+    <span style="color:#228b22">// [5] 插入，节点的head指向原tail，即数组的下标，标识有值
+</span><span style="color:#228b22"></span>    node-&gt;data = data;
+    store(node-&gt;head, tail); 
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+  }
+
+  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">pop_without_wait</span>(T&amp; result) {
+    Node* node;
+    ulong next, head = head_;
+    <span style="color:#8b008b;font-weight:bold">while</span>(head != next) {
+      <span style="color:#228b22">// [6] 定位首节点，并判断是否为空
+</span><span style="color:#228b22"></span>      node = &amp;queue_[head &amp; capacity_mask_];
+      <span style="color:#8b008b;font-weight:bold">if</span>(load(node-&gt;head) != head) {
+        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;
+      }
+
+      <span style="color:#228b22">// [7] head_ += 1
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">if</span>((next = compare_and_swap(head_, head, head + <span style="color:#b452cd">1</span>)) == head) {
+          <span style="color:#8b008b;font-weight:bold">break</span>;
+      }
+    }
+
+    result = node-&gt;data;
+    store(node-&gt;tail, (head + capacity_);
+    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;
+  }
+
+  <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">pop</span>(T&amp; t) {
+      <span style="color:#228b22">// 队列空则休眠
+</span><span style="color:#228b22"></span>      <span style="color:#8b008b;font-weight:bold">while</span>(!pop_without_wait(t)) {
+          usleep(<span style="color:#b452cd">5</span>);
+      }
+  }
+
+<span style="color:#8b008b;font-weight:bold">private</span>:
+    <span style="color:#8b008b;font-weight:bold">inline</span> ulong load(<span style="color:#8b008b;font-weight:bold">const</span> ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var) {
+        __sync_synchronize(); 
+        <span style="color:#8b008b;font-weight:bold">return</span> var;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">inline</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">store</span>(ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var, ulong value) {
+        __sync_synchronize(); 
+        var = value;
+    }
+
+    <span style="color:#8b008b;font-weight:bold">inline</span> ulong <span style="color:#008b45">compare_and_swap</span>(ulong <span style="color:#8b008b;font-weight:bold">volatile</span>&amp; var, ulong oldVal, ulong newVal) {
+        <span style="color:#228b22">// 返回值是操作之前的值
+</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> __sync_val_compare_and_swap(&amp;var, oldVal, newVal);
+    }
+};
+</code></pre></div><p>代码逻辑结合了数组与链表两种实现思想方式：</p>
 <ul>
 <li>[1] 数组的元素是一个结构体Node，data存放数据，head/tail指针记录循环数据数组的首尾下标</li>
 <li>[2] 节点初始化，tail标实为数组下标，表示此节点未被占用</li>
@@ -395,22 +395,22 @@
 <li>[5] 通过CAS之后，可以真正插入值，则节点的head指向队列的tail，标识有值</li>
 </ul>
 <p>上面的注释还是难以理解，先忽略数组方式，假定有一个堆栈，节点如下定义（参见<a href="https://www.ibm.com/developerworks/cn/aix/library/au-multithreaded_structures2/index.html">设计不使用互斥锁的并发数据结构</a>）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span> { 
-</span></span><span style="display:flex;"><span>    T data; 
-</span></span><span style="display:flex;"><span>    Node* next;
-</span></span><span style="display:flex;"><span>    Node(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; d) : data(d), next(<span style="color:#b452cd">0</span>) { } 
-</span></span><span style="display:flex;"><span>} Node;
-</span></span></code></pre></div><p>插入操作：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>push(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) { 
-</span></span><span style="display:flex;"><span>    Node *n = <span style="color:#8b008b;font-weight:bold">new</span> Node(data); 
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#b452cd">1</span>) { 
-</span></span><span style="display:flex;"><span>        n-&gt;next = top;
-</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (__sync_bool_compare_and_swap(&amp;top, n-&gt;next, n)) { <span style="color:#228b22">// CAS
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">break</span>;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>若是多线程，逻辑如下，采用CAS，关键是需要采用循环不断判断(Re-Try-Loop)：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Node</span> { 
+    T data; 
+    Node* next;
+    Node(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; d) : data(d), next(<span style="color:#b452cd">0</span>) { } 
+} Node;
+</code></pre></div><p>插入操作：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">push(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; data) { 
+    Node *n = <span style="color:#8b008b;font-weight:bold">new</span> Node(data); 
+    <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#b452cd">1</span>) { 
+        n-&gt;next = top;
+        <span style="color:#8b008b;font-weight:bold">if</span> (__sync_bool_compare_and_swap(&amp;top, n-&gt;next, n)) { <span style="color:#228b22">// CAS
+</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">break</span>;
+        }
+    }
+}
+</code></pre></div><p>若是多线程，逻辑如下，采用CAS，关键是需要采用循环不断判断(Re-Try-Loop)：</p>
 <ul>
 <li>可能有两个或更多线程同时试图把数据压入堆栈， 假设线程 A 试图把 20 压入堆栈，线程 B 试图压入 30</li>
 <li>而线程 A 先获得了时间片，在 n-&gt;next = top 指令结束之后，调度程序暂停了线程 A</li>
@@ -643,7 +643,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

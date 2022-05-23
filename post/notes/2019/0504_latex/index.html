@@ -150,20 +150,20 @@
     <p>五一放假正好有点时间，于是计划完成这个 Issue: <a href="https://github.com/xtfly/hugo-theme-next/issues/8">Is it possible to add latex support&hellip;</a>，要解决支持LateX，只需要集成<a href="https://github.com/mathjax/MathJax">MathJax</a>。</p>
 <h1 id="如何集成">如何集成</h1>
 <p>在主题文件<code>layouts/partials/script.html</code>中增加如下，先采用了cloudflare的CDN，暂没有打包到主题目录中，国内可能稍慢些。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
-</span></span><span style="display:flex;"><span>  MathJax.Hub.Config({
-</span></span><span style="display:flex;"><span>    extensions: [&#34;tex2jax.js&#34;],
-</span></span><span style="display:flex;"><span>    jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;],
-</span></span><span style="display:flex;"><span>    tex2jax: {
-</span></span><span style="display:flex;"><span>      inlineMath: [ [&#39;$&#39;,&#39;$&#39;] ],
-</span></span><span style="display:flex;"><span>      displayMath: [ [&#39;$$&#39;,&#39;$$&#39;] ],
-</span></span><span style="display:flex;"><span>      processEscapes: true
-</span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] }
-</span></span><span style="display:flex;"><span>  });
-</span></span><span style="display:flex;"><span>&lt;/script&gt;
-</span></span><span style="display:flex;"><span>&lt;script src=&#39;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML&#39; async&gt;&lt;/script&gt;
-</span></span></code></pre></div><p>加上 <code>TeX-AMS-MML_HTMLorMML</code> 使得我们可以支持Tex和MathML公式，表示如果浏览器支持MathML解析，那么就使用它，否则会使用HTML-with-CSS来显示数学公式。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&lt;script type=&#34;text/x-mathjax-config&#34;&gt;
+  MathJax.Hub.Config({
+    extensions: [&#34;tex2jax.js&#34;],
+    jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;],
+    tex2jax: {
+      inlineMath: [ [&#39;$&#39;,&#39;$&#39;] ],
+      displayMath: [ [&#39;$$&#39;,&#39;$$&#39;] ],
+      processEscapes: true
+    },
+    &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] }
+  });
+&lt;/script&gt;
+&lt;script src=&#39;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML&#39; async&gt;&lt;/script&gt;
+</code></pre></div><p>加上 <code>TeX-AMS-MML_HTMLorMML</code> 使得我们可以支持Tex和MathML公式，表示如果浏览器支持MathML解析，那么就使用它，否则会使用HTML-with-CSS来显示数学公式。</p>
 <h1 id="如何使用">如何使用</h1>
 <p>LaTeX 格式的公式使用主要有两种形式：</p>
 <ul>
@@ -173,14 +173,14 @@
 <p>更多的使用请参考： <a href="http://docs.mathjax.org/en/latest/tex.html">http://docs.mathjax.org/en/latest/tex.html</a></p>
 <h2 id="样例">样例</h2>
 <h3 id="段落行内显示">段落行内显示</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span> When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are
-</span></span></code></pre></div><p>将会生成</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are
+</code></pre></div><p>将会生成</p>
 <p>When $ a \ne 0 $, there are two solutions to $ax^2 + bx + c = 0$ and they are</p>
 <h3 id="独立段落显示">独立段落显示</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span> $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span> $$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$
-</span></span></code></pre></div><p>将会生成</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$
+
+ $$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$
+</code></pre></div><p>将会生成</p>
 <p>$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a}. $$</p>
 <p>$$ |AB| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</p>
     </div>
@@ -361,7 +361,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.98.0</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
