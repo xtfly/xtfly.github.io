@@ -303,19 +303,19 @@
 <li>-Xloggc:logs/gc.log 日志文件的输出路径</li>
 </ul>
 <p>GC日志样例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">0.070: [GC (Allocation Failure) [PSYoungGen: 7127K-&gt;616K(9216K)] 11223K-&gt;4720K(19456K), 0.0008663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
-0.072: [GC (Allocation Failure) --[PSYoungGen: 6923K-&gt;6923K(9216K)] 11027K-&gt;15123K(19456K), 0.0016749 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] 
-0.073: [Full GC (Ergonomics) [PSYoungGen: 6923K-&gt;0K(9216K)] [ParOldGen: 8200K-&gt;6660K(10240K)] 15123K-&gt;6660K(19456K), [Metaspace: 2559K-&gt;2559K(1056768K)], 0.0044663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
-Heap
- PSYoungGen      total 9216K, used 4404K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
-  eden space 8192K, 53% used [0x00000000ff600000,0x00000000ffa4d1a0,0x00000000ffe00000)
-  from space 1024K, 0% used [0x00000000ffe00000,0x00000000ffe00000,0x00000000fff00000)
-  to   space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
- ParOldGen       total 10240K, used 6660K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
-  object space 10240K, 65% used [0x00000000fec00000,0x00000000ff281398,0x00000000ff600000)
- Metaspace       used 2565K, capacity 4486K, committed 4864K, reserved 1056768K
-  class space    used 281K, capacity 386K, committed 512K, reserved 1048576K
-</code></pre></div><ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>0.070: [GC (Allocation Failure) [PSYoungGen: 7127K-&gt;616K(9216K)] 11223K-&gt;4720K(19456K), 0.0008663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+</span></span><span style="display:flex;"><span>0.072: [GC (Allocation Failure) --[PSYoungGen: 6923K-&gt;6923K(9216K)] 11027K-&gt;15123K(19456K), 0.0016749 secs] [Times: user=0.02 sys=0.00, real=0.00 secs] 
+</span></span><span style="display:flex;"><span>0.073: [Full GC (Ergonomics) [PSYoungGen: 6923K-&gt;0K(9216K)] [ParOldGen: 8200K-&gt;6660K(10240K)] 15123K-&gt;6660K(19456K), [Metaspace: 2559K-&gt;2559K(1056768K)], 0.0044663 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+</span></span><span style="display:flex;"><span>Heap
+</span></span><span style="display:flex;"><span> PSYoungGen      total 9216K, used 4404K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+</span></span><span style="display:flex;"><span>  eden space 8192K, 53% used [0x00000000ff600000,0x00000000ffa4d1a0,0x00000000ffe00000)
+</span></span><span style="display:flex;"><span>  from space 1024K, 0% used [0x00000000ffe00000,0x00000000ffe00000,0x00000000fff00000)
+</span></span><span style="display:flex;"><span>  to   space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
+</span></span><span style="display:flex;"><span> ParOldGen       total 10240K, used 6660K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+</span></span><span style="display:flex;"><span>  object space 10240K, 65% used [0x00000000fec00000,0x00000000ff281398,0x00000000ff600000)
+</span></span><span style="display:flex;"><span> Metaspace       used 2565K, capacity 4486K, committed 4864K, reserved 1056768K
+</span></span><span style="display:flex;"><span>  class space    used 281K, capacity 386K, committed 512K, reserved 1048576K
+</span></span></code></pre></div><ol>
 <li>最前面的数字 &ldquo;0,070&rdquo; 代表了GC发生的时间，这个数字的含义是从Java虚拟机启动以来经过的秒数</li>
 <li>GC日志开头的“[GC 和 [Full GC” 说明了这次垃圾收集的停顿类型，而不是用来区分新生代GC还是年老代GC的。</li>
 <li>PSYoungGen, ParOldGen，PSPermGen表示GC发生的区域，这里显示的区域名称与使用的GC收集器密切相关，不同收集器对于不同区域所显示的名称可能不同。</li>
@@ -418,7 +418,7 @@ Heap
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -515,7 +515,7 @@ Heap
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

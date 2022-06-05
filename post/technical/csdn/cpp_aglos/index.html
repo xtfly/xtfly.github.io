@@ -150,192 +150,192 @@
     <p>前一段时间需要任职资格考试，于是又拿起丢了几年的数据结构书看了看，温习了一下常见的几个排序算法。今天特把我写的学习代码贴了出来。排序的算法常见有插入排序，选择排序与交换排序，较复杂一点还有归并排序与基数排序，概念性的东西我就不多说了，大家可以找一本严老师数据结构书看看。读大学时不觉得怎么样，现在再来看看，又结合这几年的编程经验，通过C++风格函数子造了一遍轮子。</p>
 <h2 id="公共函数">公共函数</h2>
 <p>先来一个排序中的比较函数子，实现是左值小于右值。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">CmpFuctor</span> {
-  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">operator</span>()(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; lhs, <span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs) {
-    <span style="color:#8b008b;font-weight:bold">return</span> lhs &lt; rhs;
-  }
-};
-</code></pre></div><p>交换排序中用到的交换两个元素的函数。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
-<span style="color:#00688b;font-weight:bold">void</span> swap(T* lhs, T* rhs) {
-  T tmp = *lhs;
-  *lhs = *rhs;
-  *rhs = tmp;
-}
-</code></pre></div><p>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
-<span style="color:#00688b;font-weight:bold">void</span> traverse(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {
-  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx&lt; size; idx++) {
-    func(pArray[idx]);
-  }
-}
-</code></pre></div><h2 id="插入排序">插入排序</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">CmpFuctor</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">operator</span>()(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; lhs, <span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> lhs &lt; rhs;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>交换排序中用到的交换两个元素的函数。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> swap(T* lhs, T* rhs) {
+</span></span><span style="display:flex;"><span>  T tmp = *lhs;
+</span></span><span style="display:flex;"><span>  *lhs = *rhs;
+</span></span><span style="display:flex;"><span>  *rhs = tmp;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>排序前后，我们自然要观察前后元素的顺序，那也少了下面这个函数。即遍历整个数组，再回调函数指针func，把元素通过引用传递出来。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> traverse(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx&lt; size; idx++) {
+</span></span><span style="display:flex;"><span>    func(pArray[idx]);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="插入排序">插入排序</h2>
 <h3 id="简单插入排序">简单插入排序</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP &gt;
-<span style="color:#00688b;font-weight:bold">void</span> insertsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
-  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx&lt; size; idx++) {
-    T temp = pArray[idx];
-    <span style="color:#00688b;font-weight:bold">int</span> pos = idx -<span style="color:#b452cd">1</span>;
-    <span style="color:#8b008b;font-weight:bold">while</span>( pos &gt;= <span style="color:#b452cd">0</span> &amp;&amp; cmp(temp, pArray[pos]) ) { <span style="color:#228b22">// &lt;
-</span><span style="color:#228b22"></span>      pArray[pos+<span style="color:#b452cd">1</span>] = pArray[pos];
-      pos--;
-    }
-    pArray[pos+<span style="color:#b452cd">1</span>] = temp;
-  }
-}
-</code></pre></div><h3 id="折半插入排序">折半插入排序</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP &gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> insertsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx&lt; size; idx++) {
+</span></span><span style="display:flex;"><span>    T temp = pArray[idx];
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> pos = idx -<span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>( pos &gt;= <span style="color:#b452cd">0</span> &amp;&amp; cmp(temp, pArray[pos]) ) { <span style="color:#228b22">// &lt;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>      pArray[pos+<span style="color:#b452cd">1</span>] = pArray[pos];
+</span></span><span style="display:flex;"><span>      pos--;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    pArray[pos+<span style="color:#b452cd">1</span>] = temp;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="折半插入排序">折半插入排序</h3>
 <p>再对上面的插入排序改进，查找为折半插入排序。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
-<span style="color:#00688b;font-weight:bold">void</span> binaryinsertsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
-  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx = <span style="color:#b452cd">1</span>; idx &lt; size; idx++) {
-    <span style="color:#00688b;font-weight:bold">int</span> left = <span style="color:#b452cd">0</span>;
-    <span style="color:#00688b;font-weight:bold">int</span> right = idx -<span style="color:#b452cd">1</span>;
-    T temp = pArray[idx];
-    <span style="color:#8b008b;font-weight:bold">while</span>( left &lt;= right) {
-      <span style="color:#00688b;font-weight:bold">int</span> middle = (left + right) / <span style="color:#b452cd">2</span>;
-
-      <span style="color:#8b008b;font-weight:bold">if</span> ( cmp(temp, pArray[middle] )) { <span style="color:#228b22">// &lt;
-</span><span style="color:#228b22"></span>        right = middle - <span style="color:#b452cd">1</span>;
-      } <span style="color:#8b008b;font-weight:bold">else</span> {
-        left = middle + <span style="color:#b452cd">1</span>;
-      }
-    }
-
-    <span style="color:#00688b;font-weight:bold">int</span> j = idx-<span style="color:#b452cd">1</span>;
-    <span style="color:#8b008b;font-weight:bold">for</span>(; j &gt;= right+<span style="color:#b452cd">1</span>; j--) {
-      pArray[j+<span style="color:#b452cd">1</span>] = pArray[j];
-    }
-    pArray[right+<span style="color:#b452cd">1</span>] = temp;
-  }
-}
-</code></pre></div><h3 id="希尔排序">希尔排序</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> binaryinsertsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx = <span style="color:#b452cd">1</span>; idx &lt; size; idx++) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> left = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> right = idx -<span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>    T temp = pArray[idx];
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>( left &lt;= right) {
+</span></span><span style="display:flex;"><span>      <span style="color:#00688b;font-weight:bold">int</span> middle = (left + right) / <span style="color:#b452cd">2</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span> ( cmp(temp, pArray[middle] )) { <span style="color:#228b22">// &lt;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        right = middle - <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>      } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        left = middle + <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> j = idx-<span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(; j &gt;= right+<span style="color:#b452cd">1</span>; j--) {
+</span></span><span style="display:flex;"><span>      pArray[j+<span style="color:#b452cd">1</span>] = pArray[j];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    pArray[right+<span style="color:#b452cd">1</span>] = temp;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="希尔排序">希尔排序</h3>
 <p>再来一个改进版的插入排序。希尔排序的基本思想是：先将整个待排记录序列分割成若干小组（子序列），分别在组内进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行一次直接插入排序。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
-<span style="color:#00688b;font-weight:bold">void</span> shellsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
-  <span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">0</span>;
-  <span style="color:#00688b;font-weight:bold">int</span> d = size / <span style="color:#b452cd">2</span>;
-
-  <span style="color:#228b22">// 通过增量控制排序的执行过程
-</span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">while</span>( d &gt; <span style="color:#b452cd">0</span> ) {
-    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i = d; i&lt; size;i++) {
-      j = i - d;
-      <span style="color:#8b008b;font-weight:bold">while</span>(j &gt;= <span style="color:#b452cd">0</span>) {
-        <span style="color:#228b22">// 对各个分组进行处理
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> ( cmp(pArray[j+d], pArray[j]) ) {
-          swap(&amp;pArray[j], &amp;pArray[j+d]);
-          j -= d;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-          j = -<span style="color:#b452cd">1</span>;
-        }
-      }
-    }
-    d /= <span style="color:#b452cd">2</span>; <span style="color:#228b22">//递减增量d
-</span><span style="color:#228b22"></span>  }
-}
-</code></pre></div><h2 id="交换排序">交换排序</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> shellsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> d = size / <span style="color:#b452cd">2</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">// 通过增量控制排序的执行过程
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  <span style="color:#8b008b;font-weight:bold">while</span>( d &gt; <span style="color:#b452cd">0</span> ) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i = d; i&lt; size;i++) {
+</span></span><span style="display:flex;"><span>      j = i - d;
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">while</span>(j &gt;= <span style="color:#b452cd">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 对各个分组进行处理
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> ( cmp(pArray[j+d], pArray[j]) ) {
+</span></span><span style="display:flex;"><span>          swap(&amp;pArray[j], &amp;pArray[j+d]);
+</span></span><span style="display:flex;"><span>          j -= d;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>          j = -<span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    d /= <span style="color:#b452cd">2</span>; <span style="color:#228b22">//递减增量d
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="交换排序">交换排序</h2>
 <h3 id="简单交换排序">简单交换排序</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
-<span style="color:#00688b;font-weight:bold">void</span> selectsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
-  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx = <span style="color:#b452cd">0</span>; idx &lt; size; idx++) {
-    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> pos = idx + <span style="color:#b452cd">1</span>; pos &lt; size; pos++)  {
-      <span style="color:#8b008b;font-weight:bold">if</span>( cmp(pArray[pos], pArray[idx]) ) {
-        swap(&amp;pArray[pos], &amp;pArray[idx]);
-      }
-    }
-  }
-}
-</code></pre></div><h3 id="冒泡排序">冒泡排序</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
-<span style="color:#00688b;font-weight:bold">void</span> bubblesort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
-  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx &lt; size; idx++) {
-    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> pos = <span style="color:#b452cd">0</span>; pos &lt;= size - idx;pos++) {
-      <span style="color:#8b008b;font-weight:bold">if</span>( cmp(pArray[pos+<span style="color:#b452cd">1</span>], pArray[pos]) ) {
-        swap(&amp;pArray[pos], &amp;pArray[pos+<span style="color:#b452cd">1</span>]);
-      }
-    }
-  }
-}
-</code></pre></div><h3 id="快速排序">快速排序</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
-<span style="color:#00688b;font-weight:bold">int</span> partition(T* pArray, <span style="color:#00688b;font-weight:bold">int</span> p, <span style="color:#00688b;font-weight:bold">int</span> r, CMP cmp) {
-  <span style="color:#00688b;font-weight:bold">int</span> i = p - <span style="color:#b452cd">1</span>;
-  <span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">0</span>;
-  <span style="color:#8b008b;font-weight:bold">for</span>(j = p; j &lt; r; j++) {
-    <span style="color:#8b008b;font-weight:bold">if</span>(cmp(pArray[j], pArray[r])) {
-      i++;
-      swap(&amp;pArray[i], &amp;pArray[j]);
-    }
-  }
-  swap(&amp;pArray[i + <span style="color:#b452cd">1</span>], &amp;pArray[r]);
-  <span style="color:#8b008b;font-weight:bold">return</span> i + <span style="color:#b452cd">1</span>;
-</code></pre></div><h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {
-  printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);
-}
-
-<span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">genrandom</span>(<span style="color:#00688b;font-weight:bold">int</span> min, <span style="color:#00688b;font-weight:bold">int</span> max) {
-  <span style="color:#8b008b;font-weight:bold">return</span> (min + (<span style="color:#00688b;font-weight:bold">int</span>)(((<span style="color:#00688b;font-weight:bold">float</span>)rand()/RAND_MAX)*(max - min)));
-}
-
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">random</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a ) {
-  a = genrandom(-<span style="color:#b452cd">50</span>, <span style="color:#b452cd">100</span>);
-}
-
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">sort_test</span>() {
-  <span style="color:#00688b;font-weight:bold">int</span> A[] = {<span style="color:#b452cd">4</span>, <span style="color:#b452cd">1</span>, <span style="color:#b452cd">44</span>, -<span style="color:#b452cd">12</span>, <span style="color:#b452cd">5</span>, <span style="color:#b452cd">125</span>, <span style="color:#b452cd">30</span>};
-  <span style="color:#00688b;font-weight:bold">int</span> len = <span style="color:#8b008b;font-weight:bold">sizeof</span>(A) / <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">int</span>);
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  insertsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, random);
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  binaryinsertsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, random);
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  shellsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, random);
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  bubblesort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, random);
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  selectsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-  <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>  traverse(A, len, random);
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-  quicksort(A, <span style="color:#b452cd">0</span>, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
-  traverse(A, len, print);
-  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
-
-}
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> selectsort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx = <span style="color:#b452cd">0</span>; idx &lt; size; idx++) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> pos = idx + <span style="color:#b452cd">1</span>; pos &lt; size; pos++)  {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span>( cmp(pArray[pos], pArray[idx]) ) {
+</span></span><span style="display:flex;"><span>        swap(&amp;pArray[pos], &amp;pArray[idx]);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="冒泡排序">冒泡排序</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> bubblesort(T* pArray, <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> size, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> idx =<span style="color:#b452cd">0</span>; idx &lt; size; idx++) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> pos = <span style="color:#b452cd">0</span>; pos &lt;= size - idx;pos++) {
+</span></span><span style="display:flex;"><span>      <span style="color:#8b008b;font-weight:bold">if</span>( cmp(pArray[pos+<span style="color:#b452cd">1</span>], pArray[pos]) ) {
+</span></span><span style="display:flex;"><span>        swap(&amp;pArray[pos], &amp;pArray[pos+<span style="color:#b452cd">1</span>]);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="快速排序">快速排序</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, <span style="color:#8b008b;font-weight:bold">typename</span> CMP&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> partition(T* pArray, <span style="color:#00688b;font-weight:bold">int</span> p, <span style="color:#00688b;font-weight:bold">int</span> r, CMP cmp) {
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> i = p - <span style="color:#b452cd">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> j = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">for</span>(j = p; j &lt; r; j++) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span>(cmp(pArray[j], pArray[r])) {
+</span></span><span style="display:flex;"><span>      i++;
+</span></span><span style="display:flex;"><span>      swap(&amp;pArray[i], &amp;pArray[j]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  swap(&amp;pArray[i + <span style="color:#b452cd">1</span>], &amp;pArray[r]);
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">return</span> i + <span style="color:#b452cd">1</span>;
+</span></span></code></pre></div><h2 id="测试代码">测试代码</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">genrandom</span>(<span style="color:#00688b;font-weight:bold">int</span> min, <span style="color:#00688b;font-weight:bold">int</span> max) {
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">return</span> (min + (<span style="color:#00688b;font-weight:bold">int</span>)(((<span style="color:#00688b;font-weight:bold">float</span>)rand()/RAND_MAX)*(max - min)));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">random</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a ) {
+</span></span><span style="display:flex;"><span>  a = genrandom(-<span style="color:#b452cd">50</span>, <span style="color:#b452cd">100</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">sort_test</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> A[] = {<span style="color:#b452cd">4</span>, <span style="color:#b452cd">1</span>, <span style="color:#b452cd">44</span>, -<span style="color:#b452cd">12</span>, <span style="color:#b452cd">5</span>, <span style="color:#b452cd">125</span>, <span style="color:#b452cd">30</span>};
+</span></span><span style="display:flex;"><span>  <span style="color:#00688b;font-weight:bold">int</span> len = <span style="color:#8b008b;font-weight:bold">sizeof</span>(A) / <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">int</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  insertsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, random);
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  binaryinsertsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, random);
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  shellsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, random);
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  bubblesort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, random);
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  selectsort(A, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>  traverse(A, len, random);
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>  quicksort(A, <span style="color:#b452cd">0</span>, len, CmpFuctor&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;() );
+</span></span><span style="display:flex;"><span>  traverse(A, len, print);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#cd5555">&#34;/n&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
 <blockquote>
 <p>上面的函数有C风格的函数指针与C++风格函数子（Functor，有时也叫函数对象），函数使用了C++中模板的一些特性，测试环境为eclipse+cdt+gcc。</p>
 </blockquote>
@@ -430,7 +430,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -526,7 +526,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -254,49 +254,49 @@
 <p>域名权威DNS由A转移到B的过程中域名解析权发生变化，世界各地的递归DNS要知道这个变化需要一段时间，因为各地DNS都缓存了该域名以前的状态，更新到最新的状态需要时间。</p>
 <h3 id="过渡期时长的确定">过渡期时长的确定</h3>
 <p>我们对域名进行trace查询以便了解该域名NS记录的TTL值。如查询CN类域名。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig xxx.cn ns +trace
-xxx.cn.            21600  IN      NS      ns.xxx.cn.
-xxx.cn.            21600  IN      NS      ns.xxx.com.
-;; Received 83 bytes from 203.119.25.1#53(A.DNS.cn) in 46 ms
-xxx.cn.            21600  IN      NS      ns.xxx.cn.
-xxx.cn.            21600  IN      NS      ns.xxx.com.
-;; Received 83 bytes from 129.44.79.4#53(ns.xxx.cn) in 78 ms
-</code></pre></div><p>上面权威DNS与顶级域DNS上NS记录的TTL值相同，则过渡期为21600秒。特殊情况，如果该域名的原权威DNS上定义的该域名NS记录的TTL值与顶级域DNS上定义的值不同。则这个时候原权威DNS上的TTL为有效值。如163.cn:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># dig 163.cn ns +trace
-163.cn.                 21600   IN      NS      ns1.newfavor.net.
-163.cn.                 21600   IN      NS      ns2.newfavor.net.
-;; Received 72 bytes from 203.119.28.1#53(D.DNS.cn) in 62 ms
-163.cn.                 10800   IN      NS      dns1.amway.com.
-163.cn.                 10800   IN      NS      ns2.newfavor.net.
-163.cn.                 10800   IN      NS      ns1.newfavor.net.
-;; Received 174 bytes from 61.145.126.88#53(ns1.newfavor.net) in 93 ms
-</code></pre></div><p>可以看到该域名在顶级域上NS记录的TTL为21600，而在权威DNS上有重新定义为10800，则这个时候原权威DNS上的TTL为有效值。
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span># dig xxx.cn ns +trace
+</span></span><span style="display:flex;"><span>xxx.cn.            21600  IN      NS      ns.xxx.cn.
+</span></span><span style="display:flex;"><span>xxx.cn.            21600  IN      NS      ns.xxx.com.
+</span></span><span style="display:flex;"><span>;; Received 83 bytes from 203.119.25.1#53(A.DNS.cn) in 46 ms
+</span></span><span style="display:flex;"><span>xxx.cn.            21600  IN      NS      ns.xxx.cn.
+</span></span><span style="display:flex;"><span>xxx.cn.            21600  IN      NS      ns.xxx.com.
+</span></span><span style="display:flex;"><span>;; Received 83 bytes from 129.44.79.4#53(ns.xxx.cn) in 78 ms
+</span></span></code></pre></div><p>上面权威DNS与顶级域DNS上NS记录的TTL值相同，则过渡期为21600秒。特殊情况，如果该域名的原权威DNS上定义的该域名NS记录的TTL值与顶级域DNS上定义的值不同。则这个时候原权威DNS上的TTL为有效值。如163.cn:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span># dig 163.cn ns +trace
+</span></span><span style="display:flex;"><span>163.cn.                 21600   IN      NS      ns1.newfavor.net.
+</span></span><span style="display:flex;"><span>163.cn.                 21600   IN      NS      ns2.newfavor.net.
+</span></span><span style="display:flex;"><span>;; Received 72 bytes from 203.119.28.1#53(D.DNS.cn) in 62 ms
+</span></span><span style="display:flex;"><span>163.cn.                 10800   IN      NS      dns1.amway.com.
+</span></span><span style="display:flex;"><span>163.cn.                 10800   IN      NS      ns2.newfavor.net.
+</span></span><span style="display:flex;"><span>163.cn.                 10800   IN      NS      ns1.newfavor.net.
+</span></span><span style="display:flex;"><span>;; Received 174 bytes from 61.145.126.88#53(ns1.newfavor.net) in 93 ms
+</span></span></code></pre></div><p>可以看到该域名在顶级域上NS记录的TTL为21600，而在权威DNS上有重新定义为10800，则这个时候原权威DNS上的TTL为有效值。
 在实际工作中稳妥起见我们取两者中较大的为最后的参考值。下面列出几种域名NS记录的TTL值：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">COM.  TTL = 172800  (48小时)
-NET.  TTL = 172800  (48小时)
-ORG.  TTL = 86400  (24小时)
-CN.  TTL = 21600  (6小时)
-</code></pre></div><h3 id="域名配置zone文件">域名配置ZONE文件</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>COM.  TTL = 172800  (48小时)
+</span></span><span style="display:flex;"><span>NET.  TTL = 172800  (48小时)
+</span></span><span style="display:flex;"><span>ORG.  TTL = 86400  (24小时)
+</span></span><span style="display:flex;"><span>CN.  TTL = 21600  (6小时)
+</span></span></code></pre></div><h3 id="域名配置zone文件">域名配置ZONE文件</h3>
 <p>这次把ZONE文件拿出来简单说明一下。ZONE文件是DNS上保存域名配置的文件，对BIND来说一个域名对应一个ZONE文件，现以abc.com的ZONE文件为例展开。罗嗦一句，该ZONE存在于权威DNS上。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 6h                                    //第1行
-$ORIGIN abc.com.                           //第2行
-@               3600    IN      SOA     ns1.ddd.com. root.ddd.com.(         //第3行
-         929142851  ; Serial            //第4行
-         1800          ; Refresh        //第5行
-         600            ; Retry         //第6行
-         2w            ; Expire          /第7行
-         300            ; Minimum       //第8行
-)  
-@               2d      IN      NS      ns1.ddd.com.       //第9行
-@               2d      IN      NS      ns2.ddd.com.      //第10行
-@               2d      IN      NS      ns3.ddd.com.      //第11行
-
-@               3600    IN      A      120.172.234.27     //第12行
-a               3600    IN      A      120.172.234.27     //第13行
-b               3600    IN      CNAME  a.abc.com.         //第14行
-@               3600    IN      MX     a.abc.com.         //第15行
-@               3600    IN      TXT    &#34;TXT&#34;              //第15行
-</code></pre></div><p>第1行，这行内容给出了该域名(abc.com)各种记录的默认TTL值，这里为6小时。即如果该域名的记录没有特别定义TTL，则默认TTL为有效值。<br>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>$TTL 6h                                    //第1行
+</span></span><span style="display:flex;"><span>$ORIGIN abc.com.                           //第2行
+</span></span><span style="display:flex;"><span>@               3600    IN      SOA     ns1.ddd.com. root.ddd.com.(         //第3行
+</span></span><span style="display:flex;"><span>         929142851  ; Serial            //第4行
+</span></span><span style="display:flex;"><span>         1800          ; Refresh        //第5行
+</span></span><span style="display:flex;"><span>         600            ; Retry         //第6行
+</span></span><span style="display:flex;"><span>         2w            ; Expire          /第7行
+</span></span><span style="display:flex;"><span>         300            ; Minimum       //第8行
+</span></span><span style="display:flex;"><span>)  
+</span></span><span style="display:flex;"><span>@               2d      IN      NS      ns1.ddd.com.       //第9行
+</span></span><span style="display:flex;"><span>@               2d      IN      NS      ns2.ddd.com.      //第10行
+</span></span><span style="display:flex;"><span>@               2d      IN      NS      ns3.ddd.com.      //第11行
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@               3600    IN      A      120.172.234.27     //第12行
+</span></span><span style="display:flex;"><span>a               3600    IN      A      120.172.234.27     //第13行
+</span></span><span style="display:flex;"><span>b               3600    IN      CNAME  a.abc.com.         //第14行
+</span></span><span style="display:flex;"><span>@               3600    IN      MX     a.abc.com.         //第15行
+</span></span><span style="display:flex;"><span>@               3600    IN      TXT    &#34;TXT&#34;              //第15行
+</span></span></code></pre></div><p>第1行，这行内容给出了该域名(abc.com)各种记录的默认TTL值，这里为6小时。即如果该域名的记录没有特别定义TTL，则默认TTL为有效值。<br>
 第2行，这行内容标识出该ZONE文件是隶属那个域名的，这里为abc.com。<br>
 第3行，从这行开始到第8行为该域名的SOA记录部分，这里的@代表域名本身。ns1.ddd.com表示该域名的主权威DNS。root.ddd.com表示该主权威DNS管理员邮箱，等价于root@ddd.com。<br>
 第4行，Serial部分，这部分用来标记ZONE文件更新，如果发生更新则Serial要单增，否则MASTER不会通知SLAVE进行更新。<br>
@@ -361,53 +361,53 @@ b               3600    IN      CNAME  a.abc.com.         //第14行
 </ul>
 <h3 id="目前域名解析授权状况">目前域名解析授权状况</h3>
 <p>目前在互联网上域名解析授权大体上是谁出售域名就把域名的权威DNS授权给谁并由其提供域名的权威DNS来完成域名解析工作，如购买了新网域名。默认就是由新网的权威DNS（nsx.xinnetdns.com、nsx.xinnet.cn）负责所售域名解析:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net xinnet.com ns
-;; ANSWER SECTION:
-xinnet.com.             172800  IN      NS      ns.xinnet.cn.
-xinnet.com.             172800  IN      NS      ns.xinnetdns.com.
-xinnet.com.             172800  IN      NS      ns2.xinnet.cn.
-xinnet.com.             172800  IN      NS      ns2.xinnetdns.com.
-</code></pre></div><h3 id="域名解析授权是怎么实现的">域名解析授权是怎么实现的</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[root@test root]#dig @a.gtld-servers.net xinnet.com ns
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>xinnet.com.             172800  IN      NS      ns.xinnet.cn.
+</span></span><span style="display:flex;"><span>xinnet.com.             172800  IN      NS      ns.xinnetdns.com.
+</span></span><span style="display:flex;"><span>xinnet.com.             172800  IN      NS      ns2.xinnet.cn.
+</span></span><span style="display:flex;"><span>xinnet.com.             172800  IN      NS      ns2.xinnetdns.com.
+</span></span></code></pre></div><h3 id="域名解析授权是怎么实现的">域名解析授权是怎么实现的</h3>
 <p>域名解析授权是个树状的，从上而下的分层体系，简图如下：</p>
 <p><img src="http://lanlingzi.cn/images/y17/dns_4_tree.jpg" alt=""></p>
 <p>首先“.”DNS把COM/NET/CN/ORG/TV等等域名按后缀的不同分别授权给不同的DNS，以利于分别管理。如COM/NET域名被授权给了如下几个权威DNS。这里不难想像要修改COM/NET的授权DNS要到“.”DNS上去操作才能完成。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig com. ns
-;; ANSWER SECTION:
-com.                    96045   IN      NS      d.gtld-servers.net.
-com.                    96045   IN      NS      g.gtld-servers.net.
-com.                    96045   IN      NS      b.gtld-servers.net.
-com.                    96045   IN      NS      k.gtld-servers.net.
-com.                    96045   IN      NS      f.gtld-servers.net.
-com.                    96045   IN      NS      l.gtld-servers.net.
-com.                    96045   IN      NS      j.gtld-servers.net.
-com.                    96045   IN      NS      a.gtld-servers.net.
-com.                    96045   IN      NS      i.gtld-servers.net.
-com.                    96045   IN      NS      m.gtld-servers.net.
-com.                    96045   IN      NS      e.gtld-servers.net.
-com.                    96045   IN      NS      h.gtld-servers.net.
-com.                    96045   IN      NS      c.gtld-servers.net.
-</code></pre></div><p>同理可知，要指定或修改ABC.COM的权威DNS要去顶级DNS上操作。通常来说一般的域名所有者是无权登录顶级DNS进行操作的。只能通过域名提供商（如新网，万网等）的专用接口（位于域名商的域名管理平台上）来间接操作顶级DNS上的记录。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[root@test root]#dig com. ns
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      d.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      g.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      b.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      k.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      f.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      l.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      j.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      a.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      i.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      m.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      e.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      h.gtld-servers.net.
+</span></span><span style="display:flex;"><span>com.                    96045   IN      NS      c.gtld-servers.net.
+</span></span></code></pre></div><p>同理可知，要指定或修改ABC.COM的权威DNS要去顶级DNS上操作。通常来说一般的域名所有者是无权登录顶级DNS进行操作的。只能通过域名提供商（如新网，万网等）的专用接口（位于域名商的域名管理平台上）来间接操作顶级DNS上的记录。</p>
 <p>以ABC.COM为例简要说明怎么指定自己的权威DNS，假设ABC.COM是在新网购买，那么默认该域名的权威DNS就是<code>nsx.xinnetdns.com、nsx.xinnet.cn</code>。这时候要修改默认权威DNS。首先登录新网的域名管理后台，找到修改域名DNS页面即可完成操作（详细过程这里有：http://docs.aidns.cn/help02.htm）。操作完成后要验证一下是否修改成功：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[root@test root]#dig @a.gtld-servers.net abc.com ns
-;; ANSWER SECTION:
-abc.com.             172800  IN      NS      ns1.ai-dns.com.
-abc.com.             172800  IN      NS      ns2.ai-dns.com.
-abc.com.             172800  IN      NS      ns3.ai-dns.com.
-</code></pre></div><p>这里我们把ABC.COM授权给了<code>nsx.ai-dns.com</code>了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[root@test root]#dig @a.gtld-servers.net abc.com ns
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>abc.com.             172800  IN      NS      ns1.ai-dns.com.
+</span></span><span style="display:flex;"><span>abc.com.             172800  IN      NS      ns2.ai-dns.com.
+</span></span><span style="display:flex;"><span>abc.com.             172800  IN      NS      ns3.ai-dns.com.
+</span></span></code></pre></div><p>这里我们把ABC.COM授权给了<code>nsx.ai-dns.com</code>了。</p>
 <h3 id="域名权威dns的再授权">域名权威DNS的再授权</h3>
 <p>以ABC.COM为例，再授权是指在<code>nsx.ai-dns.com</code>上面再次指定该域名的权威DNS，再授权的意义有这么几个：</p>
 <ol>
 <li>
 <p>扩展现有的权威DNS数量，如现有ns1,ns2,ns3.ai-dns.com共三台DNS，现在要增加到4台，则可以在原3台DNS上abc.com的ZONE文件内增加ns4这个NS记录。原来的ZONE内容：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$TTL 2d
-$ORIGIN abc.com.
-@  3600 IN SOA ns1.ai-dns.com. root.ai-dns.com.(
-2288091841 1h 600 1w 900 )
-@  2d IN NS ns1.ai-dns.com.
-@  2d IN NS ns2.ai-dns.com.
-@  2d IN NS ns3.ai-dns.com.
-</code></pre></div><p>增加ns4这个NS记录后为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>$TTL 2d
+</span></span><span style="display:flex;"><span>$ORIGIN abc.com.
+</span></span><span style="display:flex;"><span>@  3600 IN SOA ns1.ai-dns.com. root.ai-dns.com.(
+</span></span><span style="display:flex;"><span>2288091841 1h 600 1w 900 )
+</span></span><span style="display:flex;"><span>@  2d IN NS ns1.ai-dns.com.
+</span></span><span style="display:flex;"><span>@  2d IN NS ns2.ai-dns.com.
+</span></span><span style="display:flex;"><span>@  2d IN NS ns3.ai-dns.com.
+</span></span></code></pre></div><p>增加ns4这个NS记录后为：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"></code></pre></div></li>
 </ol>
 <p>$TTL 2d
 $ORIGIN abc.com.
@@ -417,35 +417,33 @@ $ORIGIN abc.com.
 @  2d IN NS ns2.ai-dns.com.
 @  2d IN NS ns3.ai-dns.com.
 @  2d IN NS ns4.ai-dns.com.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
- 当然增加NS4的操作也可以在顶级DNS上完成，不再赘述。
-
-2. 把权威DNS重新授权给其他DNS，如把原来的权威DNS（nsx.ai-dns.com）重新授权给别人（nsx.ddd.com）。操作过程同上，不再赘述。
-
-### 再授权可能存在的潜在问题
-
-再授权无疑使得域名解析授权变得更灵活，但是存在以下潜在的隐患。当原授权的权威DNS（即在顶级DNS定义的权威DNS）故障时，这时再授权的DNS将无法工作，导致域名无法解析（这是由域名解析过程是自上而下的这个特性决定的）。同时也增加了安全隐患。
-
-附加部分1：慎用WHOIS来查看域名权威DNS。
-
-对于域名的Whois数据库是由域名销售商控制的，即每个域名销售商都有自己的WHOIS服务器，这些服务器用来存储自身出售的域名信息，如域名所有人，联系方法，到期时间等内容。WHOIS信息中显示的域名当前权威DNS信息很可能没有及时与域名实际的权威DNS信息同步而导致错误的判断。
-
-附加部分2：“.”根DNS是怎么被授权的？
-
-由于“.”根DNS所处域名解析体系的顶端，无法按照常规方法对其授权。到目前为止其授权方法是把所有“.”DNS列表存放在一个文本文件内（自己授权给自己），名字通常为root.hint内容如下（部分节选）：
-
-</code></pre></div><p>.       3600000  IN  NS    A.ROOT-SERVERS.NET.
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> 当然增加NS4的操作也可以在顶级DNS上完成，不再赘述。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2. 把权威DNS重新授权给其他DNS，如把原来的权威DNS（nsx.ai-dns.com）重新授权给别人（nsx.ddd.com）。操作过程同上，不再赘述。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>### 再授权可能存在的潜在问题
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>再授权无疑使得域名解析授权变得更灵活，但是存在以下潜在的隐患。当原授权的权威DNS（即在顶级DNS定义的权威DNS）故障时，这时再授权的DNS将无法工作，导致域名无法解析（这是由域名解析过程是自上而下的这个特性决定的）。同时也增加了安全隐患。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>附加部分1：慎用WHOIS来查看域名权威DNS。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>对于域名的Whois数据库是由域名销售商控制的，即每个域名销售商都有自己的WHOIS服务器，这些服务器用来存储自身出售的域名信息，如域名所有人，联系方法，到期时间等内容。WHOIS信息中显示的域名当前权威DNS信息很可能没有及时与域名实际的权威DNS信息同步而导致错误的判断。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>附加部分2：“.”根DNS是怎么被授权的？
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>由于“.”根DNS所处域名解析体系的顶端，无法按照常规方法对其授权。到目前为止其授权方法是把所有“.”DNS列表存放在一个文本文件内（自己授权给自己），名字通常为root.hint内容如下（部分节选）：
+</span></span></code></pre></div><p>.       3600000  IN  NS    A.ROOT-SERVERS.NET.
 A.ROOT-SERVERS.NET.  3600000      A     198.41.0.4
 .       3600000      NS    B.ROOT-SERVERS.NET.
 B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
-## 擅用日志排除BIND故障
-
-这么多年来耳闻目染，发现网友提出的几乎99%的问题本来是不需要求助就能解决的，追其根源是不擅于（或不知道）使用软件本身提供的运行日志来解决问题。本文就BIND服务器日志简要说明。这里假设一网友反映“启动named进程后配置的域名解析服务不工作”这一简单问题说明怎么使用named的日志来解决。
-
-首先了解一个named启动参数:“-g”，这个参数可以使named启动过程的细节展现在面前，自然的哪里的问题就一目了然了。
-
-</code></pre></div><p>[root@test ~]#named -gc /var/named/etc/named.conf
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>## 擅用日志排除BIND故障
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>这么多年来耳闻目染，发现网友提出的几乎99%的问题本来是不需要求助就能解决的，追其根源是不擅于（或不知道）使用软件本身提供的运行日志来解决问题。本文就BIND服务器日志简要说明。这里假设一网友反映“启动named进程后配置的域名解析服务不工作”这一简单问题说明怎么使用named的日志来解决。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>首先了解一个named启动参数:“-g”，这个参数可以使named启动过程的细节展现在面前，自然的哪里的问题就一目了然了。
+</span></span></code></pre></div><p>[root@test ~]#named -gc /var/named/etc/named.conf
 02-Jan-2010 11:05:54.687 starting BIND 9.5.1-P3 -gc /var/named/etc/named.conf
 02-Jan-2010 11:05:54.687 found 1 CPU, using 1 worker thread
 02-Jan-2010 11:05:54.688 using up to 4096 sockets
@@ -453,10 +451,9 @@ B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
 02-Jan-2010 11:05:54.698 /var/named/etc/named.conf:45: missing &lsquo;;&rsquo; before &lsquo;key&rsquo;
 02-Jan-2010 11:05:54.698 loading configuration: failure
 02-Jan-2010 11:05:54.698 exiting (due to fatal error)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
-我们看到日志提示在named.conf文件的第45行少写了“；”，好，问题找到了排除问题就简单了。打开named.conf把那个“；”补上。
-
-</code></pre></div><p>[root@test ~]##named -gc /var/named/etc/named.conf
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>我们看到日志提示在named.conf文件的第45行少写了“；”，好，问题找到了排除问题就简单了。打开named.conf把那个“；”补上。
+</span></span></code></pre></div><p>[root@test ~]##named -gc /var/named/etc/named.conf
 02-Jan-2010 11:06:33.807 starting BIND 9.5.1-P3 -gc /var/named/etc/named.conf
 02-Jan-2010 11:06:33.807 found 1 CPU, using 1 worker thread
 02-Jan-2010 11:06:33.808 using up to 4096 sockets
@@ -473,16 +470,15 @@ B.ROOT-SERVERS.NET.  3600000      A     192.228.79.201</p>
 02-Jan-2010 11:06:33.840 zone test.com/IN: loaded serial 912200620
 02-Jan-2010 11:06:33.841 running
 02-Jan-2010 11:06:33.841 zone test.com/IN: sending notifies (serial 912200620)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
-问题排除。上面方法适用于下列情形：
-
-1. 安装BIND后调试named,看看有没有问题。
-2. 出现致命错误named中断运行了。
-3. 非重要DNS服务器，可以停机检查的。
-
-对于正在运行的DNS服务器，不想让其停止运行，这时候要发现潜在问题再使用上述方法就不太适宜了。这就要求我们可以让named把日志记录到专门的文件内，供我们随时查询。具体操作是在named.conf配置log:
-
-</code></pre></div><p>logging {
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>问题排除。上面方法适用于下列情形：
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1. 安装BIND后调试named,看看有没有问题。
+</span></span><span style="display:flex;"><span>2. 出现致命错误named中断运行了。
+</span></span><span style="display:flex;"><span>3. 非重要DNS服务器，可以停机检查的。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>对于正在运行的DNS服务器，不想让其停止运行，这时候要发现潜在问题再使用上述方法就不太适宜了。这就要求我们可以让named把日志记录到专门的文件内，供我们随时查询。具体操作是在named.conf配置log:
+</span></span></code></pre></div><p>logging {
 channel warning
 {
 file &ldquo;log/named.log&rdquo; versions 3 size 2048k;
@@ -502,11 +498,10 @@ print-time yes;
 category default { warning; };
 category queries { query; };
 };</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
-这里我们让named把named运行日志和日常查询日志分别记录到named.log和query.log文件内。最后测试一下解析是否正常了：
-
-</code></pre></div><p>[root@test ~]#dig @localhost <a href="http://www.test.com">www.test.com</a>
-; &laquo;&raquo; DiG 9.5.1-P3 &laquo;&raquo; @localhost <a href="http://www.test.com">www.test.com</a>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>这里我们让named把named运行日志和日常查询日志分别记录到named.log和query.log文件内。最后测试一下解析是否正常了：
+</span></span></code></pre></div><p>[root@test ~]#dig @localhost <a href="https://www.test.com">www.test.com</a>
+; &laquo;&raquo; DiG 9.5.1-P3 &laquo;&raquo; @localhost <a href="https://www.test.com">www.test.com</a>
 ; (1 server found)
 ;; global options:  printcmd
 ;; Got answer:
@@ -516,7 +511,7 @@ category queries { query; };
 ;; QUESTION SECTION:
 ;www.test.com.                  IN      A
 ;; ANSWER SECTION:
-<a href="http://www.test.com">www.test.com</a>.           3600    IN      A       12.1.1.1
+<a href="https://www.test.com">www.test.com</a>.           3600    IN      A       12.1.1.1
 ;; AUTHORITY SECTION:
 test.com.               172800  IN      NS      ns2.test.com.
 test.com.               172800  IN      NS      ns1.test.com.
@@ -529,10 +524,9 @@ ns3.test.com.           3600    IN      A       12.4.4.4
 ;; SERVER: 127.0.0.1#53(127.0.0.1)
 ;; WHEN: Sat Jan  2 11:48:03 2010
 ;; MSG SIZE  rcvd: 148</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
-由于是针对初级用户，更深相关细节不再赘述。
-
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>由于是针对初级用户，更深相关细节不再赘述。
+</span></span></code></pre></div>
     </div>
     <footer class="post-footer">
      
@@ -624,7 +618,7 @@ ns3.test.com.           3600    IN      A       12.4.4.4
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -743,7 +737,7 @@ ns3.test.com.           3600    IN      A       12.4.4.4
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

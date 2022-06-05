@@ -150,28 +150,28 @@
     <h1 id="案例">案例</h1>
 <p>下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。</p>
 <p>代码一：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
-    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
-                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
-                    <span style="color:#8b008b;font-weight:bold">try</span> {
-                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
-                            <span style="color:#8b008b;font-weight:bold">return</span>;
-                        }
-                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
-                        <span style="color:#228b22">// 省略主要业务逻辑
-</span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
-                        <span style="color:#228b22">// 省略日志打印
-</span><span style="color:#228b22"></span>                    }
-                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
-</span><span style="color:#228b22"></span>            }
-        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
-            <span style="color:#228b22">// 省略日志打印
-</span><span style="color:#228b22"></span>        }
-    }
-}
-</code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(!(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>())) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">while</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &gt; 0L) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">stopped</span>.<span style="color:#658b00">get</span>()) {
+</span></span><span style="display:flex;"><span>                            <span style="color:#8b008b;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 省略主要业务逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#228b22">// 省略日志打印
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                    }
+</span></span><span style="display:flex;"><span>                } <span style="color:#228b22">// 注意：这个while之后并没有其它的逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 省略日志打印
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：</p>
 <ul>
 <li>双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。</li>
 <li>第一个while判断是 <code>否定之否定</code> 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。</li>
@@ -182,82 +182,82 @@
 <li>由于synchronized是对lock的wait方法同步，wait后面的逻辑并不需要再同步保护，不应该锁整个while，减少锁的粒度。可以对wait逻辑单独抽取一个方法，直白表示是要waitNotify。</li>
 <li>去掉<code>否定之否定</code>。把AtomicBoolean stopped变成volatile boolean running，判断更直白，running表示还得继续。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span> () {
-    <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
-        <span style="color:#8b008b;font-weight:bold">try</span> {
-            <span style="color:#8b008b;font-weight:bold">if</span> ( waitNotify() ) {
-                <span style="color:#228b22">// 省略主要业务逻辑
-</span><span style="color:#228b22"></span>            }
-        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
-            <span style="color:#228b22">// 省略日志打印
-</span><span style="color:#228b22"></span>        }
-    }
-}
-
-<span style="color:#228b22">// 新增方法，表意是要等通知
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">waitNotify</span>() {
-    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &lt;= 0L) {
-        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span> = <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 超时，避免空循环
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-
-    <span style="color:#8b008b;font-weight:bold">try</span> {
-        <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
-            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
-        <span style="color:#228b22">// 省略日志打印 
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-}
-</code></pre></div><p>代码二：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
-    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
-        bool flag = file.<span style="color:#658b00">delete</span>()
-        <span style="color:#8b008b;font-weight:bold">if</span> (flag) {
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
-        } <span style="color:#8b008b;font-weight:bold">else</span> {
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-        }
-    } <span style="color:#8b008b;font-weight:bold">else</span> {
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
-    }
-}
-</code></pre></div><p>上面的代码的问题比较明显：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">run</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ( waitNotify() ) {
+</span></span><span style="display:flex;"><span>                <span style="color:#228b22">// 省略主要业务逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">catch</span>(Throwable e) {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// 省略日志打印
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 新增方法，表意是要等通知
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">waitNotify</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMills</span>() &lt;= 0L) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span> = <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 超时，避免空循环
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (!<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">running</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">synchronized</span> (<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">lock</span>.<span style="color:#658b00">wait</span>(<span style="color:#8b008b;font-weight:bold">this</span>.<span style="color:#658b00">endTime</span> - System.<span style="color:#658b00">currentTimeMillis</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">catch</span> (IntrruptedExecption e) {
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 省略日志打印 
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>代码二：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
+</span></span><span style="display:flex;"><span>        bool flag = file.<span style="color:#658b00">delete</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (flag) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码的问题比较明显：</p>
 <ul>
 <li>存在废话</li>
 </ul>
 <p>建议优化：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
-    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
-        <span style="color:#8b008b;font-weight:bold">return</span> file.<span style="color:#658b00">delete</span>()  
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 其实这个false与上面file.delete()返回false含义不一样，本文不深究这个问题
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>代码三：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
-        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: {
-            <span style="color:#8b008b;font-weight:bold">while</span> (iter.<span style="color:#658b00">hasNext</span>()) {
-                SelectMapedBufferResult selectMapedBuffer = iter.<span style="color:#658b00">next</span>();
-                <span style="color:#8b008b;font-weight:bold">try</span> {
-                     <span style="color:#228b22">// 省略其它业务逻辑
-</span><span style="color:#228b22"></span>                } <span style="color:#8b008b;font-weight:bold">finally</span> {
-                    selectMapedBuffer.<span style="color:#658b00">release</span>();
-                }
-            }
-
-            messageList.<span style="color:#658b00">addAll</span>(mqMessageList);
-            <span style="color:#8b008b;font-weight:bold">break</span>;
-        }
-        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
-        <span style="color:#228b22">// 省略其它的CASE处理逻辑
-</span><span style="color:#228b22"></span>    }
-</code></pre></div><p>上面的代码问题主要是：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">boolean</span> <span style="color:#008b45">deleteFile</span>(File file)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (file.<span style="color:#658b00">isFile</span>() &amp;&amp; file.<span style="color:#658b00">exists</span>()) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> file.<span style="color:#658b00">delete</span>()  
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">false</span>; <span style="color:#228b22">// 其实这个false与上面file.delete()返回false含义不一样，本文不深究这个问题
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><p>代码三：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">while</span> (iter.<span style="color:#658b00">hasNext</span>()) {
+</span></span><span style="display:flex;"><span>                SelectMapedBufferResult selectMapedBuffer = iter.<span style="color:#658b00">next</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>                     <span style="color:#228b22">// 省略其它业务逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>                } <span style="color:#8b008b;font-weight:bold">finally</span> {
+</span></span><span style="display:flex;"><span>                    selectMapedBuffer.<span style="color:#658b00">release</span>();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            messageList.<span style="color:#658b00">addAll</span>(mqMessageList);
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 省略其它的CASE处理逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span></code></pre></div><p>上面的代码问题主要是：</p>
 <ul>
 <li>switch中嵌套while，若while循环中一个break，它到底是break while还是break switch，不一小心就是产生一个bug。</li>
 </ul>
@@ -266,14 +266,14 @@
 <li>对于switch分支，每个分支的处理逻辑应该提取函数。</li>
 </ul>
 <p>建议优化：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
-        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: 
-            processFound(...)
-            <span style="color:#8b008b;font-weight:bold">break</span>;
-        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
-        <span style="color:#228b22">// 省略其它的CASE处理逻辑
-</span><span style="color:#228b22"></span>    }
-</code></pre></div><h2 id="背后的知识">背后的知识</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">switch</span>(getMessageResult().<span style="color:#658b00">getStatus</span>()) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">case</span> FOUND: 
+</span></span><span style="display:flex;"><span>            processFound(...)
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">case</span> OFFSET_TOO_SMALL:
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 省略其它的CASE处理逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span></code></pre></div><h2 id="背后的知识">背后的知识</h2>
 <p>上述代码表面上的共性问题：</p>
 <ul>
 <li>代码层次嵌套比较深，容易产生bug；也不容易读懂代码，甚至隐藏问题。</li>
@@ -305,28 +305,28 @@
 <ul>
 <li>使用卫语句，异常条件优先返回</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> () {
-    <span style="color:#8b008b;font-weight:bold">if</span> () {
-        <span style="color:#8b008b;font-weight:bold">if</span> () {
-            <span style="color:#228b22">// ...
-</span><span style="color:#228b22"></span>        }
-    } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span>() {
-
-    }
-}
-</code></pre></div><p>可优化为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">if</span> (!...) {
-    <span style="color:#8b008b;font-weight:bold">return</span> ;
-}
-
-<span style="color:#8b008b;font-weight:bold">if</span> (...) {
-    <span style="color:#8b008b;font-weight:bold">return</span> ;
-}
-
-<span style="color:#8b008b;font-weight:bold">if</span> (...) {
-    ....
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> () {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> () {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> () {
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#8b008b;font-weight:bold">else</span> <span style="color:#8b008b;font-weight:bold">if</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可优化为：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (!...) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> ;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (...) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> ;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (...) {
+</span></span><span style="display:flex;"><span>    ....
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>把嵌套的 if 换成 if {} else if {} 语句</li>
 <li>将 if 换成 case 语句</li>
 <li>优先使用&amp;&amp;，在可以使用&amp;&amp;条件判断的地方要避免使用连续嵌套的if</li>
@@ -336,18 +336,18 @@
 <ul>
 <li>采用使用break，continue改变控制流程</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
-    <span style="color:#8b008b;font-weight:bold">if</span> (...) {
-       <span style="color:#228b22">//
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><p>优化为:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
-    <span style="color:#8b008b;font-weight:bold">if</span> (!...) { <span style="color:#228b22">// 反着写
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">continue</span>; 
-    }
-}
-</code></pre></div><p><strong>Switch优化</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (...) {
+</span></span><span style="display:flex;"><span>       <span style="color:#228b22">//
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>优化为:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> a : list) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (!...) { <span style="color:#228b22">// 反着写
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">continue</span>; 
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Switch优化</strong></p>
 <ul>
 <li>不要根据类型标签进行分支，而要优先使用多态函数。</li>
 <li>采用表驱动查找，每个类型标签分支对应一个。</li>
@@ -458,7 +458,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -541,7 +541,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

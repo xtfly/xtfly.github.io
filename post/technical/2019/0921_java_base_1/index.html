@@ -234,18 +234,18 @@
 </ul>
 <h2 id="labeled-loop">labeled loop</h2>
 <p>对循环打标签，用于控制语句跳到不同层次的循环。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">vectorLoop:
-for( int idx = 0; idx &lt; vectorLength; idx++) {
-    if( conditionAtVectorPosition( v, idx ) ) continue vectorLoop;
-
-    matrixLoop:
-    for( rowIdx = 0; rowIdx &lt; n; rowIdx++ ) {
-        if( anotherConditionAtVector( v, rowIdx ) ) continue matrixLoop;
-        if( conditionAtMatrixRowCol( m, rowIdx, idx ) ) continue vectorLoop;
-    }
-    setValueInVector( v, idx );
-}     
-</code></pre></div><h1 id="异常体系">异常体系</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>vectorLoop:
+</span></span><span style="display:flex;"><span>for( int idx = 0; idx &lt; vectorLength; idx++) {
+</span></span><span style="display:flex;"><span>    if( conditionAtVectorPosition( v, idx ) ) continue vectorLoop;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    matrixLoop:
+</span></span><span style="display:flex;"><span>    for( rowIdx = 0; rowIdx &lt; n; rowIdx++ ) {
+</span></span><span style="display:flex;"><span>        if( anotherConditionAtVector( v, rowIdx ) ) continue matrixLoop;
+</span></span><span style="display:flex;"><span>        if( conditionAtMatrixRowCol( m, rowIdx, idx ) ) continue vectorLoop;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    setValueInVector( v, idx );
+</span></span><span style="display:flex;"><span>}     
+</span></span></code></pre></div><h1 id="异常体系">异常体系</h1>
 <ul>
 <li>Throwable作为所有异常的超类</li>
 <li>Error（错误）：是程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。</li>
@@ -421,7 +421,7 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -512,7 +512,7 @@ for( int idx = 0; idx &lt; vectorLength; idx++) {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

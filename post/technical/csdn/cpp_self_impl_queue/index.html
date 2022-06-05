@@ -149,194 +149,194 @@
     <div class="post-body" itemprop="articleBody">
     <p>周末在家，自己用C++练一下手，用顺序存储与链表存储实现了队列queue。queue是一种先进先出的结构，有很多的应用，比如消息队列。</p>
 <h2 id="顺序存储">顺序存储</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Queue</span> {  
-<span style="color:#8b008b;font-weight:bold">public</span>:  
-    Queue() :  m_front(<span style="color:#b452cd">0</span>), m_rear(<span style="color:#b452cd">0</span>) {  
-    }
-  
-    ~Queue() {  
-    }  
-  
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
-        m_front = <span style="color:#b452cd">0</span>;  
-        m_rear = <span style="color:#b452cd">0</span>;  
-    }  
-  
-    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span>  {  
-        <span style="color:#8b008b;font-weight:bold">return</span> m_front == m_rear;  
-    }  
-  
-    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
-        <span style="color:#00688b;font-weight:bold">int</span> s = (m_rear - m_front + (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE ;  
-        <span style="color:#8b008b;font-weight:bold">return</span> s;  
-    }  
-  
-    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
-        <span style="color:#00688b;font-weight:bold">int</span> pos = (m_rear + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
-        <span style="color:#228b22">//printf(&#34;/n m_rear = %d&#34;, pos);  
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (pos == m_front) {  
-            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;<span style="color:#228b22">// it&#39;s full  
-</span><span style="color:#228b22"></span>        }  
-        m_rear = pos;  
-        m_data[m_rear] = t;  
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
-    } 
-  
-    T&amp; pop() {  
-        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
-            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
-        }  
-        m_front = (m_front + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
-        <span style="color:#228b22">//printf(&#34;/n m_front = %d&#34;, m_front);  
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
-    }  
-  
-    T&amp; getfront() {  
-        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
-    }  
-    
-    <span style="color:#228b22">// 遍历所有的节点  
-</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
-        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
-        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> idx = m_front + <span style="color:#b452cd">1</span>; idx != m_rear + <span style="color:#b452cd">1</span>; idx++) {  
-            <span style="color:#8b008b;font-weight:bold">if</span> ( idx == (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) {  
-                idx %= (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
-            }  
-            <span style="color:#228b22">//printf(&#34;/n idx = %d&#34;, idx);  
-</span><span style="color:#228b22"></span>            func(m_data[idx]);  
-        }  
-    }  
-<span style="color:#8b008b;font-weight:bold">private</span>:  
-    T m_data[SIZE];  
-    <span style="color:#00688b;font-weight:bold">int</span> m_front;  
-    <span style="color:#00688b;font-weight:bold">int</span> m_rear;  
-};  
-</code></pre></div><h2 id="链表存储">链表存储</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
-<span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">QNode</span>  {  
-    QNode() : m_pNext(<span style="color:#658b00">NULL</span>) {  
-    }  
-    
-    T m_data;  
-    QNode* m_pNext;  
-};  
-
-<span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LQueue</span> {  
-    <span style="color:#8b008b;font-weight:bold">typedef</span> QNode&lt;T&gt; TQNode;  
-<span style="color:#8b008b;font-weight:bold">public</span>:  
-    LQueue() {  
-        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
-        NEW(pTemp, TQNode() );  
-        m_pFront = m_pRear = pTemp;  
-        m_size = <span style="color:#b452cd">0</span>;  
-    }  
-    
-    ~LQueue() {  
-        clear();  
-        DELETE(m_pFront);  
-    }  
-    
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp ) {  
-            TQNode* pTemp2 = pTemp-&gt;m_pNext;  
-            DELETE(pTemp);  
-            pTemp = pTemp2;  
-        }  
-        m_pFront-&gt;m_pNext = <span style="color:#658b00">NULL</span>;  
-        m_size = <span style="color:#b452cd">0</span>;  
-    }  
-    
-    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
-        <span style="color:#8b008b;font-weight:bold">return</span> m_pFront == m_pRear;  
-    }  
-    
-    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> { <span style="color:#8b008b;font-weight:bold">return</span> m_size;}  
-    
-    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
-        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
-        NEW(pTemp, TQNode() );  
-        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#658b00">NULL</span> == pTemp) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;}  
-        pTemp-&gt;m_data = t;  
-        pTemp-&gt;m_pNext = m_pRear-&gt;m_pNext;  
-        m_pRear-&gt;m_pNext = pTemp;  
-        m_pRear = pTemp;  
-        m_size++;  
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
-    }  
-    
-    T <span style="color:#008b45">pop</span>() {  
-        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
-            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
-        }  
-      
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        T t = pTemp-&gt;m_data;  
-        m_pFront-&gt;m_pNext = pTemp-&gt;m_pNext;  
-        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == m_pFront-&gt;m_pNext)  
-        {  
-            m_pRear = m_pFront;  
-        }  
-        DELETE(pTemp);  
-        m_size--;  
-        <span style="color:#8b008b;font-weight:bold">return</span> t;  
-    }  
-    
-    T&amp; getfront() {  
-        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
-            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
-        }  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        T t = pTemp-&gt;m_data;  
-        <span style="color:#8b008b;font-weight:bold">return</span> t;  
-    }  
-    
-    <span style="color:#228b22">// 遍历所有的节点  
-</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
-        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
-        TQNode* pTemp = m_pFront-&gt;m_pNext;  
-        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp) {  
-            func(pTemp-&gt;m_data);  
-            pTemp = pTemp-&gt;m_pNext;  
-        }  
-    }  
-<span style="color:#8b008b;font-weight:bold">private</span>:  
-    TQNode* m_pFront;  
-    TQNode* m_pRear;  
-    <span style="color:#00688b;font-weight:bold">int</span> m_size;  
-};  
-</code></pre></div><h2 id="测试代码">测试代码</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_queue</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
-    printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
-}  
-
-<span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_queue</span>() {  
-    LQueue&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; queue;  
-    <span style="color:#228b22">//Queue&lt;int, 4&gt; queue;  
-</span><span style="color:#228b22"></span>    queue.push(<span style="color:#b452cd">1</span>);  
-    queue.push(<span style="color:#b452cd">2</span>);  
-    queue.push(<span style="color:#b452cd">3</span>);  
-    queue.pop();  
-    queue.pop();  
-    queue.pop();  
-    queue.push(<span style="color:#b452cd">1</span>);  
-    queue.push(<span style="color:#b452cd">2</span>);  
-    queue.push(<span style="color:#b452cd">3</span>);  
-    printf(<span style="color:#cd5555">&#34;/n1 : size: %d /n&#34;</span>, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.pop();  
-    printf(<span style="color:#cd5555">&#34;/n2 : size: %d /n&#34;</span>, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.push(<span style="color:#b452cd">4</span>);  
-    printf(<span style="color:#cd5555">&#34;/n3 : size: %d /n&#34;</span>, queue.size() );  
-    queue.traverse(print_queue);  
-    queue.clear();  
-    printf(<span style="color:#cd5555">&#34;/n4 : size: %d /n&#34;</span>, queue.size() );  
-    queue.traverse(print_queue);  
-}  
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T, size_t SIZE&gt;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Queue</span> {  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:  
+</span></span><span style="display:flex;"><span>    Queue() :  m_front(<span style="color:#b452cd">0</span>), m_rear(<span style="color:#b452cd">0</span>) {  
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    ~Queue() {  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
+</span></span><span style="display:flex;"><span>        m_front = <span style="color:#b452cd">0</span>;  
+</span></span><span style="display:flex;"><span>        m_rear = <span style="color:#b452cd">0</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span>  {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> m_front == m_rear;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> s = (m_rear - m_front + (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE ;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> s;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#00688b;font-weight:bold">int</span> pos = (m_rear + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//printf(&#34;/n m_rear = %d&#34;, pos);  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (pos == m_front) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;<span style="color:#228b22">// it&#39;s full  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }  
+</span></span><span style="display:flex;"><span>        m_rear = pos;  
+</span></span><span style="display:flex;"><span>        m_data[m_rear] = t;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    T&amp; pop() {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        m_front = (m_front + <span style="color:#b452cd">1</span>) % (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">//printf(&#34;/n m_front = %d&#34;, m_front);  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    T&amp; getfront() {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> m_data[m_front];  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 遍历所有的节点  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span> (<span style="color:#00688b;font-weight:bold">int</span> idx = m_front + <span style="color:#b452cd">1</span>; idx != m_rear + <span style="color:#b452cd">1</span>; idx++) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">if</span> ( idx == (<span style="color:#00688b;font-weight:bold">int</span>)SIZE) {  
+</span></span><span style="display:flex;"><span>                idx %= (<span style="color:#00688b;font-weight:bold">int</span>)SIZE;  
+</span></span><span style="display:flex;"><span>            }  
+</span></span><span style="display:flex;"><span>            <span style="color:#228b22">//printf(&#34;/n idx = %d&#34;, idx);  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            func(m_data[idx]);  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:  
+</span></span><span style="display:flex;"><span>    T m_data[SIZE];  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> m_front;  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> m_rear;  
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><h2 id="链表存储">链表存储</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">QNode</span>  {  
+</span></span><span style="display:flex;"><span>    QNode() : m_pNext(<span style="color:#658b00">NULL</span>) {  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    T m_data;  
+</span></span><span style="display:flex;"><span>    QNode* m_pNext;  
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">LQueue</span> {  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">typedef</span> QNode&lt;T&gt; TQNode;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:  
+</span></span><span style="display:flex;"><span>    LQueue() {  
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>        NEW(pTemp, TQNode() );  
+</span></span><span style="display:flex;"><span>        m_pFront = m_pRear = pTemp;  
+</span></span><span style="display:flex;"><span>        m_size = <span style="color:#b452cd">0</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    ~LQueue() {  
+</span></span><span style="display:flex;"><span>        clear();  
+</span></span><span style="display:flex;"><span>        DELETE(m_pFront);  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">clear</span>() {  
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = m_pFront-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp ) {  
+</span></span><span style="display:flex;"><span>            TQNode* pTemp2 = pTemp-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>            DELETE(pTemp);  
+</span></span><span style="display:flex;"><span>            pTemp = pTemp2;  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        m_pFront-&gt;m_pNext = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>        m_size = <span style="color:#b452cd">0</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">empty</span>() <span style="color:#8b008b;font-weight:bold">const</span> {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> m_pFront == m_pRear;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">const</span> <span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">size</span>() <span style="color:#8b008b;font-weight:bold">const</span> { <span style="color:#8b008b;font-weight:bold">return</span> m_size;}  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">bool</span> <span style="color:#008b45">push</span>(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; t) {  
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = <span style="color:#658b00">NULL</span>;  
+</span></span><span style="display:flex;"><span>        NEW(pTemp, TQNode() );  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#658b00">NULL</span> == pTemp) { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">false</span>;}  
+</span></span><span style="display:flex;"><span>        pTemp-&gt;m_data = t;  
+</span></span><span style="display:flex;"><span>        pTemp-&gt;m_pNext = m_pRear-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        m_pRear-&gt;m_pNext = pTemp;  
+</span></span><span style="display:flex;"><span>        m_pRear = pTemp;  
+</span></span><span style="display:flex;"><span>        m_size++;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">true</span>;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    T <span style="color:#008b45">pop</span>() {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = m_pFront-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        T t = pTemp-&gt;m_data;  
+</span></span><span style="display:flex;"><span>        m_pFront-&gt;m_pNext = pTemp-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == m_pFront-&gt;m_pNext)  
+</span></span><span style="display:flex;"><span>        {  
+</span></span><span style="display:flex;"><span>            m_pRear = m_pFront;  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        DELETE(pTemp);  
+</span></span><span style="display:flex;"><span>        m_size--;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> t;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    T&amp; getfront() {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (empty()) {  
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">throw</span> Error&lt;T&gt;(<span style="color:#cd5555">&#34;Overflow&#34;</span>);  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = m_pFront-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        T t = pTemp-&gt;m_data;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> t;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 遍历所有的节点  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">traverse</span>( <span style="color:#00688b;font-weight:bold">void</span> (*func)(T&amp;) ) {  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> ( empty() ) { <span style="color:#8b008b;font-weight:bold">return</span>;}  
+</span></span><span style="display:flex;"><span>        TQNode* pTemp = m_pFront-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">while</span>(<span style="color:#658b00">NULL</span> != pTemp) {  
+</span></span><span style="display:flex;"><span>            func(pTemp-&gt;m_data);  
+</span></span><span style="display:flex;"><span>            pTemp = pTemp-&gt;m_pNext;  
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:  
+</span></span><span style="display:flex;"><span>    TQNode* m_pFront;  
+</span></span><span style="display:flex;"><span>    TQNode* m_pRear;  
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> m_size;  
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><h2 id="测试代码">测试代码</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">print_queue</span>(<span style="color:#00688b;font-weight:bold">int</span>&amp; a) {  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;%d/t&#34;</span>, a);  
+</span></span><span style="display:flex;"><span>}  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">test_queue</span>() {  
+</span></span><span style="display:flex;"><span>    LQueue&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt; queue;  
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//Queue&lt;int, 4&gt; queue;  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    queue.push(<span style="color:#b452cd">1</span>);  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">2</span>);  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">3</span>);  
+</span></span><span style="display:flex;"><span>    queue.pop();  
+</span></span><span style="display:flex;"><span>    queue.pop();  
+</span></span><span style="display:flex;"><span>    queue.pop();  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">1</span>);  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">2</span>);  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">3</span>);  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;/n1 : size: %d /n&#34;</span>, queue.size() );  
+</span></span><span style="display:flex;"><span>    queue.traverse(print_queue);  
+</span></span><span style="display:flex;"><span>    queue.pop();  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;/n2 : size: %d /n&#34;</span>, queue.size() );  
+</span></span><span style="display:flex;"><span>    queue.traverse(print_queue);  
+</span></span><span style="display:flex;"><span>    queue.push(<span style="color:#b452cd">4</span>);  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;/n3 : size: %d /n&#34;</span>, queue.size() );  
+</span></span><span style="display:flex;"><span>    queue.traverse(print_queue);  
+</span></span><span style="display:flex;"><span>    queue.clear();  
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd5555">&#34;/n4 : size: %d /n&#34;</span>, queue.size() );  
+</span></span><span style="display:flex;"><span>    queue.traverse(print_queue);  
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div>
     </div>
     <footer class="post-footer">
      
@@ -428,7 +428,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -511,7 +511,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

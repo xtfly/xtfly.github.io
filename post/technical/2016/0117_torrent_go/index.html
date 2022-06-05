@@ -162,32 +162,32 @@
 <ul>
 <li>有的Tracker结构</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
-		  |
-		  | torrent file
-		  |
-	 [  Peer ] ---Get Peers --- [TrackerServer]
-	     \
-	      \
-	      Download&amp;Upload(TCP)
-	       \
-	        \
-	       [ OtherPeer ]
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>		[WebServer]
+</span></span><span style="display:flex;"><span>		  |
+</span></span><span style="display:flex;"><span>		  | torrent file
+</span></span><span style="display:flex;"><span>		  |
+</span></span><span style="display:flex;"><span>	 [  Peer ] ---Get Peers --- [TrackerServer]
+</span></span><span style="display:flex;"><span>	     \
+</span></span><span style="display:flex;"><span>	      \
+</span></span><span style="display:flex;"><span>	      Download&amp;Upload(TCP)
+</span></span><span style="display:flex;"><span>	       \
+</span></span><span style="display:flex;"><span>	        \
+</span></span><span style="display:flex;"><span>	       [ OtherPeer ]
+</span></span></code></pre></div><ul>
 <li>Trackerless的DHT结构</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">		[WebServer]
-		  |
-		  | torrent file
-		  |
-	 [  Peer ] ---Get Peers --- [DHT Nodes]
-	     \
-	      \
-	      Download&amp;Upload(TCP)
-	       \
-	        \
-	       [ OtherPeer ]
-</code></pre></div><p>Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>		[WebServer]
+</span></span><span style="display:flex;"><span>		  |
+</span></span><span style="display:flex;"><span>		  | torrent file
+</span></span><span style="display:flex;"><span>		  |
+</span></span><span style="display:flex;"><span>	 [  Peer ] ---Get Peers --- [DHT Nodes]
+</span></span><span style="display:flex;"><span>	     \
+</span></span><span style="display:flex;"><span>	      \
+</span></span><span style="display:flex;"><span>	      Download&amp;Upload(TCP)
+</span></span><span style="display:flex;"><span>	       \
+</span></span><span style="display:flex;"><span>	        \
+</span></span><span style="display:flex;"><span>	       [ OtherPeer ]
+</span></span></code></pre></div><p>Trackerless的DHT结构解决了Trakcer中心故障的问题，是一个更去中化的结构。DHT结构中，每个peer都可能是一个tracker。DHT是基于Kademila协议的，并且在UDP协议基础上实现。</p>
 <p>每个节点都有一个全局唯一的标识符，称为节点ID。距离度量用来比较两个节点或者节点与infohash之间的远近程度。节点必须维护一个含有少量其他节点联系信息的路由表。ID越靠近自身ID时，路由表越详细。节点知道很多离它很近的节点，只知道少量离它很远地节点。</p>
 <p>在Kademlia中，距离度量采用异或计算，结果解释成一个无符号整数。 distance (A,B)=(A ~| B)，值越小，距离越近。每个节点维护一个路由表，由它所知道的好节点组成。路由表中的节点被用作在DHT中发送请求的起点。当其他节点查询时，就返回路由表中的节点。</p>
 <h2 id="开源实现">开源实现</h2>
@@ -206,42 +206,42 @@
 <h2 id="taipei-torrent">Taipei Torrent</h2>
 <p>首先它的名字比较有意思，项目开始于作者在台北的旅游，所以取名为<code>Taipei Torrent</code>。它的代码量比较不多，像Bencode，DHT，NAT-PMP，网络工具包都采用第三方库。</p>
 <h3 id="代码结构">代码结构</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Taipei-Torrent git:(master) tree
-├── main.go
-├── queryTracker.bash
-├── resolveBindIP.go
-├── resolveBindIP_test.go
-├── test.bash
-├── testData
-│   ├── a.torrent
-│   └── testFile
-├── testdht.bash
-├── testswarm.bash
-├── testtracker.bash
-├── torrent
-│   ├── accumulator.go
-│   ├── accumulator_test.go
-│   ├── bitset.go
-│   ├── cache.go
-│   ├── cache_test.go
-.......
-│   ├── upnp.go
-│   ├── uri.go
-│   └── uri_test.go
-└── tracker
-    ├── tracker.go
-    └── tracker_test.go
-</code></pre></div><h3 id="源码分析">源码分析</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Taipei-Torrent git:(master) tree
+</span></span><span style="display:flex;"><span>├── main.go
+</span></span><span style="display:flex;"><span>├── queryTracker.bash
+</span></span><span style="display:flex;"><span>├── resolveBindIP.go
+</span></span><span style="display:flex;"><span>├── resolveBindIP_test.go
+</span></span><span style="display:flex;"><span>├── test.bash
+</span></span><span style="display:flex;"><span>├── testData
+</span></span><span style="display:flex;"><span>│   ├── a.torrent
+</span></span><span style="display:flex;"><span>│   └── testFile
+</span></span><span style="display:flex;"><span>├── testdht.bash
+</span></span><span style="display:flex;"><span>├── testswarm.bash
+</span></span><span style="display:flex;"><span>├── testtracker.bash
+</span></span><span style="display:flex;"><span>├── torrent
+</span></span><span style="display:flex;"><span>│   ├── accumulator.go
+</span></span><span style="display:flex;"><span>│   ├── accumulator_test.go
+</span></span><span style="display:flex;"><span>│   ├── bitset.go
+</span></span><span style="display:flex;"><span>│   ├── cache.go
+</span></span><span style="display:flex;"><span>│   ├── cache_test.go
+</span></span><span style="display:flex;"><span>.......
+</span></span><span style="display:flex;"><span>│   ├── upnp.go
+</span></span><span style="display:flex;"><span>│   ├── uri.go
+</span></span><span style="display:flex;"><span>│   └── uri_test.go
+</span></span><span style="display:flex;"><span>└── tracker
+</span></span><span style="display:flex;"><span>    ├── tracker.go
+</span></span><span style="display:flex;"><span>    └── tracker_test.go
+</span></span></code></pre></div><h3 id="源码分析">源码分析</h3>
 <p>花了一个下午走读它的代码，代码简洁易懂，主要功能都在<code>torrent</code>目录下。每个Peer对一个torrent文件会产生一个会话，在我的笔记本记，使用Docker搭建了6个节点，发布下载77M的go的安装包，是秒级速度。如下所示：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">2016/01/17 12:13:13 Starting.
-2016/01/17 12:13:13 Listening for peers on port: 7777
-2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Tracker: [], Comment: , InfoHash: 556871e1ada306c2da5033e8fe0d4f077edbe6f7, Encoding: , Private: 0
-2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Computed missing pieces (0.35 seconds)
-2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Good pieces: 0 Bad pieces: 1223 Bytes left: 80147269
-2016/01/17 12:13:13 Created torrent session for go1.5.3.linux-amd64.tar.gz
-2016/01/17 12:13:13 Starting torrent session for go1.5.3.linux-amd64.tar.gz
-2016/01/17 12:13:14 [ go1.5.3.linux-amd64.tar.gz ] Peers: 0 downloaded: 0 (0.00 B/s) uploaded: 0 ratio: 0.000000 pieces: 0/1223
-</code></pre></div><p>作为Peer Client，主要代码逻辑在<code>torrent\torrentLoop.go</code>的RunTorrents方法中，它充分利用了Go的channel机制。实现步骤如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>2016/01/17 12:13:13 Starting.
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 Listening for peers on port: 7777
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Tracker: [], Comment: , InfoHash: 556871e1ada306c2da5033e8fe0d4f077edbe6f7, Encoding: , Private: 0
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Computed missing pieces (0.35 seconds)
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 [ go1.5.3.linux-amd64.tar.gz ] Good pieces: 0 Bad pieces: 1223 Bytes left: 80147269
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 Created torrent session for go1.5.3.linux-amd64.tar.gz
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:13 Starting torrent session for go1.5.3.linux-amd64.tar.gz
+</span></span><span style="display:flex;"><span>2016/01/17 12:13:14 [ go1.5.3.linux-amd64.tar.gz ] Peers: 0 downloaded: 0 (0.00 B/s) uploaded: 0 ratio: 0.000000 pieces: 0/1223
+</span></span></code></pre></div><p>作为Peer Client，主要代码逻辑在<code>torrent\torrentLoop.go</code>的RunTorrents方法中，它充分利用了Go的channel机制。实现步骤如下：</p>
 <ol>
 <li>根据命令参数，开启Peer连接端口（TCP）。若不指定端口，则采用随机端口。目前是绑定在所的IP上，如果是内网，可以做NAT转换。</li>
 <li>根据MaxActive参数，开启Session（对象为TorrentSession）数，如果同时下载torrent多余MaxActive则排队处理</li>
@@ -263,8 +263,8 @@
 <li>处理各种Channel的消息。</li>
 </ol>
 <p>还一个重要的<code>torrent\torren.go</code>的DoMessage方法，它用于是产生协议的消息，与一个peer建立TCP连接后，首先向peer发送握手消息，peer收到握手消息后回应一个握手消息。握手消息是一个长度固定为68字节的消息。消息的格式如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[pstrlen][pstr][reserved][info_hash][peer_id]
-</code></pre></div><table>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[pstrlen][pstr][reserved][info_hash][peer_id]
+</span></span></code></pre></div><table>
 <thead>
 <tr>
 <th style="text-align:left">参    数</th>
@@ -291,8 +291,8 @@
 </tbody>
 </table>
 <p>对于除握手消息之外的其他所有消息，其一般的格式为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">[length prefix][message ID][payload]
-</code></pre></div><p>length prefix（长度前缀）占4个字节，指明message ID和payload的长度和。message ID（消息编号）占一字节，是一个10进制的整数，指明消息的编号。payload（负载），长度未定，是消息的内容。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>[length prefix][message ID][payload]
+</span></span></code></pre></div><p>length prefix（长度前缀）占4个字节，指明message ID和payload的长度和。message ID（消息编号）占一字节，是一个10进制的整数，指明消息的编号。payload（负载），长度未定，是消息的内容。</p>
 <ul>
 <li>
 <p>keep_alive消息：[len=0000]</p>
@@ -443,7 +443,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -536,7 +536,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

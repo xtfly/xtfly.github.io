@@ -150,54 +150,54 @@
     <h1 id="案例">案例</h1>
 <p>C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。</p>
 <p><strong>问题1</strong>，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">pBuf1 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX1)); <span style="color:#228b22">// 申请一块内存
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond1) { <span style="color:#228b22">// 异常分支1
-</span><span style="color:#228b22"></span>    free(pBuf1);
-    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
-}
-<span style="color:#228b22">// 省略其它代码
-</span><span style="color:#228b22"></span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请另一块内存
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond2) { <span style="color:#228b22">// 异常分支2
-</span><span style="color:#228b22"></span>    free(pBuf1); <span style="color:#228b22">// 每个分支，都要释放前面所有代码
-</span><span style="color:#228b22"></span>    free(pBuf2);
-    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
-}
-<span style="color:#228b22">// 省略其它代码
-</span><span style="color:#228b22"></span>ptr-&gt;buf1 = pBuf1;  <span style="color:#228b22">// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
-</span><span style="color:#228b22"></span>ptr-&gt;buf2 = pBuf2;
-<span style="color:#8b008b;font-weight:bold">return</span> RET_SUCCESS
-</code></pre></div><p>上述代码是典型的内存申请与最终释放不在同一地方，即使整体代码采用c++编译，大都是c的用法，没有封装类，在其析构方法中释放其的成员变量所指内存，内存申请分散在代码逻辑流程中，任一异常分支都可能导致某个前面申请的内存被遗漏而造成内存泄露。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>pBuf1 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX1)); <span style="color:#228b22">// 申请一块内存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond1) { <span style="color:#228b22">// 异常分支1
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf1);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 省略其它代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请另一块内存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">if</span> (cond2) { <span style="color:#228b22">// 异常分支2
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf1); <span style="color:#228b22">// 每个分支，都要释放前面所有代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pBuf2);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> RET_ERROR;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 省略其它代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ptr-&gt;buf1 = pBuf1;  <span style="color:#228b22">// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>ptr-&gt;buf2 = pBuf2;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> RET_SUCCESS
+</span></span></code></pre></div><p>上述代码是典型的内存申请与最终释放不在同一地方，即使整体代码采用c++编译，大都是c的用法，没有封装类，在其析构方法中释放其的成员变量所指内存，内存申请分散在代码逻辑流程中，任一异常分支都可能导致某个前面申请的内存被遗漏而造成内存泄露。</p>
 <p><strong>问题2</strong>，宏可能会遗漏了前面的内存块释放：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请一块内存
-</span><span style="color:#228b22"></span>SECURE_RETURN_WHEN_ERROR(memset_s(pbuf2, ....)); <span style="color:#228b22">// 潜在内存泄露问题
-</span></code></pre></div><p>公司要求对于memset，memcopy等函数采用带<code>_s</code>结尾的安全函数。而这些函数都有返回值，同时公司要求不能忽略函数的返回值。如果每个安全函数返回值都加if来判断，代码雷同，所以通常考虑采用定义一个宏(如上面的的SECURE_RETURN_WHEN_ERROR)来简化代码，在函数返回失败时，直接return。当使用宏时，可能并没有考虑上下文信息，没有释放此行代码前面申请的多个内存块，如问题1代码中异常分支2需要同时释放两个指针的内存。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>pBuf2 = malloc(<span style="color:#8b008b;font-weight:bold">sizeof</span>(XX2)); <span style="color:#228b22">// 申请一块内存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>SECURE_RETURN_WHEN_ERROR(memset_s(pbuf2, ....)); <span style="color:#228b22">// 潜在内存泄露问题
+</span></span></span></code></pre></div><p>公司要求对于memset，memcopy等函数采用带<code>_s</code>结尾的安全函数。而这些函数都有返回值，同时公司要求不能忽略函数的返回值。如果每个安全函数返回值都加if来判断，代码雷同，所以通常考虑采用定义一个宏(如上面的的SECURE_RETURN_WHEN_ERROR)来简化代码，在函数返回失败时，直接return。当使用宏时，可能并没有考虑上下文信息，没有释放此行代码前面申请的多个内存块，如问题1代码中异常分支2需要同时释放两个指针的内存。</p>
 <p><strong>问题3</strong>，指针置空了，其指向的内存不再受管理</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">do</span> {
-    <span style="color:#228b22">// 省略大段其它代码
-</span><span style="color:#228b22"></span>    pTmpBuf = filed-&gt;data;
-    filed-&gt;data = malloc(filed-&gt;def.size * <span style="color:#b452cd">2</span>); <span style="color:#228b22">// 对filed-&gt;data扩容
-</span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == filed-&gt;data) {
-        done = RET_SUCESS; <span style="color:#228b22">// 潜在内存泄露问题
-</span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">break</span>;
-    }
-    <span style="color:#228b22">// 省略大段其它代码
-</span><span style="color:#228b22"></span>    free(pTmpBuf); <span style="color:#228b22">// 正常逻辑会释放内存
-</span><span style="color:#228b22"></span>} <span style="color:#8b008b;font-weight:bold">while</span>(...);
-</code></pre></div><p>上面的代码比较乍一看，比较难以发现出现问题，当malloc失败时，已把filed-&gt;data置空了，其它地方对filed-&gt;data释放代码失效，pTmpBuf在最后正常场景才释放内存，未在异常场景释放，造成内存泄露。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">do</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 省略大段其它代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    pTmpBuf = filed-&gt;data;
+</span></span><span style="display:flex;"><span>    filed-&gt;data = malloc(filed-&gt;def.size * <span style="color:#b452cd">2</span>); <span style="color:#228b22">// 对filed-&gt;data扩容
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#658b00">NULL</span> == filed-&gt;data) {
+</span></span><span style="display:flex;"><span>        done = RET_SUCESS; <span style="color:#228b22">// 潜在内存泄露问题
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 省略大段其它代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    free(pTmpBuf); <span style="color:#228b22">// 正常逻辑会释放内存
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>} <span style="color:#8b008b;font-weight:bold">while</span>(...);
+</span></span></code></pre></div><p>上面的代码比较乍一看，比较难以发现出现问题，当malloc失败时，已把filed-&gt;data置空了，其它地方对filed-&gt;data释放代码失效，pTmpBuf在最后正常场景才释放内存，未在异常场景释放，造成内存泄露。</p>
 <p>三个案例中异常都是内存操作有关，如malloc与memset等，我们可能认为他们出现失败的机率很低，风险不高。但他们并不是不会出现，如SECURE_RETURN_WHEN_ERROR宏在函数返回失败时打印日志，从某一现网历史日志来看，它一共出现了4次。</p>
 <h1 id="raii">RAII</h1>
 <p>回过头来看上面的案例代码的问题，虽是C++程序，但还是C的写法，根本没有使用C++的RAII（Resource Acquistion Is Initialization，资源获取即初始化）机制。RAII本质是利用栈对象当它离开作用域之后自动析构，可把其它资源的生命周期绑定到该对象，让该对象在析构时对其它资源自动释放。</p>
 <p>RAII的应用如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">ScopeGuard</span> {
-    ScopeGuard() {
-        data_ = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[<span style="color:#b452cd">50</span>];
-    }
-    ~ScopeGuard{} {
-        <span style="color:#8b008b;font-weight:bold">if</span> (data_ != <span style="color:#8b008b;font-weight:bold">nullptr</span>) { <span style="color:#8b008b;font-weight:bold">delete</span>[] data_;}
-    }
-    <span style="color:#00688b;font-weight:bold">int</span> *data_;
-}
-</code></pre></div><p>从C+11开始，在标准库中已提供对RAII的应用：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">ScopeGuard</span> {
+</span></span><span style="display:flex;"><span>    ScopeGuard() {
+</span></span><span style="display:flex;"><span>        data_ = <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#00688b;font-weight:bold">int</span>[<span style="color:#b452cd">50</span>];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ~ScopeGuard{} {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (data_ != <span style="color:#8b008b;font-weight:bold">nullptr</span>) { <span style="color:#8b008b;font-weight:bold">delete</span>[] data_;}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> *data_;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>从C+11开始，在标准库中已提供对RAII的应用：</p>
 <ul>
 <li>内存管理智能指针：unique_ptr, shared_ptr, weak_ptr</li>
 <li>锁管理守卫类：lock_guard, unique_guard, shard_guard</li>
@@ -239,32 +239,32 @@
 <li>移动语义：移动构造，移动赋值</li>
 </ul>
 <p>有如下代码，再结合左值右值，是不是会直接把人搞晕，有点孔乙己回字有几种写法的感觉：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {
-<span style="color:#8b008b;font-weight:bold">public</span>:
-    explict A(<span style="color:#00688b;font-weight:bold">int</span> n);
-    A(<span style="color:#8b008b;font-weight:bold">const</span> A &amp;that); <span style="color:#228b22">// 拷贝构造
-</span><span style="color:#228b22"></span>    A &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(<span style="color:#8b008b;font-weight:bold">const</span> A &amp;that); <span style="color:#228b22">// 拷贝赋值
-</span><span style="color:#228b22"></span>
-    <span style="color:#228b22">// 传递右值引用，转移右值中对象所有权
-</span><span style="color:#228b22"></span>    A(A&amp;&amp; that); <span style="color:#228b22">// 移动构造
-</span><span style="color:#228b22"></span>    A &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(A&amp;&amp; that); <span style="color:#228b22">// 移动赋值
-</span><span style="color:#228b22"></span>
-    <span style="color:#228b22">// 传递左值引用，也可以实现移动语义，对that对象中数据修改，但非常不建议使用如下
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// A(A &amp;that); //重载非const版本，可以移动构造
-</span><span style="color:#228b22"></span>    <span style="color:#228b22">// A &amp;operator=(A &amp;that); //重载非const版本，可以移动赋值
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span>:
-    <span style="color:#00688b;font-weight:bold">int</span> n_;
-    <span style="color:#00688b;font-weight:bold">int</span>* p_;
-}
-
-A <span style="color:#008b45">a1</span>(<span style="color:#b452cd">4</span>);  <span style="color:#228b22">// 调用A::A(int n)
-</span><span style="color:#228b22"></span>
-A <span style="color:#008b45">b1</span>(a1); <span style="color:#228b22">// 调用A::A(const A &amp;that)，若实现A::A(A &amp;that)，则会是调用它
-</span><span style="color:#228b22"></span>b1 = a1;  <span style="color:#228b22">// 调用A::operator=(const A &amp;that)
-</span><span style="color:#228b22"></span>
-A <span style="color:#008b45">c1</span>(std::move(a1)) <span style="color:#228b22">// 调用A::A(A&amp;&amp; that)
-</span><span style="color:#228b22"></span>c1 = std::move(a1); <span style="color:#228b22">// 调用A::operator=(A&amp;&amp; that)
-</span></code></pre></div><p>小结：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>    explict A(<span style="color:#00688b;font-weight:bold">int</span> n);
+</span></span><span style="display:flex;"><span>    A(<span style="color:#8b008b;font-weight:bold">const</span> A &amp;that); <span style="color:#228b22">// 拷贝构造
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    A &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(<span style="color:#8b008b;font-weight:bold">const</span> A &amp;that); <span style="color:#228b22">// 拷贝赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 传递右值引用，转移右值中对象所有权
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    A(A&amp;&amp; that); <span style="color:#228b22">// 移动构造
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    A &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(A&amp;&amp; that); <span style="color:#228b22">// 移动赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 传递左值引用，也可以实现移动语义，对that对象中数据修改，但非常不建议使用如下
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// A(A &amp;that); //重载非const版本，可以移动构造
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#228b22">// A &amp;operator=(A &amp;that); //重载非const版本，可以移动赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span> n_;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">int</span>* p_;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#008b45">a1</span>(<span style="color:#b452cd">4</span>);  <span style="color:#228b22">// 调用A::A(int n)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>A <span style="color:#008b45">b1</span>(a1); <span style="color:#228b22">// 调用A::A(const A &amp;that)，若实现A::A(A &amp;that)，则会是调用它
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>b1 = a1;  <span style="color:#228b22">// 调用A::operator=(const A &amp;that)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>A <span style="color:#008b45">c1</span>(std::move(a1)) <span style="color:#228b22">// 调用A::A(A&amp;&amp; that)
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>c1 = std::move(a1); <span style="color:#228b22">// 调用A::operator=(A&amp;&amp; that)
+</span></span></span></code></pre></div><p>小结：</p>
 <ul>
 <li>拷贝构造或拷贝赋值，对于成员变量指针内容，可以是浅拷贝，也可以是深拷贝</li>
 <li>深拷贝涉及到对象的分配与释放，如果是浅拷贝，则指针的拥有者存在多个，管理变得更复杂</li>
@@ -275,37 +275,37 @@ A <span style="color:#008b45">c1</span>(std::move(a1)) <span style="color:#228b2
 <li>移动语义，为了保证能够修改修改目标数据对象，实现函数是必须将右值引用当作左值引用使用</li>
 </ul>
 <p>对所有权，拷贝语义，移动语义有了初步的了解，再回头看auto_ptr的问题，它实现如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">auto_ptr(auto_ptr &amp;__a);
-auto_ptr &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(auto_ptr &amp;__a);
-</code></pre></div><p>auto_ptr采用<strong>拷贝语义的函数来转移指针资源</strong>，转移指针资源的所有权的同时将原指针置为NULL，这跟通常理解的拷贝行为是不一致的。在C++98时，没有右值引用移动语义，只好在拷贝构造与赋值中实现移动语义。使用auto_ptr不当容易造成内存问题，所以不建议作为函数的返回值和函数的参数，也不建议在容器中保存auto_ptr，一旦当拷贝却移动了，指针为NULL了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>auto_ptr(auto_ptr &amp;__a);
+</span></span><span style="display:flex;"><span>auto_ptr &amp;<span style="color:#8b008b;font-weight:bold">operator</span>=(auto_ptr &amp;__a);
+</span></span></code></pre></div><p>auto_ptr采用<strong>拷贝语义的函数来转移指针资源</strong>，转移指针资源的所有权的同时将原指针置为NULL，这跟通常理解的拷贝行为是不一致的。在C++98时，没有右值引用移动语义，只好在拷贝构造与赋值中实现移动语义。使用auto_ptr不当容易造成内存问题，所以不建议作为函数的返回值和函数的参数，也不建议在容器中保存auto_ptr，一旦当拷贝却移动了，指针为NULL了。</p>
 <p>在C++11中，支持右值以及移动语义，此时可以完全匹配auto_ptr的所有权管理，但不能单纯的为该auto_ptr加入右值和移动语义的支持，因为还是禁不掉已在拷贝时发生了移动的事实。所以C++11只能搞一个新的unique_ptr，它不仅加入了移动语义的支持，同时也关闭了左值拷贝构造和左值赋值功能。但也没有完善的方案，填坑的同时，也挖了个大坑，unique_ptr加入vector中要小心，没有拷贝语义不符合容器Copy Constructible要求，把已有的一个unique_ptr装进vector需要使用move()。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">std::unique_ptr&lt;A&gt; p = std::make_unique&lt;A&gt;();
-std::vector&lt;std::unique_ptr&lt;A&gt;&gt; v; 
-v.push_back(std::make_unique&lt;A&gt;());
-v.push_back(std::move(p));
-v.emplace_back(<span style="color:#8b008b;font-weight:bold">new</span> A);
-</code></pre></div><p>没有了拷贝语义，同样对于普通函数传递unique_ptr，也只能采用引用方式：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">func</span>(std::unique_ptr&lt;A&gt; &amp;ptr) { }
-</code></pre></div><h1 id="rvo">RVO</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>std::unique_ptr&lt;A&gt; p = std::make_unique&lt;A&gt;();
+</span></span><span style="display:flex;"><span>std::vector&lt;std::unique_ptr&lt;A&gt;&gt; v; 
+</span></span><span style="display:flex;"><span>v.push_back(std::make_unique&lt;A&gt;());
+</span></span><span style="display:flex;"><span>v.push_back(std::move(p));
+</span></span><span style="display:flex;"><span>v.emplace_back(<span style="color:#8b008b;font-weight:bold">new</span> A);
+</span></span></code></pre></div><p>没有了拷贝语义，同样对于普通函数传递unique_ptr，也只能采用引用方式：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">func</span>(std::unique_ptr&lt;A&gt; &amp;ptr) { }
+</span></span></code></pre></div><h1 id="rvo">RVO</h1>
 <p>RVO是Return Value Optimization的缩写，即返回值优化，NRVO是Named Return Value Optimization的缩写，即具名返回值优化。RVO是C++在处理一个函数返回类对象并将返回值赋给另一个对象时，为了减少拷贝构造次数以及析构次数而采用的一种编译器优化技术。NRVO是RVO一个变种，起初RVO技术仅支持匿名变量的优化，后期才支持NRVO。返回值优化此特征在C++11已写入标准，不过在一些编译器早就支持了。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">A <span style="color:#008b45">getA</span>() {
-    <span style="color:#8b008b;font-weight:bold">return</span> A(); <span style="color:#228b22">// NVO
-</span><span style="color:#228b22"></span>}
-
-A <span style="color:#008b45">getAWhitName</span>() {
-    A a;
-    <span style="color:#8b008b;font-weight:bold">return</span> a; <span style="color:#228b22">// NRVO
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>有了RVO与NRVO，对于返回对象，没有必要在函数中new出对象，通过指针返回，或者是通过指针引用出参传递。减少祼指针的使用，可以降低内存泄露的机会。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">A *<span style="color:#008b45">getA</span>() {
-    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> A;
-}
-
-<span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">get</span>(A *&amp;out_ptr) {
-    out_ptr = <span style="color:#8b008b;font-weight:bold">new</span> A;
-    <span style="color:#8b008b;font-weight:bold">return</span> EXIT_SUCCESS;
-}
-</code></pre></div><p>C++11引入移动语义之后，对NRO稍有一些变化，总结如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>A <span style="color:#008b45">getA</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> A(); <span style="color:#228b22">// NVO
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#008b45">getAWhitName</span>() {
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> a; <span style="color:#228b22">// NRVO
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><p>有了RVO与NRVO，对于返回对象，没有必要在函数中new出对象，通过指针返回，或者是通过指针引用出参传递。减少祼指针的使用，可以降低内存泄露的机会。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>A *<span style="color:#008b45">getA</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">new</span> A;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> <span style="color:#008b45">get</span>(A *&amp;out_ptr) {
+</span></span><span style="display:flex;"><span>    out_ptr = <span style="color:#8b008b;font-weight:bold">new</span> A;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> EXIT_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>C++11引入移动语义之后，对NRO稍有一些变化，总结如下：</p>
 <ul>
 <li>应该按照正常写法返回Local变量，通过RVO或NRVO优化</li>
 <li>编译器会决定要么使用RVO，要么使用移动语义来优化返回语句
@@ -318,15 +318,15 @@ A <span style="color:#008b45">getAWhitName</span>() {
 <li>如果使用移动语义，需要返回的类型有转移构造，否则只会进行复制</li>
 <li>RVO效率比使用转移构造要高, 转移构造也是一样需要对象创建</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">A <span style="color:#008b45">getAWithMove</span>() {
-    A a;
-    <span style="color:#8b008b;font-weight:bold">return</span> std::move(a); <span style="color:#228b22">// 非必要加move
-</span><span style="color:#228b22"></span>}
-
-std::unique_ptr&lt;A&gt; getAWhitUniquePtr() {
-    <span style="color:#8b008b;font-weight:bold">return</span> std::make_unique&lt;A&gt;(param1, param2); <span style="color:#228b22">// unique_ptr支持move
-</span><span style="color:#228b22"></span>}
-</code></pre></div><h1 id="解题">解题</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>A <span style="color:#008b45">getAWithMove</span>() {
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> std::move(a); <span style="color:#228b22">// 非必要加move
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>std::unique_ptr&lt;A&gt; getAWhitUniquePtr() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> std::make_unique&lt;A&gt;(param1, param2); <span style="color:#228b22">// unique_ptr支持move
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><h1 id="解题">解题</h1>
 <p>前面对RAII，所有权，智能指针，移动语义，以及RVO点到为止，没有展开来一一深入讲解，大家可以借助搜索来深入学习。提到这些知识点，只为了更好理解与使用智能指针，达到减少内存泄露目标作为铺垫。现在C++在语义上已经可以实现半自动化的内存回收，unique_ptr+move：</p>
 <ul>
 <li>内部实现尽可能不要使用祼指针，而是使用智能指针管理对象</li>
@@ -430,7 +430,7 @@ std::unique_ptr&lt;A&gt; getAWhitUniquePtr() {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -511,7 +511,7 @@ std::unique_ptr&lt;A&gt; getAWhitUniquePtr() {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

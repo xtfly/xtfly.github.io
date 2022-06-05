@@ -1,0 +1,531 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码31：C&#43;&#43;函数静态与动态分发 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码31：C&#43;&#43;函数静态与动态分发">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码31：C&#43;&#43;函数静态与动态分发 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0604/" itemprop="url">
+        飞哥讲代码31：C&#43;&#43;函数静态与动态分发
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-06-04">
+    2022-06-04
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">2819 字 ~6分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="前言">前言</h1>
+<p>在<a href="http://lanlingzi.cn/post/technical/2022/0405/">C++简单依赖注入</a>一文中，利用C++类的static变量初始化特性实现了简单的依赖注入框架。你是否还有印象，其中还同时利用C++模板编程另一个特性CRTP：把派生类作为基类的模板参数。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ManagedObject</span> {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> : <span style="color:#8b008b;font-weight:bold">public</span> ManagedObject&lt;A&gt; {};
+</span></span></code></pre></div><p><a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">CRTP</a>又是什么鬼？CRTP (Curiously Recurring Template Pattern)，翻译中文是奇特递归模板模式，它到底奇特在哪里？用法看起来有点奇怪，怎么能把一个对于基类未知的类型传给基类呢？在C++模板编程中，这一切皆有可能。</p>
+<h1 id="多态">多态</h1>
+<p>我们再回顾一下面向对象编程（OOP）三个重要特性：封装，继承，多态。多态（Polymorphisn）是指一个接口，有多种实现，可以让父类的指针有“多种形态”。C++由于有模板编程，在编译期可以做很多的事情，于是C++中的多态性又体现在编译和运行两个阶段：</p>
+<ul>
+<li>静态多态：在编译时可以确定使用的接口，静态绑定</li>
+<li>动态多态：具体引用的接口在运行时才能确定，动态绑定</li>
+</ul>
+<p>静态多态和动态多态的区别其实只是在什么时候将函数实现和函数调用关联起来，函数地址的绑定是在编译时期还是运行时期。静态多态在编译期间就可以确定函数的调用地址，并生产代码。动态多态则是指函数调用的地址不能在编译器期间确定，需要在运行时确定。</p>
+<p>本文的标题函数（类的成员函数通常也叫类的方法）静态与动态分发，即指类方法的地址绑定是静态（编译期）还是动态（运行期）。</p>
+<h2 id="动态分发">动态分发</h2>
+<p>我们还是先来一个简单多态例子：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Animal</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">virtual</span> <span style="color:#00688b;font-weight:bold">void</span> Eat() = <span style="color:#b452cd">0</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Dog</span>: <span style="color:#8b008b;font-weight:bold">public</span> Animal
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#00688b;font-weight:bold">void</span> Eat() <span style="color:#8b008b;font-weight:bold">override</span> { cout &lt;&lt; <span style="color:#cd5555">&#34;Dog::Eat()&#34;</span> &lt;&lt; endl; } 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Cat</span>: <span style="color:#8b008b;font-weight:bold">public</span> Animal 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#00688b;font-weight:bold">void</span> Eat() <span style="color:#8b008b;font-weight:bold">override</span> { cout &lt;&lt; <span style="color:#cd5555">&#34;Cat::Eat()&#34;</span> &lt;&lt; endl; }     
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">DynamicDispatch</span>(Animal&amp; animal) { animal.Eat(); }
+</span></span></code></pre></div><p>动态多态通过“继承+虚函数”来实现的，只有在程序运行期间（非编译期）才能判断所引用对象的实际类型，根据其实际类型调用相应的方法。具体格式就是使用virtual关键字修饰类的成员函数时，指明该函数为虚函数，并且派生类需要重新实现该成员函数，编译器将实现动态绑定。在运行期根据虚表决定调用合适的函数，即动态分发。</p>
+<p>虚函数（Virtual Function）机制由下面两部分来实现：</p>
+<ul>
+<li>一张虚函数表（Virtual Table），简称为vtbl或vtable。表中主要保存了一个类中的虚函数的地址，这张表解决了继承、覆盖的问题，保证其内容能真实反应<strong>实际的函数</strong>，是由编译器自动为一个带有虚函数的类生成一块内存空间，存储每个虚函数的入口地址</li>
+<li>一个指向虚函数表的指针（vptr）。每一个包含虚函数的类的实例都包含一个vptr指针，在对象实例初始化完成之后，指向虚函数表的首地址</li>
+</ul>
+<p>通过vptr指针找到要访问的虚函数，完成虚函数的调用：</p>
+<ul>
+<li>找到虚函数表的首地址</li>
+<li>找到要使用虚函数地址，调用虚函数</li>
+</ul>
+<p>虚函数能很好地实现了多态的要求，但是在运行时引入了一些开销：</p>
+<ul>
+<li>对每一个虚函数的调用都需要额外的指针寻址</li>
+<li>每个对象都需要有一个额外的指针指向虚表</li>
+</ul>
+<p>每次的函数调用都要查询虚函数表，因此效率低下。实际上为了提高效率，C++的编译器是保证虚函数表的指针存在于对象实例中最前面的位置，这是为了保证取到虚函数表有最高的性能。</p>
+<h2 id="静态分发">静态分发</h2>
+<p>还是先上一段使用CRTP的代码：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> Derived&gt;  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Animal</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> Eat() { <span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;Derived*&gt;(<span style="color:#8b008b;font-weight:bold">this</span>)-&gt;Eat(); }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Dog</span>: <span style="color:#8b008b;font-weight:bold">public</span> Animal&lt;Dog&gt; 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#00688b;font-weight:bold">void</span> Eat() { cout &lt;&lt; <span style="color:#cd5555">&#34;Dog::Eat()&#34;</span> &lt;&lt; endl; } 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Cat</span>: <span style="color:#8b008b;font-weight:bold">public</span> Animal&lt;Cat&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#00688b;font-weight:bold">void</span> Eat() { cout &lt;&lt; <span style="color:#cd5555">&#34;Cat::Eat()&#34;</span> &lt;&lt; endl; }     
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> StaticDispatch(Animal&lt;T&gt;&amp; animal) { animal.Eat(); }
+</span></span></code></pre></div><p>从上面的代码可以看出，CRTP有如下特点：</p>
+<ul>
+<li>基类是模板类，派生类继承自模板类</li>
+<li>派生类将自身作为参数传给模板类的特例化</li>
+<li>基类模板中函数的实现通过static_cast将this指针转换为模板参数(即派生类)类型，并调用派生类的函数版本</li>
+</ul>
+<p>从基类对象的角度来看，派生类对象其实就是本身，这样的话只需要用一个<code>static_cast</code>就可以把基类转化成派生类，从而实现基类对象对派生对象的访问。看到<code>static_cast</code>或者你会联想到：</p>
+<ul>
+<li>static_cast：静态良性转换，在编译期检查</li>
+<li>dynamic_cast：通常是动态向下（downcast）转换，基类指针（引用）转换派生类指针（引用），运行时检查，需要借助RTTI (Run Time Type Identification) , 是通过对象指针得到vptr，再从vptr得到vtbl，这样能够检查类型信息是否匹配</li>
+</ul>
+<p>CRTP的存在是可以消除虚表，避免动态查找虚函数的开销，理论上用到多态的地方都可以用CRTP来改写。</p>
+<h1 id="crtp">CRTP</h1>
+<p>CRTP从它的英文全名（Curiously Recurring Template Pattern）来看，它是一种模板设计模式，可以用于静态多态，但不等于静态多态。CRTP另外的用处就是定义抽象方法，作为快速扩展类的手段。基类是模板类，所以在编译时可以随意调用T.fun()而不需要声明，派生类只需要给出fun()的实现即可实现功能。</p>
+<p>C++中并没有像Java的Interface的概念，只有纯虑函数基类，我们通常可以把它当成Interface，把CRTP和Interface做个对比：</p>
+<ul>
+<li>CRTP是通过模板参数获得派生类的类型，并为每个派生类都生成了一个基类，每个派生类继承CRTP类都要将自身的类型传给基类，就发生了模板实例化，本质上并没有一个基类（接口）对多个派生类（实现）</li>
+<li>Interface本身不知道派生类的类型，但是它有确定的方法签名，派生类共享一个Interface基类对象，并且每个方法都是通过查找虚表调用</li>
+</ul>
+<h2 id="应用示例">应用示例</h2>
+<p><strong>enable_shared_from_this</strong></p>
+<p>C++11引入std::enable_shared_from_this。当我们有类需要被智能指针share_ptr管理，且需要通过类的成员函数里需要把当前类对象包装为智能指针传递出一个指向自身的share_ptr时。在这种情况下类就需要通过继承enable_shared_from_this，通过父类的成员函数shared_from_this来获取指向该类的智能指针。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">using</span> <span style="color:#8b008b;font-weight:bold">namespace</span> std;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Good</span>: enable_shared_from_this&lt;Good&gt; <span style="color:#228b22">// 注意：继承
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 正确写法：继承enable_shared_from_this，使用shared_from_this返回shared_ptr
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    shared_ptr&lt;Good&gt; getptr() {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#008b45">shared_from_this</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">Bad</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 错误写法：不能shared_ptr(this)，它会Double Free
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    shared_ptr&lt;Bad&gt; getptr() {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> shared_ptr&lt;Bad&gt;(<span style="color:#8b008b;font-weight:bold">this</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>enable_shared_from_this的实现逻辑并不是本文的重点，它详细的实现建议打开STL的源码深入了解，它主要完成两点：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">// 1. 通过自身维护了一个weak_ptr让所有从该对象派生的shared_ptr都通过了weak_ptr构造派生 
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span>:
+</span></span><span style="display:flex;"><span>     <span style="color:#8b008b;font-weight:bold">mutable</span> weak_ptr&lt;_Tp&gt;  _M_weak_this;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// 2. shared_ptr的构造函数判断出对象是enable_shared_from_this的之类之后，也会同样通过对象本身的weak_ptr构造派生，这样引用计数是互通的，也就不会存在上述Double Free问题
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>shared_ptr&lt;_Tp&gt;
+</span></span><span style="display:flex;"><span>     shared_from_this()
+</span></span><span style="display:flex;"><span>{ <span style="color:#8b008b;font-weight:bold">return</span> shared_ptr&lt;_Tp&gt;(<span style="color:#8b008b;font-weight:bold">this</span>-&gt;_M_weak_this); }
+</span></span></code></pre></div><p><strong>单例模板</strong></p>
+<p>使用CRTP实现的单例模板：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt;
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Singleton</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">static</span> T&amp; Instance()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">static</span> T instance;
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> instance;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>proctected:
+</span></span><span style="display:flex;"><span>    Singleton() = <span style="color:#8b008b;font-weight:bold">default</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">virtual</span> ~Singleton() = <span style="color:#8b008b;font-weight:bold">default</span>;
+</span></span><span style="display:flex;"><span>    Singleton(<span style="color:#8b008b;font-weight:bold">const</span> Singleton &amp;) = <span style="color:#8b008b;font-weight:bold">delete</span>;
+</span></span><span style="display:flex;"><span>    Singleton&amp; <span style="color:#8b008b;font-weight:bold">operator</span>=(<span style="color:#8b008b;font-weight:bold">const</span> Singleton &amp;) = <span style="color:#8b008b;font-weight:bold">delete</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span>: <span style="color:#8b008b;font-weight:bold">public</span> Singleton&lt;A&gt; {}
+</span></span></code></pre></div><h1 id="结语">结语</h1>
+<p>本文简单介绍C++多态两种实现，基于虚表实现的动态多态，与基于CRTP实现的静态多态。CRTP由于不存在动态查找函数指针，在编译期生成代码，相对虚表实现具有较好的性能。但是由于其怪异的语法，对初学者并不友好，通过CRTP可以看到C++模板的强大魅力，为C++的宏大复杂所倾倒。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2022/0521/" rel="prev" title="零拷贝技术及在Java中应用">
+        零拷贝技术及在Java中应用 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码31：C&#43;&#43;函数静态与动态分发
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">163</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#多态">多态</a>
+      <ul>
+        <li><a href="#动态分发">动态分发</a></li>
+        <li><a href="#静态分发">静态分发</a></li>
+      </ul>
+    </li>
+    <li><a href="#crtp">CRTP</a>
+      <ul>
+        <li><a href="#应用示例">应用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2022</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

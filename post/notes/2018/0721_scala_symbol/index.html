@@ -148,8 +148,8 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>Scala被有人戏称是 “太阳系最难的语言” ，那我们来看看他那些各种奇怪的符号使用吧，语言充满语法糖，真让人甜得受不了。一旦这些符号组合起来使用，那只能用 “惊为天书” 来形容啊。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
-</code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>(map1 /: map2 ) { case (map, (k,v)) =&gt; map + ( k -&gt; (v + map.getOrElse(k, 0)) ) }
+</span></span></code></pre></div><p>上面的看得懂吗，其实要实现的就是：合并两个Map集合对象（将两个对应KEY的值累加）。</p>
 <p><em>说明：本文为学习笔记，下面内容多数来源于网上多篇文档的收集与汇总，在此感谢原作者们。</em></p>
 <h1 id="泛型">泛型</h1>
 <h2 id="heading"><code>:</code></h2>
@@ -196,39 +196,39 @@
 <p>A是B的子类，如果想让Container[A]是Container[B]的子类，那么只需在定义Container的时候加上“[+T]”就好了；但是注意，如果只加了“[+T]”，只可以实例化从父类到子类的引用。</p>
 <p>假定，Bird extends Animal extends Earth</p>
 <p>当有<code>Space[+T]</code>定义时，</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var a = new Space[Animal]
-a = new Space[Bird]
-</code></pre></div><p>但不能是</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var a = new Space[Animal]
-a = new Space[Earth]
-</code></pre></div><h3 id="-t"><code>[-T]</code></h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var a = new Space[Animal]
+</span></span><span style="display:flex;"><span>a = new Space[Bird]
+</span></span></code></pre></div><p>但不能是</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var a = new Space[Animal]
+</span></span><span style="display:flex;"><span>a = new Space[Earth]
+</span></span></code></pre></div><h3 id="-t"><code>[-T]</code></h3>
 <p>面向对象编程中，子类也可以指向父类的引用，在正常情况下，通过强制类型转换，是可以实现。但是在有集合类的情况下如何实现呢？这就是“协变”<code>[-T]</code>了，只需在定义集合类的时候在集合类上加上“[-T]”即可。</p>
 <p>假定，Bird extends Animal extends Earth</p>
 <p>当有<code>Space[-T]</code>类定义时，</p>
 <p>则如下是OK的：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var a = new Space[Animal]
-a = new Space[Earth]
-</code></pre></div><h1 id="列表操作符">列表操作符</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var a = new Space[Animal]
+</span></span><span style="display:flex;"><span>a = new Space[Earth]
+</span></span></code></pre></div><h1 id="列表操作符">列表操作符</h1>
 <h2 id="-与--1"><code>::</code> 与 <code>++</code></h2>
 <p><code>::</code> 表示普通元素与List的连接操作，示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">val a = 1
-val b = List(3, 4)
-val c = 1 :: b
-</code></pre></div><p>则c的结果是List(1,3,4)，需要注意的是，<code>1 :: b</code> 操作，<code>::</code> 是右侧对象的方法，即它是b对象的方法，而<code>::</code>左侧的运算数是 <code>::</code> 方法的参数，所以 <code>1::b</code> 的含义是 <code>b.::(1)</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>val a = 1
+</span></span><span style="display:flex;"><span>val b = List(3, 4)
+</span></span><span style="display:flex;"><span>val c = 1 :: b
+</span></span></code></pre></div><p>则c的结果是List(1,3,4)，需要注意的是，<code>1 :: b</code> 操作，<code>::</code> 是右侧对象的方法，即它是b对象的方法，而<code>::</code>左侧的运算数是 <code>::</code> 方法的参数，所以 <code>1::b</code> 的含义是 <code>b.::(1)</code></p>
 <p><code>++</code> 表示用于连接两个集合， 示例</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">val a = List(1, 2)
-val b = List(3, 4)
-val c = a ++ b
-</code></pre></div><p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>val a = List(1, 2)
+</span></span><span style="display:flex;"><span>val b = List(3, 4)
+</span></span><span style="display:flex;"><span>val c = a ++ b
+</span></span></code></pre></div><p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
 <p><code>++=</code> 表示连接两个集合，并赋值，示例</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">var a = List(1, 2)
-a ++= List(3, 4)
-</code></pre></div><h2 id="heading-2"><code>:::</code></h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>var a = List(1, 2)
+</span></span><span style="display:flex;"><span>a ++= List(3, 4)
+</span></span></code></pre></div><h2 id="heading-2"><code>:::</code></h2>
 <p><code>:::</code> 表示只能List的连接操作，示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">val a = List(1, 2)
-val b = List(3, 4)
-val c = a ::: b
-</code></pre></div><p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>val a = List(1, 2)
+</span></span><span style="display:flex;"><span>val b = List(3, 4)
+</span></span><span style="display:flex;"><span>val c = a ::: b
+</span></span></code></pre></div><p>其中a,b保持不变，a和b连接产生一个新表List(1,2,3,4)，而不是在a上面做add操作。</p>
 <h2 id="-与--2"><code>:+</code> 与 <code>+:</code></h2>
 <ul>
 <li><code>:+</code> 用于List在尾部追加元素</li>
@@ -256,115 +256,115 @@ val c = a ::: b
 <p><code>传名调用</code>(Call by name)，在 <code>传名调用</code> 求值中，根本就不求值给函数的实际参数，而是使用避免捕获代换把函数的实际参数直接代换入函数体内。如果实际参数在函数的求值中未被用到，则它永不被求值；如果这个实际参数使用多次，则它每次都被重新求值。</p>
 <p>传名调用求值超过传值调用求值的优点是传名调用求值在一个值存在的时候总是生成这个值，而传名调用可能不终止如果这个函数的实际参数是求值这个函数所不需要的不终止计算。反过来说，在函数的实际参数会用到的时候传名调用就非常慢了，这是因为实践中几乎总是要使用如 thunk 这样的机制。</p>
 <p><code>传需求调用(Call by need)</code>，<code>传需求调用</code> 是 <code>传名调用</code> 的记忆化版本，如果 “函数的实际参数被求值了”，这个值被存储起来已备后续使用。在“纯”(无副作用)设置下，这产生同传名调用一样的结果；当函数实际参数被使用两次或更多次的时候，传需求调用总是更快。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object Add {
-  def addByName(a: Int, b: =&gt; Int) = a + b 
-  def addByValue(a: Int, b: Int) = a + b 
-}
-</code></pre></div><p>addByName是传名调用，addByValue是传值调用。语法上可以看出，使用传名调用时，在参数名称和参数类型中间有一个 <code>=&gt;</code> 符号。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  addByName(2, 2 + 2)
--&gt;2 + (2 + 2)
--&gt;2 + 4
--&gt;6
- 
-  addByValue(2, 2 + 2)
--&gt;addByValue(2, 4)
--&gt;2 + 4
--&gt;6
-</code></pre></div><p>可以看出，在进入函数内部前，传值调用方式就已经将参数表达式的值计算完毕，而传名调用是在函数内部进行参数表达式的值计算的。这就造成了一种现象，每次使用传名调用时，解释器都会计算一次表达式的值。对于有副作用(side-effect)的参数来说，这无疑造成了两种调用方式结果的不同。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object Add {
+</span></span><span style="display:flex;"><span>  def addByName(a: Int, b: =&gt; Int) = a + b 
+</span></span><span style="display:flex;"><span>  def addByValue(a: Int, b: Int) = a + b 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>addByName是传名调用，addByValue是传值调用。语法上可以看出，使用传名调用时，在参数名称和参数类型中间有一个 <code>=&gt;</code> 符号。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>  addByName(2, 2 + 2)
+</span></span><span style="display:flex;"><span>-&gt;2 + (2 + 2)
+</span></span><span style="display:flex;"><span>-&gt;2 + 4
+</span></span><span style="display:flex;"><span>-&gt;6
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>  addByValue(2, 2 + 2)
+</span></span><span style="display:flex;"><span>-&gt;addByValue(2, 4)
+</span></span><span style="display:flex;"><span>-&gt;2 + 4
+</span></span><span style="display:flex;"><span>-&gt;6
+</span></span></code></pre></div><p>可以看出，在进入函数内部前，传值调用方式就已经将参数表达式的值计算完毕，而传名调用是在函数内部进行参数表达式的值计算的。这就造成了一种现象，每次使用传名调用时，解释器都会计算一次表达式的值。对于有副作用(side-effect)的参数来说，这无疑造成了两种调用方式结果的不同。</p>
 <p>复杂示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object TargetTest extends App {
-    def loop(body: =&gt; Unit): LoopUnlessCond =
-        new LoopUnlessCond(body)
-    protected class LoopUnlessCond(body: =&gt; Unit) {
-        def unless(cond: =&gt; Boolean) {
-        body
-        if (!cond) unless(cond)
-        }
-    }
-    var i = 10
-    loop {
-        println(&#34;i = &#34; + i)
-        i -= 1
-    } unless (i == 0)
-}
-</code></pre></div><h4 id="函数定义">函数定义</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object TargetTest extends App {
+</span></span><span style="display:flex;"><span>    def loop(body: =&gt; Unit): LoopUnlessCond =
+</span></span><span style="display:flex;"><span>        new LoopUnlessCond(body)
+</span></span><span style="display:flex;"><span>    protected class LoopUnlessCond(body: =&gt; Unit) {
+</span></span><span style="display:flex;"><span>        def unless(cond: =&gt; Boolean) {
+</span></span><span style="display:flex;"><span>        body
+</span></span><span style="display:flex;"><span>        if (!cond) unless(cond)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    var i = 10
+</span></span><span style="display:flex;"><span>    loop {
+</span></span><span style="display:flex;"><span>        println(&#34;i = &#34; + i)
+</span></span><span style="display:flex;"><span>        i -= 1
+</span></span><span style="display:flex;"><span>    } unless (i == 0)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="函数定义">函数定义</h4>
 <p>使用方式一：In a value：it introduces a function literal（通译为匿名函数，有时候也叫函数显式声明，函数字面量）, or lambda（参考lambda表达式的文章，其实也是匿名函数），示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">List(1,2,3).map { (x: Int) =&gt; x * 2 }
-</code></pre></div><p>使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&gt; T, (A,B) =&gt; T, (A,B,C) =&gt; T, etc.) it&rsquo;s sugar（syntactic sugar语法糖） for Function<!-- raw HTML omitted -->[A[,B,&hellip;],T], that is, a function that takes parameters of type A[,B&hellip;], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>List(1,2,3).map { (x: Int) =&gt; x * 2 }
+</span></span></code></pre></div><p>使用方式二：in a type, with symbols on both sides of the arrow (e.g. A =&gt; T, (A,B) =&gt; T, (A,B,C) =&gt; T, etc.) it&rsquo;s sugar（syntactic sugar语法糖） for Function<!-- raw HTML omitted -->[A[,B,&hellip;],T], that is, a function that takes parameters of type A[,B&hellip;], and returns a value of type T.（语法糖通过更简洁的语法达到目的，直接把所需要的参数、类型、函数最简化，然后把解析的工作交给编译器来完成，这步称为去糖化。例如，(A,B)=&gt;T，包含了函数，参数以及类型，实际上是一个匿名函数，func(A,B,T)或者func(A T,B T)）。</p>
 <p>示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val f: Function1[Int,String] = myInt =&gt; &#34;my int: &#34;+myInt.toString
-f: (Int) =&gt; String = &lt;function1&gt;
-
-scala&gt; f(0)
-res0: String = my int: 0
-
-scala&gt; val f2: Int =&gt; String = myInt =&gt; &#34;my int v2: &#34;+myInt.toString
-f2: (Int) =&gt; String = &lt;function1&gt;
-
-scala&gt; f2(1)
-res1: String = my int v2: 1
-
-scala&gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
-f2: (Int, Int) =&gt; String = &lt;function2&gt;
-
-scala&gt; f2(1,2)
-res6: String = This is my function to transfer 1 and 2 as a string component.
-
-scala&gt; val f22:(Int,Int)=&gt;String = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
-f22: (Int, Int) =&gt; String = &lt;function2&gt;
-
-scala&gt; f22(2,4)
-res7: String = This is my function to transfer 2 and 4 as a string component.
-Here myInt is binded to the argument value passed to f and f2.
-() =&gt; T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
-
-scala&gt; val f: () =&gt; Unit = () =&gt; { println(&#34;x&#34;)}
-f: () =&gt; Unit = &lt;function0&gt;
-
-scala&gt; f()
-x
-</code></pre></div><p>使用方式三：Empty parens on the left hand side (e.g. () =&gt; T) indicate that the function takes no parameters (also sometimes called a &ldquo;thunk&rdquo;);</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val f: Function1[Int,String] = myInt =&gt; &#34;my int: &#34;+myInt.toString
+</span></span><span style="display:flex;"><span>f: (Int) =&gt; String = &lt;function1&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; f(0)
+</span></span><span style="display:flex;"><span>res0: String = my int: 0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val f2: Int =&gt; String = myInt =&gt; &#34;my int v2: &#34;+myInt.toString
+</span></span><span style="display:flex;"><span>f2: (Int) =&gt; String = &lt;function1&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; f2(1)
+</span></span><span style="display:flex;"><span>res1: String = my int v2: 1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val f2: Function2[Int,Int,String] = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+</span></span><span style="display:flex;"><span>f2: (Int, Int) =&gt; String = &lt;function2&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; f2(1,2)
+</span></span><span style="display:flex;"><span>res6: String = This is my function to transfer 1 and 2 as a string component.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val f22:(Int,Int)=&gt;String = (myInt1,myInt2) =&gt; &#34;This is my function to transfer &#34; + myInt1 + &#34; and &#34; + myInt2 + &#34; as a string component.&#34;
+</span></span><span style="display:flex;"><span>f22: (Int, Int) =&gt; String = &lt;function2&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; f22(2,4)
+</span></span><span style="display:flex;"><span>res7: String = This is my function to transfer 2 and 4 as a string component.
+</span></span><span style="display:flex;"><span>Here myInt is binded to the argument value passed to f and f2.
+</span></span><span style="display:flex;"><span>() =&gt; T is the type of a function that takes no arguments and returns a T. It is equivalent to Function0[T]. () is called a zero parameter list I believe.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val f: () =&gt; Unit = () =&gt; { println(&#34;x&#34;)}
+</span></span><span style="display:flex;"><span>f: () =&gt; Unit = &lt;function0&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; f()
+</span></span><span style="display:flex;"><span>x
+</span></span></code></pre></div><p>使用方式三：Empty parens on the left hand side (e.g. () =&gt; T) indicate that the function takes no parameters (also sometimes called a &ldquo;thunk&rdquo;);</p>
 <p>示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object TimerAnonymous {
-    def oncePerSecond(callback: () =&gt; Unit) {
-        while (true) { callback(); Thread sleep 1000 }
-    }
-    
-    def main(args: Array[String]) {
-        oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
-    }
-}
-</code></pre></div><h4 id="模式匹配">模式匹配</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object TimerAnonymous {
+</span></span><span style="display:flex;"><span>    def oncePerSecond(callback: () =&gt; Unit) {
+</span></span><span style="display:flex;"><span>        while (true) { callback(); Thread sleep 1000 }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    def main(args: Array[String]) {
+</span></span><span style="display:flex;"><span>        oncePerSecond(() =&gt; println(&#34;time flies like an arrow...&#34;))
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="模式匹配">模式匹配</h4>
 <p>这个比较容易理解，示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object MatchTest extends App {
-    def matchTest(x: Int): String = x match {
-        case 1 =&gt; &#34;one&#34;
-        case 2 =&gt; &#34;two&#34;
-        case _ =&gt; &#34;many&#34;
-    }
-    println(matchTest(3))
-}
-</code></pre></div><h4 id="自身类型self-type">自身类型（self type）</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object MatchTest extends App {
+</span></span><span style="display:flex;"><span>    def matchTest(x: Int): String = x match {
+</span></span><span style="display:flex;"><span>        case 1 =&gt; &#34;one&#34;
+</span></span><span style="display:flex;"><span>        case 2 =&gt; &#34;two&#34;
+</span></span><span style="display:flex;"><span>        case _ =&gt; &#34;many&#34;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    println(matchTest(3))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="自身类型self-type">自身类型（self type）</h4>
 <p>When a trait extends a class, there is a guarantee that the superclass is present in any class mixing in the trait. Scala has analternate mechanism for guaranteeing this: self types.
 When a trait starts out with<br>
 <code>this: Type =&gt;</code><br>
 then it can only be mixed into a subclass of the given type.</p>
 <p>示例</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; trait LoggedException {
-    |   this: Exception =&gt;
-    |   def log(): Unit = {
-    |     println(&#34;Please check errors.&#34;)
-    |   }
-    | }
-    defined trait LoggedException
-scala&gt; import java.io.File
-import java.io.File
-
-scala&gt; val file = new File(&#34;/user&#34;) with LoggedException
-&lt;console&gt;:13: error: illegal inheritance;
-self-type java.io.File with LoggedException does not conform to LoggedException&#39;s selftype LoggedException with Exception
-    val file = new File(&#34;/user&#34;) with LoggedException
-</code></pre></div><p>在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; trait LoggedException {
+</span></span><span style="display:flex;"><span>    |   this: Exception =&gt;
+</span></span><span style="display:flex;"><span>    |   def log(): Unit = {
+</span></span><span style="display:flex;"><span>    |     println(&#34;Please check errors.&#34;)
+</span></span><span style="display:flex;"><span>    |   }
+</span></span><span style="display:flex;"><span>    | }
+</span></span><span style="display:flex;"><span>    defined trait LoggedException
+</span></span><span style="display:flex;"><span>scala&gt; import java.io.File
+</span></span><span style="display:flex;"><span>import java.io.File
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val file = new File(&#34;/user&#34;) with LoggedException
+</span></span><span style="display:flex;"><span>&lt;console&gt;:13: error: illegal inheritance;
+</span></span><span style="display:flex;"><span>self-type java.io.File with LoggedException does not conform to LoggedException&#39;s selftype LoggedException with Exception
+</span></span><span style="display:flex;"><span>    val file = new File(&#34;/user&#34;) with LoggedException
+</span></span></code></pre></div><p>在定义LoggedException使用了this: Exception =&gt;那么意味着LoggedException只能被“混入”Exception的子类中，因为File不是Exception的子类，所以报错。</p>
 <h1 id="下划线-_">下划线 <code>_</code></h1>
 <p><code>_</code> 在Scala上通常代表是通配符，占位符。</p>
 <h2 id="作为标识符">作为标识符</h2>
@@ -373,165 +373,165 @@ self-type java.io.File with LoggedException does not conform to LoggedException&
 <h3 id="import语句">import语句</h3>
 <p>例如 <code>import scala.math._</code></p>
 <h3 id="case语句">case语句</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object MatchTest extends App {
-    def matchTest(x: Int): String = x match {
-        case 1 =&gt; &#34;one&#34;
-        case 2 =&gt; &#34;two&#34;
-        case _ =&gt; &#34;many&#34;
-    }
-    println(matchTest(3))
-}
-</code></pre></div><h3 id="元组tuple访问">元组（tuple）访问</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
-t: (Int, Double, String) = (1,3.14,Fred)
-//可以用_1，_2，_3访问这个元组
-
-scala&gt; t._1
-res3: Int = 1
-
-scala&gt; t._2
-res4: Double = 3.14
-
-scala&gt; t._3
-res5: String = Fred
-</code></pre></div><p>可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
-t: (Int, Double, String) = (1,3.14,Fred)
-
-scala&gt; val (first, second, _) = t
-first: Int = 1
-second: Double = 3.14
-
-scala&gt; val (first, _, _) = t
-first: Int = 1
-</code></pre></div><h2 id="将方法转换为函数">将方法转换为函数</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object MatchTest extends App {
+</span></span><span style="display:flex;"><span>    def matchTest(x: Int): String = x match {
+</span></span><span style="display:flex;"><span>        case 1 =&gt; &#34;one&#34;
+</span></span><span style="display:flex;"><span>        case 2 =&gt; &#34;two&#34;
+</span></span><span style="display:flex;"><span>        case _ =&gt; &#34;many&#34;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    println(matchTest(3))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="元组tuple访问">元组（tuple）访问</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
+</span></span><span style="display:flex;"><span>t: (Int, Double, String) = (1,3.14,Fred)
+</span></span><span style="display:flex;"><span>//可以用_1，_2，_3访问这个元组
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; t._1
+</span></span><span style="display:flex;"><span>res3: Int = 1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; t._2
+</span></span><span style="display:flex;"><span>res4: Double = 3.14
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; t._3
+</span></span><span style="display:flex;"><span>res5: String = Fred
+</span></span></code></pre></div><p>可以通过模式匹配获取元组的元素，当不需要某个值的时候可以使用_替代，例如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val t = (1, 3.14, &#34;Fred&#34;)
+</span></span><span style="display:flex;"><span>t: (Int, Double, String) = (1,3.14,Fred)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val (first, second, _) = t
+</span></span><span style="display:flex;"><span>first: Int = 1
+</span></span><span style="display:flex;"><span>second: Double = 3.14
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val (first, _, _) = t
+</span></span><span style="display:flex;"><span>first: Int = 1
+</span></span></code></pre></div><h2 id="将方法转换为函数">将方法转换为函数</h2>
 <p>请参见 <a href="https://www.jianshu.com/p/d5ce4c683703">Scala中Method方法和Function函数的区别</a></p>
 <h2 id="作为函数的参数">作为函数的参数</h2>
 <p>一个匿名的函数传递给一个方法或者函数的时候，scala会尽量推断出参数类型。例如一个完整的匿名函数作为参数可以写为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
-compute: (f: Double =&gt; Double)Double
-//传递一个匿名函数作为compute的参数
-
-scala&gt; compute((x: Double) =&gt; 2 * x)
-res1: Double = 6.0
-</code></pre></div><p>如果参数x在=&gt;右侧只出现一次，可以用_替代这个参数，简写为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; compute(2 * _)
-res2: Double = 6.0
-</code></pre></div><p>更常见的使用方式为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; (1 to 9).filter(_ % 2 == 0)
-res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
-
-scala&gt; (1 to 3).map(_ * 3)
-res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)
-</code></pre></div><p>以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 <code>_</code> 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为<code>T</code>，可以用 <code>_</code> 分别表示二元函数中的参数 <code>x</code> 和 <code>y</code> 。例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
-res0: List[Int] = List(1, 5, 7, 8, 10)
-</code></pre></div><p>函数组合的参数</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def f(s: String) = &#34;f(&#34; + s + &#34;)&#34;
-f: (String)java.lang.String
-
-scala&gt; def g(s: String) = &#34;g(&#34; + s + &#34;)&#34;
-g: (String)java.lang.String
-</code></pre></div><p>compose 组合其他函数形成一个新的函数 f(g(x))</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val fComposeG = f _ compose g _
-fComposeG: (String) =&gt; java.lang.String = &lt;function&gt;
-
-scala&gt; fComposeG(&#34;yay&#34;)
-res0: java.lang.String = f(g(yay))
-</code></pre></div><p>有时候，你并不关心是否能够命名一个类型变量，例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def count[A](l: List[A]) = l.size
-count: [A](List[A])Int
-</code></pre></div><p>这时你可以使用“通配符”取而代之：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def count(l: List[_]) = l.size
-count: (List[_])Int
-</code></pre></div><p>这相当于是下面代码的简写：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def count(l: List[T forSome { type T }]) = l.size
-count: (List[T forSome { type T }])Int
-</code></pre></div><p>你也可以为通配符类型变量应用边界：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def hashcodes(l: Seq[_ &lt;: AnyRef]) = l map (_.hashCode)
-hashcodes: (Seq[_ &lt;: AnyRef])Seq[Int]
-
-scala&gt; hashcodes(Seq(1,2,3))
-&lt;console&gt;:7: error: type mismatch;
- found   : Int(1)
- required: AnyRef
-Note: primitive types are not implicitly converted to AnyRef.
-You can safely force boxing by casting x.asInstanceOf[AnyRef].
-       hashcodes(Seq(1,2,3))
-                     ^
-
-scala&gt; hashcodes(Seq(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;))
-res1: Seq[Int] = List(110182, 115276, 110339486)
-</code></pre></div><h2 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def compute(f: (Double)=&gt;Double) = f(3)
+</span></span><span style="display:flex;"><span>compute: (f: Double =&gt; Double)Double
+</span></span><span style="display:flex;"><span>//传递一个匿名函数作为compute的参数
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; compute((x: Double) =&gt; 2 * x)
+</span></span><span style="display:flex;"><span>res1: Double = 6.0
+</span></span></code></pre></div><p>如果参数x在=&gt;右侧只出现一次，可以用_替代这个参数，简写为：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; compute(2 * _)
+</span></span><span style="display:flex;"><span>res2: Double = 6.0
+</span></span></code></pre></div><p>更常见的使用方式为：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; (1 to 9).filter(_ % 2 == 0)
+</span></span><span style="display:flex;"><span>res0: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4, 6, 8)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; (1 to 3).map(_ * 3)
+</span></span><span style="display:flex;"><span>res1: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 6, 9)
+</span></span></code></pre></div><p>以上所说的为一元函数，那么对于二元函数，即有两个参数x和y的函数，是如何使用 <code>_</code> 的？下面方法需要的参数是一个二元函数，而且函数参数的类型为<code>T</code>，可以用 <code>_</code> 分别表示二元函数中的参数 <code>x</code> 和 <code>y</code> 。例如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; List(10, 5, 8, 1, 7).sortWith(_ &lt; _)
+</span></span><span style="display:flex;"><span>res0: List[Int] = List(1, 5, 7, 8, 10)
+</span></span></code></pre></div><p>函数组合的参数</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def f(s: String) = &#34;f(&#34; + s + &#34;)&#34;
+</span></span><span style="display:flex;"><span>f: (String)java.lang.String
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; def g(s: String) = &#34;g(&#34; + s + &#34;)&#34;
+</span></span><span style="display:flex;"><span>g: (String)java.lang.String
+</span></span></code></pre></div><p>compose 组合其他函数形成一个新的函数 f(g(x))</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val fComposeG = f _ compose g _
+</span></span><span style="display:flex;"><span>fComposeG: (String) =&gt; java.lang.String = &lt;function&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; fComposeG(&#34;yay&#34;)
+</span></span><span style="display:flex;"><span>res0: java.lang.String = f(g(yay))
+</span></span></code></pre></div><p>有时候，你并不关心是否能够命名一个类型变量，例如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def count[A](l: List[A]) = l.size
+</span></span><span style="display:flex;"><span>count: [A](List[A])Int
+</span></span></code></pre></div><p>这时你可以使用“通配符”取而代之：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def count(l: List[_]) = l.size
+</span></span><span style="display:flex;"><span>count: (List[_])Int
+</span></span></code></pre></div><p>这相当于是下面代码的简写：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def count(l: List[T forSome { type T }]) = l.size
+</span></span><span style="display:flex;"><span>count: (List[T forSome { type T }])Int
+</span></span></code></pre></div><p>你也可以为通配符类型变量应用边界：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def hashcodes(l: Seq[_ &lt;: AnyRef]) = l map (_.hashCode)
+</span></span><span style="display:flex;"><span>hashcodes: (Seq[_ &lt;: AnyRef])Seq[Int]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; hashcodes(Seq(1,2,3))
+</span></span><span style="display:flex;"><span>&lt;console&gt;:7: error: type mismatch;
+</span></span><span style="display:flex;"><span> found   : Int(1)
+</span></span><span style="display:flex;"><span> required: AnyRef
+</span></span><span style="display:flex;"><span>Note: primitive types are not implicitly converted to AnyRef.
+</span></span><span style="display:flex;"><span>You can safely force boxing by casting x.asInstanceOf[AnyRef].
+</span></span><span style="display:flex;"><span>       hashcodes(Seq(1,2,3))
+</span></span><span style="display:flex;"><span>                     ^
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; hashcodes(Seq(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;))
+</span></span><span style="display:flex;"><span>res1: Seq[Int] = List(110182, 115276, 110339486)
+</span></span></code></pre></div><h2 id="下划线和其他符号组合的使用方式">下划线和其他符号组合的使用方式</h2>
 <h3 id="下划线与等号-_">下划线与等号 <code>_=</code></h3>
 <p>自定义setter方法，请参见 <a href="https://www.jianshu.com/p/4a3362ec22de">Overriding def with var in Scala</a></p>
 <h3 id="下划线与星号-_">下划线与星号 <code>_*</code></h3>
 <h4 id="变长参数">变长参数</h4>
 <p>例如定义一个变长参数的方法sum，然后计算 <code>1-5</code> 的和，可以写为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; def sum(args: Int*) = {
-    | var result = 0
-    | for (arg &lt;- args) result += arg
-    | result
-    | }
-sum: (args: Int*)Int
-
-scala&gt; val s = sum(1,2,3,4,5)
-s: Int = 15
-</code></pre></div><p>但是如果使用这种方式就会报错</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val s = sum(1 to 5)
-&lt;console&gt;:12: error: type mismatch;
-found   : scala.collection.immutable.Range.Inclusive
-required: Int
-    val s = sum(1 to 5)
-                    ^
-</code></pre></div><p>这种情况必须在后面写上: <code>_*</code> 将<code> 1 to 5</code> 转化为参数序列</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val s = sum(1 to 5: _*)
-s: Int = 15
-</code></pre></div><h4 id="变量声明中的模式">变量声明中的模式</h4>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; def sum(args: Int*) = {
+</span></span><span style="display:flex;"><span>    | var result = 0
+</span></span><span style="display:flex;"><span>    | for (arg &lt;- args) result += arg
+</span></span><span style="display:flex;"><span>    | result
+</span></span><span style="display:flex;"><span>    | }
+</span></span><span style="display:flex;"><span>sum: (args: Int*)Int
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val s = sum(1,2,3,4,5)
+</span></span><span style="display:flex;"><span>s: Int = 15
+</span></span></code></pre></div><p>但是如果使用这种方式就会报错</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val s = sum(1 to 5)
+</span></span><span style="display:flex;"><span>&lt;console&gt;:12: error: type mismatch;
+</span></span><span style="display:flex;"><span>found   : scala.collection.immutable.Range.Inclusive
+</span></span><span style="display:flex;"><span>required: Int
+</span></span><span style="display:flex;"><span>    val s = sum(1 to 5)
+</span></span><span style="display:flex;"><span>                    ^
+</span></span></code></pre></div><p>这种情况必须在后面写上: <code>_*</code> 将<code> 1 to 5</code> 转化为参数序列</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val s = sum(1 to 5: _*)
+</span></span><span style="display:flex;"><span>s: Int = 15
+</span></span></code></pre></div><h4 id="变量声明中的模式">变量声明中的模式</h4>
 <p>例如，下面代码分别将arr中的第一个和第二个值赋给first和second</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; val arr = Array(1, 2, 3, 4, 5)
-arr: Array[Int] = Array(1, 2, 3, 4, 5)
-
-scala&gt; val Array(1, 2, _*) = arr
-
-scala&gt; val Array(first, second, _*) = arr
-first: Int = 1
-second: Int = 2
-</code></pre></div><h1 id="at符-">At符 <code>@</code></h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; val arr = Array(1, 2, 3, 4, 5)
+</span></span><span style="display:flex;"><span>arr: Array[Int] = Array(1, 2, 3, 4, 5)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val Array(1, 2, _*) = arr
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scala&gt; val Array(first, second, _*) = arr
+</span></span><span style="display:flex;"><span>first: Int = 1
+</span></span><span style="display:flex;"><span>second: Int = 2
+</span></span></code></pre></div><h1 id="at符-">At符 <code>@</code></h1>
 <h2 id="标识注解">标识注解</h2>
 <p>在方法，类，属性上标识一个注解， 如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">@deprecated(&#34;the delayedInit mechanism will disappear&#34;, &#34;2.11.0&#34;)
-override def delayedInit(body: =&gt; Unit) {
-    initCode += (() =&gt; body)
-}
-</code></pre></div><h2 id="赋值检测">赋值检测</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">object test {
-  def main(args: Array[String]) {
-    val b=Some(2)
-    val a@Some(1)  =  Some(1)
-    println(b)
-    println(a)
-
-    val bb= 2
-    val aa@&#34;IMF&#34; = &#34;IMF&#34;
-    println(bb)
-    println(aa)
-  }
-}
-</code></pre></div><p>输出结果如下，<code>@</code> 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Some(2)
-Some(1)
-2
-IMF
-</code></pre></div><h2 id="值匹配重命名">值匹配重命名</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>@deprecated(&#34;the delayedInit mechanism will disappear&#34;, &#34;2.11.0&#34;)
+</span></span><span style="display:flex;"><span>override def delayedInit(body: =&gt; Unit) {
+</span></span><span style="display:flex;"><span>    initCode += (() =&gt; body)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="赋值检测">赋值检测</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>object test {
+</span></span><span style="display:flex;"><span>  def main(args: Array[String]) {
+</span></span><span style="display:flex;"><span>    val b=Some(2)
+</span></span><span style="display:flex;"><span>    val a@Some(1)  =  Some(1)
+</span></span><span style="display:flex;"><span>    println(b)
+</span></span><span style="display:flex;"><span>    println(a)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    val bb= 2
+</span></span><span style="display:flex;"><span>    val aa@&#34;IMF&#34; = &#34;IMF&#34;
+</span></span><span style="display:flex;"><span>    println(bb)
+</span></span><span style="display:flex;"><span>    println(aa)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>输出结果如下，<code>@</code> 符号在scala编译中做了一个模式配置的工作。将字符串做了比对，如果值相等，将这个值取到赋值给变量；如果值不相等，匹配不上，就报一个异常</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Some(2)
+</span></span><span style="display:flex;"><span>Some(1)
+</span></span><span style="display:flex;"><span>2
+</span></span><span style="display:flex;"><span>IMF
+</span></span></code></pre></div><h2 id="值匹配重命名">值匹配重命名</h2>
 <p>使用在match case场景，可以将匹配的值重新命名，示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def calcType(calc: Calculator) = calc match {
-  case Calculator(&#34;HP&#34;, &#34;20B&#34;) =&gt; &#34;financial&#34;
-  case Calculator(&#34;HP&#34;, &#34;48G&#34;) =&gt; &#34;scientific&#34;
-  case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
-  case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
-}
-</code></pre></div><h1 id="-与--4"><code>/:</code> 与 <code>:\</code></h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def calcType(calc: Calculator) = calc match {
+</span></span><span style="display:flex;"><span>  case Calculator(&#34;HP&#34;, &#34;20B&#34;) =&gt; &#34;financial&#34;
+</span></span><span style="display:flex;"><span>  case Calculator(&#34;HP&#34;, &#34;48G&#34;) =&gt; &#34;scientific&#34;
+</span></span><span style="display:flex;"><span>  case Calculator(&#34;HP&#34;, &#34;30B&#34;) =&gt; &#34;business&#34;
+</span></span><span style="display:flex;"><span>  case c@Calculator(_, _) =&gt; &#34;Calculator: %s of unknown type&#34;.format(c)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="-与--4"><code>/:</code> 与 <code>:\</code></h1>
 <p>了解这两个符号，先要知道fold, foldLeft与foldRight，表示操作遍历问题集合的顺序：</p>
 <ul>
 <li>fold：遍历的顺序没有特殊的次序</li>
@@ -539,36 +539,36 @@ IMF
 <li>foldRight：是从右开始算，然后往左遍历</li>
 </ul>
 <p>他们定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def fold[A1 &gt;: A](z: A1)(op: (A1, A1) =&gt; A1): A1 = foldLeft(z)(op)
-def foldLeft[B](z: B)(op: (B, A) =&gt; B): B = {
-   var result = z
-   this.seq foreach (x =&gt; result = op(result, x))
-   result
-}
-
-def foldRight[B](z: B)(op: (A, B) =&gt; B): B = reversed.foldLeft(z)((x, y) =&gt; op(y, x))
-</code></pre></div><p>foldLeft和foldRight函数还有两个缩写的函数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">def /:[B](z: B)(op: (B, A) =&gt; B): B = foldLeft(z)(op)
-def :\[B](z: B)(op: (A, B) =&gt; B): B = foldRight(z)(op)
-</code></pre></div><p><code>/:</code> 是foldLeft的简写， 示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; (0/:(1 to 100))(_+_)
-res32: Int = 5050
-</code></pre></div><p>等价于</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; (1 to 100).foldLeft(0)(_+_)
-res33: Int = 5050
-</code></pre></div><p><code>:\</code> 是foldRight的简写， 示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
-res51: Int = 85
-</code></pre></div><h1 id="-与--5"><code>%</code> 与 <code>%%</code></h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def fold[A1 &gt;: A](z: A1)(op: (A1, A1) =&gt; A1): A1 = foldLeft(z)(op)
+</span></span><span style="display:flex;"><span>def foldLeft[B](z: B)(op: (B, A) =&gt; B): B = {
+</span></span><span style="display:flex;"><span>   var result = z
+</span></span><span style="display:flex;"><span>   this.seq foreach (x =&gt; result = op(result, x))
+</span></span><span style="display:flex;"><span>   result
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>def foldRight[B](z: B)(op: (A, B) =&gt; B): B = reversed.foldLeft(z)((x, y) =&gt; op(y, x))
+</span></span></code></pre></div><p>foldLeft和foldRight函数还有两个缩写的函数：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def /:[B](z: B)(op: (B, A) =&gt; B): B = foldLeft(z)(op)
+</span></span><span style="display:flex;"><span>def :\[B](z: B)(op: (A, B) =&gt; B): B = foldRight(z)(op)
+</span></span></code></pre></div><p><code>/:</code> 是foldLeft的简写， 示例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; (0/:(1 to 100))(_+_)
+</span></span><span style="display:flex;"><span>res32: Int = 5050
+</span></span></code></pre></div><p>等价于</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; (1 to 100).foldLeft(0)(_+_)
+</span></span><span style="display:flex;"><span>res33: Int = 5050
+</span></span></code></pre></div><p><code>:\</code> 是foldRight的简写， 示例：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>scala&gt; ((1 to 5):\100)((i,sum)=&gt; sum-i)
+</span></span><span style="display:flex;"><span>res51: Int = 85
+</span></span></code></pre></div><h1 id="-与--5"><code>%</code> 与 <code>%%</code></h1>
 <p>使用SBT时，在build.st文件中，通常会看到</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
-&#34;com.typesafe&#34; %% &#34;play-plugins-mailer&#34; % &#34;2.1&#34;
-</code></pre></div><p><code>groupID %% artifactID % revision</code> 来代替 <code>groupID % artifactID % revision</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>&#34;org.hibernate&#34; % &#34;hibernate-entitymanager&#34; % &#34;4.1.0.Final&#34;,
+</span></span><span style="display:flex;"><span>&#34;com.typesafe&#34; %% &#34;play-plugins-mailer&#34; % &#34;2.1&#34;
+</span></span></code></pre></div><p><code>groupID %% artifactID % revision</code> 来代替 <code>groupID % artifactID % revision</code></p>
 <p><code>%%</code> 表示SBT会增加工程的Scala版本到 <code>artifact name</code> 结尾，示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">org.scala-tools&#34; % &#34;scala-stm_2.9.1&#34; % &#34;0.3&#34;
-</code></pre></div><p>假定工程的Scala版本为2.9.1，则上面可以简写为</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">org.scala-tools&#34; %% &#34;scala-stm&#34; % &#34;0.3&#34;
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>org.scala-tools&#34; % &#34;scala-stm_2.9.1&#34; % &#34;0.3&#34;
+</span></span></code></pre></div><p>假定工程的Scala版本为2.9.1，则上面可以简写为</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>org.scala-tools&#34; %% &#34;scala-stm&#34; % &#34;0.3&#34;
+</span></span></code></pre></div><hr>
 <p>参考：</p>
 <ol>
 <li><a href="https://docs.scala-lang.org/tutorials/FAQ/finding-symbols.html">FAQ HOW DO I FIND WHAT SOME SYMBOL MEANS OR DOES?</a></li>
@@ -669,7 +669,7 @@ res51: Int = 85
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -805,7 +805,7 @@ res51: Int = 85
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

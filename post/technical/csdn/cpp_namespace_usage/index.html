@@ -148,81 +148,81 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>C开发人员会经常使用<code>#define</code>即宏来声明常量，但宏却是全局的，对大的工程来说是很难维护，经常是导致名字冲突。还好，C++给我们带来了<code>namespace</code>名字空间。它的使用如下，名字空间可以把一组逻辑分组，同时名字空间也是一种作用域。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace outspname {   
-   const int CVAR1 = 1;  
-   const char* const CVAR2 = &#34;33333&#34;;  
-   void test();  
-
-   namespace inspname {  
-      enum { A, B, C};  
-      class Klass {};  
-   }  
-}
-</code></pre></div><p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>namespace outspname {   
+</span></span><span style="display:flex;"><span>   const int CVAR1 = 1;  
+</span></span><span style="display:flex;"><span>   const char* const CVAR2 = &#34;33333&#34;;  
+</span></span><span style="display:flex;"><span>   void test();  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   namespace inspname {  
+</span></span><span style="display:flex;"><span>      enum { A, B, C};  
+</span></span><span style="display:flex;"><span>      class Klass {};  
+</span></span><span style="display:flex;"><span>   }  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但即使一个简单的名字空间，其中也有不少的玄机。</p>
 <ul>
 <li>
 <p>当某个名字在自己的空间之外使用，在反复地在前面加上名字空间作为限定词， 如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">const int  local  = outspname::inspname::A
-</code></pre></div><p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">{  
-   using outspname::inspname::A;  
-   const int local = A;  
-}
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>const int  local  = outspname::inspname::A
+</span></span></code></pre></div><p>这样写是不是很令人烦。在某个小的局部作用域内，我们可以通过一个使用声明。如:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>{  
+</span></span><span style="display:flex;"><span>   using outspname::inspname::A;  
+</span></span><span style="display:flex;"><span>   const int local = A;  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
 <li>
 <p>通过一个使用指令把该名字空间下所有的名字变成可用。</p>
 <p>如下所示，与第一点的用法区别，是<code>using</code> 后面有个<code>namespace</code>。同样只在转换时，或者在一个小的局部作用域内使用<code>using namesapce</code>，否则也会带来名字的污染。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">{  
-  using namespace outspname;  
-  const int local2 = CVAR1;  
-  const int local2 = inspname::B;  
-  {  
-     using namespace inspname;  
-     Klass* p = new Klass();  
-  }    
-}
-</code></pre></div><p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">namespace testname {  
-   void test(int param);  
-}
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>{  
+</span></span><span style="display:flex;"><span>  using namespace outspname;  
+</span></span><span style="display:flex;"><span>  const int local2 = CVAR1;  
+</span></span><span style="display:flex;"><span>  const int local2 = inspname::B;  
+</span></span><span style="display:flex;"><span>  {  
+</span></span><span style="display:flex;"><span>     using namespace inspname;  
+</span></span><span style="display:flex;"><span>     Klass* p = new Klass();  
+</span></span><span style="display:flex;"><span>  }    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但使用<code>using namespace</code>这种用法时，要注意下面一点，如在某个.h中声明了有<code>testname::test</code>的方法。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>namespace testname {  
+</span></span><span style="display:flex;"><span>   void test(int param);  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
 </ul>
 <p>在其.cpp中，不能使用如下这种方式，test方法只是此编译单元的一个局部方法，并非testname名字空间的test方法实现。
 <code>using testname;   void test(int param) {   }</code></p>
 <pre><code>正确的使用方式是:
 </code></pre>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    namespace testname {  
-       void test(int param) {  
-       }  
-    }  
-    ```
-    
-    或者是
-    ```
-    void testname::test(int param) {  
-}  
-    ```
-
-
-* 名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：
-
-    ```
-    namespace oin = outspname::inspname;  
-    ```
-
-
-* 无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：
-
-    ```
-    namespace {  
-      const int CVAR1 = 1;  
-      void test();  
-    }  
-    ```
-    
-但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
-    
-</code></pre></div><pre><code>namespace $$$ {  
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    namespace testname {  
+</span></span><span style="display:flex;"><span>       void test(int param) {  
+</span></span><span style="display:flex;"><span>       }  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    或者是
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>    void testname::test(int param) {  
+</span></span><span style="display:flex;"><span>}  
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>* 名字空间的别名，当名字空间很长或嵌套很深时，我们可以使用名字空间别名，用法如下：
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>    namespace oin = outspname::inspname;  
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>* 无名名字空间，无名名字空间主要是保持代码的局部性，使用如下：
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>    namespace {  
+</span></span><span style="display:flex;"><span>      const int CVAR1 = 1;  
+</span></span><span style="display:flex;"><span>      void test();  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    ```
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>但一定要注意的一点是，在C++编译器实现时，无名名字空间其实是有名字的，这个隐含的名字跟它所在编译单元名字相关。所以基于这一点，我们不能跨编译单元使用无名名字空间中的名字。上面的声明等价于:
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><pre><code>namespace $$$ {  
   const int CVAR1 = 1;  
   void test();  
 }
@@ -318,7 +318,7 @@ using namespace $$$;
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -385,7 +385,7 @@ using namespace $$$;
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -187,21 +187,21 @@
 <li>allocateDirect不受垃圾回收器影响，适合于不需要从OS内存到JVM内存拷贝的场景，也适合于大块内存长驻使用的场景，并不适合于频繁申请小块内存的场景。做过C/C++开发的同学，可能听说过内存空洞的问题。</li>
 </ul>
 <p>而Netty又在参考JDK的ByteBuffer基础之上，提供ByteBufAllocator：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ByteBufAllocator</span> {
-    <span style="color:#228b22">// 直接分配一块内存，是使用direct还是heap取决于子类实现
-</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">buffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
- 
-    <span style="color:#228b22">// 更倾向于direct方式分配
-</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">ioBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
- 
-    <span style="color:#228b22">// heap内存分配
-</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">heapBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
- 
-    <span style="color:#228b22">// direct内存分配
-</span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">directBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
-    ...
-}
-</code></pre></div><p>它有两个主要的子类：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">interface</span> <span style="color:#008b45;font-weight:bold">ByteBufAllocator</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 直接分配一块内存，是使用direct还是heap取决于子类实现
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">buffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 更倾向于direct方式分配
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">ioBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// heap内存分配
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">heapBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// direct内存分配
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ByteBuf <span style="color:#008b45">directBuffer</span>(<span style="color:#00688b;font-weight:bold">int</span> initialCapacity, <span style="color:#00688b;font-weight:bold">int</span> maxCapacity);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>它有两个主要的子类：</p>
 <ul>
 <li>UnpooledByteBufAllocator： 非池化分配器。</li>
 <li>PooledByteBufAllocator：池化分配器，并且考虑了多线程并发访问的效率问题。在多线程情况下，每个线程有一份独立的缓存管理。</li>
@@ -224,23 +224,23 @@
 </ul>
 <p>这样一下来，内存的管理也就简单得多，也变得效率更高，不需要池化管理的加锁保证多线程安全问题。</p>
 <p>回到案例中的问题，虽然我们可以使用PooledByteBufAllocator来达到ByteBuff复用的效果，同样它也支持为每一个线程通过PoolThreadLocalCache来管理内存，从来避免多线程争夺的问题。它的实现还是非常高效的，只不要过要注意第一次分配的时间。来自网上的测试：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">PooledByteBufTest</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
-        <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0; i&lt;5; i++){
-            <span style="color:#00688b;font-weight:bold">long</span> start = System.<span style="color:#658b00">currentTimeMillis</span>();
-            ByteBuf byteBuf = PooledByteBufAllocator.<span style="color:#658b00">DEFAULT</span>.<span style="color:#658b00">buffer</span>(1024*1024);
-            <span style="color:#00688b;font-weight:bold">long</span> end = System.<span style="color:#658b00">currentTimeMillis</span>();
-            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化pooled的ByteBuf第&#34;</span>+i+<span style="color:#cd5555">&#34;次，耗时&#34;</span>+(end-start)+<span style="color:#cd5555">&#34;毫秒&#34;</span>);
-        }
-    }
-}
-</code></pre></div><p>执行结果：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">初始化pooled的ByteBuf第0次，耗时165毫秒
-初始化pooled的ByteBuf第1次，耗时2毫秒
-初始化pooled的ByteBuf第2次，耗时0毫秒
-初始化pooled的ByteBuf第3次，耗时0毫秒
-初始化pooled的ByteBuf第4次，耗时0毫
-</code></pre></div><p>但我觉得还是过于复杂，其实最为简单的实现：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">PooledByteBufTest</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">static</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">main</span>(String[] args) <span style="color:#8b008b;font-weight:bold">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0; i&lt;5; i++){
+</span></span><span style="display:flex;"><span>            <span style="color:#00688b;font-weight:bold">long</span> start = System.<span style="color:#658b00">currentTimeMillis</span>();
+</span></span><span style="display:flex;"><span>            ByteBuf byteBuf = PooledByteBufAllocator.<span style="color:#658b00">DEFAULT</span>.<span style="color:#658b00">buffer</span>(1024*1024);
+</span></span><span style="display:flex;"><span>            <span style="color:#00688b;font-weight:bold">long</span> end = System.<span style="color:#658b00">currentTimeMillis</span>();
+</span></span><span style="display:flex;"><span>            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;初始化pooled的ByteBuf第&#34;</span>+i+<span style="color:#cd5555">&#34;次，耗时&#34;</span>+(end-start)+<span style="color:#cd5555">&#34;毫秒&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>执行结果：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>初始化pooled的ByteBuf第0次，耗时165毫秒
+</span></span><span style="display:flex;"><span>初始化pooled的ByteBuf第1次，耗时2毫秒
+</span></span><span style="display:flex;"><span>初始化pooled的ByteBuf第2次，耗时0毫秒
+</span></span><span style="display:flex;"><span>初始化pooled的ByteBuf第3次，耗时0毫秒
+</span></span><span style="display:flex;"><span>初始化pooled的ByteBuf第4次，耗时0毫
+</span></span></code></pre></div><p>但我觉得还是过于复杂，其实最为简单的实现：</p>
 <ul>
 <li>考虑绝多大数的场景，假定每个请求消息98%是 1K 大小以内，则可以为每个处理线程直接预先分配 1K的 directBuffer。这个大小做成系统配置项。</li>
 <li>当大小超过 1K 时，则可以再调整 directBuffer 内存的大小。可设置一个上限，避免对内存的溢出攻击。</li>
@@ -340,7 +340,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -423,7 +423,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

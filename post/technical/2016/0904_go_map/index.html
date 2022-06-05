@@ -169,75 +169,75 @@
 <p>Key类型只要能支持<code>==</code>和<code>!=</code>操作符，即可以做为Key，当两个值<code>==</code>时，则认为是同一个Key。</p>
 <h2 id="比较相等">比较相等</h2>
 <p>我们先看一下样例代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8b008b;font-weight:bold">package</span> main
-
-<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#cd5555">&#34;fmt&#34;</span>
-
-<span style="color:#8b008b;font-weight:bold">type</span> _key <span style="color:#8b008b;font-weight:bold">struct</span> {
-}
-
-<span style="color:#8b008b;font-weight:bold">type</span> point <span style="color:#8b008b;font-weight:bold">struct</span> {
-	x <span style="color:#00688b;font-weight:bold">int</span>
-	y <span style="color:#00688b;font-weight:bold">int</span>
-}
-
-<span style="color:#8b008b;font-weight:bold">type</span> pair <span style="color:#8b008b;font-weight:bold">struct</span> {
-	x <span style="color:#00688b;font-weight:bold">int</span>
-	y <span style="color:#00688b;font-weight:bold">int</span>
-}
-
-<span style="color:#8b008b;font-weight:bold">type</span> Sumer <span style="color:#8b008b;font-weight:bold">interface</span> {
-	<span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span>
-}
-
-<span style="color:#8b008b;font-weight:bold">type</span> Suber <span style="color:#8b008b;font-weight:bold">interface</span> {
-	<span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span>
-}
-
-<span style="color:#8b008b;font-weight:bold">func</span> (p *pair) <span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span> {
-	<span style="color:#8b008b;font-weight:bold">return</span> p.x + p.y
-}
-
-<span style="color:#8b008b;font-weight:bold">func</span> (p *point) <span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span> {
-	<span style="color:#8b008b;font-weight:bold">return</span> p.x + p.y
-}
-
-<span style="color:#8b008b;font-weight:bold">func</span> (p pair) <span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span> {
-	<span style="color:#8b008b;font-weight:bold">return</span> p.x - p.y
-}
-
-<span style="color:#8b008b;font-weight:bold">func</span> (p point) <span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span> {
-	<span style="color:#8b008b;font-weight:bold">return</span> p.x - p.y
-}
-
-<span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">main</span>() {
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;_key{} == _key{}: &#34;</span>, _key{} == _key{}) <span style="color:#228b22">// output: true
-</span><span style="color:#228b22"></span>
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;point{} == point{}: &#34;</span>, point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>} == point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>})     <span style="color:#228b22">// output: true
-</span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;&amp;point{} == &amp;point{}: &#34;</span>, &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>} == &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}) <span style="color:#228b22">// output: false
-</span><span style="color:#228b22"></span>
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;[2]point{} == [2]point{}: &#34;</span>, 
-	  [<span style="color:#b452cd">2</span>]point{point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}, point{x: <span style="color:#b452cd">2</span>, y: <span style="color:#b452cd">3</span>}} == [<span style="color:#b452cd">2</span>]point{point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}, point{x: <span style="color:#b452cd">2</span>, y: <span style="color:#b452cd">3</span>}}) <span style="color:#228b22">//output: true
-</span><span style="color:#228b22"></span>
-	<span style="color:#8b008b;font-weight:bold">var</span> a Sumer = &amp;pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	<span style="color:#8b008b;font-weight:bold">var</span> a1 Sumer = &amp;pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	<span style="color:#8b008b;font-weight:bold">var</span> b Sumer = &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Sumer.byptr == Sumer.byptr: &#34;</span>, a == b)        <span style="color:#228b22">// output: false
-</span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Sumer.sametype == Sumer.sametype: &#34;</span>, a == a1) <span style="color:#228b22">// output: false
-</span><span style="color:#228b22"></span>
-	<span style="color:#8b008b;font-weight:bold">var</span> c Suber = pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	<span style="color:#8b008b;font-weight:bold">var</span> d Suber = point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	<span style="color:#8b008b;font-weight:bold">var</span> d1 point = point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Suber.byvalue == Suber.byvalue: &#34;</span>, c == d)  <span style="color:#228b22">// output: false
-</span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Suber.byvalue == point.byvalue: &#34;</span>, d == d1) <span style="color:#228b22">// output: true
-</span><span style="color:#228b22"></span>
-	ci1 := <span style="color:#658b00">make</span>(<span style="color:#8b008b;font-weight:bold">chan</span> <span style="color:#00688b;font-weight:bold">int</span>, <span style="color:#b452cd">1</span>)
-	ci2 := ci1
-	ci3 := <span style="color:#658b00">make</span>(<span style="color:#8b008b;font-weight:bold">chan</span> <span style="color:#00688b;font-weight:bold">int</span>, <span style="color:#b452cd">1</span>)
-	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;chan int == chan int: &#34;</span>, ci1 == ci2) <span style="color:#228b22">// output: true
-</span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;chan int == chan int: &#34;</span>, ci1 == ci3) <span style="color:#228b22">// output: false
-</span><span style="color:#228b22"></span>}
-</code></pre></div><p>上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#cd5555">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">type</span> _key <span style="color:#8b008b;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">type</span> point <span style="color:#8b008b;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>	x <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>	y <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">type</span> pair <span style="color:#8b008b;font-weight:bold">struct</span> {
+</span></span><span style="display:flex;"><span>	x <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>	y <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">type</span> Sumer <span style="color:#8b008b;font-weight:bold">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">type</span> Suber <span style="color:#8b008b;font-weight:bold">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> (p *pair) <span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">return</span> p.x + p.y
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> (p *point) <span style="color:#008b45">Sum</span>() <span style="color:#00688b;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">return</span> p.x + p.y
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> (p pair) <span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">return</span> p.x - p.y
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> (p point) <span style="color:#008b45">Sub</span>() <span style="color:#00688b;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">return</span> p.x - p.y
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">func</span> <span style="color:#008b45">main</span>() {
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;_key{} == _key{}: &#34;</span>, _key{} == _key{}) <span style="color:#228b22">// output: true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;point{} == point{}: &#34;</span>, point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>} == point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>})     <span style="color:#228b22">// output: true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;&amp;point{} == &amp;point{}: &#34;</span>, &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>} == &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}) <span style="color:#228b22">// output: false
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;[2]point{} == [2]point{}: &#34;</span>, 
+</span></span><span style="display:flex;"><span>	  [<span style="color:#b452cd">2</span>]point{point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}, point{x: <span style="color:#b452cd">2</span>, y: <span style="color:#b452cd">3</span>}} == [<span style="color:#b452cd">2</span>]point{point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}, point{x: <span style="color:#b452cd">2</span>, y: <span style="color:#b452cd">3</span>}}) <span style="color:#228b22">//output: true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> a Sumer = &amp;pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> a1 Sumer = &amp;pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> b Sumer = &amp;point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Sumer.byptr == Sumer.byptr: &#34;</span>, a == b)        <span style="color:#228b22">// output: false
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Sumer.sametype == Sumer.sametype: &#34;</span>, a == a1) <span style="color:#228b22">// output: false
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> c Suber = pair{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> d Suber = point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">var</span> d1 point = point{x: <span style="color:#b452cd">1</span>, y: <span style="color:#b452cd">2</span>}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Suber.byvalue == Suber.byvalue: &#34;</span>, c == d)  <span style="color:#228b22">// output: false
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;Suber.byvalue == point.byvalue: &#34;</span>, d == d1) <span style="color:#228b22">// output: true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>
+</span></span><span style="display:flex;"><span>	ci1 := <span style="color:#658b00">make</span>(<span style="color:#8b008b;font-weight:bold">chan</span> <span style="color:#00688b;font-weight:bold">int</span>, <span style="color:#b452cd">1</span>)
+</span></span><span style="display:flex;"><span>	ci2 := ci1
+</span></span><span style="display:flex;"><span>	ci3 := <span style="color:#658b00">make</span>(<span style="color:#8b008b;font-weight:bold">chan</span> <span style="color:#00688b;font-weight:bold">int</span>, <span style="color:#b452cd">1</span>)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;chan int == chan int: &#34;</span>, ci1 == ci2) <span style="color:#228b22">// output: true
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>	fmt.<span style="color:#008b45">Println</span>(<span style="color:#cd5555">&#34;chan int == chan int: &#34;</span>, ci1 == ci3) <span style="color:#228b22">// output: false
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><p>上面的例子让我们较直观地了解结构体，数组，指针，chan在什么场景下是相等。我们再来看Go语言规范中是怎么说的：</p>
 <ul>
 <li>Pointer values are comparable. Two pointer values are equal if they point to the same variable or if both have value nil. Pointers to distinct zero-size variables may or may not be equal.当指针指向同一变量，或同为nil时指针相等，但指针指向不同的零值时可能不相等。</li>
 <li>Channel values are comparable. Two channel values are equal if they were created by the same call to make or if both have value nil.Channel当指向同一个make创建的或同为nil时才相等</li>
@@ -249,88 +249,87 @@
 <p>注意：Go语言里是无法重载操作符的，struct是递归操作每个成员变量，struct也可以称为map的key，但如果struct的成员变量里有不能进行<code>==</code>操作的，例如slice，那么就不能作为map的key。</p>
 <h2 id="类型判断">类型判断</h2>
 <p>判断两个变量是否相等，首先是要判断变量的动态类型是否相同，在runtime中，<code>_type</code>结构是描述最为基础的类型（<code>runtime/type.go</code>），而map, slice, array等内置的复杂类型也都有对应的类型描述（如maptype，slicetype，arraytype）。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type _type struct {
-	size       uintptr
-	ptrdata    uintptr 
-	hash       uint32
-	tflag      tflag
-	align      uint8
-	fieldalign uint8
-	kind       uint8
-	alg        *typeAlg
-	gcdata    *byte
-	str       nameOff
-	ptrToThis typeOff
-}
-...
-type chantype struct {
-	typ  _type
-	elem *_type
-	dir  uintptr
-}
-...
-type slicetype struct {
-	typ  _type
-	elem *_type
-}
-...
-</code></pre></div><p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">type typeAlg struct {
-	// function for hashing objects of this type
-	// (ptr to object, seed) -&gt; hash
-	hash func(unsafe.Pointer, uintptr) uintptr
-	// function for comparing objects of this type
-	// (ptr to object A, ptr to object B) -&gt; ==?
-	equal func(unsafe.Pointer, unsafe.Pointer) bool
-}
-</code></pre></div><p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func strhash(a unsafe.Pointer, h uintptr) uintptr {
-	x := (*stringStruct)(a)
-	return memhash(x.str, h, uintptr(x.len))
-}
-
-func strequal(p, q unsafe.Pointer) bool {
-	return *(*string)(p) == *(*string)(q)
-}
-</code></pre></div><p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
-	...
-	alg := t.key.alg
-	hash := alg.hash(key, uintptr(h.hash0)) // 1
-	m := uintptr(1)&lt;&lt;h.B - 1
-	b := (*bmap)(add(h.buckets, (hash&amp;m)*uintptr(t.bucketsize))) // 2
-	...
-	top := uint8(hash &gt;&gt; (sys.PtrSize*8 - 8))
-	if top &lt; minTopHash {
-		top += minTopHash
-	}
-	for {
-		for i := uintptr(0); i &lt; bucketCnt; i++ {
-			...
-			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
-			if alg.equal(key, k) { // 3
-				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
-				...
-				return v
-			}
-		}
-	...
-	}
-}
-
-</code></pre></div><p>mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type _type struct {
+</span></span><span style="display:flex;"><span>	size       uintptr
+</span></span><span style="display:flex;"><span>	ptrdata    uintptr 
+</span></span><span style="display:flex;"><span>	hash       uint32
+</span></span><span style="display:flex;"><span>	tflag      tflag
+</span></span><span style="display:flex;"><span>	align      uint8
+</span></span><span style="display:flex;"><span>	fieldalign uint8
+</span></span><span style="display:flex;"><span>	kind       uint8
+</span></span><span style="display:flex;"><span>	alg        *typeAlg
+</span></span><span style="display:flex;"><span>	gcdata    *byte
+</span></span><span style="display:flex;"><span>	str       nameOff
+</span></span><span style="display:flex;"><span>	ptrToThis typeOff
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>type chantype struct {
+</span></span><span style="display:flex;"><span>	typ  _type
+</span></span><span style="display:flex;"><span>	elem *_type
+</span></span><span style="display:flex;"><span>	dir  uintptr
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>type slicetype struct {
+</span></span><span style="display:flex;"><span>	typ  _type
+</span></span><span style="display:flex;"><span>	elem *_type
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>其中对于类型的值是否相等，需要使用到成员<code>alg *typeAlg</code>(<code>runtime/alg.go</code>)，它则持有此类型值的hash与equal的算法，它也是一个结构体:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>type typeAlg struct {
+</span></span><span style="display:flex;"><span>	// function for hashing objects of this type
+</span></span><span style="display:flex;"><span>	// (ptr to object, seed) -&gt; hash
+</span></span><span style="display:flex;"><span>	hash func(unsafe.Pointer, uintptr) uintptr
+</span></span><span style="display:flex;"><span>	// function for comparing objects of this type
+</span></span><span style="display:flex;"><span>	// (ptr to object A, ptr to object B) -&gt; ==?
+</span></span><span style="display:flex;"><span>	equal func(unsafe.Pointer, unsafe.Pointer) bool
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>runtime/alg.go</code>中提供了各种基础的<code>hash func</code>与 <code>equal func</code>，例如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func strhash(a unsafe.Pointer, h uintptr) uintptr {
+</span></span><span style="display:flex;"><span>	x := (*stringStruct)(a)
+</span></span><span style="display:flex;"><span>	return memhash(x.str, h, uintptr(x.len))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func strequal(p, q unsafe.Pointer) bool {
+</span></span><span style="display:flex;"><span>	return *(*string)(p) == *(*string)(q)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>有了这些基础的<code>hash func</code>与 <code>equal func</code>，再复杂的结构体也可以按字段递归计算hash与相等比较了。那我们再来看一下，当访问map[key]时，其实现对应在<code>runtime/hashmap.go</code>中的<code>mapaccess1</code>函数:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>	alg := t.key.alg
+</span></span><span style="display:flex;"><span>	hash := alg.hash(key, uintptr(h.hash0)) // 1
+</span></span><span style="display:flex;"><span>	m := uintptr(1)&lt;&lt;h.B - 1
+</span></span><span style="display:flex;"><span>	b := (*bmap)(add(h.buckets, (hash&amp;m)*uintptr(t.bucketsize))) // 2
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>	top := uint8(hash &gt;&gt; (sys.PtrSize*8 - 8))
+</span></span><span style="display:flex;"><span>	if top &lt; minTopHash {
+</span></span><span style="display:flex;"><span>		top += minTopHash
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	for {
+</span></span><span style="display:flex;"><span>		for i := uintptr(0); i &lt; bucketCnt; i++ {
+</span></span><span style="display:flex;"><span>			...
+</span></span><span style="display:flex;"><span>			k := add(unsafe.Pointer(b), dataOffset+i*uintptr(t.keysize))
+</span></span><span style="display:flex;"><span>			if alg.equal(key, k) { // 3
+</span></span><span style="display:flex;"><span>				v := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.valuesize))
+</span></span><span style="display:flex;"><span>				...
+</span></span><span style="display:flex;"><span>				return v
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>mapaccess1的代码还是比较多的，简化逻辑如下（参考注释上序列）：</p>
 <ol>
 <li>调用<code>key</code>类型的<code>hash</code>方法，计算出<code>key</code>的<code>hash</code>值</li>
 <li>根据<code>hash</code>值找到对应的桶<code>bucket</code></li>
 <li>在桶中找到<code>key</code>值相等的map的<code>value</code>。判断相等需调用<code>key</code>类型的<code>equal</code>方法</li>
 </ol>
 <p>到现在我们也就有了初步了解，map中的<code>key</code>访问时同时需要使用该类型的<code>hash func</code>与 <code>equal func</code>，只要<code>key</code>值相等，当结构体即使不是同一对象，也可从map中获取相同的值，例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">m := make(map[interface{}]interface{})
-m[_key{}] = &#34;value&#34;
-if v, ok := m[_key{}];ok {
-	fmt.Println(&#34;%v&#34;, v) // output: value
-}
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>m := make(map[interface{}]interface{})
+</span></span><span style="display:flex;"><span>m[_key{}] = &#34;value&#34;
+</span></span><span style="display:flex;"><span>if v, ok := m[_key{}];ok {
+</span></span><span style="display:flex;"><span>	fmt.Println(&#34;%v&#34;, v) // output: value
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
 <p>参考：<br>
 [1] <a href="https://blog.golang.org/go-maps-in-action">https://blog.golang.org/go-maps-in-action</a><br>
 [2] <a href="https://golang.org/ref/spec#Comparison_operators">https://golang.org/ref/spec#Comparison_operators</a></p>
@@ -425,7 +424,7 @@ if v, ok := m[_key{}];ok {
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -508,7 +507,7 @@ if v, ok := m[_key{}];ok {
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

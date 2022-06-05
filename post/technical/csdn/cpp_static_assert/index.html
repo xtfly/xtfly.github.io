@@ -150,9 +150,9 @@
     <p>断言的应该是一种编程的常见技巧。我所应用的断言有两种，一种是动态断言，即大家所熟知的C标准库的assert()宏，一种是C++中的静态断言，即在编译期间检查。</p>
 <h2 id="动态断言">动态断言</h2>
 <p>assert宏的原型定义在&lt;assert.h&gt;中，其作用是如果它的条件返回错误，则终止程序执行，原型定义：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;assert.h&gt;  </span><span style="color:#1e889b">
-</span><span style="color:#1e889b"></span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">assert</span>( <span style="color:#00688b;font-weight:bold">int</span> expression );
-</code></pre></div><p><code>assert</code>的作用是先计算表达式<code>expression</code> ，如果其值为假（即为0），那么它先向<code>stderr</code>打印一条出错信息，然后通过调用<code>abort</code> 来终止程序运行。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;assert.h&gt;  </span><span style="color:#1e889b">
+</span></span></span><span style="display:flex;"><span><span style="color:#1e889b"></span><span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">assert</span>( <span style="color:#00688b;font-weight:bold">int</span> expression );
+</span></span></code></pre></div><p><code>assert</code>的作用是先计算表达式<code>expression</code> ，如果其值为假（即为0），那么它先向<code>stderr</code>打印一条出错信息，然后通过调用<code>abort</code> 来终止程序运行。</p>
 <p>大家要注意是，其中的表达式为假时，会终止程序运行，包括我在内经常会写错代码，断言一个指针是否为空，往往写成了
 <code>assert(!p);</code>其实应该写成<code>assert(p);</code>。</p>
 <p><code>assert</code>是运行期的判断，并且会强制终止程序，一般要求只能用于<code>debug</code>版本中，是为了尽可能快的发现问题。尤其在我所从事的电信软件产品中，<code>assert</code>是要从<code>release</code>版本中去掉。所以一般开发会重新定义<code>assert</code>宏。</p>
@@ -160,19 +160,19 @@
 <p>在新的<code>C++</code>标准中<code>C++0x</code>中，加了对静态断言的支持，引入了新的关键字<code>static_assert</code>来表示静态断言。</p>
 <p>使用静态断言，我们可以在程序的编译时期检测一些条件是否成立。但这个关键字太新了，没有几个编译器是支持的(好像VC2008支持，我用VC很少，主要是在linux下C++编程)。</p>
 <p>于是可以使用C++现有的模板特性来实现静态断言的功能。<code>boost</code>中也已有<code>BOOST_STATIC_ASSERT</code>宏的实现，有兴趣的同学可以down下来仔细研究一下，它的断言信息更丰富，下面为我的简单实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#228b22">// declare a tempalte class StaticAssert.  
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#00688b;font-weight:bold">bool</span> assertion&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">StaticAssert</span>;  
-
-<span style="color:#228b22">// only partial specializate parameter&#39;s value is true.  
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">StaticAssert</span>&lt;<span style="color:#658b00">true</span>&gt; {  
-  <span style="color:#8b008b;font-weight:bold">enum</span> { VALUE = <span style="color:#b452cd">1</span> };  
-};
-
-<span style="color:#1e889b">#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  
-</span></code></pre></div><p>原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到<code>StaticAssert&lt;false&gt;::VALUE</code>类型。举例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">STATIC_ASSERT(<span style="color:#b452cd">4</span> == <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>) ); <span style="color:#228b22">//在 32bit机上OK  
-</span><span style="color:#228b22"></span>STATIC_ASSERT(<span style="color:#b452cd">4</span> == <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>) ); <span style="color:#228b22">//在 64bit机上NG，long为8字节
-</span></code></pre></div><p>静态断言在编译时进行处理，不会产生任何运行时刻空间和时间上的开销，这就使得它比assert宏具有更好的效率。另外比较重要的一个特性是如果断言失败，它会产生有意义且充分的诊断信息，帮助程序员快速解决问题。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">// declare a tempalte class StaticAssert.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;<span style="color:#00688b;font-weight:bold">bool</span> assertion&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">StaticAssert</span>;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22">// only partial specializate parameter&#39;s value is true.  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">template</span> &lt;&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">StaticAssert</span>&lt;<span style="color:#658b00">true</span>&gt; {  
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">enum</span> { VALUE = <span style="color:#b452cd">1</span> };  
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#1e889b">#define STATIC_ASSERT(expression) (void)StaticAssert&lt;expression&gt;::VALUE  
+</span></span></span></code></pre></div><p>原理是，先声明一个模板类，但后面仅仅偏特化参数值为true的类，而为false的类则一个未定义的类，即是一个未完整的类型,编译期间无法找到<code>StaticAssert&lt;false&gt;::VALUE</code>类型。举例如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>STATIC_ASSERT(<span style="color:#b452cd">4</span> == <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>) ); <span style="color:#228b22">//在 32bit机上OK  
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>STATIC_ASSERT(<span style="color:#b452cd">4</span> == <span style="color:#8b008b;font-weight:bold">sizeof</span>(<span style="color:#00688b;font-weight:bold">long</span>) ); <span style="color:#228b22">//在 64bit机上NG，long为8字节
+</span></span></span></code></pre></div><p>静态断言在编译时进行处理，不会产生任何运行时刻空间和时间上的开销，这就使得它比assert宏具有更好的效率。另外比较重要的一个特性是如果断言失败，它会产生有意义且充分的诊断信息，帮助程序员快速解决问题。</p>
     </div>
     <footer class="post-footer">
      
@@ -264,7 +264,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -346,7 +346,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

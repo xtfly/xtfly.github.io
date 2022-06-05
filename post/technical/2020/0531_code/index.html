@@ -149,34 +149,34 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>下面的代码来自我们某一中间件产品源码(Java语言)中（<code>写法一</code>）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
-</span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
-    AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
-    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">null</span> == rejectMessageCount) {
-        rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
-        AtomicLong currentValue = rejectMessageCounts.<span style="color:#658b00">putIfAbsent</span>(serviceName, rejectMessageCount);
-        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#8b008b;font-weight:bold">null</span> != currentValue) {
-            rejectMessageCount = currentValue;
-        }
-    }
-    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
-}
-</code></pre></div><p>上面的代码是线程安全的，但不够简洁，Java 1.8的<code>ConcurrentMap</code>提供<code>computeIfAbsent()</code>方法，可以简化为（<code>写法二</code>）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
-    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
-}
-</code></pre></div><p>回想起曾经走读代码见过如下的写法（<code>写法三</code>，还是以getRejectMessageCount实现为例）：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
-    <span style="color:#8b008b;font-weight:bold">synchronized</span>(rejectMessageCounts) {
-        AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
-        <span style="color:#8b008b;font-weight:bold">if</span> (rejectMessageCount == <span style="color:#8b008b;font-weight:bold">null</span>) {
-            rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
-            rejectMessageCounts.<span style="color:#658b00">put</span>(serviceName, rejectMessageCount);
-        }
-        <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
-    }
-}
-</code></pre></div><p>但上面的写法也没有线程安全问题，与<code>写法一</code>相比，由于存在synchronized同步锁，范围较大，性能并没有前者好。作者也知道get/put方法是只是原子操作，组合使用则需要synchronized来加锁确保线程安全。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// ConcurrentMap&lt;String, AtomicLong&gt; rejectMessageCounts = new ConcurrentHashMap&lt;&gt;();
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+</span></span><span style="display:flex;"><span>    AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (<span style="color:#8b008b;font-weight:bold">null</span> == rejectMessageCount) {
+</span></span><span style="display:flex;"><span>        rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
+</span></span><span style="display:flex;"><span>        AtomicLong currentValue = rejectMessageCounts.<span style="color:#658b00">putIfAbsent</span>(serviceName, rejectMessageCount);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> ( <span style="color:#8b008b;font-weight:bold">null</span> != currentValue) {
+</span></span><span style="display:flex;"><span>            rejectMessageCount = currentValue;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码是线程安全的，但不够简洁，Java 1.8的<code>ConcurrentMap</code>提供<code>computeIfAbsent()</code>方法，可以简化为（<code>写法二</code>）：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCounts.<span style="color:#658b00">computeIfAbsent</span>(serviceName, (key)-&gt; <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>回想起曾经走读代码见过如下的写法（<code>写法三</code>，还是以getRejectMessageCount实现为例）：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span> AtomicLong <span style="color:#008b45">getRejectMessageCount</span>(String serviceName) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">synchronized</span>(rejectMessageCounts) {
+</span></span><span style="display:flex;"><span>        AtomicLong rejectMessageCount = rejectMessageCounts.<span style="color:#658b00">get</span>(serviceName);
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> (rejectMessageCount == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>            rejectMessageCount = <span style="color:#8b008b;font-weight:bold">new</span> AtomicLong();
+</span></span><span style="display:flex;"><span>            rejectMessageCounts.<span style="color:#658b00">put</span>(serviceName, rejectMessageCount);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> rejectMessageCount;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但上面的写法也没有线程安全问题，与<code>写法一</code>相比，由于存在synchronized同步锁，范围较大，性能并没有前者好。作者也知道get/put方法是只是原子操作，组合使用则需要synchronized来加锁确保线程安全。</p>
 <p>上面案例代码看似简单，但涉及到了线程安全的多个知识点，促使了我写这一篇博文。本文虽是以Java语言呈现，但线程安全的原理是相通的。</p>
 <h2 id="背后的知识">背后的知识</h2>
 <p>ConcurrentMap是JDK1.5开始提供的新接口，用来解决Map操作线程不安全的问题。另一个代替是HashTable，通过synchronized来锁住整个table，无疑在多线程并发又是低效的。ConcurrentMap接口实现者ConcurrentHashMap有两个版本的实现逻辑（JDK1.8以前与1.8），简言之都是划整为零，避免大范围的锁。</p>
@@ -230,34 +230,34 @@
 <p><strong>锁分离</strong></p>
 <p>锁分离就是读写锁分离，JDK中ReadWriteLock维护了一对锁，读锁可允许多个读线程并发使用，写锁是独占的。</p>
 <p>ConcurrentHashMap 1.8版本中的存储结构采用黑红树，它也采用锁分离的思路，针对读取的优化，来看一下它的数据结构：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">static final class TreeBin&lt;K,V&gt; extends Node&lt;K,V&gt; {
-    // 指向TreeNode列表和根节点
-    TreeNode&lt;K,V&gt; root;
-    volatile TreeNode&lt;K,V&gt; first;
-    volatile Thread waiter;
-    volatile int lockState;
-    // 读写锁状态
-    static final int WRITER = 1; // 获取写锁的状态
-    static final int WAITER = 2; // 等待写锁的状态
-    static final int READER = 4; // 增加数据时读锁的状态
-
-....
-</code></pre></div><p>当数据操作互不影响，锁就可以分离，例如JDK中LinkedBlockingQueue，当队列中持有数据非一个时，头部和尾部之间的操作是不冲突的，也就可以读写分离，所以可以进行高并发操作。当只一个数据时，才会阻塞操作。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>static final class TreeBin&lt;K,V&gt; extends Node&lt;K,V&gt; {
+</span></span><span style="display:flex;"><span>    // 指向TreeNode列表和根节点
+</span></span><span style="display:flex;"><span>    TreeNode&lt;K,V&gt; root;
+</span></span><span style="display:flex;"><span>    volatile TreeNode&lt;K,V&gt; first;
+</span></span><span style="display:flex;"><span>    volatile Thread waiter;
+</span></span><span style="display:flex;"><span>    volatile int lockState;
+</span></span><span style="display:flex;"><span>    // 读写锁状态
+</span></span><span style="display:flex;"><span>    static final int WRITER = 1; // 获取写锁的状态
+</span></span><span style="display:flex;"><span>    static final int WAITER = 2; // 等待写锁的状态
+</span></span><span style="display:flex;"><span>    static final int READER = 4; // 增加数据时读锁的状态
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>....
+</span></span></code></pre></div><p>当数据操作互不影响，锁就可以分离，例如JDK中LinkedBlockingQueue，当队列中持有数据非一个时，头部和尾部之间的操作是不冲突的，也就可以读写分离，所以可以进行高并发操作。当只一个数据时，才会阻塞操作。</p>
 <p><strong>锁粗化</strong></p>
 <p>为了保证多线程间的有效并发，会要求每个线程持有锁的时间尽量短。如果对同一个锁不停的进行请求、同步和释放，其本身也会消耗系统宝贵的资源，反而不利于性能的优化。</p>
 <p>锁粗化指可以把很多次请求的锁拿到一个锁里面。例如：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
-    <span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
-        <span style="color:#228b22">// 处理逻辑
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><p>则可以优化为：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
-    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
-        <span style="color:#228b22">// 处理逻辑
-</span><span style="color:#228b22"></span>    }
-}
-</code></pre></div><p><strong>无锁编程</strong></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 处理逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>则可以优化为：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">synchronized</span>(lock){
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span>(<span style="color:#00688b;font-weight:bold">int</span> i=0;i&lt;MAX;i++){
+</span></span><span style="display:flex;"><span>        <span style="color:#228b22">// 处理逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>无锁编程</strong></p>
 <p>无锁编程指Lock-free，通常是Wait-free, 即确保线程永远不会阻塞。由于线程永远不会阻塞，所以当同步的细粒度是单一原子写或比较交换时。状态转变是原子性的，以至于在任何点失败都不会恶化数据结构。</p>
 <p>无锁有很多种实现，最简单也最普遍的一个通用原语是CAS(Compare and Swap)。JDK提供的AtomicLong等对象，都是采用CAS机制。从命名我们也可以得知，他们的状态转变是原子性。但CAS也有其局限性，感兴趣的同学可以了解一下什么是ABA问题。</p>
 <p>volatile变量具有锁的可见性，却不具备原子特性。volatile仅能使用在变量级别，volatile不会造成线程的阻塞。所以可以使用volatile变量来以比同步更低的成本存储共享数据，其使用场景是在多线程读而少线程写的情况。</p>
@@ -356,7 +356,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -440,7 +440,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

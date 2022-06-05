@@ -150,42 +150,42 @@
     <h1 id="案例">案例</h1>
 <p>下面的代码是来自我们新构建的服务，采用Python语言开发。案例故事是这样：</p>
 <p><strong>开始：</strong> 某同学最先开发某功能，需要读取服务的配置文件，代码如下，是代码直接读取文件取配置项：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
-DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
-DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
-
-CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
-.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
-</code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>HOME_PATH = os.environ[<span style="color:#cd5555">&#39;HOME&#39;</span>]
+</span></span><span style="display:flex;"><span>DASK_PROPERTIES_PATH = HOME_PATH + <span style="color:#cd5555">&#39;/training/webapps/lodas/WEB-INF/classes/application-dask.properties&#39;</span>
+</span></span><span style="display:flex;"><span>DASK_PROPERTIES_DICT = Properties(DASK_PROPERTIES_PATH).get_properties()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#39;lodap.dask.cluster.worker.nthreads&#39;</span>]
+</span></span><span style="display:flex;"><span>.... <span style="color:#228b22"># 省略其它配置项的获取代码</span>
+</span></span></code></pre></div><p><strong>后续：</strong> 功能不断增加，又分配给 <em>不同的同学来实现</em> ，也需要读取同目录下其它的配置文件，于是又出现 <em>类似</em> 上面的代码写法，但略有差别，就不再贴代码了。</p>
 <p><strong>问题：</strong> 经过一段时间，发现类似读取配置项的代码段 <em>散落</em> 到我们源码中多个地方。从功能上讲，代码也没什么问题；但从可维护角度来看，若后面对配置增加约束或者配置文件挪位置，侧需要修改多处。</p>
 <p><strong>重构：</strong> 对它的改进也很简单，对一个服务的多个配置文件集中管理，提供 <em>封装</em> 对象。改进之后代码如下，并且做了一点小的容错性增强：</p>
 <ul>
 <li>[1] 检查配置文件存在时才加入dict中，解决当文件不存在时，直接调用Properties(file)抛异常问题。</li>
 <li>[2] 当配置项不存在时，支持默认值，解决代码中直接对Dict取下标操作时当不存在Key抛异常问题。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">TrainingCfg</span>(<span style="color:#658b00">object</span>):
-
-    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
-        self.cfgs = {}
-
-        self.cls_path = os.path.expandvars(<span style="color:#cd5555">&#39;$HOME/training/webapps/lodaps/WEB-INF/classes&#39;</span>)
-        self.add_cfg(<span style="color:#cd5555">&#39;app&#39;</span>, <span style="color:#cd5555">&#39;application.properties&#39;</span>)
-        self.add_cfg(<span style="color:#cd5555">&#39;extend&#39;</span>, <span style="color:#cd5555">&#39;application-extend.properties&#39;</span>)
-        self.add_cfg(<span style="color:#cd5555">&#39;dask&#39;</span>, <span style="color:#cd5555">&#39;application-dask.properties&#39;</span>)
-        self.add_cfg(<span style="color:#cd5555">&#39;server&#39;</span>, <span style="color:#cd5555">&#39;application-server.properties&#39;</span>)
-
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">add_cfg</span>(self, name: <span style="color:#658b00">str</span>, file: <span style="color:#658b00">str</span>):
-        cfg_path = <span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;</span><span style="color:#cd5555">{</span>self.cls_path<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">{</span>file<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>
-        <span style="color:#8b008b;font-weight:bold">if</span> os.path.exists(cfg_path): <span style="color:#228b22"># 1</span>
-            self.cfgs[name] = Properties(cfg_path)
-        <span style="color:#8b008b;font-weight:bold">else</span>:
-            LOG.warning(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;not found configuration file </span><span style="color:#cd5555">{</span>cfg_path<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>)
-
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get</span>(self, name: <span style="color:#658b00">str</span>, key: <span style="color:#658b00">str</span>, default_value: <span style="color:#658b00">str</span> = <span style="color:#cd5555">&#39;&#39;</span>) -&gt; <span style="color:#658b00">str</span>:
-        <span style="color:#8b008b;font-weight:bold">if</span> name <span style="color:#8b008b">in</span> self.cfgs:
-            <span style="color:#8b008b;font-weight:bold">return</span> self.cfgs[name].get(key, default_value)
-        <span style="color:#8b008b;font-weight:bold">return</span> default_value <span style="color:#228b22"># 2</span>
-</code></pre></div><p>这个问题表象，是由于不同的开发人员写了类似重复代码，缺少统一集中的封装。在 <a href="http://lanlingzi.cn/post/technical/2020/0808_code/">飞哥讲代码11：通过封装降低耦合</a> 一文中已讲了封装的重要性，这次我们来换个角度来看看这个问题。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">TrainingCfg</span>(<span style="color:#658b00">object</span>):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        self.cfgs = {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self.cls_path = os.path.expandvars(<span style="color:#cd5555">&#39;$HOME/training/webapps/lodaps/WEB-INF/classes&#39;</span>)
+</span></span><span style="display:flex;"><span>        self.add_cfg(<span style="color:#cd5555">&#39;app&#39;</span>, <span style="color:#cd5555">&#39;application.properties&#39;</span>)
+</span></span><span style="display:flex;"><span>        self.add_cfg(<span style="color:#cd5555">&#39;extend&#39;</span>, <span style="color:#cd5555">&#39;application-extend.properties&#39;</span>)
+</span></span><span style="display:flex;"><span>        self.add_cfg(<span style="color:#cd5555">&#39;dask&#39;</span>, <span style="color:#cd5555">&#39;application-dask.properties&#39;</span>)
+</span></span><span style="display:flex;"><span>        self.add_cfg(<span style="color:#cd5555">&#39;server&#39;</span>, <span style="color:#cd5555">&#39;application-server.properties&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">add_cfg</span>(self, name: <span style="color:#658b00">str</span>, file: <span style="color:#658b00">str</span>):
+</span></span><span style="display:flex;"><span>        cfg_path = <span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;</span><span style="color:#cd5555">{</span>self.cls_path<span style="color:#cd5555">}</span><span style="color:#cd5555">/</span><span style="color:#cd5555">{</span>file<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> os.path.exists(cfg_path): <span style="color:#228b22"># 1</span>
+</span></span><span style="display:flex;"><span>            self.cfgs[name] = Properties(cfg_path)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>            LOG.warning(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;not found configuration file </span><span style="color:#cd5555">{</span>cfg_path<span style="color:#cd5555">}</span><span style="color:#cd5555">&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">get</span>(self, name: <span style="color:#658b00">str</span>, key: <span style="color:#658b00">str</span>, default_value: <span style="color:#658b00">str</span> = <span style="color:#cd5555">&#39;&#39;</span>) -&gt; <span style="color:#658b00">str</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> name <span style="color:#8b008b">in</span> self.cfgs:
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> self.cfgs[name].get(key, default_value)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> default_value <span style="color:#228b22"># 2</span>
+</span></span></code></pre></div><p>这个问题表象，是由于不同的开发人员写了类似重复代码，缺少统一集中的封装。在 <a href="http://lanlingzi.cn/post/technical/2020/0808_code/">飞哥讲代码11：通过封装降低耦合</a> 一文中已讲了封装的重要性，这次我们来换个角度来看看这个问题。</p>
 <h1 id="commit机制">Commit机制</h1>
 <p>我司在推行Commit的代码审核机制，Committer做为代码的把关者，案例中重复的代码应该不能上库，为什么还会出现，后面又怎么整改了。</p>
 <p>Commit机制不是万金油：</p>
@@ -302,7 +302,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -382,7 +382,7 @@ CLUSTER_WORKER_THREAD_NUM = DASK_PROPERTIES_DICT[<span style="color:#cd5555">&#3
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

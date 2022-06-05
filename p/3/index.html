@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.88.1" />
+	<meta name="generator" content="Hugo 0.99.1" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -102,6 +102,87 @@
             
     
  <section id="posts" class="posts-expand">
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2021/0307_code/" itemprop="url">
+        飞哥讲代码23：C/C&#43;&#43;内存空洞
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2021-03-07">
+    2021-03-07
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">7056 字 ~15分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="背景">背景</h1>
+<p>C/C++把内存管理权限交给了程序员。自由越大责任越大。如果内存只借不还，则产生内存泄露。如果随意借了还得不及时，则可能产生内存空洞。</p>
+<p>前一段时间定位某一组件(C++代码)的性能问题。现网会开启atop记录此机器的资源使用，发现此组件进程最后内存的虚拟内存(VIRT)达到达8.3G，常驻内存(RES)达到4.2G。而在实验室对比测试的内存占用也就100M多。区别在于实验室测试环境运行时间不长，而出问题的是长时间运行的。</p>
+<p>排除内存泄露之外，我们怀疑出现了大量离散的内存空洞，原因：</p>
+<ul>
+<li>代码层面：
+<ul>
+<li>代码中大量的直接new/delete内存，未有任何内存复用</li>
+<li>申请的内存未做字节对齐(注：字节对齐主要提升CPU访问效率，也能减少内存占用)</li>
+<li>申请的内存有大有小，大的有10K，小的有几十个bytes</li>
+<li>申请与释放时间跨度大，有些跨不同的线程</li>
+</ul>
+</li>
+<li>资源层面：
+<ul>
+<li>VIRT与RES内存占用远超时实际业务流程所需要的内存</li>
+<li>CPU sys占用也不低</li>
+<li>业务处理出现抖动，可能申请内存变慢导致</li>
+<li>实验室测试内存占用低，上涨VIRT与RES内存应该日积月累</li>
+</ul>
+</li>
+</ul>
+<p>由于为了恢复业务，出问题的进程已重启，无法再捕捉其它一些信息，只也能先事后诸葛，根据现象推导原因。</p>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2021/0307_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -284,21 +365,21 @@
     <h1 id="案例">案例</h1>
 <p>这次我们还是通过对Drogon的实现分析，一起来窥探与学习一下C++模板特性。</p>
 <p>Drogon文档中介绍『基于template实现了简单的反射机制，使主程序框架、控制器(controller)和视图(view)完全解耦』。先看一下官方文档中的样例代码：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> : <span style="color:#8b008b;font-weight:bold">public</span> drogon::HttpController&lt;User&gt;
-{
-  <span style="color:#8b008b;font-weight:bold">public</span>:
-    METHOD_LIST_BEGIN
-    <span style="color:#228b22">//use METHOD_ADD to add your custom processing function here;
-</span><span style="color:#228b22"></span>    METHOD_ADD(User::getInfo, <span style="color:#cd5555">&#34;/{id}&#34;</span>, Get);                  <span style="color:#228b22">//path is /api/v1/User/{arg1}
-</span><span style="color:#228b22"></span>    METHOD_ADD(User::getDetailInfo, <span style="color:#cd5555">&#34;/{id}/detailinfo&#34;</span>, Get);  <span style="color:#228b22">//path is /api/v1/User/{arg1}/detailinfo
-</span><span style="color:#228b22"></span>    METHOD_ADD(User::newUser, <span style="color:#cd5555">&#34;/{name}&#34;</span>, Post);                 <span style="color:#228b22">//path is /api/v1/User/{arg1}
-</span><span style="color:#228b22"></span>    METHOD_LIST_END
-    <span style="color:#228b22">//your declaration of processing function maybe like this:
-</span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> getInfo(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getDetailInfo</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
-    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">newUser</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, std::string &amp;&amp;userName);
-  <span style="color:#8b008b;font-weight:bold">public</span>:
-</code></pre></div><p>上述代码需要解决的问题：注册的<code>METHOD_ADD(User::getInfo, &quot;/{id}&quot;, Get);</code>，对应的请求消息怎么路由到<code>getInfo</code> 方法？</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">User</span> : <span style="color:#8b008b;font-weight:bold">public</span> drogon::HttpController&lt;User&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span><span style="display:flex;"><span>    METHOD_LIST_BEGIN
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//use METHOD_ADD to add your custom processing function here;
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    METHOD_ADD(User::getInfo, <span style="color:#cd5555">&#34;/{id}&#34;</span>, Get);                  <span style="color:#228b22">//path is /api/v1/User/{arg1}
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    METHOD_ADD(User::getDetailInfo, <span style="color:#cd5555">&#34;/{id}/detailinfo&#34;</span>, Get);  <span style="color:#228b22">//path is /api/v1/User/{arg1}/detailinfo
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    METHOD_ADD(User::newUser, <span style="color:#cd5555">&#34;/{name}&#34;</span>, Post);                 <span style="color:#228b22">//path is /api/v1/User/{arg1}
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    METHOD_LIST_END
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">//your declaration of processing function maybe like this:
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    <span style="color:#00688b;font-weight:bold">void</span> getInfo(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">getDetailInfo</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, <span style="color:#00688b;font-weight:bold">int</span> userId) <span style="color:#8b008b;font-weight:bold">const</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">newUser</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpRequestPtr &amp;req, std::function&lt;<span style="color:#00688b;font-weight:bold">void</span>(<span style="color:#8b008b;font-weight:bold">const</span> HttpResponsePtr &amp;)&gt; &amp;&amp;callback, std::string &amp;&amp;userName);
+</span></span><span style="display:flex;"><span>  <span style="color:#8b008b;font-weight:bold">public</span>:
+</span></span></code></pre></div><p>上述代码需要解决的问题：注册的<code>METHOD_ADD(User::getInfo, &quot;/{id}&quot;, Get);</code>，对应的请求消息怎么路由到<code>getInfo</code> 方法？</p>
 <ul>
 <li>无反射机制的做法是，通过保存处理的函数指针，接收到请求再回调函数，函数签名只能是固定格式</li>
 <li>但URL Pattern中会存在多个<code>{}</code>替换参数，参数的类型可能是string, int, long等类型，是无固定参数</li>
@@ -366,20 +447,20 @@
 <p>元旦哪里去不了，就呆在家里折腾VIM配置之后又看了一些C++的开源项目。国人开发的C++ web框架 <a href="https://github.com/an-tao/drogon/">drogon</a> 在techempower上霸榜。techempower是一个专门给web框架做性能排名的网站。drogon在 <a href="https://www.techempower.com/benchmarks/#section=data-r19&amp;hw=ph&amp;test=composite">Round19测试</a> 中，综合成绩排第一。</p>
 <p>drogon是基于C++14/17，采用CMake构建，跨平台，全异步，自带高性能模板引擎CSP，基于模板实现了简单的反射机制的Web框架。</p>
 <p>我10年前写过大约5年多的C++代码，使用的也是传统的C++，C++11之后称为modern C++。不再使用C++做项目之后， 也就断断续续关注自学过，并没有实际的项目实战经验。所以看drogon的源码还算能看懂，但有些用法还是不太熟悉。drogon代码中大量存在如下代码：对于一个setXXX方法，写了<code>const T&amp; </code>与<code>T &amp;&amp;</code>两种入参。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
-    {
-        recvMessageCallback_ = cb;
-    }
-    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
-    {
-        recvMessageCallback_ = std::move(cb);
-    }
-</code></pre></div><p>还有这种用法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">  for (auto &amp;backend : config[&#34;backends&#34;])
-  {
-        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
-  }
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    void setRecvMessageCallback(const RecvMessageCallback &amp;cb)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        recvMessageCallback_ = cb;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    void setRecvMessageCallback(RecvMessageCallback &amp;&amp;cb)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        recvMessageCallback_ = std::move(cb);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>还有这种用法：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>  for (auto &amp;backend : config[&#34;backends&#34;])
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>        backendAddrs_.emplace_back(backend.asString()); //并没有使用push_back
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div>
     </div>
     
     <div class="post-more-link text-center">
@@ -446,12 +527,12 @@
 <li>问题是部分命令能正常执行，部分命令执行之后不退出卡住</li>
 </ul>
 <p>那个wrapper脚本的关键逻辑如下:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#8b008b;font-weight:bold">function</span> ssh_exec_wrapper() {
-    <span style="color:#658b00">local</span> <span style="color:#00688b">cmd</span>=<span style="color:#00688b">$@</span> <span style="color:#228b22"># [1]取命令行所有参数</span>
-    check_cmd_in_white_list <span style="color:#00688b">$cmd</span> <span style="color:#228b22"># [2]检查命令行的是否在白名单中</span>
-    <span style="color:#658b00">echo</span> <span style="color:#00688b">$cmd</span> |sh <span style="color:#228b22"># [3]执行命令</span>
-}
-</code></pre></div><p>问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">function</span> ssh_exec_wrapper() {
+</span></span><span style="display:flex;"><span>    <span style="color:#658b00">local</span> <span style="color:#00688b">cmd</span>=<span style="color:#00688b">$@</span> <span style="color:#228b22"># [1]取命令行所有参数</span>
+</span></span><span style="display:flex;"><span>    check_cmd_in_white_list <span style="color:#00688b">$cmd</span> <span style="color:#228b22"># [2]检查命令行的是否在白名单中</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#658b00">echo</span> <span style="color:#00688b">$cmd</span> |sh <span style="color:#228b22"># [3]执行命令</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>问题是会卡在第三行，执行部分命令行结束之后，却不能退出，开发同学百思不得其解，不知道问题出在哪些。</p>
 <p>会卡的命令大概如下：</p>
 <p><code>orted -mca ess &quot;env&quot; -mca ess_base_iobid &quot;833290240&quot; ...</code></p>
 <p>这个命令长度有215个字符，其中包括有空格，双引号(&quot;)，分号(;)，逗号（,）与脱字符(^)</p>
@@ -516,47 +597,47 @@
     <div class="post-body" itemprop="articleBody">
     <h1 id="案例">案例</h1>
 <p>案例代码来源我们某产品：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
-    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
-        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
-    }
-
-    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
-        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
-            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
-                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
-                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
-                <span style="color:#8b008b;font-weight:bold">try</span> {
-                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
-                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
-                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
-                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
-                        }
-                    }
-
-                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
-                        <span style="color:#8b008b;font-weight:bold">break</span>;
-                    }
-                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
-                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
-                    }
-                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
-                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
-                    }
-                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
-                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
-                }
-                <span style="color:#8b008b;font-weight:bold">break</span>;
-            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
-                ... <span style="color:#228b22">// 省略
-</span><span style="color:#228b22"></span>        }
-    }
-}
-</code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">rollbackOrgPackage</span>(Map&lt;String, Object&gt; oldOrgPackage, String orgName) <span style="color:#8b008b;font-weight:bold">throw</span> ApigwException, ParseException {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">if</span> (StringUtil.<span style="color:#658b00">isEmpyt</span>(orgName)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">throw</span> <span style="color:#8b008b;font-weight:bold">new</span> BackParameterException(...);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> (Entry&lt;String, Object&gt; orgPackage: oldOrgPackage.<span style="color:#658b00">entrySet</span>()) {
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">switch</span> ( orgPackage.<span style="color:#658b00">getKey</span>() ) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgAssets&#34;</span>:
+</span></span><span style="display:flex;"><span>                List&lt;TApigwOrgAsset&gt; orgAssets = (List&lt;ApigwOrgAsset&gt;) orgPackage.<span style="color:#658b00">getValue</span>();
+</span></span><span style="display:flex;"><span>                List&lt;TApigwAssetContent&gt; orgAssetContents = (List&lt;TApigwAssetContent&gt;) oldOrgPackage.<span style="color:#658b00">get</span>(<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>orgAssetContents<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets != <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">for</span> (TApigwOrgAsset orgAsset: orgAssets) {
+</span></span><span style="display:flex;"><span>                            aTApigwAssetContentMapper.<span style="color:#658b00">deleteByPrimaryKey</span>(orgAsset.<span style="color:#658b00">getAstid</span>());
+</span></span><span style="display:flex;"><span>                            aTApigwOrgAssetMapp.<span style="color:#658b00">deleteByOrgName</span>(orgName, orgAsset.<span style="color:#658b00">getZone</span>());
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">if</span> (orgAssets == <span style="color:#8b008b;font-weight:bold">null</span> || orgAssetContents == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwOrgAsset aTApigwOrgAsset: orgAssets){
+</span></span><span style="display:flex;"><span>                        aTApigwOrgAssetMapper.<span style="color:#658b00">insert</span>(aTApigwOrgAsset);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#8b008b;font-weight:bold">for</span>(TApigwAssetContent orgAssetConent: orgAssetContents){
+</span></span><span style="display:flex;"><span>                        aTApigwAssetConentMapper.<span style="color:#658b00">insert</span>(orgAssetConent);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                } <span style="color:#8b008b;font-weight:bold">catch</span> (Excetption e) {
+</span></span><span style="display:flex;"><span>                    threw <span style="color:#8b008b;font-weight:bold">new</span> <span style="color:#008b45">ApigwExcepiton</span>(...)
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#8b008b;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgService&#34;</span>:
+</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgConfigGroups&#34;</span>:
+</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            <span style="color:#8b008b;font-weight:bold">case</span> <span style="color:#cd5555">&#34;orgVariables&#34;</span>:
+</span></span><span style="display:flex;"><span>                ... <span style="color:#228b22">// 省略
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码存在典型的switch惊悚的坏味道。每个Switch块较大，嵌套比较深，在Swith中又存在for循环。还存其它的坏味道：</p>
     </div>
     
     <div class="post-more-link text-center">
@@ -624,103 +705,6 @@
     
     <div class="post-more-link text-center">
     <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1114_tech_stack/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/1108_code/" itemprop="url">
-        飞哥讲代码16：函数式让数据处理更简洁
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-11-08">
-    2020-11-08
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2514 字 ~6分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>案例一，代码摘抄某外部培训材料，主要代码逻辑是打印每课成绩，并找出学生非<code>F</code>级别课程统计平均分数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">CourseGrade</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> String title;
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">char</span> grade;
-}
-
-<span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">ReportCard</span> {
-    <span style="color:#8b008b;font-weight:bold">public</span> String studentName;
-    <span style="color:#8b008b;font-weight:bold">public</span> ArrayList&lt;CourseGrade&gt; cliens;
-
-    <span style="color:#8b008b;font-weight:bold">public</span> <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">printReport</span>() {
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Report card for &#34;</span> + studentName);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Course Title       Grade&#34;</span>);
-        Iterator&lt;CourseGrade&gt; grades = cliens.<span style="color:#658b00">iterator</span>();
-        CourseGrade grade;
-        <span style="color:#00688b;font-weight:bold">double</span> avg = 0.<span style="color:#658b00">0d</span>;
-        <span style="color:#8b008b;font-weight:bold">while</span> (grades.<span style="color:#658b00">hasNext</span>()) {
-            grade = grades.<span style="color:#658b00">next</span>();
-            System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(grade.<span style="color:#658b00">title</span> + <span style="color:#cd5555">&#34;    &#34;</span> + grade.<span style="color:#658b00">grade</span>);
-            <span style="color:#8b008b;font-weight:bold">if</span> (!(grade.<span style="color:#658b00">grade</span> == <span style="color:#cd5555">&#39;F&#39;</span>)) {
-                avg = avg + grade.<span style="color:#658b00">grade</span> - 64;
-            }
-        }
-        avg = avg / cliens.<span style="color:#658b00">size</span>();
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;------------------------&#34;</span>);
-        System.<span style="color:#658b00">out</span>.<span style="color:#658b00">println</span>(<span style="color:#cd5555">&#34;Grade Point Average = &#34;</span> + avg);
-    }
-}
-</code></pre></div><p>上面的代码有哪些问题呢:</p>
-<ul>
-<li>成员变量采用public，缺少数据封装性</li>
-<li>没有判断cliens是否为空，可能除以0值。注：假定它不会为空，另外逻辑可能有问题，为什么统计总分是非F课程，除数却是所有课程Size，先忽略这个问题</li>
-<li>avg这个变量多个用途，即是总分，又是平均分</li>
-<li>cliens变量名难以理解</li>
-<li><code>!(grade.grade == 'F')</code> 有点反直觉</li>
-<li>while循环干了两件事，打印每课的成绩，也统计了分数</li>
-</ul>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/1108_code/" rel="contents">
       阅读全文 &raquo;
     </a>
     </div>
@@ -855,7 +839,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -929,7 +913,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

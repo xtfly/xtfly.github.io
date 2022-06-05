@@ -152,31 +152,31 @@
 <h2 id="两种用法">两种用法</h2>
 <h3 id="operator-overloading">operator overloading</h3>
 <p>C++可以通过operator 重载操作符，格式如下：类型<code>T operator 操作符 ()</code>，如比重载<code>+</code>，如下所示</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
-<span style="color:#8b008b;font-weight:bold">public</span>:  
-    <span style="color:#8b008b;font-weight:bold">const</span> T <span style="color:#8b008b;font-weight:bold">operator</span> + (<span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs) {  
-     <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;m_ + rhs;  
-    }  
-<span style="color:#8b008b;font-weight:bold">private</span>:  
-    T m_;  
-};
-</code></pre></div><p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">A</span> {  
-   T <span style="color:#008b45">operator</span>()(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; lhs, <span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs){ <span style="color:#8b008b;font-weight:bold">return</span> lhs-rhs;}  
-};  
-</code></pre></div><h3 id="operator-casting">operator casting</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:  
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">const</span> T <span style="color:#8b008b;font-weight:bold">operator</span> + (<span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs) {  
+</span></span><span style="display:flex;"><span>     <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;m_ + rhs;  
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:  
+</span></span><span style="display:flex;"><span>    T m_;  
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>又比如STL中的函数对象，重载<code>()</code>，这是C++中较推荐的写法，功能与函数指针类似，如下所示</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">template</span>&lt;<span style="color:#8b008b;font-weight:bold">typename</span> T&gt; <span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+</span></span><span style="display:flex;"><span>   T <span style="color:#008b45">operator</span>()(<span style="color:#8b008b;font-weight:bold">const</span> T&amp; lhs, <span style="color:#8b008b;font-weight:bold">const</span> T&amp; rhs){ <span style="color:#8b008b;font-weight:bold">return</span> lhs-rhs;}  
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><h3 id="operator-casting">operator casting</h3>
 <p>C++可以通过operator 重载隐式转换，格式如下： <code>operator</code> 类型<code>T ()</code>，如下所示</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
-<span style="color:#8b008b;font-weight:bold">public</span>:  
-   <span style="color:#8b008b;font-weight:bold">operator</span> B* () { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
-   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B* () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}      
-   <span style="color:#8b008b;font-weight:bold">operator</span> B&amp; () { <span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}  
-   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B&amp; () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
-
-<span style="color:#8b008b;font-weight:bold">private</span>:  
-   B* b_;  
-};  
-</code></pre></div><p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">class</span> <span style="color:#008b45;font-weight:bold">A</span> {  
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">public</span>:  
+</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">operator</span> B* () { <span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
+</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B* () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> <span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}      
+</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">operator</span> B&amp; () { <span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}  
+</span></span><span style="display:flex;"><span>   <span style="color:#8b008b;font-weight:bold">operator</span> <span style="color:#8b008b;font-weight:bold">const</span> B&amp; () <span style="color:#8b008b;font-weight:bold">const</span> {<span style="color:#8b008b;font-weight:bold">return</span> *<span style="color:#8b008b;font-weight:bold">this</span>-&gt;b_;}   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">private</span>:  
+</span></span><span style="display:flex;"><span>   B* b_;  
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><p><code>A a;</code>当<code>if(a)</code>，编译时转换成<code>if(a.operator B*())</code>，其实也就是判断<code>if(a.b_)</code>.</p>
     </div>
     <footer class="post-footer">
      
@@ -259,7 +259,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -326,7 +326,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

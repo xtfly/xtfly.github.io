@@ -150,17 +150,17 @@
     <h1 id="背景">背景</h1>
 <p>最近笔者写Python代码比较多，同时又有多种编程语言的开发经验，现在的语言设计上大多趋同。当需要对数据集合操作时，非常喜欢java的stream声明式处理数据，萌生在Python中模仿Java的写法。虽然java的API易用性与Scala/Kotlin相比，还是有很大的差距，但与Python比起来，还是强不少。</p>
 <p>我们先来看一下Java的玩法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#228b22">// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
-</span><span style="color:#228b22"></span>List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
-        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
-        .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
-        .<span style="color:#658b00">map</span>(Transcation::getId)
-        .<span style="color:#658b00">collect</span>(Collectors::toList());
-</code></pre></div><p>函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 <a href="http://lanlingzi.cn/post/technical/2020/1108_code/">飞哥讲代码16：函数式让数据处理更简洁</a> 简单介绍了函数式在数据集合操作上的便利。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#228b22">// 过滤Type是GROCERY，按Value倒排序，聚合Id，归并新的集合
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>List&lt;Integer&gt; tanscationsIds = transcations.<span style="color:#658b00">parallelStream</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">filter</span>(it -&gt; it.<span style="color:#658b00">getType</span>() == Transcation.<span style="color:#658b00">GROCERY</span>)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">sorted</span>(comparing(Transcation::getValue).<span style="color:#658b00">resersed</span>())
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">map</span>(Transcation::getId)
+</span></span><span style="display:flex;"><span>        .<span style="color:#658b00">collect</span>(Collectors::toList());
+</span></span></code></pre></div><p>函数式是一种声明式编程范式，上面的代码就像SQL语句一样，代码操作数据集合非常直观。笔者在去年写了一篇 <a href="http://lanlingzi.cn/post/technical/2020/1108_code/">飞哥讲代码16：函数式让数据处理更简洁</a> 简单介绍了函数式在数据集合操作上的便利。</p>
 <p>在数据分析领域，Python生态中有Pandas这类非常优秀的库，它对DataFrame(可以理解一张数据库表存储的数据集合)提供非常简单的API，支持对数据集的过滤、聚合、归并、填充与计算等，很方便地对数据进行清洗和加工。但它也并不是像Java的Stream一样操作，示例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#228b22"># 过滤graded是B并且loan_amnt大于5000，取出loan_amnt这一列，并对这一列的值倒排序</span>
-df[(df[<span style="color:#cd5555">&#34;grade&#34;</span>] == <span style="color:#cd5555">&#34;B&#34;</span>) &amp; (df[<span style="color:#cd5555">&#34;loan_amnt&#34;</span>] &gt; <span style="color:#b452cd">5000</span>)][<span style="color:#cd5555">&#34;loan_amnt&#34;</span>].sort_values(ascending=<span style="color:#8b008b;font-weight:bold">False</span>)
-</code></pre></div><p>但Pandas并不是声明式编程，不会像Java的Stream一样分为中间操作与最终操作，当调用最终操作才执行计算。像上面的<code>df[(df[&quot;grade&quot;] == &quot;B&quot;) &amp; (df[&quot;loan_amnt&quot;] &gt; 5000)]</code>已经是执行过滤操作了。若只是对内存中的数据集合做一些操作，Pandas又过于厚重，杀鸡用牛刀了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#228b22"># 过滤graded是B并且loan_amnt大于5000，取出loan_amnt这一列，并对这一列的值倒排序</span>
+</span></span><span style="display:flex;"><span>df[(df[<span style="color:#cd5555">&#34;grade&#34;</span>] == <span style="color:#cd5555">&#34;B&#34;</span>) &amp; (df[<span style="color:#cd5555">&#34;loan_amnt&#34;</span>] &gt; <span style="color:#b452cd">5000</span>)][<span style="color:#cd5555">&#34;loan_amnt&#34;</span>].sort_values(ascending=<span style="color:#8b008b;font-weight:bold">False</span>)
+</span></span></code></pre></div><p>但Pandas并不是声明式编程，不会像Java的Stream一样分为中间操作与最终操作，当调用最终操作才执行计算。像上面的<code>df[(df[&quot;grade&quot;] == &quot;B&quot;) &amp; (df[&quot;loan_amnt&quot;] &gt; 5000)]</code>已经是执行过滤操作了。若只是对内存中的数据集合做一些操作，Pandas又过于厚重，杀鸡用牛刀了。</p>
 <h1 id="基础">基础</h1>
 <p>Python的官方文档有一章节 <a href="https://docs.python.org/zh-cn/3.9/howto/functional.html">函数式编程指引</a>，从文档介绍来看，Python的函数式编程的内置能力还是非常基础。稍总结一下：</p>
 <ul>
@@ -176,39 +176,39 @@ df[(df[<span style="color:#cd5555">&#34;grade&#34;</span>] == <span style="color
 <li>函数：小函数和lambda表达式，不过lambda比较鸡肋</li>
 </ul>
 <p>从上面可以看出，可能由于Python发展的历史原因，Python在数据集合操作上提供的对函数式编程并不是很系统化，有点七零八落的。在Python中，怎么样的写法才算是函数式编程，示例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#228b22"># 过程式</span>
-result = [] 
-<span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>):
-    result.append(x**<span style="color:#b452cd">2</span>)
-
-<span style="color:#228b22"># 函数式，列表推导式</span>
-result = [x**<span style="color:#b452cd">2</span> <span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>)]
-<span style="color:#228b22"># 函数式，内置函数+lambda表达式</span>
-result = <span style="color:#658b00">map</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x**<span style="color:#b452cd">2</span>, <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>))
-</code></pre></div><p>再来一个稍复杂的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce
-
-<span style="color:#228b22"># 计算下面字符中的数字的和</span>
-v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
-reduce(add, <span style="color:#658b00">map</span>(<span style="color:#658b00">int</span>, <span style="color:#658b00">filter</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit(), v.split())))
-<span style="color:#228b22"># reduce(add, Iterator[int])可以使用sum</span>
-<span style="color:#658b00">sum</span>(<span style="color:#658b00">map</span>(<span style="color:#658b00">int</span>, <span style="color:#658b00">filter</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit(), v.split())))
-</code></pre></div><p>在Python中函数已是一等公民了，函数可以作为变量，也可以是参数，函数内嵌套定义函数。Java的Stream是结合面向对象设计基础上提供pipeline执行流来支持函数式调用，Python虽然支持面向对象设计，但遗憾的是并没有像Stream这样的类型来简化函数式调用，而是纯函数的嵌套调用，在代码可读性上会差不少，尤其那么多括号匹配。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#228b22"># 过程式</span>
+</span></span><span style="display:flex;"><span>result = [] 
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>):
+</span></span><span style="display:flex;"><span>    result.append(x**<span style="color:#b452cd">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 函数式，列表推导式</span>
+</span></span><span style="display:flex;"><span>result = [x**<span style="color:#b452cd">2</span> <span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>)]
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 函数式，内置函数+lambda表达式</span>
+</span></span><span style="display:flex;"><span>result = <span style="color:#658b00">map</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x**<span style="color:#b452cd">2</span>, <span style="color:#658b00">range</span>(<span style="color:#b452cd">5</span>))
+</span></span></code></pre></div><p>再来一个稍复杂的例子：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 计算下面字符中的数字的和</span>
+</span></span><span style="display:flex;"><span>v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
+</span></span><span style="display:flex;"><span>reduce(add, <span style="color:#658b00">map</span>(<span style="color:#658b00">int</span>, <span style="color:#658b00">filter</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit(), v.split())))
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># reduce(add, Iterator[int])可以使用sum</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">sum</span>(<span style="color:#658b00">map</span>(<span style="color:#658b00">int</span>, <span style="color:#658b00">filter</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit(), v.split())))
+</span></span></code></pre></div><p>在Python中函数已是一等公民了，函数可以作为变量，也可以是参数，函数内嵌套定义函数。Java的Stream是结合面向对象设计基础上提供pipeline执行流来支持函数式调用，Python虽然支持面向对象设计，但遗憾的是并没有像Stream这样的类型来简化函数式调用，而是纯函数的嵌套调用，在代码可读性上会差不少，尤其那么多括号匹配。</p>
 <h1 id="进阶">进阶</h1>
 <h2 id="无副作用">无副作用</h2>
 <p>函数式编程范式要求函数是无副作用的，它体现在对输入的数据本身无修改，对函数内部外部无状态修改。反例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#228b22"># 修改了输入</span>
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">reverse_data</span>(data)
-    data.reverse()
-    <span style="color:#8b008b;font-weight:bold">return</span> data
-
-<span style="color:#228b22"># 修改了外部状态</span>
-count = <span style="color:#b452cd">0</span>
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">count_data</span>(data):
-    <span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> data:
-        <span style="color:#8b008b;font-weight:bold">if</span> x &gt; <span style="color:#b452cd">3</span>: count += <span style="color:#b452cd">1</span>
-</code></pre></div><h2 id="匿名函数">匿名函数</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#228b22"># 修改了输入</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">reverse_data</span>(data)
+</span></span><span style="display:flex;"><span>    data.reverse()
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 修改了外部状态</span>
+</span></span><span style="display:flex;"><span>count = <span style="color:#b452cd">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">count_data</span>(data):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">for</span> x <span style="color:#8b008b">in</span> data:
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">if</span> x &gt; <span style="color:#b452cd">3</span>: count += <span style="color:#b452cd">1</span>
+</span></span></code></pre></div><h2 id="匿名函数">匿名函数</h2>
 <p>函数式编程，函数做为参数传入，有些时候，不需要显式地定义函数，直接传入匿名函数更方便，lambda表达式对匿名函数提供了有限支持。</p>
 <p>从前面的例子中已多次出现它的身影：</p>
 <ul>
@@ -217,73 +217,73 @@ count = <span style="color:#b452cd">0</span>
 </ul>
 <h2 id="装饰器">装饰器</h2>
 <p>装饰器(decorator)本质也是高阶函数，正如其名，通过对现有函数或对象进行装饰，增加其功能。比如我们需要对函数增加打印日志，可以定义一个log高阶函数：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">functools</span>
-
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">log</span>(func):
-    <span style="color:#707a7c">@functools</span>.wraps(func)
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(*args, **kw):
-        <span style="color:#658b00">print</span>(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;call </span><span style="color:#cd5555">{</span>func.__name__<span style="color:#cd5555">}</span><span style="color:#cd5555">()&#39;</span>)
-        <span style="color:#8b008b;font-weight:bold">return</span> func(*args, **kw)
-    <span style="color:#8b008b;font-weight:bold">return</span> wrapper
-
-<span style="color:#707a7c">@log</span>
-<span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">test_func</span>():
-    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;test_func body&#39;</span>)
-
-test_func() <span style="color:#228b22"># 会先输出call test_func 再输出test_func body</span>
-</code></pre></div><p>当调用test_func时，不仅会运行test_func函数本身，还会调用log函数。把@log放到test_func函数的定义处，相当于执行了语句：test_func = log(test_func)，当再调用test_func其实是调用log中的wrapper函数。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">import</span> <span style="color:#008b45;text-decoration:underline">functools</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">log</span>(func):
+</span></span><span style="display:flex;"><span>    <span style="color:#707a7c">@functools</span>.wraps(func)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(*args, **kw):
+</span></span><span style="display:flex;"><span>        <span style="color:#658b00">print</span>(<span style="color:#cd5555">f</span><span style="color:#cd5555">&#39;call </span><span style="color:#cd5555">{</span>func.__name__<span style="color:#cd5555">}</span><span style="color:#cd5555">()&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> func(*args, **kw)
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> wrapper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#707a7c">@log</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">test_func</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;test_func body&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_func() <span style="color:#228b22"># 会先输出call test_func 再输出test_func body</span>
+</span></span></code></pre></div><p>当调用test_func时，不仅会运行test_func函数本身，还会调用log函数。把@log放到test_func函数的定义处，相当于执行了语句：test_func = log(test_func)，当再调用test_func其实是调用log中的wrapper函数。</p>
 <p>如果装饰器decorator本身需要传入参数，那就需要编写一个返回decorator的高阶函数:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">log</span>(text):
-    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">decorator</span>(func):
-        <span style="color:#707a7c">@functools</span>.wraps(func)
-        <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(*args, **kw):
-            <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555"> </span><span style="color:#cd5555">%s</span><span style="color:#cd5555">():&#39;</span> % (text, func.__name__))
-            <span style="color:#8b008b;font-weight:bold">return</span> func(*args, **kw)
-        <span style="color:#8b008b;font-weight:bold">return</span> wrapper
-    <span style="color:#8b008b;font-weight:bold">return</span> decorator
-</code></pre></div><p>为什么要使用functools.wraps对wrapper函数也装饰一下呢？因为decorator在实现的时候，被装饰后的函数其实已经是另外一个函数了，函数名等函数属性会发生改变。为了不影响，functools包中提供wraps的decorator来消除这样的副作用。写decorator的时候，最好在实现之前加上functools的wrap，保留原有函数的名称和函数属性。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">log</span>(text):
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">decorator</span>(func):
+</span></span><span style="display:flex;"><span>        <span style="color:#707a7c">@functools</span>.wraps(func)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">def</span> <span style="color:#008b45">wrapper</span>(*args, **kw):
+</span></span><span style="display:flex;"><span>            <span style="color:#658b00">print</span>(<span style="color:#cd5555">&#39;</span><span style="color:#cd5555">%s</span><span style="color:#cd5555"> </span><span style="color:#cd5555">%s</span><span style="color:#cd5555">():&#39;</span> % (text, func.__name__))
+</span></span><span style="display:flex;"><span>            <span style="color:#8b008b;font-weight:bold">return</span> func(*args, **kw)
+</span></span><span style="display:flex;"><span>        <span style="color:#8b008b;font-weight:bold">return</span> wrapper
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">return</span> decorator
+</span></span></code></pre></div><p>为什么要使用functools.wraps对wrapper函数也装饰一下呢？因为decorator在实现的时候，被装饰后的函数其实已经是另外一个函数了，函数名等函数属性会发生改变。为了不影响，functools包中提供wraps的decorator来消除这样的副作用。写decorator的时候，最好在实现之前加上functools的wrap，保留原有函数的名称和函数属性。</p>
 <h2 id="偏函数">偏函数</h2>
 <p>函数在执行时，要带上所有必要的参数进行调用。但是，有时参数可以在函数被调用之前提前获知。这种情况下，一个函数有一个或多个参数预先就能用上，以便函数能用更少的参数进行调用。示例：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#228b22"># int()函数可以把字符串转换为整数</span>
-<span style="color:#658b00">int</span>(<span style="color:#cd5555">&#39;12345&#39;</span>)
-<span style="color:#228b22"># int()函数还提供额外的base参数，默认值为10。如果传入base参数，就可以做N进制的转换</span>
-<span style="color:#658b00">int</span>(<span style="color:#cd5555">&#39;12345&#39;</span>, base=<span style="color:#b452cd">8</span>)
-
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> partial
-<span style="color:#228b22"># 每次都传入int(x, base=2)非常麻烦，重新定义一个函数</span>
-bin2dec = partial(<span style="color:#658b00">int</span>, base=<span style="color:#b452cd">2</span>) 
-bin2dec(<span style="color:#cd5555">&#39;1010101&#39;</span>)
-</code></pre></div><p>从例子中可以看出functools.partial的作用就是，把一个函数的某些参数给固定住（也就是设置默认值），返回一个新的函数，原函数的各个参数依次作为新函数后续的参数，调用这个新函数会更简单。我们再简化前面的例子，稍会增加可读性：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce, partial
-
-v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
-filter_digit = partial(<span style="color:#658b00">filter</span>, <span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit())
-sum_int = partial(reduce, add)
-to_int = partial(<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>)
-sum_int(to_int(filter_digit(v.split())))
-</code></pre></div><h1 id="fnpy库">fn.py库</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#228b22"># int()函数可以把字符串转换为整数</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">int</span>(<span style="color:#cd5555">&#39;12345&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># int()函数还提供额外的base参数，默认值为10。如果传入base参数，就可以做N进制的转换</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">int</span>(<span style="color:#cd5555">&#39;12345&#39;</span>, base=<span style="color:#b452cd">8</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> partial
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 每次都传入int(x, base=2)非常麻烦，重新定义一个函数</span>
+</span></span><span style="display:flex;"><span>bin2dec = partial(<span style="color:#658b00">int</span>, base=<span style="color:#b452cd">2</span>) 
+</span></span><span style="display:flex;"><span>bin2dec(<span style="color:#cd5555">&#39;1010101&#39;</span>)
+</span></span></code></pre></div><p>从例子中可以看出functools.partial的作用就是，把一个函数的某些参数给固定住（也就是设置默认值），返回一个新的函数，原函数的各个参数依次作为新函数后续的参数，调用这个新函数会更简单。我们再简化前面的例子，稍会增加可读性：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce, partial
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
+</span></span><span style="display:flex;"><span>filter_digit = partial(<span style="color:#658b00">filter</span>, <span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit())
+</span></span><span style="display:flex;"><span>sum_int = partial(reduce, add)
+</span></span><span style="display:flex;"><span>to_int = partial(<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>)
+</span></span><span style="display:flex;"><span>sum_int(to_int(filter_digit(v.split())))
+</span></span></code></pre></div><h1 id="fnpy库">fn.py库</h1>
 <p>从前面的例子中，我们似乎了发现问题，Python对函数式支持并不是很现代化，而是很原始的方式，难以编写可读同时又可维护的函数式代码。<a href="https://github.com/kachayev/fn.py">fn.py</a>库出现是为了简化python函数式编程而生，尽管它不可能解决函数式编程所有问题，还是给我们带来极大便利。</p>
 <h2 id="简化lambda">简化Lambda</h2>
 <p>fn.py受Scala的启发，提供了一个特别的<code>_</code>对象简化Lambda语法：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#658b00">list</span>(<span style="color:#658b00">map</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x*<span style="color:#b452cd">2</span>, [<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]))
-<span style="color:#228b22"># Scala写法： List(1,2,3).map(_*2)</span>
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">fn</span> <span style="color:#8b008b;font-weight:bold">import</span> _
-<span style="color:#228b22"># 可以像scala一样改进</span>
-<span style="color:#658b00">list</span>(<span style="color:#658b00">map</span>(_*<span style="color:#b452cd">2</span>, [<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]))
-</code></pre></div><h2 id="简化函数调用">简化函数调用</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#658b00">list</span>(<span style="color:#658b00">map</span>(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x*<span style="color:#b452cd">2</span>, [<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]))
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># Scala写法： List(1,2,3).map(_*2)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">fn</span> <span style="color:#8b008b;font-weight:bold">import</span> _
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 可以像scala一样改进</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">list</span>(<span style="color:#658b00">map</span>(_*<span style="color:#b452cd">2</span>, [<span style="color:#b452cd">1</span>,<span style="color:#b452cd">2</span>,<span style="color:#b452cd">3</span>]))
+</span></span></code></pre></div><h2 id="简化函数调用">简化函数调用</h2>
 <p>fn.py提供一个类<code>F</code>来简化偏函数以及函数嵌套调用，改写前面的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">fn</span> <span style="color:#8b008b;font-weight:bold">import</span> F, _
-<span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce
-
-v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
-f = F(reduce, add) &lt;&lt; F(<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>) &lt;&lt; F(<span style="color:#658b00">filter</span>, _.call(<span style="color:#cd5555">&#39;isdigit&#39;</span>))
-f(v.split())
-<span style="color:#228b22"># 也可以写成这样，每个&gt;&gt;与&lt;&lt;后面需要()包裹生成F对象，或者是函数或是一个callable，不需要写F(..)</span>
-f = F() &gt;&gt; _.call(<span style="color:#cd5555">&#39;split&#39;</span>) &gt;&gt; (<span style="color:#658b00">filter</span>, _.call(<span style="color:#cd5555">&#39;isdigit&#39;</span>)) &gt;&gt; (<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>) &gt;&gt; (reduce, add)
-f(v)
-</code></pre></div><p>注：简化Lambda语法当是函数调用时，不支持<code>_.isdigit()</code>写法，它只支持类<code>_Callbale</code>(<code>_</code>即为<code>fn.underscore._Callbale</code>对象)已实现的操作符(如+，&gt; ,&amp;等)，及属性设置与获取，可点击参见<a href="https://github.com/kachayev/fn.py/blob/df53f5d6bf0e94a37f44f6be57d1c87c9b7a6c26/fn/underscore.py#L48">源码</a>。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">operator</span> <span style="color:#8b008b;font-weight:bold">import</span> add
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">fn</span> <span style="color:#8b008b;font-weight:bold">import</span> F, _
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functools</span> <span style="color:#8b008b;font-weight:bold">import</span> reduce
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
+</span></span><span style="display:flex;"><span>f = F(reduce, add) &lt;&lt; F(<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>) &lt;&lt; F(<span style="color:#658b00">filter</span>, _.call(<span style="color:#cd5555">&#39;isdigit&#39;</span>))
+</span></span><span style="display:flex;"><span>f(v.split())
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 也可以写成这样，每个&gt;&gt;与&lt;&lt;后面需要()包裹生成F对象，或者是函数或是一个callable，不需要写F(..)</span>
+</span></span><span style="display:flex;"><span>f = F() &gt;&gt; _.call(<span style="color:#cd5555">&#39;split&#39;</span>) &gt;&gt; (<span style="color:#658b00">filter</span>, _.call(<span style="color:#cd5555">&#39;isdigit&#39;</span>)) &gt;&gt; (<span style="color:#658b00">map</span>, <span style="color:#658b00">int</span>) &gt;&gt; (reduce, add)
+</span></span><span style="display:flex;"><span>f(v)
+</span></span></code></pre></div><p>注：简化Lambda语法当是函数调用时，不支持<code>_.isdigit()</code>写法，它只支持类<code>_Callbale</code>(<code>_</code>即为<code>fn.underscore._Callbale</code>对象)已实现的操作符(如+，&gt; ,&amp;等)，及属性设置与获取，可点击参见<a href="https://github.com/kachayev/fn.py/blob/df53f5d6bf0e94a37f44f6be57d1c87c9b7a6c26/fn/underscore.py#L48">源码</a>。</p>
 <h2 id="其它">其它</h2>
 <p>对于fn.py的使用，上面的讲解只例举一小部分，还支持：</p>
 <ul>
@@ -299,16 +299,16 @@ f(v)
 <p>fn.py让Python的函数组装调用便捷了，但对数据集的管道式操作支持不足。寻寻觅觅，在翻它的issue中，找到另一个库：PyFunctional。<a href="https://github.com/EntilZha/PyFunctional">PyFunctional</a>可以说是完全参照了Java的Pipeline链式调用来支持对数据集合操作，并且也是采用惰性求值的方式，把操作分为中间操作（Transformations）与最终操作（Actions）。</p>
 <h2 id="数据流管道">数据流管道</h2>
 <p>我们还是改写前面的例子：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functional</span> <span style="color:#8b008b;font-weight:bold">import</span> seq
-
-v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
-seq(v.split())\
-   .filter(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit())\
-   .map(<span style="color:#8b008b;font-weight:bold">lambda</span> x: <span style="color:#658b00">int</span>(x))\
-   .reduce(<span style="color:#8b008b;font-weight:bold">lambda</span> x, y: x + y)
-<span style="color:#228b22"># 或者</span>
-seq(v.split()).filter(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit()).map(<span style="color:#8b008b;font-weight:bold">lambda</span> x: <span style="color:#658b00">int</span>(x)).sum()
-</code></pre></div><p>这种写法是不是熟悉的味道又回来了，seq是它核心的对象（相当于Java的Stream对象），所有要操作的数据先要转化为seq。不过每个回调的函数要使用lambda表达式还是有点辣眼，采用<code>_</code>来简化lambda表达式已放在RoadMap中。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">from</span> <span style="color:#008b45;text-decoration:underline">functional</span> <span style="color:#8b008b;font-weight:bold">import</span> seq
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>v = <span style="color:#cd5555">&#39;a b c 1 2 3 4 5&#39;</span>
+</span></span><span style="display:flex;"><span>seq(v.split())\
+</span></span><span style="display:flex;"><span>   .filter(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit())\
+</span></span><span style="display:flex;"><span>   .map(<span style="color:#8b008b;font-weight:bold">lambda</span> x: <span style="color:#658b00">int</span>(x))\
+</span></span><span style="display:flex;"><span>   .reduce(<span style="color:#8b008b;font-weight:bold">lambda</span> x, y: x + y)
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 或者</span>
+</span></span><span style="display:flex;"><span>seq(v.split()).filter(<span style="color:#8b008b;font-weight:bold">lambda</span> x: x.isdigit()).map(<span style="color:#8b008b;font-weight:bold">lambda</span> x: <span style="color:#658b00">int</span>(x)).sum()
+</span></span></code></pre></div><p>这种写法是不是熟悉的味道又回来了，seq是它核心的对象（相当于Java的Stream对象），所有要操作的数据先要转化为seq。不过每个回调的函数要使用lambda表达式还是有点辣眼，采用<code>_</code>来简化lambda表达式已放在RoadMap中。</p>
 <h2 id="数据生成">数据生成</h2>
 <p>有意思的是PyFunctional更进一步，数据生成支持文件或数据库对接，这有点Pandas的味道了，并且支持导成Pandas的Dataframe。</p>
 <p>数据集合来源：</p>
@@ -424,7 +424,7 @@ seq(v.split()).filter(<span style="color:#8b008b;font-weight:bold">lambda</span>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -525,7 +525,7 @@ seq(v.split()).filter(<span style="color:#8b008b;font-weight:bold">lambda</span>
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.88.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
