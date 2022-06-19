@@ -142,13 +142,13 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3163 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3218 字 ~7分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <h1 id="前言">前言</h1>
-<p>Java/Go语言都内置了反射机制，支持在运行期获取类/方法/属性的信息。反射机制有很多的应用场景，如最常见数据的序列化与反序列化，如果没有反射机制，要么是基于代码生成，如protobuf；要么是一行行的手写代码那是纯体力活。</p>
+<p>Java/Go语言都内置了反射机制，支持在运行期获取类/方法/属性的信息。反射机制有很多的应用场景，如最常见数据的序列化，如果没有反射机制，要么是基于代码生成，如protobuf；要么是一行行的手写代码那是纯体力活。</p>
 <p>C++并没有内置的一套反射机制，实现反射机制也是C++经常讨论的话题。考虑到C++有强大的元模板编码能力，准确的来说，C++在编译期间是有些自省能力，提供一些is_xxx函数集合以及模板萃取能力，只是不支持动态反射，因为它没有像Java/Go语言拥有运行时环境，且在编译期能力非常孱弱与难用。</p>
 <p>C++有不少的开源第三方反射实现库，他们实现方式无外乎二种：</p>
 <ul>
@@ -285,7 +285,8 @@
 </span></span><span style="display:flex;"><span>         .property(<span style="color:#cd5555">&#34;data&#34;</span>, &amp;MyStruct::data)
 </span></span><span style="display:flex;"><span>         .method(<span style="color:#cd5555">&#34;func&#34;</span>, &amp;MyStruct::func);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="编译时">编译时</h2>
+</span></span></code></pre></div><p>这些开源库他们有一个共同的特性：有一个容器或注册管理器，用于对类型各项信息的注册与存储。如果要进一步了解ponder的实现机制，可以参见<a href="https://zhuanlan.zhihu.com/p/471396674">c++反射深入浅出 - 1. ponder 反射实现分析总篇</a> 系列介绍文章</p>
+<h2 id="编译时">编译时</h2>
 <p>从C++11开始新增一些Attribute，它们用来给编译器提供一些额外的信息，来产生一些优化或特定的代码，也可以给其它开发者一些提示信息。例如：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#658b00">[[carries_dependency]]</span> C++<span style="color:#b452cd">11</span>, <span style="color:#a61717;background-color:#e3d2d2">让编译期跳过不必要的内存栅栏指令</span>
 </span></span><span style="display:flex;"><span><span style="color:#658b00">[[noreturn]]</span> C++<span style="color:#b452cd">11</span>, <span style="color:#a61717;background-color:#e3d2d2">函数不会返回</span>
@@ -301,9 +302,8 @@
 <li>概念转换C++具体代码</li>
 <li>反射函数与操作符</li>
 </ul>
-<p>提案者还基于C++11实现一个<a href="http://kifri.fri.uniza.sk/~chochlik/mirror-lib/html/">Mirror框架</a>，感兴趣的可以看看。</p>
 <h1 id="结语">结语</h1>
-<p>本文通过对配置管理原始设计进行还原，理解了作者的设计意图，其中利用C++成员变量的偏移量，来方便对配置项统一更新操作。从它引申联想到了C++的反射机制，走马观花地看一下运行时与编译时反射。如果你正想搞一个反射框架，打开天窗，可以博采众长。</p>
+<p>本文通过对配置管理原始设计进行还原，理解了作者的设计意图，其中利用C++成员变量的偏移量，来方便对配置项统一更新操作。从它引申联想到了C++的反射机制，走马观花地看一下运行时与编译时反射。如果你正想搞一个反射框架，不妨多看看，博采众长。</p>
     </div>
     <footer class="post-footer">
      
