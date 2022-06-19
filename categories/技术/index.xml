@@ -6,7 +6,24 @@
     <description>Recent content in 技术 on 蘭陵N梓記</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 04 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 19 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>飞哥讲代码32：C&#43;&#43;从案例看属性反射</title>
+      <link>http://lanlingzi.cn/post/technical/2022/0619/</link>
+      <pubDate>Sun, 19 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://lanlingzi.cn/post/technical/2022/0619/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;Java/Go语言都内置了反射机制，支持在运行期获取类/方法/属性的信息。反射机制有很多的应用场景，如最常见数据的序列化与反序列化，如果没有反射机制，要么是基于代码生成，如protobuf；要么是一行行的手写代码那是纯体力活。&lt;/p&gt;
+&lt;p&gt;C++并没有内置的一套反射机制，实现反射机制也是C++经常讨论的话题。考虑到C++有强大的元模板编码能力，准确的来说，C++在编译期间是有些自省能力，提供一些is_xxx函数集合以及模板萃取能力，只是不支持动态反射，因为它没有像Java/Go语言拥有运行时环境，且在编译期能力非常孱弱与难用。&lt;/p&gt;
+&lt;p&gt;C++有不少的开源第三方反射实现库，他们实现方式无外乎二种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;编译时反射：在编译时进行类/属性/方法的遍历 ，且遍历支持用户进行过滤，为类/属性/方法提供静态的附加元信息，并把他们保存起来提供运行时API&lt;/li&gt;
+&lt;li&gt;运行时反射：提供一套管理框架，在运行时对类/属性/方法信息进行注册管理，使用时再从框架获取对应的信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;前一段时间定位某一C++写的老产品（20年+）的问题，无意中发现代码中有运行时反射的影子，只是代码并没有把这个反射概念进行提炼，代码比较零散。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>飞哥讲代码31：C&#43;&#43;函数静态与动态分发</title>
       <link>http://lanlingzi.cn/post/technical/2022/0604/</link>

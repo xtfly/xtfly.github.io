@@ -1,0 +1,543 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>飞哥讲代码32：C&#43;&#43;从案例看属性反射 - 蘭陵N梓記</title>
+    <meta name="keywords" content="蘭陵N梓記,兰陵,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Java,Golang">
+    
+    <meta property="og:title" content="飞哥讲代码32：C&#43;&#43;从案例看属性反射">
+    <meta property="og:site_name" content="蘭陵N梓記">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="飞哥讲代码32：C&#43;&#43;从案例看属性反射 - 蘭陵N梓記" />
+    <meta name="description" content="蘭陵N梓記 | 博客 | 软件 | 架构 | Java | Golang"> 
+    <link rel="shortcut icon" href="http://lanlingzi.cn/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="http://lanlingzi.cn/img/apple-touch-icon.png" />
+    <link href="http://lanlingzi.cn/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="http://lanlingzi.cn/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="http://lanlingzi.cn/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">蘭陵N梓記</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="http://lanlingzi.cn/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2022/0619/" itemprop="url">
+        飞哥讲代码32：C&#43;&#43;从案例看属性反射
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2022-06-19">
+    2022-06-19
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">3163 字 ~7分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="前言">前言</h1>
+<p>Java/Go语言都内置了反射机制，支持在运行期获取类/方法/属性的信息。反射机制有很多的应用场景，如最常见数据的序列化与反序列化，如果没有反射机制，要么是基于代码生成，如protobuf；要么是一行行的手写代码那是纯体力活。</p>
+<p>C++并没有内置的一套反射机制，实现反射机制也是C++经常讨论的话题。考虑到C++有强大的元模板编码能力，准确的来说，C++在编译期间是有些自省能力，提供一些is_xxx函数集合以及模板萃取能力，只是不支持动态反射，因为它没有像Java/Go语言拥有运行时环境，且在编译期能力非常孱弱与难用。</p>
+<p>C++有不少的开源第三方反射实现库，他们实现方式无外乎二种：</p>
+<ul>
+<li>编译时反射：在编译时进行类/属性/方法的遍历 ，且遍历支持用户进行过滤，为类/属性/方法提供静态的附加元信息，并把他们保存起来提供运行时API</li>
+<li>运行时反射：提供一套管理框架，在运行时对类/属性/方法信息进行注册管理，使用时再从框架获取对应的信息</li>
+</ul>
+<p>前一段时间定位某一C++写的老产品（20年+）的问题，无意中发现代码中有运行时反射的影子，只是代码并没有把这个反射概念进行提炼，代码比较零散。</p>
+<h1 id="案例">案例</h1>
+<p>配置管理在各个系统中是最常用的能力了。案例代码是配置客户端代码，客户端与配置中心进行交互，需要支持如下最基本的功能：</p>
+<ul>
+<li>对配置的读取</li>
+<li>配置变更刷新</li>
+</ul>
+<p>看似很简单的需求，但当产品所有业务级配置项都通过它管理，配置数据大，再加上一些质量属性（实时变更通知，秒级内全量同步）要求就不一样了，还是先看代码吧。为了简化问题的说明，对代码实现做了大量精减（原代码实现太复杂了<code>:(</code> ），还原最原始设计思路：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>@startuml 
+</span></span><span style="display:flex;"><span>interface IConfig {
+</span></span><span style="display:flex;"><span>    + Init()
+</span></span><span style="display:flex;"><span>    + Update(name: string, value: string)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abstract ConfigBase {
+</span></span><span style="display:flex;"><span>    + Init()
+</span></span><span style="display:flex;"><span>    + Update(name: string, value: string)
+</span></span><span style="display:flex;"><span>    ---
+</span></span><span style="display:flex;"><span>    + GetValueInfo(): *map&lt;string, *ValueInfo&gt;
+</span></span><span style="display:flex;"><span>    + {abstract} InitValueInfoMap()
+</span></span><span style="display:flex;"><span>    ~ m_valueInfos: *map&lt;string, *ValueInfo&gt;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>class ValueInfo {
+</span></span><span style="display:flex;"><span>    + name: string
+</span></span><span style="display:flex;"><span>    + valueType: int
+</span></span><span style="display:flex;"><span>    + offset: int
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ConfigBase .u.|&gt; IConfig
+</span></span><span style="display:flex;"><span>ConfigBase .l.&gt; ValueInfo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>class ConfigA {
+</span></span><span style="display:flex;"><span>    + InitValueInfoMap()
+</span></span><span style="display:flex;"><span>    - m_userName: string
+</span></span><span style="display:flex;"><span>    - m_passwd: string
+</span></span><span style="display:flex;"><span>    - m_phoneNo: int
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ConfigA -u-|&gt; ConfigBase
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>class ConfigB {
+</span></span><span style="display:flex;"><span>    + InitValueInfoMap()
+</span></span><span style="display:flex;"><span>    - m_field1: int
+</span></span><span style="display:flex;"><span>    - m_field2: string
+</span></span><span style="display:flex;"><span>    - m_filed3: float
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ConfigB -u-|&gt; ConfigBase
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>class ConfigManager {}
+</span></span><span style="display:flex;"><span>class ServiceLogic {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ConfigManager &#34;1&#34; o-r- &#34;0..m&#34; IConfig 
+</span></span><span style="display:flex;"><span>ServiceLogic &lt;.r. ConfigA
+</span></span><span style="display:flex;"><span>@enduml
+</span></span></code></pre></div><p>上面类图的设计：</p>
+<ul>
+<li>接口IConfig：提供对配置初始化，更新接口</li>
+<li>ValueInfo：描述每个的配置项的元信息，如名称，类型，其中offset的使用后面再讲，另外类名叫ValueInfo也欠考虑，应该叫ConfigItemMeta可以更好</li>
+<li>抽象类ConfigBase：关键方法InitValueInfoMap，初始化所有配置项定义；GetValueInfo返回配置对象所有的配置项集合</li>
+<li>ConfigManager：负责与配置中心交互，管理所有的IConfig实例，定时从配置中心同步配置项到IConfig实例上（或接收变更事件通在再同步）</li>
+<li>配置对象：ConfigA，ConfigB都是具体的配置类定义，它组合一组相近的配置项，它的成员变量为配置项。</li>
+<li>ServiceLogic：为了简化说明，我把业务逻辑用个通用类ServiceLogic表示，业务逻辑类会聚合具体的配置对象，使用上面的配置项，一个配置对象可以会被多个业务逻辑内使用</li>
+</ul>
+<p>我们还是能看出他原始的设计意图：</p>
+<ul>
+<li>为了抽象，配置的同步与通知不应该感知到具象的ConfigA，ConfigB的成员变量名称，否则需要把IConfig向下转型为具体的ConfigA，一个个配置项赋值，这样的缺点一是导致双向依赖，二是代码不通用，纯体力活，维护也麻烦。GetValueInfo方法起了关键作用，可以获得到配置项定义</li>
+<li>为了性能，业务逻辑看到的是具象的ConfigA，ConfigB，可以直接cfgAtr-&gt;m_userName来获取配置项值，而不是在一个通用的配置表上通过配置ID来查询配置值，这样的缺点一是涉及到查找，二是涉及到类型转换</li>
+</ul>
+<p>那问题是怎么通过拿到配置定义就可以把配置值更新到对应的成员变量上？实际情况还会有多线程并发的问题，先假设业务逻辑处理与配置更新同一时刻只会有一个线程在处理。如果是Java语言，通过反射就很可以方便地更新值了。C++怎么搞？原作者利用了C++对象的内存布局的特性，在每个类的InitValueInfoMap方法的实现上可以看到：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">void</span> ConfigA::InitValueInfoMap() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 按源码实现的伪码，代码可以优化，封装为函数，一个成员变量的注册只需要调用一个函数
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ValueInfo valueInfo1 = <span style="color:#8b008b;font-weight:bold">new</span> ValueInfo;
+</span></span><span style="display:flex;"><span>    valueInfo1-&gt;name = <span style="color:#cd5555">&#34;UserName&#34;</span>;
+</span></span><span style="display:flex;"><span>    valueInfo1-&gt;valueType = ValueType.String;
+</span></span><span style="display:flex;"><span>    valueInfo1-&gt;offset = (<span style="color:#00688b;font-weight:bold">char</span>*)&amp;m_userName - (<span style="color:#00688b;font-weight:bold">char</span>*)<span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;IConfig*&gt;(<span style="color:#8b008b;font-weight:bold">this</span>); <span style="color:#228b22">// 有告警，请先忽略
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    (*m_valueInfos)[valueInfo1.name]= valueInfo1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 省略其它的成员变量加入m_valueInfos
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><p>ValueInfo.offset是记录每个配置项（成员变量）到IConfig指针的偏移量：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>ConfigBase::Update(string name, string value) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 伪代码
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ValueInfo value = *(GetValueInfo()-&gt;find(name));
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>-&gt;*((<span style="color:#00688b;font-weight:bold">char</span>*)<span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;IConfig*&gt;(<span style="color:#8b008b;font-weight:bold">this</span>) + value-&gt;offset) = value; <span style="color:#228b22">// 若是其它类型，而得转换类型
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
+</span></span></code></pre></div><p>至此我们大概弄清楚了，其实这是就是动态反射，先注册，再根据注册信息对成员变量地址来赋值。当ConfigManager收到配置变更时，在基类中通过变量的偏移量来计算子类的成员变量地址，再进行赋值。</p>
+<p>那另一个疑问是为什么不是直接记录成员地址指针，而不是记录偏移量？应该还是为了性能，ConfigA类可以有多个对象实例，而无论多少个实例，根据内存布局可知成员变量的偏移量是不会变的。实际代码中ConfigBase::m_valueInfos的定义了虽是类的成员变量（而非static），它却指向ConfigBase.cpp中的一个静态全局变量，应该最早设计记录成员地址指针，后面性能优化是记录偏移量。并且还在代码中注意说明InitValueInfoMap方法只需要一次调用，性能从X秒降到XX毫秒。</p>
+<h1 id="扩展阅读">扩展阅读</h1>
+<h2 id="偏移量">偏移量</h2>
+<p>假定有一个结构体<code>Point { int x; int y; }</code>，获取成员变量的偏移量方法：</p>
+<ul>
+<li>方法一：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> Point::* offsetX = &amp;Point::x;
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> Point::* offsetY = &amp;Point::y;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetX_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetX));
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetY_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetY));
+</span></span></code></pre></div><ul>
+<li>方法二：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">// 即 ((int)&amp;((structure*)0)-&gt;member);
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">int</span> offSetX = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;x); 
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetX = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;y);
+</span></span></code></pre></div><p>当类存在继承，存在虑函数或者存在虚拟继承时，方法二会带来问题，计算来自虚基类成员偏移量时，对空对象成员取指针的操作会失败。想进一步了解C++对象的内存布局的，建议去看《深度探索C++对象模型》。尤其当涉及虑函数，虑继承，多重继承组合时太复杂了。回到上面的案例，计算相对基类(接口)偏移量难以理解，也带来风险。</p>
+<h2 id="运行时">运行时</h2>
+<p>运行时反射的一些开源实现，实现原理也差不多，主要是看它实现的完备程度：</p>
+<ul>
+<li><a href="https://github.com/rttrorg/rttr">rttr</a></li>
+<li><a href="https://github.com/skypjack/meta">meta</a></li>
+<li><a href="https://github.com/Ubpa/UDRefl">UDRefl</a></li>
+<li><a href="https://github.com/billyquith/ponder">ponder</a></li>
+</ul>
+<p>我们先看第一个开源，使用样例如下。看到代码是不是感觉跟案例的代码思路类型，只是案例把属性的管理揉在配置类的代码中，没有提取一个简单的类属性管理框架</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#1e889b">#include</span> <span style="color:#1e889b">&lt;rttr/registration&gt;</span><span style="color:#1e889b">
+</span></span></span><span style="display:flex;"><span><span style="color:#1e889b"></span><span style="color:#8b008b;font-weight:bold">using</span> <span style="color:#8b008b;font-weight:bold">namespace</span> rttr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">struct</span> <span style="color:#008b45;font-weight:bold">MyStruct</span> { MyStruct() {}; <span style="color:#00688b;font-weight:bold">void</span> <span style="color:#008b45">func</span>(<span style="color:#00688b;font-weight:bold">double</span>) {}; <span style="color:#00688b;font-weight:bold">int</span> data; };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RTTR_REGISTRATION
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    registration::class_&lt;MyStruct&gt;(<span style="color:#cd5555">&#34;MyStruct&#34;</span>)
+</span></span><span style="display:flex;"><span>         .constructor&lt;&gt;()
+</span></span><span style="display:flex;"><span>         .property(<span style="color:#cd5555">&#34;data&#34;</span>, &amp;MyStruct::data)
+</span></span><span style="display:flex;"><span>         .method(<span style="color:#cd5555">&#34;func&#34;</span>, &amp;MyStruct::func);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="编译时">编译时</h2>
+<p>从C++11开始新增一些Attribute，它们用来给编译器提供一些额外的信息，来产生一些优化或特定的代码，也可以给其它开发者一些提示信息。例如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#658b00">[[carries_dependency]]</span> C++<span style="color:#b452cd">11</span>, <span style="color:#a61717;background-color:#e3d2d2">让编译期跳过不必要的内存栅栏指令</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">[[noreturn]]</span> C++<span style="color:#b452cd">11</span>, <span style="color:#a61717;background-color:#e3d2d2">函数不会返回</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">[[deprecated]]</span> C++<span style="color:#b452cd">11</span>, <span style="color:#a61717;background-color:#e3d2d2">函数将弃用的警告</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">[[fallthrough]]</span> C++<span style="color:#b452cd">17</span>, <span style="color:#a61717;background-color:#e3d2d2">用在</span>switch中提示可以直接落下去<span style="color:#a61717;background-color:#e3d2d2">，不需要</span><span style="color:#8b008b;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">[[nodiscard]]</span> C++<span style="color:#b452cd">17</span>, <span style="color:#a61717;background-color:#e3d2d2">表示修饰的内容不能被忽略，可用于修饰函数，标明返回值一定要被处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#658b00">[[maybe_unused]]</span> C++<span style="color:#b452cd">17</span>, <span style="color:#a61717;background-color:#e3d2d2">提示编译器修饰的内容可能暂时没有使用，避免产生警告</span>
+</span></span></code></pre></div><p>遗憾的是，这些只是给编译器使用的，C++没有运行期环境，也就不能像Java的Annotion与Go的Tag，可以在运行期对他们使用。不过给我们带来的启示是，也可以定义一些方法或成员变量的Attribute，让编译器来生成相应元数据信息的代码，可以在运行期使用。</p>
+<p>自定义的Attribute需要基于编译器对它进行解释，搜索了一下，Github还真有对C++ AST解释封装库<a href="https://github.com/foonathan/cppast">cppast</a>，并且可以配合Clang来使用。</p>
+<p>关于静态反射也有人向C++标准组织在2014年提案过<a href="https://open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3996.pdf">Static reflection</a> ，初步翻了一下文档，在第4章定义了技术规范有：</p>
+<ul>
+<li>元数据对象的概念类型</li>
+<li>概念转换C++具体代码</li>
+<li>反射函数与操作符</li>
+</ul>
+<p>提案者还基于C++11实现一个<a href="http://kifri.fri.uniza.sk/~chochlik/mirror-lib/html/">Mirror框架</a>，感兴趣的可以看看。</p>
+<h1 id="结语">结语</h1>
+<p>本文通过对配置管理原始设计进行还原，理解了作者的设计意图，其中利用C++成员变量的偏移量，来方便对配置项统一更新操作。从它引申联想到了C++的反射机制，走马观花地看一下运行时与编译时反射。如果你正想搞一个反射框架，打开天窗，可以博采众长。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="http://lanlingzi.cn/tags/%e8%bd%af%e4%bb%b6%e5%bc%80%e5%8f%91" rel="tag" title="软件开发">#软件开发#</a>
+    
+    <a href="http://lanlingzi.cn/tags/c&#43;&#43;" rel="tag" title="c&#43;&#43;">#c&#43;&#43;#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="http://lanlingzi.cn/post/technical/2022/0604/" rel="prev" title="飞哥讲代码31：C&#43;&#43;函数静态与动态分发">
+        飞哥讲代码31：C&#43;&#43;函数静态与动态分发 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     
+     
+     
+
+
+
+
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    <img src="http://lanlingzi.cn/images/qrcode/qrcode_8cm.jpg" width="129px" height="129px"/>
+    <div style="text-align:center;">微信扫一扫交流</div>
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：飞哥讲代码32：C&#43;&#43;从案例看属性反射
+        <br />作者：<a target="_blank" href="http://lanlingzi.cn/">兰陵子</a>
+        <br />关注：lanlingthink（览聆时刻）
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+  <ul class="sidebar-nav motion-element">
+    <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+      文章目录
+    </li>
+    <li class="sidebar-nav-overview" data-target="site-overview">
+      站点概览
+    </li>
+  </ul>
+
+    <section class="site-overview sidebar-panel ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="http://lanlingzi.cn/img/author.jpg"
+        alt="兰陵子" />
+    <p class="site-author-name" itemprop="name">兰陵子</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="http://lanlingzi.cn/post/">
+        <span class="site-state-item-count">164</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="http://lanlingzi.cn/categories/">      
+         
+        <span class="site-state-item-count">4</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="http://lanlingzi.cn/tags/">
+         
+        <span class="site-state-item-count">57</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/xtfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lan-ling-xin-yun" target="_blank" title="知乎">
+            <i class="fa fa-fw fa-globe"></i>
+            知乎
+        </a>
+        </span>
+    
+</div>
+
+
+      
+
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&amp;m=0&amp;s=220&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33&amp;bv=35" async="async"></script>
+</div>
+
+    </section>
+    
+<section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+    <div class="post-toc">
+        <div class="post-toc-content"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#案例">案例</a></li>
+    <li><a href="#扩展阅读">扩展阅读</a>
+      <ul>
+        <li><a href="#偏移量">偏移量</a></li>
+        <li><a href="#运行时">运行时</a></li>
+        <li><a href="#编译时">编译时</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语">结语</a></li>
+  </ul>
+</nav></div>
+    </div>
+</section>
+
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2022</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.100.2</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/plantuml/rawdeflate.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/plantuml/jquery_plantuml.js"></script>
+<script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="http://lanlingzi.cn/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/motion.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/affix.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/scrollspy.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/post-details.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/toc.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="http://lanlingzi.cn/js/search.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+</body>
+</html>

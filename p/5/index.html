@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.99.1" />
+	<meta name="generator" content="Hugo 0.100.2" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
@@ -102,6 +102,83 @@
             
     
  <section id="posts" class="posts-expand">
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0718_code/" itemprop="url">
+        飞哥讲代码9：提升性能，线程数合适就行
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-07-18">
+    2020-07-18
+</time>
+</span> 
+      
+
+  <span class="post-category" >
+  &nbsp; | &nbsp;
+  <span class="post-meta-item-icon">
+    <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类：</span>
+  
+    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
+        <span itemprop="name">技术</span>
+      </a>
+      &nbsp; 
+    </span>
+  
+</span>
+
+
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">4203 字 ~9分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <h1 id="案例">案例</h1>
+<p>两周前，参与某一老产品的性能优化有如下收获：</p>
+<ul>
+<li>同事说，我配置了 <strong>1000个线程</strong> ，但是总消耗时间还是需要 <strong>10分钟</strong> 左右，似乎没有真正的并发。</li>
+<li>经过分析代码，狂改一通代码，结果是：只配置了 <strong>32个线程</strong> ，总消耗时间下降至 <strong>44秒</strong> 。</li>
+</ul>
+<p>这个产品已有一定的年头，采用Java开发，但Maven配置的编译source/target还是 1.6（直接把配置修改为1.8整个产品编译会有问题。对于老产品，稳定优先，维护者并没有太多的动力升级到1.8，因为一升级需要对所有历史分支都升级并验证）。 为了线程安全，代码中大量地存在如下Double-Check写法(伪代码)，无法享受Java高版本带来的红利，并不高效：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Description desc = cache.<span style="color:#658b00">get</span>(key);
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">synchronized</span>(cache) {  <span style="color:#228b22">// 这个是全局锁，极大影响并发
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>        <span style="color:#8b008b;font-weight:bold">if</span> (desc == <span style="color:#8b008b;font-weight:bold">null</span>) {  
+</span></span><span style="display:flex;"><span>            desc = getDescription(....);  <span style="color:#228b22">// 此方法还会调用其它类似写法的Cache，主要逻辑是查询以及反射类，以及嵌套类，效率并不高
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            cache = <span style="color:#8b008b;font-weight:bold">new</span> CopyOnWriteMap(cache) <span style="color:#228b22">// 对象Copy
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>            cache.<span style="color:#658b00">add</span>(key, desc);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">return</span> desc;
+</span></span></code></pre></div>
+    </div>
+    
+    <div class="post-more-link text-center">
+    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0718_code/" rel="contents">
+      阅读全文 &raquo;
+    </a>
+    </div>
+    
+    <footer class="post-footer"><div class="post-eof"></div></footer>
+  </article>
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -741,80 +818,6 @@
     <footer class="post-footer"><div class="post-eof"></div></footer>
   </article>
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="http://lanlingzi.cn/post/technical/2020/0516_code/" itemprop="url">
-        飞哥讲代码1：确保资源被释放
-        </a>
-      </h1>
-      <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-05-16">
-    2020-05-16
-</time>
-</span> 
-      
-
-  <span class="post-category" >
-  &nbsp; | &nbsp;
-  <span class="post-meta-item-icon">
-    <i class="fa fa-folder-o"></i>
-  </span>
-  <span class="post-meta-item-text">分类：</span>
-  
-    <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-      <a href="http://lanlingzi.cn/categories/%E6%8A%80%E6%9C%AF" itemprop="url" rel="index">
-        <span itemprop="name">技术</span>
-      </a>
-      &nbsp; 
-    </span>
-  
-</span>
-
-
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2345 字 ~5分钟</span>
-</span>
-      </div>
-    </header>
-    <div class="post-body" itemprop="articleBody">
-    <h1 id="案例">案例</h1>
-<p>下面的代码来自我们某一工具源码(Python语言)中：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>file_gz = gzip.GzipFile(file_name)
-</span></span><span style="display:flex;"><span>src_path, src_file = os.path.split(file_name)
-</span></span><span style="display:flex;"><span>tmp_file_name = os.path.join(path_name, src_file).strip(<span style="color:#cd5555">&#39;gz&#39;</span>).strip(<span style="color:#cd5555">&#39;.&#39;</span>)
-</span></span><span style="display:flex;"><span>tmp_file = <span style="color:#658b00">open</span>(tmp_file_name, <span style="color:#cd5555">&#39;wb&#39;</span>)
-</span></span><span style="display:flex;"><span>tmp_file.writeline(file_gz.realines())
-</span></span><span style="display:flex;"><span>file_gz.close()
-</span></span><span style="display:flex;"><span>tmp_file.close()
-</span></span><span style="display:flex;"><span>os.remove(file_name)
-</span></span></code></pre></div><p>从代码健壮角度来看，存在如下两个问题：</p>
-<ul>
-<li>缺少捕获异常，在GzipFile打开文件，open打开文件之后的操作都可能抛出异常</li>
-<li>当抛出异常时，file_gz与tmp_file就会出现未正常close，存在文件句柄的泄露问题</li>
-</ul>
-<p>能正确释放资源的建议写法是:</p>
-    </div>
-    
-    <div class="post-more-link text-center">
-    <a class="btn" href="http://lanlingzi.cn/post/technical/2020/0516_code/" rel="contents">
-      阅读全文 &raquo;
-    </a>
-    </div>
-    
-    <footer class="post-footer"><div class="post-eof"></div></footer>
-  </article>
-
 </section>
 
 
@@ -943,7 +946,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="http://lanlingzi.cn/post/">
-        <span class="site-state-item-count">163</span>
+        <span class="site-state-item-count">164</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -1017,7 +1020,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.99.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.100.2</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
@@ -1046,6 +1049,8 @@
 <script type="text/javascript" src="http://lanlingzi.cn/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 <script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
 <script type="text/javascript" src="http://lanlingzi.cn/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/plantuml/rawdeflate.js"></script>
+<script type="text/javascript" src="http://lanlingzi.cn/js/vendor/plantuml/jquery_plantuml.js"></script>
 <script src="http://lanlingzi.cn/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
 
 <script type="text/javascript" src="http://lanlingzi.cn/js/utils.js"></script>
