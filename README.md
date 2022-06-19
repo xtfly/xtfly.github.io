@@ -2,6 +2,7 @@
 --------------
 
 # 2022
+  - [06-19][飞哥讲代码32：C++从案例看属性反射](content/post/technical/2022/0619.md)
   - [06-04][飞哥讲代码31：C++函数静态与动态分发](content/post/technical/2022/0604.md)
   - [05-21][零拷贝技术及在Java中应用](content/post/technical/2022/0521.md)
   - [04-05][飞哥讲代码30：C++简单依赖注入](content/post/technical/2022/0405.md)
