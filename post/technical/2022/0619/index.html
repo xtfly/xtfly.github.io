@@ -142,7 +142,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3219 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3168 字 ~7分钟</span>
 </span>
       </div>
     </header>
@@ -242,7 +242,7 @@
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#228b22">// 伪代码
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>    ValueInfo value = *(GetValueInfo()-&gt;find(name));
-</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">this</span>-&gt;*((<span style="color:#00688b;font-weight:bold">char</span>*)<span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;IConfig*&gt;(<span style="color:#8b008b;font-weight:bold">this</span>) + value-&gt;offset) = value; <span style="color:#228b22">// 若是其它类型，而得转换类型
+</span></span><span style="display:flex;"><span>    *((string*)((<span style="color:#00688b;font-weight:bold">char</span>*)<span style="color:#8b008b;font-weight:bold">static_cast</span>&lt;IConfig*&gt;(<span style="color:#8b008b;font-weight:bold">this</span>) + value-&gt;offset)) = value; <span style="color:#228b22">// 若是其它类型，还得转换类型
 </span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span>}
 </span></span></code></pre></div><p>至此我们大概弄清楚了，其实这是就是动态反射，先注册，再根据注册信息对成员变量地址来赋值。当ConfigManager收到配置变更时，在基类中通过变量的偏移量来计算子类的成员变量地址，再进行赋值。</p>
 <p>那另一个疑问是为什么不是直接记录成员地址指针，而不是记录偏移量？应该还是为了性能，ConfigA类可以有多个对象实例，而无论多少个实例，根据内存布局可知成员变量的偏移量是不会变的。实际代码中ConfigBase::m_valueInfos的定义了虽是类的成员变量（而非static），它却指向ConfigBase.cpp中的一个静态全局变量，应该最早设计记录成员地址指针，后面性能优化是记录偏移量。并且还在代码中注意说明InitValueInfoMap方法只需要一次调用，性能从X秒降到XX毫秒。</p>
@@ -255,15 +255,15 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> Point::* offsetX = &amp;Point::x;
 </span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> Point::* offsetY = &amp;Point::y;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetX_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetX));
-</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetY_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetY));
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">long</span> offsetX_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">long</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetX));
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">long</span> offsetY_ = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">long</span>&gt;(*(<span style="color:#00688b;font-weight:bold">void</span>**)(&amp;offsetY));
 </span></span></code></pre></div><ul>
 <li>方法二：</li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#228b22">// 即 ((int)&amp;((structure*)0)-&gt;member);
-</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">int</span> offSetX = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;x); 
-</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">int</span> offSetX = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">int</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;y);
-</span></span></code></pre></div><p>当类存在继承，存在虑函数或者存在虚拟继承时，方法二会带来问题，计算来自虚基类成员偏移量时，对空对象成员取指针的操作会失败。想进一步了解C++对象的内存布局的，建议去看《深度探索C++对象模型》。尤其当涉及虑函数，虑继承，多重继承组合时太复杂了。回到上面的案例，计算相对基类(接口)偏移量难以理解，也带来风险。</p>
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#00688b;font-weight:bold">long</span> offsetX = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">long</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;x); 
+</span></span><span style="display:flex;"><span><span style="color:#00688b;font-weight:bold">long</span> offsetY = <span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#00688b;font-weight:bold">long</span>&gt;(&amp;(<span style="color:#8b008b;font-weight:bold">reinterpret_cast</span>&lt;Point*&gt;(<span style="color:#b452cd">0</span>))-&gt;y);
+</span></span></code></pre></div><p>想进一步了解C++对象的内存布局，建议去看《深度探索C++对象模型》。尤其当涉及虑函数，虑继承，多重继承组合时太复杂了。回到上面的案例，计算相对基类(接口)偏移量与地址转换难以理解，裸指针操作也会带来风险。</p>
 <h2 id="运行时">运行时</h2>
 <p>运行时反射的一些开源实现，实现原理也差不多，主要是看它实现的完备程度：</p>
 <ul>
@@ -479,7 +479,7 @@
   <span class="author" itemprop="copyrightHolder">蘭陵N梓記</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.100.2</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.101.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
